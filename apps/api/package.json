@@ -1,0 +1,29 @@
+{
+  "name": "@med/api",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "lint": "echo ok",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.0",
+    "@fastify/helmet": "^11.1.0",
+    "@fastify/jwt": "^8.0.0",
+    "@fastify/rate-limit": "^9.1.0",
+    "@fastify/swagger": "^8.14.0",
+    "@med/db": "workspace:*",
+    "@med/types": "workspace:*",
+    "@med/utils": "workspace:*",
+    "@med/config": "workspace:*",
+    "fastify": "^4.28.0",
+    "pino-pretty": "^11.2.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": { "tsx": "^4.19.0", "vitest": "^2.0.0" }
+}

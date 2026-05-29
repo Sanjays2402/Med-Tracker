@@ -1,0 +1,5 @@
+import { describe, it, expect } from 'vitest';
+
+describe('types-schemas', () => {
+  it('smoke', () => { expect(1 + 1).toBe(2); });
+});

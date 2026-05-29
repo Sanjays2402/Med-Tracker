@@ -1,0 +1,14 @@
+{
+  "name": "@med/tests",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:unit": "vitest run",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "vitest": "^2.0.0"
+  }
+}

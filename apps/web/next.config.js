@@ -1,0 +1,8 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  transpilePackages: ['@med/ui', '@med/icons', '@med/utils', '@med/types', '@med/config'],
+  experimental: { typedRoutes: true },
+};
+
+module.exports = nextConfig;

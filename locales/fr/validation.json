@@ -1,0 +1,5 @@
+{
+  "required": "Required",
+  "invalidEmail": "That email looks off.",
+  "weakPassword": "Use 8+ chars with a number and capital."
+}
