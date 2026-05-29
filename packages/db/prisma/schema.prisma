@@ -1,0 +1,118 @@
+// Prisma schema for Med-Tracker. Uses SQLite for local dev and Postgres for prod via DATABASE_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(uuid())
+  email         String       @unique
+  passwordHash  String
+  displayName   String
+  timezone      String       @default("UTC")
+  locale        String       @default("en")
+  createdAt     DateTime     @default(now())
+  medications   Medication[]
+  shares        CaregiverShare[]
+  notifications Notification[]
+  preferences   Preferences?
+}
+
+model Preferences {
+  id                    String  @id @default(uuid())
+  userId                String  @unique
+  user                  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme                 String  @default("system")
+  reminderLeadMinutes   Int     @default(5)
+  quietHoursStart       String  @default("22:00")
+  quietHoursEnd         String  @default("07:00")
+  caregiverShareEnabled Boolean @default(false)
+}
+
+model Medication {
+  id              String     @id @default(uuid())
+  userId          String
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  drugId          String
+  name            String
+  strength        String
+  form            String
+  instructions    String?
+  startDate       DateTime
+  endDate         DateTime?
+  active          Boolean    @default(true)
+  supplyRemaining Int        @default(0)
+  dosesPerRefill  Int        @default(30)
+  schedules       Schedule[]
+  doses           Dose[]
+  refills         Refill[]
+  createdAt       DateTime   @default(now())
+}
+
+model Schedule {
+  id              String     @id @default(uuid())
+  medicationId    String
+  medication      Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  kind            String
+  times           String     @default("[]") // JSON encoded HH:MM list
+  daysOfWeek      String?
+  intervalHours   Int?
+  cronExpression  String?
+  startsAt        DateTime
+  endsAt          DateTime?
+  enabled         Boolean    @default(true)
+  doses           Dose[]
+}
+
+model Dose {
+  id           String     @id @default(uuid())
+  medicationId String
+  scheduleId   String
+  medication   Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  schedule     Schedule   @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  dueAt        DateTime
+  takenAt      DateTime?
+  status       String     @default("scheduled")
+  note         String?
+
+  @@index([medicationId, dueAt])
+}
+
+model Refill {
+  id           String     @id @default(uuid())
+  medicationId String
+  medication   Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  filledAt     DateTime
+  quantity     Int
+  pharmacy     String?
+  prescriber   String?
+  cost         Float?
+}
+
+model CaregiverShare {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  label     String
+  scopes    String   @default("[\"view-meds\"]")
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel   String
+  subject   String
+  body      String
+  sentAt    DateTime?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+}
