@@ -1,0 +1,38 @@
+module.exports = {
+  docs: [
+    { type: 'category', label: 'Architecture', items: [
+      'architecture/overview',
+      'architecture/data-model',
+      'architecture/reminder-engine',
+      'architecture/authentication',
+      'architecture/security-model',
+      'architecture/offline-strategy',
+      'architecture/observability',
+      'architecture/scaling',
+    ]},
+    { type: 'category', label: 'Guides', items: [
+      'guides/quickstart',
+      'guides/installation',
+      'guides/development-setup',
+      'guides/contributing',
+      'guides/testing',
+      'guides/deployment',
+    ]},
+    { type: 'category', label: 'API', items: [
+      'api/overview',
+      'api/authentication',
+      'api/medications',
+      'api/schedules',
+      'api/doses',
+      'api/refills',
+      'api/caregivers',
+      'api/reports',
+      'api/interactions',
+      'api/drugs',
+      'api/notifications',
+      'api/exports',
+      'api/errors',
+      'api/rate-limiting',
+    ]},
+  ],
+};
