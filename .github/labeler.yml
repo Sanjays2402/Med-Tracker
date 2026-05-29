@@ -1,0 +1,8 @@
+api: ['apps/api/**']
+web: ['apps/web/**']
+mobile: ['apps/mobile/**']
+ui: ['packages/ui/**']
+db: ['packages/db/**']
+docs: ['docs/**', '**/*.md']
+content: ['content/**']
+ci: ['.github/**']
