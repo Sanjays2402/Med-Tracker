@@ -21,7 +21,7 @@
     "@med/types": "workspace:*",
     "@med/utils": "workspace:*",
     "@med/config": "workspace:*",
-    "fastify": "^4.28.0",
+    "fastify": "^5.8.5",
     "pino-pretty": "^11.2.0",
     "zod": "^3.23.8"
   },
