@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: Med-Tracker API
+  version: 0.1.0
+  description: HTTP API for the Med-Tracker medication adherence service.
+servers:
+  - url: http://localhost:4000
+    description: Local development
+paths:
+  /health:
+    get:
+      tags: [system]
+      summary: Liveness probe
+      responses:
+        '200': { description: OK }
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: Exchange email and password for a JWT
+      responses:
+        '200': { description: OK }
+  /medications:
+    get:
+      tags: [medications]
+      summary: List medications for the current user
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [medications]
+      summary: Create a medication
+      responses:
+        '201': { description: Created }
+  /medications/{id}:
+    get:
+      tags: [medications]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /doses/today:
+    get:
+      tags: [doses]
+      summary: All doses scheduled for today
+      responses:
+        '200': { description: OK }
+  /reports/adherence:
+    get:
+      tags: [reports]
+      summary: Adherence percentage and weekly breakdown
+      responses:
+        '200': { description: OK }
+  /interactions/check:
+    post:
+      tags: [interactions]
+      summary: Cross check a list of drug ids for interactions
+      responses:
+        '200': { description: OK }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
