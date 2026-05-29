@@ -16,7 +16,7 @@
     "@fastify/helmet": "^11.1.0",
     "@fastify/jwt": "^8.0.0",
     "@fastify/rate-limit": "^9.1.0",
-    "@fastify/swagger": "^8.14.0",
+    "@fastify/swagger": "^9.7.0",
     "@med/db": "workspace:*",
     "@med/types": "workspace:*",
     "@med/utils": "workspace:*",
