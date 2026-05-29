@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: med
+      POSTGRES_PASSWORD: med
+      POSTGRES_DB: med_tracker
+    ports: ['5432:5432']
+    volumes: ['pgdata:/var/lib/postgresql/data']
+  api:
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    environment:
+      DATABASE_URL: postgres://med:med@postgres:5432/med_tracker
+      JWT_SECRET: change-me
+      WEB_ORIGIN: http://localhost:3000
+    depends_on: [postgres]
+    ports: ['4000:4000']
+  web:
+    build: { context: ., dockerfile: apps/web/Dockerfile }
+    environment:
+      API_BASE_URL: http://api:4000
+    depends_on: [api]
+    ports: ['3000:3000']
+volumes:
+  pgdata: {}
