@@ -1,20 +1,24 @@
-# Architecture: data-model
+## Data model
 
-This page covers the data-model aspect of Med-Tracker.
+Med-Tracker stores six core records:
 
-## Summary
-
-Short summary goes here.
-
-## Diagram
+* **User** identity, locale, and timezone
+* **Preferences** per user settings such as theme and quiet hours
+* **Medication** a drug instance with strength, form, and supply tracking
+* **Schedule** when a medication should be taken
+* **Dose** a single scheduled occurrence with status
+* **Refill** a prescription fill event used to estimate days of supply
+* **CaregiverShare** a signed token granting read only access
+* **Notification** queued and delivered alerts
 
 ```
-[client] --> [api] --> [database]
-              |
-              v
-        [reminder engine]
+User 1 ---* Medication 1 ---* Schedule 1 ---* Dose
+                |                |
+                |                +---* Refill
+                |
+                +---* CaregiverShare
 ```
 
-## Notes
+Cascading deletes remove medications, schedules, doses, refills, and shares when a user closes their account.
 
-Real diagrams will live in `docs/architecture/diagrams/` once produced.
+See `packages/db/prisma/schema.prisma` for the authoritative definitions.
