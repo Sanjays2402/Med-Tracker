@@ -1,0 +1,36 @@
+{
+  "id": "ranitidine",
+  "generic": "ranitidine",
+  "brand": "Zantac",
+  "class": "Gastrointestinal",
+  "rxnormSample": 111285,
+  "indications": [
+    "GERD",
+    "PUD"
+  ],
+  "dosages": [
+    "75 mg",
+    "150 mg",
+    "300 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "clopidogrel",
+    "warfarin",
+    "methotrexate"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take clopidogrel.",
+    "Do not stop ranitidine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

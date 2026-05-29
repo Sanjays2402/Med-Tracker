@@ -1,0 +1,35 @@
+{
+  "id": "adapalene",
+  "generic": "adapalene",
+  "brand": "Differin",
+  "class": "Dermatology",
+  "rxnormSample": 119240,
+  "indications": [
+    "acne",
+    "psoriasis",
+    "eczema"
+  ],
+  "dosages": [
+    "0.1% gel",
+    "0.3% gel"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "other topicals",
+    "systemic steroids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take other topicals.",
+    "Do not stop adapalene suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

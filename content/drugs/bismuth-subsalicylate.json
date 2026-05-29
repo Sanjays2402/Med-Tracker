@@ -1,0 +1,35 @@
+{
+  "id": "bismuth-subsalicylate",
+  "generic": "bismuth subsalicylate",
+  "brand": "Pepto-Bismol",
+  "class": "Gastrointestinal",
+  "rxnormSample": 111507,
+  "indications": [
+    "GERD",
+    "PUD"
+  ],
+  "dosages": [
+    "262 mg",
+    "524 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "clopidogrel",
+    "warfarin",
+    "methotrexate"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take clopidogrel.",
+    "Do not stop bismuth subsalicylate suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

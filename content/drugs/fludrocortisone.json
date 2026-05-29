@@ -1,0 +1,35 @@
+{
+  "id": "fludrocortisone",
+  "generic": "fludrocortisone",
+  "brand": "Florinef",
+  "class": "Corticosteroid",
+  "rxnormSample": 109916,
+  "indications": [
+    "inflammation",
+    "allergic reactions"
+  ],
+  "dosages": [
+    "0.1 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "NSAIDs",
+    "warfarin",
+    "vaccines",
+    "phenytoin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take NSAIDs.",
+    "Do not stop fludrocortisone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

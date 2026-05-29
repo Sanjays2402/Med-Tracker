@@ -1,0 +1,39 @@
+{
+  "id": "rotigotine",
+  "generic": "rotigotine",
+  "brand": "Neupro",
+  "class": "Neurology",
+  "rxnormSample": 115244,
+  "indications": [
+    "Parkinson disease",
+    "movement disorders"
+  ],
+  "dosages": [
+    "1 mg/24h",
+    "2 mg/24h",
+    "3 mg/24h",
+    "4 mg/24h",
+    "6 mg/24h",
+    "8 mg/24h"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "antipsychotics",
+    "levodopa"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop rotigotine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

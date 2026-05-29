@@ -1,0 +1,35 @@
+{
+  "id": "lactulose",
+  "generic": "lactulose",
+  "brand": "Constulose",
+  "class": "GI motility",
+  "rxnormSample": 112247,
+  "indications": [
+    "constipation",
+    "diarrhea"
+  ],
+  "dosages": [
+    "10 g/15 mL"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "digoxin",
+    "salicylates",
+    "antacids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop lactulose suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

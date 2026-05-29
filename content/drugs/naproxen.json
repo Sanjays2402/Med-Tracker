@@ -1,0 +1,38 @@
+{
+  "id": "naproxen",
+  "generic": "naproxen",
+  "brand": "Aleve",
+  "class": "NSAID",
+  "rxnormSample": 100074,
+  "indications": [
+    "pain",
+    "fever",
+    "inflammation"
+  ],
+  "dosages": [
+    "220 mg",
+    "250 mg",
+    "500 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "lithium",
+    "methotrexate",
+    "lisinopril"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop naproxen suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

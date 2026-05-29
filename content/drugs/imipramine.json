@@ -1,0 +1,37 @@
+{
+  "id": "imipramine",
+  "generic": "imipramine",
+  "brand": "Tofranil",
+  "class": "Antidepressant",
+  "rxnormSample": 113024,
+  "indications": [
+    "major depressive disorder",
+    "anxiety"
+  ],
+  "dosages": [
+    "10 mg",
+    "25 mg",
+    "50 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "tramadol",
+    "warfarin",
+    "NSAIDs"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop imipramine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

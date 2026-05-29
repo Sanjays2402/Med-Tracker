@@ -1,0 +1,33 @@
+{
+  "id": "latanoprost",
+  "generic": "latanoprost",
+  "brand": "Xalatan",
+  "class": "Ophthalmic",
+  "rxnormSample": 116539,
+  "indications": [
+    "glaucoma",
+    "dry eye"
+  ],
+  "dosages": [
+    "0.005% solution"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "systemic beta blockers",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take systemic beta blockers.",
+    "Do not stop latanoprost suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

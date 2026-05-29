@@ -1,0 +1,38 @@
+{
+  "id": "fentanyl",
+  "generic": "fentanyl",
+  "brand": "Duragesic",
+  "class": "Opioid analgesic",
+  "rxnormSample": 100925,
+  "indications": [
+    "moderate to severe pain"
+  ],
+  "dosages": [
+    "12 mcg/hr",
+    "25 mcg/hr",
+    "50 mcg/hr",
+    "75 mcg/hr",
+    "100 mcg/hr"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "benzodiazepines",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop fentanyl suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

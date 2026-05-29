@@ -1,0 +1,36 @@
+{
+  "id": "fexofenadine",
+  "generic": "fexofenadine",
+  "brand": "Allegra",
+  "class": "Antihistamine",
+  "rxnormSample": 110767,
+  "indications": [
+    "allergic rhinitis",
+    "urticaria"
+  ],
+  "dosages": [
+    "30 mg",
+    "60 mg",
+    "180 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop fexofenadine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

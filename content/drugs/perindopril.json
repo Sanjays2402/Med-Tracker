@@ -1,0 +1,37 @@
+{
+  "id": "perindopril",
+  "generic": "perindopril",
+  "brand": "Aceon",
+  "class": "ACE inhibitor",
+  "rxnormSample": 104625,
+  "indications": [
+    "hypertension",
+    "heart failure"
+  ],
+  "dosages": [
+    "2 mg",
+    "4 mg",
+    "8 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "potassium",
+    "NSAIDs",
+    "lithium",
+    "aliskiren"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take potassium.",
+    "Do not stop perindopril suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

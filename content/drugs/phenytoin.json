@@ -1,0 +1,36 @@
+{
+  "id": "phenytoin",
+  "generic": "phenytoin",
+  "brand": "Dilantin",
+  "class": "Anticonvulsant / mood stabilizer",
+  "rxnormSample": 114800,
+  "indications": [
+    "epilepsy",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "30 mg",
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "warfarin",
+    "oral contraceptives"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop phenytoin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

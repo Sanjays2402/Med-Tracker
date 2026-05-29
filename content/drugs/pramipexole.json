@@ -1,0 +1,38 @@
+{
+  "id": "pramipexole",
+  "generic": "pramipexole",
+  "brand": "Mirapex",
+  "class": "Neurology",
+  "rxnormSample": 115170,
+  "indications": [
+    "Parkinson disease",
+    "movement disorders"
+  ],
+  "dosages": [
+    "0.125 mg",
+    "0.25 mg",
+    "0.5 mg",
+    "1 mg",
+    "1.5 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "antipsychotics",
+    "levodopa"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop pramipexole suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

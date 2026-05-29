@@ -1,0 +1,35 @@
+{
+  "id": "midazolam",
+  "generic": "midazolam",
+  "brand": "Versed",
+  "class": "Anxiolytic / hypnotic",
+  "rxnormSample": 114282,
+  "indications": [
+    "anxiety",
+    "insomnia"
+  ],
+  "dosages": [
+    "1 mg/mL",
+    "5 mg/mL"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "opioids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop midazolam suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

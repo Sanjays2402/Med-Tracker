@@ -1,0 +1,33 @@
+{
+  "id": "rifampin",
+  "generic": "rifampin",
+  "brand": "Rifadin",
+  "class": "Antibiotic",
+  "rxnormSample": 102627,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "150 mg",
+    "300 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "probenecid"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop rifampin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

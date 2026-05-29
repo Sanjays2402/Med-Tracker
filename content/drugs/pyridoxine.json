@@ -1,0 +1,35 @@
+{
+  "id": "pyridoxine",
+  "generic": "pyridoxine",
+  "brand": "B6",
+  "class": "Vitamin / supplement",
+  "rxnormSample": 120165,
+  "indications": [
+    "nutritional supplementation"
+  ],
+  "dosages": [
+    "25 mg",
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "levothyroxine",
+    "antibiotics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop pyridoxine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

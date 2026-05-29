@@ -1,0 +1,35 @@
+{
+  "id": "nilotinib",
+  "generic": "nilotinib",
+  "brand": "Tasigna",
+  "class": "Oncology",
+  "rxnormSample": 118167,
+  "indications": [
+    "cancer treatment"
+  ],
+  "dosages": [
+    "50 mg",
+    "150 mg",
+    "200 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "NSAIDs",
+    "live vaccines"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop nilotinib suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

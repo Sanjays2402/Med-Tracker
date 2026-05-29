@@ -1,0 +1,35 @@
+{
+  "id": "minocycline",
+  "generic": "minocycline",
+  "brand": "Minocin",
+  "class": "Tetracycline",
+  "rxnormSample": 101813,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "50 mg",
+    "75 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "antacids",
+    "isotretinoin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop minocycline suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

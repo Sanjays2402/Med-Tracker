@@ -1,0 +1,36 @@
+{
+  "id": "vardenafil",
+  "generic": "vardenafil",
+  "brand": "Levitra",
+  "class": "Phosphodiesterase 5 inhibitor",
+  "rxnormSample": 117353,
+  "indications": [
+    "erectile dysfunction"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg",
+    "10 mg",
+    "20 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "nitrates",
+    "alpha blockers",
+    "CYP3A inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take nitrates.",
+    "Do not stop vardenafil suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

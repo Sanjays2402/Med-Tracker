@@ -1,0 +1,37 @@
+{
+  "id": "prochlorperazine",
+  "generic": "prochlorperazine",
+  "brand": "Compazine",
+  "class": "Antiemetic",
+  "rxnormSample": 111803,
+  "indications": [
+    "nausea",
+    "vomiting"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg",
+    "25 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "apomorphine",
+    "tramadol",
+    "SSRIs",
+    "CNS depressants"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take apomorphine.",
+    "Do not stop prochlorperazine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,37 @@
+{
+  "id": "vilazodone",
+  "generic": "vilazodone",
+  "brand": "Viibryd",
+  "class": "Antidepressant",
+  "rxnormSample": 112580,
+  "indications": [
+    "major depressive disorder",
+    "anxiety"
+  ],
+  "dosages": [
+    "10 mg",
+    "20 mg",
+    "40 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "tramadol",
+    "warfarin",
+    "NSAIDs"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop vilazodone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

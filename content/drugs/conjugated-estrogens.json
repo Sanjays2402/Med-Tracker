@@ -1,0 +1,38 @@
+{
+  "id": "conjugated-estrogens",
+  "generic": "conjugated estrogens",
+  "brand": "Premarin",
+  "class": "Hormonal",
+  "rxnormSample": 120646,
+  "indications": [
+    "contraception",
+    "hormone replacement"
+  ],
+  "dosages": [
+    "0.3 mg",
+    "0.45 mg",
+    "0.625 mg",
+    "0.9 mg",
+    "1.25 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "CYP inducers",
+    "antibiotics",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CYP inducers.",
+    "Do not stop conjugated estrogens suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

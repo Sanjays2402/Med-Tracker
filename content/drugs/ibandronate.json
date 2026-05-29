@@ -1,0 +1,33 @@
+{
+  "id": "ibandronate",
+  "generic": "ibandronate",
+  "brand": "Boniva",
+  "class": "Bone health",
+  "rxnormSample": 117501,
+  "indications": [
+    "osteoporosis"
+  ],
+  "dosages": [
+    "150 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "calcium",
+    "antacids",
+    "NSAIDs"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take calcium.",
+    "Do not stop ibandronate suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,34 @@
+{
+  "id": "ethinyl-estradiol-norgestimate",
+  "generic": "ethinyl estradiol-norgestimate",
+  "brand": "Ortho Tri-Cyclen",
+  "class": "Hormonal",
+  "rxnormSample": 120313,
+  "indications": [
+    "contraception",
+    "hormone replacement"
+  ],
+  "dosages": [
+    "0.025/0.180-0.215-0.250 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "CYP inducers",
+    "antibiotics",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CYP inducers.",
+    "Do not stop ethinyl estradiol-norgestimate suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

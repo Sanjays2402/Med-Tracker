@@ -1,0 +1,37 @@
+{
+  "id": "felodipine",
+  "generic": "felodipine",
+  "brand": "Plendil",
+  "class": "Calcium channel blocker",
+  "rxnormSample": 105180,
+  "indications": [
+    "hypertension",
+    "angina"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "simvastatin",
+    "cyclosporine",
+    "grapefruit",
+    "beta blockers"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take simvastatin.",
+    "Do not stop felodipine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

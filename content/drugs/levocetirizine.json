@@ -1,0 +1,35 @@
+{
+  "id": "levocetirizine",
+  "generic": "levocetirizine",
+  "brand": "Xyzal",
+  "class": "Antihistamine",
+  "rxnormSample": 110841,
+  "indications": [
+    "allergic rhinitis",
+    "urticaria"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop levocetirizine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

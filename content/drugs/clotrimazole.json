@@ -1,0 +1,35 @@
+{
+  "id": "clotrimazole",
+  "generic": "clotrimazole",
+  "brand": "Lotrimin",
+  "class": "Antifungal",
+  "rxnormSample": 103552,
+  "indications": [
+    "fungal infection"
+  ],
+  "dosages": [
+    "10 mg troche",
+    "1% cream"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "statins",
+    "phenytoin",
+    "digoxin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop clotrimazole suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,33 @@
+{
+  "id": "fulvestrant",
+  "generic": "fulvestrant",
+  "brand": "Faslodex",
+  "class": "Oncology",
+  "rxnormSample": 118056,
+  "indications": [
+    "cancer treatment"
+  ],
+  "dosages": [
+    "250 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "NSAIDs",
+    "live vaccines"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop fulvestrant suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

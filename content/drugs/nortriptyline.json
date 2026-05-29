@@ -1,0 +1,38 @@
+{
+  "id": "nortriptyline",
+  "generic": "nortriptyline",
+  "brand": "Pamelor",
+  "class": "Antidepressant",
+  "rxnormSample": 112950,
+  "indications": [
+    "major depressive disorder",
+    "anxiety"
+  ],
+  "dosages": [
+    "10 mg",
+    "25 mg",
+    "50 mg",
+    "75 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "tramadol",
+    "warfarin",
+    "NSAIDs"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop nortriptyline suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

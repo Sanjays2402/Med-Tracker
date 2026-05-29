@@ -1,0 +1,35 @@
+{
+  "id": "amiloride",
+  "generic": "amiloride",
+  "brand": "Midamor",
+  "class": "Diuretic",
+  "rxnormSample": 106327,
+  "indications": [
+    "edema",
+    "hypertension"
+  ],
+  "dosages": [
+    "5 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "lithium",
+    "NSAIDs",
+    "digoxin",
+    "potassium"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take lithium.",
+    "Do not stop amiloride suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

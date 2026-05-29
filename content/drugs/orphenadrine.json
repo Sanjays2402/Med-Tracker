@@ -1,0 +1,33 @@
+{
+  "id": "orphenadrine",
+  "generic": "orphenadrine",
+  "brand": "Norflex",
+  "class": "Muscle relaxant",
+  "rxnormSample": 116502,
+  "indications": [
+    "muscle spasm"
+  ],
+  "dosages": [
+    "100 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "MAO inhibitors",
+    "alcohol"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop orphenadrine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

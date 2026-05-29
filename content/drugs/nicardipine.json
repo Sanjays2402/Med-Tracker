@@ -1,0 +1,36 @@
+{
+  "id": "nicardipine",
+  "generic": "nicardipine",
+  "brand": "Cardene",
+  "class": "Calcium channel blocker",
+  "rxnormSample": 105217,
+  "indications": [
+    "hypertension",
+    "angina"
+  ],
+  "dosages": [
+    "20 mg",
+    "30 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "simvastatin",
+    "cyclosporine",
+    "grapefruit",
+    "beta blockers"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take simvastatin.",
+    "Do not stop nicardipine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

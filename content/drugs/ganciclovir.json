@@ -1,0 +1,34 @@
+{
+  "id": "ganciclovir",
+  "generic": "ganciclovir",
+  "brand": "Cytovene",
+  "class": "Antiviral",
+  "rxnormSample": 103996,
+  "indications": [
+    "viral infection"
+  ],
+  "dosages": [
+    "250 mg",
+    "500 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "probenecid",
+    "rifampin",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop ganciclovir suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

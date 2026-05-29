@@ -1,0 +1,39 @@
+{
+  "id": "nefazodone",
+  "generic": "nefazodone",
+  "brand": "Serzone",
+  "class": "Antidepressant",
+  "rxnormSample": 113246,
+  "indications": [
+    "major depressive disorder",
+    "anxiety"
+  ],
+  "dosages": [
+    "50 mg",
+    "100 mg",
+    "150 mg",
+    "200 mg",
+    "250 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "tramadol",
+    "warfarin",
+    "NSAIDs"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop nefazodone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

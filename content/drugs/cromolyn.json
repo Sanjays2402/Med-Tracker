@@ -1,0 +1,34 @@
+{
+  "id": "cromolyn",
+  "generic": "cromolyn",
+  "brand": "Intal",
+  "class": "Allergy",
+  "rxnormSample": 117760,
+  "indications": [
+    "anaphylaxis",
+    "allergy"
+  ],
+  "dosages": [
+    "5.2 mg/actuation",
+    "100 mg/5 mL"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop cromolyn suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

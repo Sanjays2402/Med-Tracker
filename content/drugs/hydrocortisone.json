@@ -1,0 +1,37 @@
+{
+  "id": "hydrocortisone",
+  "generic": "hydrocortisone",
+  "brand": "Cortef",
+  "class": "Corticosteroid",
+  "rxnormSample": 109805,
+  "indications": [
+    "inflammation",
+    "allergic reactions"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg",
+    "20 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "NSAIDs",
+    "warfarin",
+    "vaccines",
+    "phenytoin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take NSAIDs.",
+    "Do not stop hydrocortisone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

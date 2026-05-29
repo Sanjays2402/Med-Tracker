@@ -1,0 +1,33 @@
+{
+  "id": "clindamycin",
+  "generic": "clindamycin",
+  "brand": "Cleocin",
+  "class": "Antibiotic",
+  "rxnormSample": 102368,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "150 mg",
+    "300 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "warfarin",
+    "probenecid"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop clindamycin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

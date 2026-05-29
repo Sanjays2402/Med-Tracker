@@ -1,0 +1,35 @@
+{
+  "id": "pilocarpine",
+  "generic": "pilocarpine",
+  "brand": "Pilocar",
+  "class": "Ophthalmic",
+  "rxnormSample": 116798,
+  "indications": [
+    "glaucoma",
+    "dry eye"
+  ],
+  "dosages": [
+    "1% solution",
+    "2% solution",
+    "4% solution"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "systemic beta blockers",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take systemic beta blockers.",
+    "Do not stop pilocarpine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

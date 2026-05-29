@@ -1,0 +1,37 @@
+{
+  "id": "rosuvastatin",
+  "generic": "rosuvastatin",
+  "brand": "Crestor",
+  "class": "Statin",
+  "rxnormSample": 106512,
+  "indications": [
+    "hyperlipidemia"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg",
+    "20 mg",
+    "40 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "grapefruit",
+    "clarithromycin",
+    "cyclosporine",
+    "gemfibrozil"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take grapefruit.",
+    "Do not stop rosuvastatin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

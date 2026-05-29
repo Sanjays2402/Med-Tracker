@@ -1,0 +1,37 @@
+{
+  "id": "clomipramine",
+  "generic": "clomipramine",
+  "brand": "Anafranil",
+  "class": "Antidepressant",
+  "rxnormSample": 113061,
+  "indications": [
+    "major depressive disorder",
+    "anxiety"
+  ],
+  "dosages": [
+    "25 mg",
+    "50 mg",
+    "75 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "tramadol",
+    "warfarin",
+    "NSAIDs"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop clomipramine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

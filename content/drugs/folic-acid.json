@@ -1,0 +1,36 @@
+{
+  "id": "folic-acid",
+  "generic": "folic acid",
+  "brand": "Folate",
+  "class": "Vitamin / supplement",
+  "rxnormSample": 119832,
+  "indications": [
+    "nutritional supplementation"
+  ],
+  "dosages": [
+    "400 mcg",
+    "800 mcg",
+    "1 mg",
+    "5 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "levothyroxine",
+    "antibiotics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop folic acid suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

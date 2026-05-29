@@ -1,0 +1,35 @@
+{
+  "id": "ceftazidime",
+  "generic": "ceftazidime",
+  "brand": "Fortaz",
+  "class": "Cephalosporin",
+  "rxnormSample": 102183,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "500 mg",
+    "1 g",
+    "2 g"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "probenecid",
+    "warfarin",
+    "antacids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop ceftazidime suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

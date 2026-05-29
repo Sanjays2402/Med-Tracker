@@ -1,0 +1,39 @@
+{
+  "id": "etodolac",
+  "generic": "etodolac",
+  "brand": "Lodine",
+  "class": "NSAID",
+  "rxnormSample": 100370,
+  "indications": [
+    "pain",
+    "fever",
+    "inflammation"
+  ],
+  "dosages": [
+    "200 mg",
+    "300 mg",
+    "400 mg",
+    "500 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "warfarin",
+    "lithium",
+    "methotrexate",
+    "lisinopril"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop etodolac suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

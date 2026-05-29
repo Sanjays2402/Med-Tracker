@@ -1,0 +1,35 @@
+{
+  "id": "cetirizine",
+  "generic": "cetirizine",
+  "brand": "Zyrtec",
+  "class": "Antihistamine",
+  "rxnormSample": 110693,
+  "indications": [
+    "allergic rhinitis",
+    "urticaria"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop cetirizine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

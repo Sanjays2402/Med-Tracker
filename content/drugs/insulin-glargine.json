@@ -1,0 +1,33 @@
+{
+  "id": "insulin-glargine",
+  "generic": "insulin glargine",
+  "brand": "Lantus",
+  "class": "Antidiabetic",
+  "rxnormSample": 108732,
+  "indications": [
+    "type 2 diabetes mellitus"
+  ],
+  "dosages": [
+    "100 units/mL"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "beta blockers",
+    "diuretics",
+    "steroids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop insulin glargine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

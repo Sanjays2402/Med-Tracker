@@ -1,0 +1,32 @@
+{
+  "id": "influenza-vaccine",
+  "generic": "influenza vaccine",
+  "brand": "Fluzone",
+  "class": "Vaccine",
+  "rxnormSample": 120683,
+  "indications": [
+    "immunization"
+  ],
+  "dosages": [
+    "0.5 mL"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "immunosuppressants",
+    "live vaccine cautions"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take immunosuppressants.",
+    "Do not stop influenza vaccine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

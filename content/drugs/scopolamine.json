@@ -1,0 +1,35 @@
+{
+  "id": "scopolamine",
+  "generic": "scopolamine",
+  "brand": "Transderm Scop",
+  "class": "Antiemetic",
+  "rxnormSample": 111951,
+  "indications": [
+    "nausea",
+    "vomiting"
+  ],
+  "dosages": [
+    "1.5 mg patch"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "apomorphine",
+    "tramadol",
+    "SSRIs",
+    "CNS depressants"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take apomorphine.",
+    "Do not stop scopolamine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

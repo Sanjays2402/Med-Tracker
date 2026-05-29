@@ -1,0 +1,35 @@
+{
+  "id": "brimonidine",
+  "generic": "brimonidine",
+  "brand": "Alphagan",
+  "class": "Ophthalmic",
+  "rxnormSample": 116687,
+  "indications": [
+    "glaucoma",
+    "dry eye"
+  ],
+  "dosages": [
+    "0.1% solution",
+    "0.15% solution",
+    "0.2% solution"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "systemic beta blockers",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take systemic beta blockers.",
+    "Do not stop brimonidine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

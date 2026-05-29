@@ -1,0 +1,36 @@
+{
+  "id": "lorazepam",
+  "generic": "lorazepam",
+  "brand": "Ativan",
+  "class": "Anxiolytic / hypnotic",
+  "rxnormSample": 114060,
+  "indications": [
+    "anxiety",
+    "insomnia"
+  ],
+  "dosages": [
+    "0.5 mg",
+    "1 mg",
+    "2 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "opioids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop lorazepam suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

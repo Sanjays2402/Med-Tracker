@@ -1,0 +1,33 @@
+{
+  "id": "travoprost",
+  "generic": "travoprost",
+  "brand": "Travatan",
+  "class": "Ophthalmic",
+  "rxnormSample": 116576,
+  "indications": [
+    "glaucoma",
+    "dry eye"
+  ],
+  "dosages": [
+    "0.004% solution"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "systemic beta blockers",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take systemic beta blockers.",
+    "Do not stop travoprost suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

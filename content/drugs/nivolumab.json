@@ -1,0 +1,35 @@
+{
+  "id": "nivolumab",
+  "generic": "nivolumab",
+  "brand": "Opdivo",
+  "class": "Oncology",
+  "rxnormSample": 118463,
+  "indications": [
+    "cancer treatment"
+  ],
+  "dosages": [
+    "40 mg",
+    "100 mg",
+    "240 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "NSAIDs",
+    "live vaccines"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop nivolumab suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

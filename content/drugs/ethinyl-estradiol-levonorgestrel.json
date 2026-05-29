@@ -1,0 +1,35 @@
+{
+  "id": "ethinyl-estradiol-levonorgestrel",
+  "generic": "ethinyl estradiol-levonorgestrel",
+  "brand": "Seasonique",
+  "class": "Hormonal",
+  "rxnormSample": 120350,
+  "indications": [
+    "contraception",
+    "hormone replacement"
+  ],
+  "dosages": [
+    "0.03/0.15 mg",
+    "0.01 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "CYP inducers",
+    "antibiotics",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CYP inducers.",
+    "Do not stop ethinyl estradiol-levonorgestrel suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

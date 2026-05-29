@@ -1,0 +1,33 @@
+{
+  "id": "emtricitabine",
+  "generic": "emtricitabine",
+  "brand": "Emtriva",
+  "class": "Antiviral",
+  "rxnormSample": 104107,
+  "indications": [
+    "viral infection"
+  ],
+  "dosages": [
+    "200 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "probenecid",
+    "rifampin",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop emtricitabine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

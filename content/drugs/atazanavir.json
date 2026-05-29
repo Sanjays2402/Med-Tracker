@@ -1,0 +1,35 @@
+{
+  "id": "atazanavir",
+  "generic": "atazanavir",
+  "brand": "Reyataz",
+  "class": "Antiviral",
+  "rxnormSample": 104329,
+  "indications": [
+    "viral infection"
+  ],
+  "dosages": [
+    "150 mg",
+    "200 mg",
+    "300 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "probenecid",
+    "rifampin",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop atazanavir suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,34 @@
+{
+  "id": "aztreonam",
+  "generic": "aztreonam",
+  "brand": "Azactam",
+  "class": "Antibiotic",
+  "rxnormSample": 102701,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "500 mg",
+    "1 g",
+    "2 g"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "probenecid"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop aztreonam suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,35 @@
+{
+  "id": "tiotropium",
+  "generic": "tiotropium",
+  "brand": "Spiriva",
+  "class": "Respiratory",
+  "rxnormSample": 110212,
+  "indications": [
+    "asthma",
+    "COPD"
+  ],
+  "dosages": [
+    "18 mcg/capsule",
+    "2.5 mcg/actuation"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors",
+    "ketoconazole"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop tiotropium suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

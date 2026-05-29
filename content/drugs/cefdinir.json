@@ -1,0 +1,33 @@
+{
+  "id": "cefdinir",
+  "generic": "cefdinir",
+  "brand": "Omnicef",
+  "class": "Cephalosporin",
+  "rxnormSample": 101998,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "300 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "probenecid",
+    "warfarin",
+    "antacids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop cefdinir suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

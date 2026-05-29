@@ -1,0 +1,36 @@
+{
+  "id": "azathioprine",
+  "generic": "azathioprine",
+  "brand": "Imuran",
+  "class": "Immunosuppressant",
+  "rxnormSample": 118833,
+  "indications": [
+    "autoimmune disease",
+    "transplant rejection prevention"
+  ],
+  "dosages": [
+    "50 mg",
+    "75 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "live vaccines",
+    "NSAIDs",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take live vaccines.",
+    "Do not stop azathioprine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

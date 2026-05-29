@@ -1,0 +1,33 @@
+{
+  "id": "netarsudil",
+  "generic": "netarsudil",
+  "brand": "Rhopressa",
+  "class": "Ophthalmic",
+  "rxnormSample": 116835,
+  "indications": [
+    "glaucoma",
+    "dry eye"
+  ],
+  "dosages": [
+    "0.02% solution"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "systemic beta blockers",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take systemic beta blockers.",
+    "Do not stop netarsudil suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

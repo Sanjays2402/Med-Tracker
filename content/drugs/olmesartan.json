@@ -1,0 +1,35 @@
+{
+  "id": "olmesartan",
+  "generic": "olmesartan",
+  "brand": "Benicar",
+  "class": "ARB",
+  "rxnormSample": 104810,
+  "indications": [
+    "hypertension"
+  ],
+  "dosages": [
+    "5 mg",
+    "20 mg",
+    "40 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "potassium",
+    "NSAIDs",
+    "lithium"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take potassium.",
+    "Do not stop olmesartan suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

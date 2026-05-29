@@ -1,0 +1,37 @@
+{
+  "id": "everolimus",
+  "generic": "everolimus",
+  "brand": "Zortress",
+  "class": "Immunosuppressant",
+  "rxnormSample": 118759,
+  "indications": [
+    "autoimmune disease",
+    "transplant rejection prevention"
+  ],
+  "dosages": [
+    "0.25 mg",
+    "0.5 mg",
+    "0.75 mg",
+    "1 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "live vaccines",
+    "NSAIDs",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take live vaccines.",
+    "Do not stop everolimus suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

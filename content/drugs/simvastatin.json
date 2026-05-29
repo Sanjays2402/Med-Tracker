@@ -1,0 +1,37 @@
+{
+  "id": "simvastatin",
+  "generic": "simvastatin",
+  "brand": "Zocor",
+  "class": "Statin",
+  "rxnormSample": 106475,
+  "indications": [
+    "hyperlipidemia"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg",
+    "20 mg",
+    "40 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "grapefruit",
+    "clarithromycin",
+    "cyclosporine",
+    "gemfibrozil"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take grapefruit.",
+    "Do not stop simvastatin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

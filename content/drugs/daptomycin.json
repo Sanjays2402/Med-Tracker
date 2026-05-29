@@ -1,0 +1,33 @@
+{
+  "id": "daptomycin",
+  "generic": "daptomycin",
+  "brand": "Cubicin",
+  "class": "Antibiotic",
+  "rxnormSample": 102590,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "350 mg",
+    "500 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "warfarin",
+    "probenecid"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop daptomycin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

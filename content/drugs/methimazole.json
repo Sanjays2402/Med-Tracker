@@ -1,0 +1,35 @@
+{
+  "id": "methimazole",
+  "generic": "methimazole",
+  "brand": "Tapazole",
+  "class": "Endocrine",
+  "rxnormSample": 109435,
+  "indications": [
+    "thyroid disorders"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "calcium",
+    "iron",
+    "antacids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop methimazole suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

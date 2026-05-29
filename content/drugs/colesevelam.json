@@ -1,0 +1,33 @@
+{
+  "id": "colesevelam",
+  "generic": "colesevelam",
+  "brand": "Welchol",
+  "class": "Lipid lowering",
+  "rxnormSample": 106919,
+  "indications": [
+    "hyperlipidemia"
+  ],
+  "dosages": [
+    "625 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "statins",
+    "cyclosporine"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop colesevelam suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

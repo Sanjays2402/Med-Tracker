@@ -1,0 +1,38 @@
+{
+  "id": "edoxaban",
+  "generic": "edoxaban",
+  "brand": "Savaysa",
+  "class": "Anticoagulant",
+  "rxnormSample": 107215,
+  "indications": [
+    "atrial fibrillation",
+    "DVT",
+    "PE"
+  ],
+  "dosages": [
+    "15 mg",
+    "30 mg",
+    "60 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "NSAIDs",
+    "aspirin",
+    "antibiotics",
+    "amiodarone"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take NSAIDs.",
+    "Do not stop edoxaban suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

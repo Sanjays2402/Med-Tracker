@@ -1,0 +1,36 @@
+{
+  "id": "levalbuterol",
+  "generic": "levalbuterol",
+  "brand": "Xopenex",
+  "class": "Respiratory",
+  "rxnormSample": 109990,
+  "indications": [
+    "asthma",
+    "COPD"
+  ],
+  "dosages": [
+    "45 mcg/actuation",
+    "0.63 mg/3 mL",
+    "1.25 mg/3 mL"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors",
+    "ketoconazole"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop levalbuterol suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

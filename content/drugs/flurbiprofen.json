@@ -1,0 +1,37 @@
+{
+  "id": "flurbiprofen",
+  "generic": "flurbiprofen",
+  "brand": "Ansaid",
+  "class": "NSAID",
+  "rxnormSample": 100555,
+  "indications": [
+    "pain",
+    "fever",
+    "inflammation"
+  ],
+  "dosages": [
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "lithium",
+    "methotrexate",
+    "lisinopril"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop flurbiprofen suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

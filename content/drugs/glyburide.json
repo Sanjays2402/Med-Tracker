@@ -1,0 +1,35 @@
+{
+  "id": "glyburide",
+  "generic": "glyburide",
+  "brand": "Diabeta",
+  "class": "Antidiabetic",
+  "rxnormSample": 108066,
+  "indications": [
+    "type 2 diabetes mellitus"
+  ],
+  "dosages": [
+    "1.25 mg",
+    "2.5 mg",
+    "5 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "beta blockers",
+    "diuretics",
+    "steroids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop glyburide suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

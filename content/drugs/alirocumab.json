@@ -1,0 +1,34 @@
+{
+  "id": "alirocumab",
+  "generic": "alirocumab",
+  "brand": "Praluent",
+  "class": "Lipid lowering",
+  "rxnormSample": 106993,
+  "indications": [
+    "hyperlipidemia"
+  ],
+  "dosages": [
+    "75 mg",
+    "150 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "statins",
+    "cyclosporine"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop alirocumab suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

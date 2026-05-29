@@ -1,0 +1,35 @@
+{
+  "id": "rasagiline",
+  "generic": "rasagiline",
+  "brand": "Azilect",
+  "class": "Neurology",
+  "rxnormSample": 115355,
+  "indications": [
+    "Parkinson disease",
+    "movement disorders"
+  ],
+  "dosages": [
+    "0.5 mg",
+    "1 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "antipsychotics",
+    "levodopa"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop rasagiline suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

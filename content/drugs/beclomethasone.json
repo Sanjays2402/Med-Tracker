@@ -1,0 +1,35 @@
+{
+  "id": "beclomethasone",
+  "generic": "beclomethasone",
+  "brand": "Qvar",
+  "class": "Respiratory",
+  "rxnormSample": 110471,
+  "indications": [
+    "asthma",
+    "COPD"
+  ],
+  "dosages": [
+    "40 mcg",
+    "80 mcg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors",
+    "ketoconazole"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop beclomethasone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

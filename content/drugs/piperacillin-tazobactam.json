@@ -1,0 +1,35 @@
+{
+  "id": "piperacillin-tazobactam",
+  "generic": "piperacillin-tazobactam",
+  "brand": "Zosyn",
+  "class": "Penicillin antibiotic",
+  "rxnormSample": 101443,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "2.25 g",
+    "3.375 g",
+    "4.5 g"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "probenecid",
+    "methotrexate",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop piperacillin-tazobactam suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,36 @@
+{
+  "id": "senna",
+  "generic": "senna",
+  "brand": "Senokot",
+  "class": "GI motility",
+  "rxnormSample": 112210,
+  "indications": [
+    "constipation",
+    "diarrhea"
+  ],
+  "dosages": [
+    "8.6 mg",
+    "17.2 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "digoxin",
+    "salicylates",
+    "antacids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop senna suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

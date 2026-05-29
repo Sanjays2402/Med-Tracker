@@ -1,0 +1,3416 @@
+[
+  {
+    "id": "abaloparatide",
+    "generic": "abaloparatide",
+    "brand": "Tymlos",
+    "class": "Bone health"
+  },
+  {
+    "id": "acamprosate",
+    "generic": "acamprosate",
+    "brand": "Campral",
+    "class": "Addiction treatment"
+  },
+  {
+    "id": "acarbose",
+    "generic": "acarbose",
+    "brand": "Precose",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "acebutolol",
+    "generic": "acebutolol",
+    "brand": "Sectral",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "acetaminophen",
+    "generic": "acetaminophen",
+    "brand": "Tylenol",
+    "class": "NSAID"
+  },
+  {
+    "id": "acetazolamide",
+    "generic": "acetazolamide",
+    "brand": "Diamox",
+    "class": "Diuretic"
+  },
+  {
+    "id": "aclidinium",
+    "generic": "aclidinium",
+    "brand": "Tudorza",
+    "class": "Respiratory"
+  },
+  {
+    "id": "acyclovir",
+    "generic": "acyclovir",
+    "brand": "Zovirax",
+    "class": "Antiviral"
+  },
+  {
+    "id": "adalimumab",
+    "generic": "adalimumab",
+    "brand": "Humira",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "adapalene",
+    "generic": "adapalene",
+    "brand": "Differin",
+    "class": "Dermatology"
+  },
+  {
+    "id": "aducanumab",
+    "generic": "aducanumab",
+    "brand": "Aduhelm",
+    "class": "Dementia"
+  },
+  {
+    "id": "albuterol",
+    "generic": "albuterol",
+    "brand": "ProAir",
+    "class": "Respiratory"
+  },
+  {
+    "id": "alendronate",
+    "generic": "alendronate",
+    "brand": "Fosamax",
+    "class": "Bone health"
+  },
+  {
+    "id": "alfuzosin",
+    "generic": "alfuzosin",
+    "brand": "Uroxatral",
+    "class": "Urology"
+  },
+  {
+    "id": "alirocumab",
+    "generic": "alirocumab",
+    "brand": "Praluent",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "almotriptan",
+    "generic": "almotriptan",
+    "brand": "Axert",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "alogliptin",
+    "generic": "alogliptin",
+    "brand": "Nesina",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "alprazolam",
+    "generic": "alprazolam",
+    "brand": "Xanax",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "aluminum-hydroxide",
+    "generic": "aluminum hydroxide",
+    "brand": "Amphojel",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "amantadine",
+    "generic": "amantadine",
+    "brand": "Symmetrel",
+    "class": "Neurology"
+  },
+  {
+    "id": "amikacin",
+    "generic": "amikacin",
+    "brand": "Amikin",
+    "class": "Aminoglycoside antibiotic"
+  },
+  {
+    "id": "amiloride",
+    "generic": "amiloride",
+    "brand": "Midamor",
+    "class": "Diuretic"
+  },
+  {
+    "id": "amiodarone",
+    "generic": "amiodarone",
+    "brand": "Cordarone",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "amitriptyline",
+    "generic": "amitriptyline",
+    "brand": "Elavil",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "amlodipine",
+    "generic": "amlodipine",
+    "brand": "Norvasc",
+    "class": "Calcium channel blocker"
+  },
+  {
+    "id": "amoxicillin-clavulanate",
+    "generic": "amoxicillin-clavulanate",
+    "brand": "Augmentin",
+    "class": "Penicillin antibiotic"
+  },
+  {
+    "id": "amoxicillin",
+    "generic": "amoxicillin",
+    "brand": "Amoxil",
+    "class": "Penicillin antibiotic"
+  },
+  {
+    "id": "amphotericin-b",
+    "generic": "amphotericin b",
+    "brand": "Fungizone",
+    "class": "Antifungal"
+  },
+  {
+    "id": "ampicillin",
+    "generic": "ampicillin",
+    "brand": "Principen",
+    "class": "Penicillin antibiotic"
+  },
+  {
+    "id": "anastrozole",
+    "generic": "anastrozole",
+    "brand": "Arimidex",
+    "class": "Oncology"
+  },
+  {
+    "id": "anidulafungin",
+    "generic": "anidulafungin",
+    "brand": "Eraxis",
+    "class": "Antifungal"
+  },
+  {
+    "id": "apixaban",
+    "generic": "apixaban",
+    "brand": "Eliquis",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "aprepitant",
+    "generic": "aprepitant",
+    "brand": "Emend",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "arformoterol",
+    "generic": "arformoterol",
+    "brand": "Brovana",
+    "class": "Respiratory"
+  },
+  {
+    "id": "argatroban",
+    "generic": "argatroban",
+    "brand": "Acova",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "aripiprazole",
+    "generic": "aripiprazole",
+    "brand": "Abilify",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "asenapine",
+    "generic": "asenapine",
+    "brand": "Saphris",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "aspirin",
+    "generic": "aspirin",
+    "brand": "Bayer",
+    "class": "NSAID"
+  },
+  {
+    "id": "atazanavir",
+    "generic": "atazanavir",
+    "brand": "Reyataz",
+    "class": "Antiviral"
+  },
+  {
+    "id": "atenolol",
+    "generic": "atenolol",
+    "brand": "Tenormin",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "atorvastatin",
+    "generic": "atorvastatin",
+    "brand": "Lipitor",
+    "class": "Statin"
+  },
+  {
+    "id": "avanafil",
+    "generic": "avanafil",
+    "brand": "Stendra",
+    "class": "Phosphodiesterase 5 inhibitor"
+  },
+  {
+    "id": "azathioprine",
+    "generic": "azathioprine",
+    "brand": "Imuran",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "azilsartan",
+    "generic": "azilsartan",
+    "brand": "Edarbi",
+    "class": "ARB"
+  },
+  {
+    "id": "azithromycin",
+    "generic": "azithromycin",
+    "brand": "Zithromax",
+    "class": "Macrolide antibiotic"
+  },
+  {
+    "id": "aztreonam",
+    "generic": "aztreonam",
+    "brand": "Azactam",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "baclofen",
+    "generic": "baclofen",
+    "brand": "Lioresal",
+    "class": "Muscle relaxant"
+  },
+  {
+    "id": "baloxavir",
+    "generic": "baloxavir",
+    "brand": "Xofluza",
+    "class": "Antiviral"
+  },
+  {
+    "id": "beclomethasone",
+    "generic": "beclomethasone",
+    "brand": "Qvar",
+    "class": "Respiratory"
+  },
+  {
+    "id": "benazepril",
+    "generic": "benazepril",
+    "brand": "Lotensin",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "benzoyl-peroxide",
+    "generic": "benzoyl peroxide",
+    "brand": "Persa-Gel",
+    "class": "Dermatology"
+  },
+  {
+    "id": "benztropine",
+    "generic": "benztropine",
+    "brand": "Cogentin",
+    "class": "Neurology"
+  },
+  {
+    "id": "betamethasone-topical",
+    "generic": "betamethasone topical",
+    "brand": "Diprolene",
+    "class": "Dermatology"
+  },
+  {
+    "id": "betamethasone",
+    "generic": "betamethasone",
+    "brand": "Celestone",
+    "class": "Corticosteroid"
+  },
+  {
+    "id": "betaxolol",
+    "generic": "betaxolol",
+    "brand": "Kerlone",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "bevacizumab",
+    "generic": "bevacizumab",
+    "brand": "Avastin",
+    "class": "Oncology"
+  },
+  {
+    "id": "bictegravir-emtricitabine-tenofovir",
+    "generic": "bictegravir-emtricitabine-tenofovir",
+    "brand": "Biktarvy",
+    "class": "Antiviral"
+  },
+  {
+    "id": "bimatoprost",
+    "generic": "bimatoprost",
+    "brand": "Lumigan",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "biotin",
+    "generic": "biotin",
+    "brand": "B7",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "bisacodyl",
+    "generic": "bisacodyl",
+    "brand": "Dulcolax",
+    "class": "GI motility"
+  },
+  {
+    "id": "bismuth-subsalicylate",
+    "generic": "bismuth subsalicylate",
+    "brand": "Pepto-Bismol",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "bisoprolol",
+    "generic": "bisoprolol",
+    "brand": "Zebeta",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "bosutinib",
+    "generic": "bosutinib",
+    "brand": "Bosulif",
+    "class": "Oncology"
+  },
+  {
+    "id": "brimonidine",
+    "generic": "brimonidine",
+    "brand": "Alphagan",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "brinzolamide",
+    "generic": "brinzolamide",
+    "brand": "Azopt",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "bromocriptine",
+    "generic": "bromocriptine",
+    "brand": "Cycloset",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "budesonide",
+    "generic": "budesonide",
+    "brand": "Pulmicort",
+    "class": "Respiratory"
+  },
+  {
+    "id": "bumetanide",
+    "generic": "bumetanide",
+    "brand": "Bumex",
+    "class": "Diuretic"
+  },
+  {
+    "id": "buprenorphine",
+    "generic": "buprenorphine",
+    "brand": "Suboxone",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "bupropion",
+    "generic": "bupropion",
+    "brand": "Wellbutrin",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "buspirone",
+    "generic": "buspirone",
+    "brand": "Buspar",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "calcipotriene",
+    "generic": "calcipotriene",
+    "brand": "Dovonex",
+    "class": "Dermatology"
+  },
+  {
+    "id": "calcitonin",
+    "generic": "calcitonin",
+    "brand": "Miacalcin",
+    "class": "Endocrine"
+  },
+  {
+    "id": "calcium-carbonate",
+    "generic": "calcium carbonate",
+    "brand": "Tums",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "calcium-citrate",
+    "generic": "calcium citrate",
+    "brand": "Citracal",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "canagliflozin",
+    "generic": "canagliflozin",
+    "brand": "Invokana",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "candesartan",
+    "generic": "candesartan",
+    "brand": "Atacand",
+    "class": "ARB"
+  },
+  {
+    "id": "capecitabine",
+    "generic": "capecitabine",
+    "brand": "Xeloda",
+    "class": "Oncology"
+  },
+  {
+    "id": "captopril",
+    "generic": "captopril",
+    "brand": "Capoten",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "carbamazepine",
+    "generic": "carbamazepine",
+    "brand": "Tegretol",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "carisoprodol",
+    "generic": "carisoprodol",
+    "brand": "Soma",
+    "class": "Muscle relaxant"
+  },
+  {
+    "id": "carvedilol",
+    "generic": "carvedilol",
+    "brand": "Coreg",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "caspofungin",
+    "generic": "caspofungin",
+    "brand": "Cancidas",
+    "class": "Antifungal"
+  },
+  {
+    "id": "cefaclor",
+    "generic": "cefaclor",
+    "brand": "Ceclor",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "cefazolin",
+    "generic": "cefazolin",
+    "brand": "Ancef",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "cefdinir",
+    "generic": "cefdinir",
+    "brand": "Omnicef",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "cefepime",
+    "generic": "cefepime",
+    "brand": "Maxipime",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "cefixime",
+    "generic": "cefixime",
+    "brand": "Suprax",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "cefpodoxime",
+    "generic": "cefpodoxime",
+    "brand": "Vantin",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "ceftazidime",
+    "generic": "ceftazidime",
+    "brand": "Fortaz",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "ceftriaxone",
+    "generic": "ceftriaxone",
+    "brand": "Rocephin",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "cefuroxime",
+    "generic": "cefuroxime",
+    "brand": "Ceftin",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "celecoxib",
+    "generic": "celecoxib",
+    "brand": "Celebrex",
+    "class": "NSAID"
+  },
+  {
+    "id": "cephalexin",
+    "generic": "cephalexin",
+    "brand": "Keflex",
+    "class": "Cephalosporin"
+  },
+  {
+    "id": "certolizumab",
+    "generic": "certolizumab",
+    "brand": "Cimzia",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "cetirizine-ophthalmic",
+    "generic": "cetirizine ophthalmic",
+    "brand": "Zerviate",
+    "class": "Allergy"
+  },
+  {
+    "id": "cetirizine",
+    "generic": "cetirizine",
+    "brand": "Zyrtec",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "chlordiazepoxide",
+    "generic": "chlordiazepoxide",
+    "brand": "Librium",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "chlorothiazide",
+    "generic": "chlorothiazide",
+    "brand": "Diuril",
+    "class": "Diuretic"
+  },
+  {
+    "id": "chlorpheniramine",
+    "generic": "chlorpheniramine",
+    "brand": "Chlor-Trimeton",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "chlorpromazine",
+    "generic": "chlorpromazine",
+    "brand": "Thorazine",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "chlorthalidone",
+    "generic": "chlorthalidone",
+    "brand": "Thalitone",
+    "class": "Diuretic"
+  },
+  {
+    "id": "chlorzoxazone",
+    "generic": "chlorzoxazone",
+    "brand": "Parafon Forte",
+    "class": "Muscle relaxant"
+  },
+  {
+    "id": "cholestyramine",
+    "generic": "cholestyramine",
+    "brand": "Questran",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "ciclesonide",
+    "generic": "ciclesonide",
+    "brand": "Alvesco",
+    "class": "Respiratory"
+  },
+  {
+    "id": "cilostazol",
+    "generic": "cilostazol",
+    "brand": "Pletal",
+    "class": "Antiplatelet"
+  },
+  {
+    "id": "cimetidine",
+    "generic": "cimetidine",
+    "brand": "Tagamet",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "cinacalcet",
+    "generic": "cinacalcet",
+    "brand": "Sensipar",
+    "class": "Endocrine"
+  },
+  {
+    "id": "ciprofloxacin",
+    "generic": "ciprofloxacin",
+    "brand": "Cipro",
+    "class": "Fluoroquinolone"
+  },
+  {
+    "id": "citalopram",
+    "generic": "citalopram",
+    "brand": "Celexa",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "clarithromycin",
+    "generic": "clarithromycin",
+    "brand": "Biaxin",
+    "class": "Macrolide antibiotic"
+  },
+  {
+    "id": "clindamycin-topical",
+    "generic": "clindamycin topical",
+    "brand": "Cleocin T",
+    "class": "Dermatology"
+  },
+  {
+    "id": "clindamycin",
+    "generic": "clindamycin",
+    "brand": "Cleocin",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "clobetasol",
+    "generic": "clobetasol",
+    "brand": "Temovate",
+    "class": "Dermatology"
+  },
+  {
+    "id": "clomipramine",
+    "generic": "clomipramine",
+    "brand": "Anafranil",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "clonazepam",
+    "generic": "clonazepam",
+    "brand": "Klonopin",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "clopidogrel",
+    "generic": "clopidogrel",
+    "brand": "Plavix",
+    "class": "Antiplatelet"
+  },
+  {
+    "id": "clotrimazole",
+    "generic": "clotrimazole",
+    "brand": "Lotrimin",
+    "class": "Antifungal"
+  },
+  {
+    "id": "clozapine",
+    "generic": "clozapine",
+    "brand": "Clozaril",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "codeine",
+    "generic": "codeine",
+    "brand": "Codeine",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "coenzyme-q10",
+    "generic": "coenzyme q10",
+    "brand": "CoQ10",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "colesevelam-diabetes",
+    "generic": "colesevelam diabetes",
+    "brand": "Welchol DM",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "colesevelam",
+    "generic": "colesevelam",
+    "brand": "Welchol",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "colestipol",
+    "generic": "colestipol",
+    "brand": "Colestid",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "conjugated-estrogens",
+    "generic": "conjugated estrogens",
+    "brand": "Premarin",
+    "class": "Hormonal"
+  },
+  {
+    "id": "covid-19-vaccine",
+    "generic": "covid-19 vaccine",
+    "brand": "Comirnaty",
+    "class": "Vaccine"
+  },
+  {
+    "id": "cromolyn",
+    "generic": "cromolyn",
+    "brand": "Intal",
+    "class": "Allergy"
+  },
+  {
+    "id": "cyclobenzaprine",
+    "generic": "cyclobenzaprine",
+    "brand": "Flexeril",
+    "class": "Muscle relaxant"
+  },
+  {
+    "id": "cyclosporine-ophthalmic",
+    "generic": "cyclosporine ophthalmic",
+    "brand": "Restasis",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "cyclosporine",
+    "generic": "cyclosporine",
+    "brand": "Neoral",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "cyproheptadine",
+    "generic": "cyproheptadine",
+    "brand": "Periactin",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "dabigatran",
+    "generic": "dabigatran",
+    "brand": "Pradaxa",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "dalteparin",
+    "generic": "dalteparin",
+    "brand": "Fragmin",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "dapagliflozin",
+    "generic": "dapagliflozin",
+    "brand": "Farxiga",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "daptomycin",
+    "generic": "daptomycin",
+    "brand": "Cubicin",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "darunavir",
+    "generic": "darunavir",
+    "brand": "Prezista",
+    "class": "Antiviral"
+  },
+  {
+    "id": "dasatinib",
+    "generic": "dasatinib",
+    "brand": "Sprycel",
+    "class": "Oncology"
+  },
+  {
+    "id": "denosumab",
+    "generic": "denosumab",
+    "brand": "Prolia",
+    "class": "Bone health"
+  },
+  {
+    "id": "desiccated-thyroid",
+    "generic": "desiccated thyroid",
+    "brand": "Armour Thyroid",
+    "class": "Endocrine"
+  },
+  {
+    "id": "desloratadine",
+    "generic": "desloratadine",
+    "brand": "Clarinex",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "desvenlafaxine",
+    "generic": "desvenlafaxine",
+    "brand": "Pristiq",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "deutetrabenazine",
+    "generic": "deutetrabenazine",
+    "brand": "Austedo",
+    "class": "Neurology"
+  },
+  {
+    "id": "dexamethasone",
+    "generic": "dexamethasone",
+    "brand": "Decadron",
+    "class": "Corticosteroid"
+  },
+  {
+    "id": "dexlansoprazole",
+    "generic": "dexlansoprazole",
+    "brand": "Dexilant",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "diazepam",
+    "generic": "diazepam",
+    "brand": "Valium",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "diclofenac",
+    "generic": "diclofenac",
+    "brand": "Voltaren",
+    "class": "NSAID"
+  },
+  {
+    "id": "dicloxacillin",
+    "generic": "dicloxacillin",
+    "brand": "Dynapen",
+    "class": "Penicillin antibiotic"
+  },
+  {
+    "id": "digoxin",
+    "generic": "digoxin",
+    "brand": "Lanoxin",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "diltiazem",
+    "generic": "diltiazem",
+    "brand": "Cardizem",
+    "class": "Calcium channel blocker"
+  },
+  {
+    "id": "diphenhydramine",
+    "generic": "diphenhydramine",
+    "brand": "Benadryl",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "diphenoxylate-atropine",
+    "generic": "diphenoxylate-atropine",
+    "brand": "Lomotil",
+    "class": "GI motility"
+  },
+  {
+    "id": "dipyridamole",
+    "generic": "dipyridamole",
+    "brand": "Persantine",
+    "class": "Antiplatelet"
+  },
+  {
+    "id": "disopyramide",
+    "generic": "disopyramide",
+    "brand": "Norpace",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "disulfiram",
+    "generic": "disulfiram",
+    "brand": "Antabuse",
+    "class": "Addiction treatment"
+  },
+  {
+    "id": "divalproex",
+    "generic": "divalproex",
+    "brand": "Depakote",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "docusate",
+    "generic": "docusate",
+    "brand": "Colace",
+    "class": "GI motility"
+  },
+  {
+    "id": "dolutegravir",
+    "generic": "dolutegravir",
+    "brand": "Tivicay",
+    "class": "Antiviral"
+  },
+  {
+    "id": "donepezil",
+    "generic": "donepezil",
+    "brand": "Aricept",
+    "class": "Dementia"
+  },
+  {
+    "id": "dorzolamide",
+    "generic": "dorzolamide",
+    "brand": "Trusopt",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "doxazosin",
+    "generic": "doxazosin",
+    "brand": "Cardura",
+    "class": "Urology"
+  },
+  {
+    "id": "doxepin",
+    "generic": "doxepin",
+    "brand": "Sinequan",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "doxycycline",
+    "generic": "doxycycline",
+    "brand": "Vibramycin",
+    "class": "Tetracycline"
+  },
+  {
+    "id": "dronabinol",
+    "generic": "dronabinol",
+    "brand": "Marinol",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "dronedarone",
+    "generic": "dronedarone",
+    "brand": "Multaq",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "dulaglutide",
+    "generic": "dulaglutide",
+    "brand": "Trulicity",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "duloxetine",
+    "generic": "duloxetine",
+    "brand": "Cymbalta",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "dutasteride",
+    "generic": "dutasteride",
+    "brand": "Avodart",
+    "class": "Urology"
+  },
+  {
+    "id": "edaravone",
+    "generic": "edaravone",
+    "brand": "Radicava",
+    "class": "Neurology"
+  },
+  {
+    "id": "edoxaban",
+    "generic": "edoxaban",
+    "brand": "Savaysa",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "efavirenz",
+    "generic": "efavirenz",
+    "brand": "Sustiva",
+    "class": "Antiviral"
+  },
+  {
+    "id": "eletriptan",
+    "generic": "eletriptan",
+    "brand": "Relpax",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "empagliflozin",
+    "generic": "empagliflozin",
+    "brand": "Jardiance",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "emtricitabine",
+    "generic": "emtricitabine",
+    "brand": "Emtriva",
+    "class": "Antiviral"
+  },
+  {
+    "id": "enalapril",
+    "generic": "enalapril",
+    "brand": "Vasotec",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "enoxaparin",
+    "generic": "enoxaparin",
+    "brand": "Lovenox",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "entacapone",
+    "generic": "entacapone",
+    "brand": "Comtan",
+    "class": "Neurology"
+  },
+  {
+    "id": "epinephrine",
+    "generic": "epinephrine",
+    "brand": "EpiPen",
+    "class": "Allergy"
+  },
+  {
+    "id": "eplerenone",
+    "generic": "eplerenone",
+    "brand": "Inspra",
+    "class": "Diuretic"
+  },
+  {
+    "id": "eprosartan",
+    "generic": "eprosartan",
+    "brand": "Teveten",
+    "class": "ARB"
+  },
+  {
+    "id": "erenumab",
+    "generic": "erenumab",
+    "brand": "Aimovig",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "ertapenem",
+    "generic": "ertapenem",
+    "brand": "Invanz",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "ertugliflozin",
+    "generic": "ertugliflozin",
+    "brand": "Steglatro",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "erythromycin-topical",
+    "generic": "erythromycin topical",
+    "brand": "Erygel",
+    "class": "Dermatology"
+  },
+  {
+    "id": "erythromycin",
+    "generic": "erythromycin",
+    "brand": "EryTab",
+    "class": "Macrolide antibiotic"
+  },
+  {
+    "id": "escitalopram",
+    "generic": "escitalopram",
+    "brand": "Lexapro",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "esomeprazole",
+    "generic": "esomeprazole",
+    "brand": "Nexium",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "estradiol",
+    "generic": "estradiol",
+    "brand": "Estrace",
+    "class": "Hormonal"
+  },
+  {
+    "id": "eszopiclone",
+    "generic": "eszopiclone",
+    "brand": "Lunesta",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "etanercept",
+    "generic": "etanercept",
+    "brand": "Enbrel",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "etelcalcetide",
+    "generic": "etelcalcetide",
+    "brand": "Parsabiv",
+    "class": "Endocrine"
+  },
+  {
+    "id": "ethacrynic-acid",
+    "generic": "ethacrynic acid",
+    "brand": "Edecrin",
+    "class": "Diuretic"
+  },
+  {
+    "id": "ethambutol",
+    "generic": "ethambutol",
+    "brand": "Myambutol",
+    "class": "Antitubercular"
+  },
+  {
+    "id": "ethinyl-estradiol-drospirenone",
+    "generic": "ethinyl estradiol-drospirenone",
+    "brand": "Yaz",
+    "class": "Hormonal"
+  },
+  {
+    "id": "ethinyl-estradiol-levonorgestrel",
+    "generic": "ethinyl estradiol-levonorgestrel",
+    "brand": "Seasonique",
+    "class": "Hormonal"
+  },
+  {
+    "id": "ethinyl-estradiol-norethindrone",
+    "generic": "ethinyl estradiol-norethindrone",
+    "brand": "Loestrin",
+    "class": "Hormonal"
+  },
+  {
+    "id": "ethinyl-estradiol-norgestimate",
+    "generic": "ethinyl estradiol-norgestimate",
+    "brand": "Ortho Tri-Cyclen",
+    "class": "Hormonal"
+  },
+  {
+    "id": "etodolac",
+    "generic": "etodolac",
+    "brand": "Lodine",
+    "class": "NSAID"
+  },
+  {
+    "id": "everolimus",
+    "generic": "everolimus",
+    "brand": "Zortress",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "evolocumab",
+    "generic": "evolocumab",
+    "brand": "Repatha",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "exemestane",
+    "generic": "exemestane",
+    "brand": "Aromasin",
+    "class": "Oncology"
+  },
+  {
+    "id": "exenatide",
+    "generic": "exenatide",
+    "brand": "Byetta",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "ezetimibe",
+    "generic": "ezetimibe",
+    "brand": "Zetia",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "famciclovir",
+    "generic": "famciclovir",
+    "brand": "Famvir",
+    "class": "Antiviral"
+  },
+  {
+    "id": "famotidine",
+    "generic": "famotidine",
+    "brand": "Pepcid",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "felodipine",
+    "generic": "felodipine",
+    "brand": "Plendil",
+    "class": "Calcium channel blocker"
+  },
+  {
+    "id": "fenofibrate",
+    "generic": "fenofibrate",
+    "brand": "Tricor",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "fentanyl",
+    "generic": "fentanyl",
+    "brand": "Duragesic",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "ferrous-gluconate",
+    "generic": "ferrous gluconate",
+    "brand": "Fergon",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "fexofenadine",
+    "generic": "fexofenadine",
+    "brand": "Allegra",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "finasteride",
+    "generic": "finasteride",
+    "brand": "Proscar",
+    "class": "Urology"
+  },
+  {
+    "id": "flecainide",
+    "generic": "flecainide",
+    "brand": "Tambocor",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "fluconazole",
+    "generic": "fluconazole",
+    "brand": "Diflucan",
+    "class": "Antifungal"
+  },
+  {
+    "id": "fludrocortisone",
+    "generic": "fludrocortisone",
+    "brand": "Florinef",
+    "class": "Corticosteroid"
+  },
+  {
+    "id": "fluoxetine",
+    "generic": "fluoxetine",
+    "brand": "Prozac",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "fluphenazine",
+    "generic": "fluphenazine",
+    "brand": "Prolixin",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "flurbiprofen",
+    "generic": "flurbiprofen",
+    "brand": "Ansaid",
+    "class": "NSAID"
+  },
+  {
+    "id": "fluticasone",
+    "generic": "fluticasone",
+    "brand": "Flovent",
+    "class": "Respiratory"
+  },
+  {
+    "id": "fluvastatin",
+    "generic": "fluvastatin",
+    "brand": "Lescol",
+    "class": "Statin"
+  },
+  {
+    "id": "fluvoxamine",
+    "generic": "fluvoxamine",
+    "brand": "Luvox",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "folic-acid",
+    "generic": "folic acid",
+    "brand": "Folate",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "fondaparinux",
+    "generic": "fondaparinux",
+    "brand": "Arixtra",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "formoterol",
+    "generic": "formoterol",
+    "brand": "Foradil",
+    "class": "Respiratory"
+  },
+  {
+    "id": "fosaprepitant",
+    "generic": "fosaprepitant",
+    "brand": "Emend IV",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "fosinopril",
+    "generic": "fosinopril",
+    "brand": "Monopril",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "fosphenytoin",
+    "generic": "fosphenytoin",
+    "brand": "Cerebyx",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "frovatriptan",
+    "generic": "frovatriptan",
+    "brand": "Frova",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "fulvestrant",
+    "generic": "fulvestrant",
+    "brand": "Faslodex",
+    "class": "Oncology"
+  },
+  {
+    "id": "furosemide",
+    "generic": "furosemide",
+    "brand": "Lasix",
+    "class": "Diuretic"
+  },
+  {
+    "id": "gabapentin",
+    "generic": "gabapentin",
+    "brand": "Neurontin",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "galantamine",
+    "generic": "galantamine",
+    "brand": "Razadyne",
+    "class": "Dementia"
+  },
+  {
+    "id": "ganciclovir",
+    "generic": "ganciclovir",
+    "brand": "Cytovene",
+    "class": "Antiviral"
+  },
+  {
+    "id": "gemfibrozil",
+    "generic": "gemfibrozil",
+    "brand": "Lopid",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "gemifloxacin",
+    "generic": "gemifloxacin",
+    "brand": "Factive",
+    "class": "Fluoroquinolone"
+  },
+  {
+    "id": "gentamicin",
+    "generic": "gentamicin",
+    "brand": "Garamycin",
+    "class": "Aminoglycoside antibiotic"
+  },
+  {
+    "id": "glimepiride",
+    "generic": "glimepiride",
+    "brand": "Amaryl",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "glipizide",
+    "generic": "glipizide",
+    "brand": "Glucotrol",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "glyburide",
+    "generic": "glyburide",
+    "brand": "Diabeta",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "golimumab",
+    "generic": "golimumab",
+    "brand": "Simponi",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "granisetron",
+    "generic": "granisetron",
+    "brand": "Kytril",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "griseofulvin",
+    "generic": "griseofulvin",
+    "brand": "Gris-PEG",
+    "class": "Antifungal"
+  },
+  {
+    "id": "haloperidol",
+    "generic": "haloperidol",
+    "brand": "Haldol",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "heparin",
+    "generic": "heparin",
+    "brand": "Heparin",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "hepatitis-a-vaccine",
+    "generic": "hepatitis a vaccine",
+    "brand": "Havrix",
+    "class": "Vaccine"
+  },
+  {
+    "id": "hepatitis-b-vaccine",
+    "generic": "hepatitis b vaccine",
+    "brand": "Engerix-B",
+    "class": "Vaccine"
+  },
+  {
+    "id": "hpv-vaccine",
+    "generic": "hpv vaccine",
+    "brand": "Gardasil 9",
+    "class": "Vaccine"
+  },
+  {
+    "id": "hydrochlorothiazide",
+    "generic": "hydrochlorothiazide",
+    "brand": "Microzide",
+    "class": "Diuretic"
+  },
+  {
+    "id": "hydrocodone",
+    "generic": "hydrocodone",
+    "brand": "Norco",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "hydrocortisone-topical",
+    "generic": "hydrocortisone topical",
+    "brand": "Cortizone",
+    "class": "Dermatology"
+  },
+  {
+    "id": "hydrocortisone",
+    "generic": "hydrocortisone",
+    "brand": "Cortef",
+    "class": "Corticosteroid"
+  },
+  {
+    "id": "hydromorphone",
+    "generic": "hydromorphone",
+    "brand": "Dilaudid",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "hydroxychloroquine",
+    "generic": "hydroxychloroquine",
+    "brand": "Plaquenil",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "hydroxyurea",
+    "generic": "hydroxyurea",
+    "brand": "Hydrea",
+    "class": "Oncology"
+  },
+  {
+    "id": "hydroxyzine",
+    "generic": "hydroxyzine",
+    "brand": "Vistaril",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "ibandronate",
+    "generic": "ibandronate",
+    "brand": "Boniva",
+    "class": "Bone health"
+  },
+  {
+    "id": "ibrutinib",
+    "generic": "ibrutinib",
+    "brand": "Imbruvica",
+    "class": "Oncology"
+  },
+  {
+    "id": "ibuprofen",
+    "generic": "ibuprofen",
+    "brand": "Advil",
+    "class": "NSAID"
+  },
+  {
+    "id": "icosapent-ethyl",
+    "generic": "icosapent ethyl",
+    "brand": "Vascepa",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "iloperidone",
+    "generic": "iloperidone",
+    "brand": "Fanapt",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "imatinib",
+    "generic": "imatinib",
+    "brand": "Gleevec",
+    "class": "Oncology"
+  },
+  {
+    "id": "imipenem-cilastatin",
+    "generic": "imipenem-cilastatin",
+    "brand": "Primaxin",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "imipramine",
+    "generic": "imipramine",
+    "brand": "Tofranil",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "indacaterol",
+    "generic": "indacaterol",
+    "brand": "Arcapta",
+    "class": "Respiratory"
+  },
+  {
+    "id": "indapamide",
+    "generic": "indapamide",
+    "brand": "Lozol",
+    "class": "Diuretic"
+  },
+  {
+    "id": "indomethacin",
+    "generic": "indomethacin",
+    "brand": "Indocin",
+    "class": "NSAID"
+  },
+  {
+    "id": "infliximab",
+    "generic": "infliximab",
+    "brand": "Remicade",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "influenza-vaccine",
+    "generic": "influenza vaccine",
+    "brand": "Fluzone",
+    "class": "Vaccine"
+  },
+  {
+    "id": "insulin-aspart",
+    "generic": "insulin aspart",
+    "brand": "Novolog",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "insulin-degludec",
+    "generic": "insulin degludec",
+    "brand": "Tresiba",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "insulin-detemir",
+    "generic": "insulin detemir",
+    "brand": "Levemir",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "insulin-glargine",
+    "generic": "insulin glargine",
+    "brand": "Lantus",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "insulin-glulisine",
+    "generic": "insulin glulisine",
+    "brand": "Apidra",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "insulin-lispro",
+    "generic": "insulin lispro",
+    "brand": "Humalog",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "ipratropium",
+    "generic": "ipratropium",
+    "brand": "Atrovent",
+    "class": "Respiratory"
+  },
+  {
+    "id": "irbesartan",
+    "generic": "irbesartan",
+    "brand": "Avapro",
+    "class": "ARB"
+  },
+  {
+    "id": "iron-sulfate",
+    "generic": "iron sulfate",
+    "brand": "Feosol",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "isocarboxazid",
+    "generic": "isocarboxazid",
+    "brand": "Marplan",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "isoniazid",
+    "generic": "isoniazid",
+    "brand": "Nydrazid",
+    "class": "Antitubercular"
+  },
+  {
+    "id": "isotretinoin",
+    "generic": "isotretinoin",
+    "brand": "Accutane",
+    "class": "Dermatology"
+  },
+  {
+    "id": "isradipine",
+    "generic": "isradipine",
+    "brand": "DynaCirc",
+    "class": "Calcium channel blocker"
+  },
+  {
+    "id": "itraconazole",
+    "generic": "itraconazole",
+    "brand": "Sporanox",
+    "class": "Antifungal"
+  },
+  {
+    "id": "ivabradine",
+    "generic": "ivabradine",
+    "brand": "Corlanor",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "ketoconazole",
+    "generic": "ketoconazole",
+    "brand": "Nizoral",
+    "class": "Antifungal"
+  },
+  {
+    "id": "ketoprofen",
+    "generic": "ketoprofen",
+    "brand": "Orudis",
+    "class": "NSAID"
+  },
+  {
+    "id": "ketorolac",
+    "generic": "ketorolac",
+    "brand": "Toradol",
+    "class": "NSAID"
+  },
+  {
+    "id": "labetalol",
+    "generic": "labetalol",
+    "brand": "Trandate",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "lacosamide",
+    "generic": "lacosamide",
+    "brand": "Vimpat",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "lactulose",
+    "generic": "lactulose",
+    "brand": "Constulose",
+    "class": "GI motility"
+  },
+  {
+    "id": "lamotrigine",
+    "generic": "lamotrigine",
+    "brand": "Lamictal",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "lansoprazole",
+    "generic": "lansoprazole",
+    "brand": "Prevacid",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "latanoprost",
+    "generic": "latanoprost",
+    "brand": "Xalatan",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "leflunomide",
+    "generic": "leflunomide",
+    "brand": "Arava",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "letrozole",
+    "generic": "letrozole",
+    "brand": "Femara",
+    "class": "Oncology"
+  },
+  {
+    "id": "levalbuterol",
+    "generic": "levalbuterol",
+    "brand": "Xopenex",
+    "class": "Respiratory"
+  },
+  {
+    "id": "levetiracetam",
+    "generic": "levetiracetam",
+    "brand": "Keppra",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "levocetirizine",
+    "generic": "levocetirizine",
+    "brand": "Xyzal",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "levodopa-carbidopa",
+    "generic": "levodopa-carbidopa",
+    "brand": "Sinemet",
+    "class": "Neurology"
+  },
+  {
+    "id": "levofloxacin",
+    "generic": "levofloxacin",
+    "brand": "Levaquin",
+    "class": "Fluoroquinolone"
+  },
+  {
+    "id": "levomilnacipran",
+    "generic": "levomilnacipran",
+    "brand": "Fetzima",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "levonorgestrel",
+    "generic": "levonorgestrel",
+    "brand": "Plan B",
+    "class": "Hormonal"
+  },
+  {
+    "id": "levothyroxine",
+    "generic": "levothyroxine",
+    "brand": "Synthroid",
+    "class": "Endocrine"
+  },
+  {
+    "id": "linaclotide",
+    "generic": "linaclotide",
+    "brand": "Linzess",
+    "class": "GI motility"
+  },
+  {
+    "id": "linagliptin",
+    "generic": "linagliptin",
+    "brand": "Tradjenta",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "lincomycin",
+    "generic": "lincomycin",
+    "brand": "Lincocin",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "linezolid",
+    "generic": "linezolid",
+    "brand": "Zyvox",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "liothyronine",
+    "generic": "liothyronine",
+    "brand": "Cytomel",
+    "class": "Endocrine"
+  },
+  {
+    "id": "liotrix",
+    "generic": "liotrix",
+    "brand": "Thyrolar",
+    "class": "Endocrine"
+  },
+  {
+    "id": "liraglutide",
+    "generic": "liraglutide",
+    "brand": "Victoza",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "lisinopril",
+    "generic": "lisinopril",
+    "brand": "Prinivil",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "lithium",
+    "generic": "lithium",
+    "brand": "Lithobid",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "lixisenatide",
+    "generic": "lixisenatide",
+    "brand": "Adlyxin",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "loperamide",
+    "generic": "loperamide",
+    "brand": "Imodium",
+    "class": "GI motility"
+  },
+  {
+    "id": "loratadine",
+    "generic": "loratadine",
+    "brand": "Claritin",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "lorazepam",
+    "generic": "lorazepam",
+    "brand": "Ativan",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "losartan",
+    "generic": "losartan",
+    "brand": "Cozaar",
+    "class": "ARB"
+  },
+  {
+    "id": "lovastatin",
+    "generic": "lovastatin",
+    "brand": "Mevacor",
+    "class": "Statin"
+  },
+  {
+    "id": "loxapine",
+    "generic": "loxapine",
+    "brand": "Loxitane",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "lubiprostone",
+    "generic": "lubiprostone",
+    "brand": "Amitiza",
+    "class": "GI motility"
+  },
+  {
+    "id": "lurasidone",
+    "generic": "lurasidone",
+    "brand": "Latuda",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "magnesium-oxide",
+    "generic": "magnesium oxide",
+    "brand": "Mag-Ox",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "mannitol",
+    "generic": "mannitol",
+    "brand": "Osmitrol",
+    "class": "Diuretic"
+  },
+  {
+    "id": "meclizine",
+    "generic": "meclizine",
+    "brand": "Antivert",
+    "class": "Antihistamine"
+  },
+  {
+    "id": "medroxyprogesterone",
+    "generic": "medroxyprogesterone",
+    "brand": "Provera",
+    "class": "Hormonal"
+  },
+  {
+    "id": "mefenamic-acid",
+    "generic": "mefenamic acid",
+    "brand": "Ponstel",
+    "class": "NSAID"
+  },
+  {
+    "id": "meloxicam",
+    "generic": "meloxicam",
+    "brand": "Mobic",
+    "class": "NSAID"
+  },
+  {
+    "id": "memantine",
+    "generic": "memantine",
+    "brand": "Namenda",
+    "class": "Dementia"
+  },
+  {
+    "id": "meperidine",
+    "generic": "meperidine",
+    "brand": "Demerol",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "mercaptopurine",
+    "generic": "mercaptopurine",
+    "brand": "Purinethol",
+    "class": "Oncology"
+  },
+  {
+    "id": "meropenem",
+    "generic": "meropenem",
+    "brand": "Merrem",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "metaxalone",
+    "generic": "metaxalone",
+    "brand": "Skelaxin",
+    "class": "Muscle relaxant"
+  },
+  {
+    "id": "metformin",
+    "generic": "metformin",
+    "brand": "Glucophage",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "methadone",
+    "generic": "methadone",
+    "brand": "Methadose",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "methimazole",
+    "generic": "methimazole",
+    "brand": "Tapazole",
+    "class": "Endocrine"
+  },
+  {
+    "id": "methocarbamol",
+    "generic": "methocarbamol",
+    "brand": "Robaxin",
+    "class": "Muscle relaxant"
+  },
+  {
+    "id": "methotrexate",
+    "generic": "methotrexate",
+    "brand": "Trexall",
+    "class": "Oncology"
+  },
+  {
+    "id": "methylprednisolone",
+    "generic": "methylprednisolone",
+    "brand": "Medrol",
+    "class": "Corticosteroid"
+  },
+  {
+    "id": "metoclopramide",
+    "generic": "metoclopramide",
+    "brand": "Reglan",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "metolazone",
+    "generic": "metolazone",
+    "brand": "Zaroxolyn",
+    "class": "Diuretic"
+  },
+  {
+    "id": "metoprolol-succinate",
+    "generic": "metoprolol succinate",
+    "brand": "Toprol XL",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "metoprolol-tartrate",
+    "generic": "metoprolol tartrate",
+    "brand": "Lopressor",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "metronidazole",
+    "generic": "metronidazole",
+    "brand": "Flagyl",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "mexiletine",
+    "generic": "mexiletine",
+    "brand": "Mexitil",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "micafungin",
+    "generic": "micafungin",
+    "brand": "Mycamine",
+    "class": "Antifungal"
+  },
+  {
+    "id": "miconazole",
+    "generic": "miconazole",
+    "brand": "Monistat",
+    "class": "Antifungal"
+  },
+  {
+    "id": "midazolam",
+    "generic": "midazolam",
+    "brand": "Versed",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "miglitol",
+    "generic": "miglitol",
+    "brand": "Glyset",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "minocycline",
+    "generic": "minocycline",
+    "brand": "Minocin",
+    "class": "Tetracycline"
+  },
+  {
+    "id": "mirabegron",
+    "generic": "mirabegron",
+    "brand": "Myrbetriq",
+    "class": "Urology"
+  },
+  {
+    "id": "mirtazapine",
+    "generic": "mirtazapine",
+    "brand": "Remeron",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "misoprostol",
+    "generic": "misoprostol",
+    "brand": "Cytotec",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "mmr-vaccine",
+    "generic": "mmr vaccine",
+    "brand": "M-M-R II",
+    "class": "Vaccine"
+  },
+  {
+    "id": "moexipril",
+    "generic": "moexipril",
+    "brand": "Univasc",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "molindone",
+    "generic": "molindone",
+    "brand": "Moban",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "molnupiravir",
+    "generic": "molnupiravir",
+    "brand": "Lagevrio",
+    "class": "Antiviral"
+  },
+  {
+    "id": "mometasone",
+    "generic": "mometasone",
+    "brand": "Asmanex",
+    "class": "Respiratory"
+  },
+  {
+    "id": "montelukast",
+    "generic": "montelukast",
+    "brand": "Singulair",
+    "class": "Respiratory"
+  },
+  {
+    "id": "morphine",
+    "generic": "morphine",
+    "brand": "MS Contin",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "moxifloxacin",
+    "generic": "moxifloxacin",
+    "brand": "Avelox",
+    "class": "Fluoroquinolone"
+  },
+  {
+    "id": "mupirocin",
+    "generic": "mupirocin",
+    "brand": "Bactroban",
+    "class": "Dermatology"
+  },
+  {
+    "id": "mycophenolate-mofetil",
+    "generic": "mycophenolate mofetil",
+    "brand": "CellCept",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "nabumetone",
+    "generic": "nabumetone",
+    "brand": "Relafen",
+    "class": "NSAID"
+  },
+  {
+    "id": "nadolol",
+    "generic": "nadolol",
+    "brand": "Corgard",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "naloxone",
+    "generic": "naloxone",
+    "brand": "Narcan",
+    "class": "Addiction treatment"
+  },
+  {
+    "id": "naltrexone",
+    "generic": "naltrexone",
+    "brand": "ReVia",
+    "class": "Addiction treatment"
+  },
+  {
+    "id": "naproxen",
+    "generic": "naproxen",
+    "brand": "Aleve",
+    "class": "NSAID"
+  },
+  {
+    "id": "naratriptan",
+    "generic": "naratriptan",
+    "brand": "Amerge",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "nateglinide",
+    "generic": "nateglinide",
+    "brand": "Starlix",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "nebivolol",
+    "generic": "nebivolol",
+    "brand": "Bystolic",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "nedocromil",
+    "generic": "nedocromil",
+    "brand": "Tilade",
+    "class": "Allergy"
+  },
+  {
+    "id": "nefazodone",
+    "generic": "nefazodone",
+    "brand": "Serzone",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "neomycin",
+    "generic": "neomycin",
+    "brand": "Mycifradin",
+    "class": "Aminoglycoside antibiotic"
+  },
+  {
+    "id": "netarsudil",
+    "generic": "netarsudil",
+    "brand": "Rhopressa",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "niacin",
+    "generic": "niacin",
+    "brand": "Niaspan",
+    "class": "Lipid lowering"
+  },
+  {
+    "id": "niacinamide",
+    "generic": "niacinamide",
+    "brand": "B3",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "nicardipine",
+    "generic": "nicardipine",
+    "brand": "Cardene",
+    "class": "Calcium channel blocker"
+  },
+  {
+    "id": "nifedipine",
+    "generic": "nifedipine",
+    "brand": "Procardia",
+    "class": "Calcium channel blocker"
+  },
+  {
+    "id": "nilotinib",
+    "generic": "nilotinib",
+    "brand": "Tasigna",
+    "class": "Oncology"
+  },
+  {
+    "id": "nimodipine",
+    "generic": "nimodipine",
+    "brand": "Nimotop",
+    "class": "Calcium channel blocker"
+  },
+  {
+    "id": "nirmatrelvir-ritonavir",
+    "generic": "nirmatrelvir-ritonavir",
+    "brand": "Paxlovid",
+    "class": "Antiviral"
+  },
+  {
+    "id": "nisoldipine",
+    "generic": "nisoldipine",
+    "brand": "Sular",
+    "class": "Calcium channel blocker"
+  },
+  {
+    "id": "nitrofurantoin",
+    "generic": "nitrofurantoin",
+    "brand": "Macrobid",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "nivolumab",
+    "generic": "nivolumab",
+    "brand": "Opdivo",
+    "class": "Oncology"
+  },
+  {
+    "id": "nizatidine",
+    "generic": "nizatidine",
+    "brand": "Axid",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "norethindrone",
+    "generic": "norethindrone",
+    "brand": "Micronor",
+    "class": "Hormonal"
+  },
+  {
+    "id": "nortriptyline",
+    "generic": "nortriptyline",
+    "brand": "Pamelor",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "nph-insulin",
+    "generic": "nph insulin",
+    "brand": "Humulin N",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "nystatin",
+    "generic": "nystatin",
+    "brand": "Mycostatin",
+    "class": "Antifungal"
+  },
+  {
+    "id": "ofloxacin",
+    "generic": "ofloxacin",
+    "brand": "Floxin",
+    "class": "Fluoroquinolone"
+  },
+  {
+    "id": "olanzapine",
+    "generic": "olanzapine",
+    "brand": "Zyprexa",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "olmesartan",
+    "generic": "olmesartan",
+    "brand": "Benicar",
+    "class": "ARB"
+  },
+  {
+    "id": "olodaterol",
+    "generic": "olodaterol",
+    "brand": "Striverdi",
+    "class": "Respiratory"
+  },
+  {
+    "id": "olopatadine",
+    "generic": "olopatadine",
+    "brand": "Patanol",
+    "class": "Allergy"
+  },
+  {
+    "id": "omalizumab",
+    "generic": "omalizumab",
+    "brand": "Xolair",
+    "class": "Respiratory"
+  },
+  {
+    "id": "omeprazole",
+    "generic": "omeprazole",
+    "brand": "Prilosec",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "ondansetron",
+    "generic": "ondansetron",
+    "brand": "Zofran",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "orphenadrine",
+    "generic": "orphenadrine",
+    "brand": "Norflex",
+    "class": "Muscle relaxant"
+  },
+  {
+    "id": "oseltamivir",
+    "generic": "oseltamivir",
+    "brand": "Tamiflu",
+    "class": "Antiviral"
+  },
+  {
+    "id": "oxaprozin",
+    "generic": "oxaprozin",
+    "brand": "Daypro",
+    "class": "NSAID"
+  },
+  {
+    "id": "oxazepam",
+    "generic": "oxazepam",
+    "brand": "Serax",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "oxcarbazepine",
+    "generic": "oxcarbazepine",
+    "brand": "Trileptal",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "oxybutynin",
+    "generic": "oxybutynin",
+    "brand": "Ditropan",
+    "class": "Urology"
+  },
+  {
+    "id": "oxycodone",
+    "generic": "oxycodone",
+    "brand": "OxyContin",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "oxymorphone",
+    "generic": "oxymorphone",
+    "brand": "Opana",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "paliperidone",
+    "generic": "paliperidone",
+    "brand": "Invega",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "palonosetron",
+    "generic": "palonosetron",
+    "brand": "Aloxi",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "pantoprazole",
+    "generic": "pantoprazole",
+    "brand": "Protonix",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "paroxetine",
+    "generic": "paroxetine",
+    "brand": "Paxil",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "pembrolizumab",
+    "generic": "pembrolizumab",
+    "brand": "Keytruda",
+    "class": "Oncology"
+  },
+  {
+    "id": "penicillin-v",
+    "generic": "penicillin v",
+    "brand": "Pen-Vee K",
+    "class": "Penicillin antibiotic"
+  },
+  {
+    "id": "perindopril",
+    "generic": "perindopril",
+    "brand": "Aceon",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "perphenazine",
+    "generic": "perphenazine",
+    "brand": "Trilafon",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "phenelzine",
+    "generic": "phenelzine",
+    "brand": "Nardil",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "phenobarbital",
+    "generic": "phenobarbital",
+    "brand": "Luminal",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "phenytoin",
+    "generic": "phenytoin",
+    "brand": "Dilantin",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "pilocarpine",
+    "generic": "pilocarpine",
+    "brand": "Pilocar",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "pimecrolimus",
+    "generic": "pimecrolimus",
+    "brand": "Elidel",
+    "class": "Dermatology"
+  },
+  {
+    "id": "pimozide",
+    "generic": "pimozide",
+    "brand": "Orap",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "pindolol",
+    "generic": "pindolol",
+    "brand": "Visken",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "pioglitazone",
+    "generic": "pioglitazone",
+    "brand": "Actos",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "piperacillin-tazobactam",
+    "generic": "piperacillin-tazobactam",
+    "brand": "Zosyn",
+    "class": "Penicillin antibiotic"
+  },
+  {
+    "id": "piroxicam",
+    "generic": "piroxicam",
+    "brand": "Feldene",
+    "class": "NSAID"
+  },
+  {
+    "id": "pitavastatin",
+    "generic": "pitavastatin",
+    "brand": "Livalo",
+    "class": "Statin"
+  },
+  {
+    "id": "pneumococcal-vaccine",
+    "generic": "pneumococcal vaccine",
+    "brand": "Prevnar 13",
+    "class": "Vaccine"
+  },
+  {
+    "id": "polyethylene-glycol",
+    "generic": "polyethylene glycol",
+    "brand": "MiraLAX",
+    "class": "GI motility"
+  },
+  {
+    "id": "posaconazole",
+    "generic": "posaconazole",
+    "brand": "Noxafil",
+    "class": "Antifungal"
+  },
+  {
+    "id": "potassium-chloride",
+    "generic": "potassium chloride",
+    "brand": "K-Dur",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "pramipexole",
+    "generic": "pramipexole",
+    "brand": "Mirapex",
+    "class": "Neurology"
+  },
+  {
+    "id": "pramlintide",
+    "generic": "pramlintide",
+    "brand": "Symlin",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "prasugrel",
+    "generic": "prasugrel",
+    "brand": "Effient",
+    "class": "Antiplatelet"
+  },
+  {
+    "id": "pravastatin",
+    "generic": "pravastatin",
+    "brand": "Pravachol",
+    "class": "Statin"
+  },
+  {
+    "id": "prednisolone",
+    "generic": "prednisolone",
+    "brand": "Prelone",
+    "class": "Corticosteroid"
+  },
+  {
+    "id": "prednisone",
+    "generic": "prednisone",
+    "brand": "Deltasone",
+    "class": "Corticosteroid"
+  },
+  {
+    "id": "pregabalin",
+    "generic": "pregabalin",
+    "brand": "Lyrica",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "procainamide",
+    "generic": "procainamide",
+    "brand": "Pronestyl",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "prochlorperazine",
+    "generic": "prochlorperazine",
+    "brand": "Compazine",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "promethazine",
+    "generic": "promethazine",
+    "brand": "Phenergan",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "propafenone",
+    "generic": "propafenone",
+    "brand": "Rythmol",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "propranolol",
+    "generic": "propranolol",
+    "brand": "Inderal",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "propylthiouracil",
+    "generic": "propylthiouracil",
+    "brand": "PTU",
+    "class": "Endocrine"
+  },
+  {
+    "id": "psyllium",
+    "generic": "psyllium",
+    "brand": "Metamucil",
+    "class": "GI motility"
+  },
+  {
+    "id": "pyrazinamide",
+    "generic": "pyrazinamide",
+    "brand": "Pyrazinamide",
+    "class": "Antitubercular"
+  },
+  {
+    "id": "pyridoxine",
+    "generic": "pyridoxine",
+    "brand": "B6",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "quetiapine",
+    "generic": "quetiapine",
+    "brand": "Seroquel",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "quinapril",
+    "generic": "quinapril",
+    "brand": "Accupril",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "quinidine",
+    "generic": "quinidine",
+    "brand": "Quinaglute",
+    "class": "Antiarrhythmic"
+  },
+  {
+    "id": "rabeprazole",
+    "generic": "rabeprazole",
+    "brand": "Aciphex",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "raloxifene",
+    "generic": "raloxifene",
+    "brand": "Evista",
+    "class": "Bone health"
+  },
+  {
+    "id": "raltegravir",
+    "generic": "raltegravir",
+    "brand": "Isentress",
+    "class": "Antiviral"
+  },
+  {
+    "id": "ramelteon",
+    "generic": "ramelteon",
+    "brand": "Rozerem",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "ramipril",
+    "generic": "ramipril",
+    "brand": "Altace",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "ranitidine",
+    "generic": "ranitidine",
+    "brand": "Zantac",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "rasagiline",
+    "generic": "rasagiline",
+    "brand": "Azilect",
+    "class": "Neurology"
+  },
+  {
+    "id": "regular-insulin",
+    "generic": "regular insulin",
+    "brand": "Humulin R",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "remdesivir",
+    "generic": "remdesivir",
+    "brand": "Veklury",
+    "class": "Antiviral"
+  },
+  {
+    "id": "repaglinide",
+    "generic": "repaglinide",
+    "brand": "Prandin",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "ribavirin",
+    "generic": "ribavirin",
+    "brand": "Rebetol",
+    "class": "Antiviral"
+  },
+  {
+    "id": "rifampin",
+    "generic": "rifampin",
+    "brand": "Rifadin",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "rifaximin",
+    "generic": "rifaximin",
+    "brand": "Xifaxan",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "riluzole",
+    "generic": "riluzole",
+    "brand": "Rilutek",
+    "class": "Neurology"
+  },
+  {
+    "id": "rimegepant",
+    "generic": "rimegepant",
+    "brand": "Nurtec",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "risedronate",
+    "generic": "risedronate",
+    "brand": "Actonel",
+    "class": "Bone health"
+  },
+  {
+    "id": "risperidone",
+    "generic": "risperidone",
+    "brand": "Risperdal",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "rituximab",
+    "generic": "rituximab",
+    "brand": "Rituxan",
+    "class": "Oncology"
+  },
+  {
+    "id": "rivaroxaban",
+    "generic": "rivaroxaban",
+    "brand": "Xarelto",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "rivastigmine",
+    "generic": "rivastigmine",
+    "brand": "Exelon",
+    "class": "Dementia"
+  },
+  {
+    "id": "rizatriptan",
+    "generic": "rizatriptan",
+    "brand": "Maxalt",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "romosozumab",
+    "generic": "romosozumab",
+    "brand": "Evenity",
+    "class": "Bone health"
+  },
+  {
+    "id": "ropinirole",
+    "generic": "ropinirole",
+    "brand": "Requip",
+    "class": "Neurology"
+  },
+  {
+    "id": "rosiglitazone",
+    "generic": "rosiglitazone",
+    "brand": "Avandia",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "rosuvastatin",
+    "generic": "rosuvastatin",
+    "brand": "Crestor",
+    "class": "Statin"
+  },
+  {
+    "id": "rotigotine",
+    "generic": "rotigotine",
+    "brand": "Neupro",
+    "class": "Neurology"
+  },
+  {
+    "id": "safinamide",
+    "generic": "safinamide",
+    "brand": "Xadago",
+    "class": "Neurology"
+  },
+  {
+    "id": "salmeterol",
+    "generic": "salmeterol",
+    "brand": "Serevent",
+    "class": "Respiratory"
+  },
+  {
+    "id": "saxagliptin",
+    "generic": "saxagliptin",
+    "brand": "Onglyza",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "scopolamine",
+    "generic": "scopolamine",
+    "brand": "Transderm Scop",
+    "class": "Antiemetic"
+  },
+  {
+    "id": "selegiline",
+    "generic": "selegiline",
+    "brand": "Emsam",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "semaglutide",
+    "generic": "semaglutide",
+    "brand": "Ozempic",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "senna",
+    "generic": "senna",
+    "brand": "Senokot",
+    "class": "GI motility"
+  },
+  {
+    "id": "sertraline",
+    "generic": "sertraline",
+    "brand": "Zoloft",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "sildenafil",
+    "generic": "sildenafil",
+    "brand": "Viagra",
+    "class": "Phosphodiesterase 5 inhibitor"
+  },
+  {
+    "id": "silodosin",
+    "generic": "silodosin",
+    "brand": "Rapaflo",
+    "class": "Urology"
+  },
+  {
+    "id": "simvastatin",
+    "generic": "simvastatin",
+    "brand": "Zocor",
+    "class": "Statin"
+  },
+  {
+    "id": "sirolimus",
+    "generic": "sirolimus",
+    "brand": "Rapamune",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "sitagliptin",
+    "generic": "sitagliptin",
+    "brand": "Januvia",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "sotalol",
+    "generic": "sotalol",
+    "brand": "Betapace",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "spironolactone",
+    "generic": "spironolactone",
+    "brand": "Aldactone",
+    "class": "Diuretic"
+  },
+  {
+    "id": "sucralfate",
+    "generic": "sucralfate",
+    "brand": "Carafate",
+    "class": "Gastrointestinal"
+  },
+  {
+    "id": "sulfasalazine",
+    "generic": "sulfasalazine",
+    "brand": "Azulfidine",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "sulindac",
+    "generic": "sulindac",
+    "brand": "Clinoril",
+    "class": "NSAID"
+  },
+  {
+    "id": "sumatriptan",
+    "generic": "sumatriptan",
+    "brand": "Imitrex",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "suvorexant",
+    "generic": "suvorexant",
+    "brand": "Belsomra",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "tacrolimus-topical",
+    "generic": "tacrolimus topical",
+    "brand": "Protopic",
+    "class": "Dermatology"
+  },
+  {
+    "id": "tacrolimus",
+    "generic": "tacrolimus",
+    "brand": "Prograf",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "tadalafil",
+    "generic": "tadalafil",
+    "brand": "Cialis",
+    "class": "Phosphodiesterase 5 inhibitor"
+  },
+  {
+    "id": "tamoxifen",
+    "generic": "tamoxifen",
+    "brand": "Nolvadex",
+    "class": "Oncology"
+  },
+  {
+    "id": "tamsulosin",
+    "generic": "tamsulosin",
+    "brand": "Flomax",
+    "class": "Urology"
+  },
+  {
+    "id": "tapentadol",
+    "generic": "tapentadol",
+    "brand": "Nucynta",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "tazarotene",
+    "generic": "tazarotene",
+    "brand": "Tazorac",
+    "class": "Dermatology"
+  },
+  {
+    "id": "tdap-vaccine",
+    "generic": "tdap vaccine",
+    "brand": "Boostrix",
+    "class": "Vaccine"
+  },
+  {
+    "id": "telmisartan",
+    "generic": "telmisartan",
+    "brand": "Micardis",
+    "class": "ARB"
+  },
+  {
+    "id": "temazepam",
+    "generic": "temazepam",
+    "brand": "Restoril",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "tenofovir",
+    "generic": "tenofovir",
+    "brand": "Viread",
+    "class": "Antiviral"
+  },
+  {
+    "id": "terazosin",
+    "generic": "terazosin",
+    "brand": "Hytrin",
+    "class": "Urology"
+  },
+  {
+    "id": "terbinafine",
+    "generic": "terbinafine",
+    "brand": "Lamisil",
+    "class": "Antifungal"
+  },
+  {
+    "id": "teriparatide",
+    "generic": "teriparatide",
+    "brand": "Forteo",
+    "class": "Endocrine"
+  },
+  {
+    "id": "tetrabenazine",
+    "generic": "tetrabenazine",
+    "brand": "Xenazine",
+    "class": "Neurology"
+  },
+  {
+    "id": "tetracycline",
+    "generic": "tetracycline",
+    "brand": "Sumycin",
+    "class": "Tetracycline"
+  },
+  {
+    "id": "thiamine",
+    "generic": "thiamine",
+    "brand": "B1",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "thioridazine",
+    "generic": "thioridazine",
+    "brand": "Mellaril",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "thiothixene",
+    "generic": "thiothixene",
+    "brand": "Navane",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "ticagrelor",
+    "generic": "ticagrelor",
+    "brand": "Brilinta",
+    "class": "Antiplatelet"
+  },
+  {
+    "id": "tigecycline",
+    "generic": "tigecycline",
+    "brand": "Tygacil",
+    "class": "Tetracycline"
+  },
+  {
+    "id": "timolol-ophthalmic",
+    "generic": "timolol ophthalmic",
+    "brand": "Timoptic",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "timolol",
+    "generic": "timolol",
+    "brand": "Blocadren",
+    "class": "Beta blocker"
+  },
+  {
+    "id": "tinidazole",
+    "generic": "tinidazole",
+    "brand": "Tindamax",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "tiotropium",
+    "generic": "tiotropium",
+    "brand": "Spiriva",
+    "class": "Respiratory"
+  },
+  {
+    "id": "tirzepatide",
+    "generic": "tirzepatide",
+    "brand": "Mounjaro",
+    "class": "Antidiabetic"
+  },
+  {
+    "id": "tizanidine",
+    "generic": "tizanidine",
+    "brand": "Zanaflex",
+    "class": "Muscle relaxant"
+  },
+  {
+    "id": "tobramycin",
+    "generic": "tobramycin",
+    "brand": "Tobi",
+    "class": "Aminoglycoside antibiotic"
+  },
+  {
+    "id": "tofacitinib",
+    "generic": "tofacitinib",
+    "brand": "Xeljanz",
+    "class": "Immunosuppressant"
+  },
+  {
+    "id": "tolmetin",
+    "generic": "tolmetin",
+    "brand": "Tolectin",
+    "class": "NSAID"
+  },
+  {
+    "id": "tolterodine",
+    "generic": "tolterodine",
+    "brand": "Detrol",
+    "class": "Urology"
+  },
+  {
+    "id": "topiramate",
+    "generic": "topiramate",
+    "brand": "Topamax",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "torsemide",
+    "generic": "torsemide",
+    "brand": "Demadex",
+    "class": "Diuretic"
+  },
+  {
+    "id": "tramadol",
+    "generic": "tramadol",
+    "brand": "Ultram",
+    "class": "Opioid analgesic"
+  },
+  {
+    "id": "trandolapril",
+    "generic": "trandolapril",
+    "brand": "Mavik",
+    "class": "ACE inhibitor"
+  },
+  {
+    "id": "tranylcypromine",
+    "generic": "tranylcypromine",
+    "brand": "Parnate",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "trastuzumab",
+    "generic": "trastuzumab",
+    "brand": "Herceptin",
+    "class": "Oncology"
+  },
+  {
+    "id": "travoprost",
+    "generic": "travoprost",
+    "brand": "Travatan",
+    "class": "Ophthalmic"
+  },
+  {
+    "id": "trazodone",
+    "generic": "trazodone",
+    "brand": "Desyrel",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "tretinoin",
+    "generic": "tretinoin",
+    "brand": "Retin-A",
+    "class": "Dermatology"
+  },
+  {
+    "id": "triamcinolone-topical",
+    "generic": "triamcinolone topical",
+    "brand": "Kenalog cream",
+    "class": "Dermatology"
+  },
+  {
+    "id": "triamcinolone",
+    "generic": "triamcinolone",
+    "brand": "Kenalog",
+    "class": "Corticosteroid"
+  },
+  {
+    "id": "triamterene",
+    "generic": "triamterene",
+    "brand": "Dyrenium",
+    "class": "Diuretic"
+  },
+  {
+    "id": "triazolam",
+    "generic": "triazolam",
+    "brand": "Halcion",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "trifluoperazine",
+    "generic": "trifluoperazine",
+    "brand": "Stelazine",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "trihexyphenidyl",
+    "generic": "trihexyphenidyl",
+    "brand": "Artane",
+    "class": "Neurology"
+  },
+  {
+    "id": "trimethoprim-sulfamethoxazole",
+    "generic": "trimethoprim-sulfamethoxazole",
+    "brand": "Bactrim",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "ubrogepant",
+    "generic": "ubrogepant",
+    "brand": "Ubrelvy",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "ulipristal",
+    "generic": "ulipristal",
+    "brand": "Ella",
+    "class": "Hormonal"
+  },
+  {
+    "id": "umeclidinium",
+    "generic": "umeclidinium",
+    "brand": "Incruse",
+    "class": "Respiratory"
+  },
+  {
+    "id": "valacyclovir",
+    "generic": "valacyclovir",
+    "brand": "Valtrex",
+    "class": "Antiviral"
+  },
+  {
+    "id": "valbenazine",
+    "generic": "valbenazine",
+    "brand": "Ingrezza",
+    "class": "Neurology"
+  },
+  {
+    "id": "valganciclovir",
+    "generic": "valganciclovir",
+    "brand": "Valcyte",
+    "class": "Antiviral"
+  },
+  {
+    "id": "valproic-acid",
+    "generic": "valproic acid",
+    "brand": "Depakene",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "valsartan",
+    "generic": "valsartan",
+    "brand": "Diovan",
+    "class": "ARB"
+  },
+  {
+    "id": "vancomycin",
+    "generic": "vancomycin",
+    "brand": "Vancocin",
+    "class": "Antibiotic"
+  },
+  {
+    "id": "vardenafil",
+    "generic": "vardenafil",
+    "brand": "Levitra",
+    "class": "Phosphodiesterase 5 inhibitor"
+  },
+  {
+    "id": "varicella-vaccine",
+    "generic": "varicella vaccine",
+    "brand": "Varivax",
+    "class": "Vaccine"
+  },
+  {
+    "id": "venetoclax",
+    "generic": "venetoclax",
+    "brand": "Venclexta",
+    "class": "Oncology"
+  },
+  {
+    "id": "venlafaxine",
+    "generic": "venlafaxine",
+    "brand": "Effexor",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "verapamil",
+    "generic": "verapamil",
+    "brand": "Calan",
+    "class": "Calcium channel blocker"
+  },
+  {
+    "id": "vilazodone",
+    "generic": "vilazodone",
+    "brand": "Viibryd",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "vitamin-b12",
+    "generic": "vitamin b12",
+    "brand": "Cyanocobalamin",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "vitamin-c",
+    "generic": "vitamin c",
+    "brand": "Ascorbic Acid",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "vitamin-d3",
+    "generic": "vitamin d3",
+    "brand": "D3",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "vitamin-e",
+    "generic": "vitamin e",
+    "brand": "Tocopherol",
+    "class": "Vitamin / supplement"
+  },
+  {
+    "id": "voriconazole",
+    "generic": "voriconazole",
+    "brand": "Vfend",
+    "class": "Antifungal"
+  },
+  {
+    "id": "vortioxetine",
+    "generic": "vortioxetine",
+    "brand": "Trintellix",
+    "class": "Antidepressant"
+  },
+  {
+    "id": "warfarin",
+    "generic": "warfarin",
+    "brand": "Coumadin",
+    "class": "Anticoagulant"
+  },
+  {
+    "id": "zafirlukast",
+    "generic": "zafirlukast",
+    "brand": "Accolate",
+    "class": "Respiratory"
+  },
+  {
+    "id": "zaleplon",
+    "generic": "zaleplon",
+    "brand": "Sonata",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "zanamivir",
+    "generic": "zanamivir",
+    "brand": "Relenza",
+    "class": "Antiviral"
+  },
+  {
+    "id": "zileuton",
+    "generic": "zileuton",
+    "brand": "Zyflo",
+    "class": "Respiratory"
+  },
+  {
+    "id": "ziprasidone",
+    "generic": "ziprasidone",
+    "brand": "Geodon",
+    "class": "Antipsychotic"
+  },
+  {
+    "id": "zoledronic-acid",
+    "generic": "zoledronic acid",
+    "brand": "Reclast",
+    "class": "Bone health"
+  },
+  {
+    "id": "zolmitriptan",
+    "generic": "zolmitriptan",
+    "brand": "Zomig",
+    "class": "Antimigraine"
+  },
+  {
+    "id": "zolpidem",
+    "generic": "zolpidem",
+    "brand": "Ambien",
+    "class": "Anxiolytic / hypnotic"
+  },
+  {
+    "id": "zonisamide",
+    "generic": "zonisamide",
+    "brand": "Zonegran",
+    "class": "Anticonvulsant / mood stabilizer"
+  },
+  {
+    "id": "zoster-vaccine",
+    "generic": "zoster vaccine",
+    "brand": "Shingrix",
+    "class": "Vaccine"
+  }
+]

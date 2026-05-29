@@ -1,0 +1,35 @@
+{
+  "id": "tramadol",
+  "generic": "tramadol",
+  "brand": "Ultram",
+  "class": "Opioid analgesic",
+  "rxnormSample": 100851,
+  "indications": [
+    "moderate to severe pain"
+  ],
+  "dosages": [
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "benzodiazepines",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop tramadol suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

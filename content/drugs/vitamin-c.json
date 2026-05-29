@@ -1,0 +1,35 @@
+{
+  "id": "vitamin-c",
+  "generic": "vitamin c",
+  "brand": "Ascorbic Acid",
+  "class": "Vitamin / supplement",
+  "rxnormSample": 120054,
+  "indications": [
+    "nutritional supplementation"
+  ],
+  "dosages": [
+    "250 mg",
+    "500 mg",
+    "1000 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "levothyroxine",
+    "antibiotics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop vitamin c suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

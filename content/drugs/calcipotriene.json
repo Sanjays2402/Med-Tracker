@@ -1,0 +1,35 @@
+{
+  "id": "calcipotriene",
+  "generic": "calcipotriene",
+  "brand": "Dovonex",
+  "class": "Dermatology",
+  "rxnormSample": 119647,
+  "indications": [
+    "acne",
+    "psoriasis",
+    "eczema"
+  ],
+  "dosages": [
+    "0.005% cream",
+    "0.005% ointment"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "other topicals",
+    "systemic steroids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take other topicals.",
+    "Do not stop calcipotriene suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

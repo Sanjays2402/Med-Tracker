@@ -1,0 +1,33 @@
+{
+  "id": "trimethoprim-sulfamethoxazole",
+  "generic": "trimethoprim-sulfamethoxazole",
+  "brand": "Bactrim",
+  "class": "Antibiotic",
+  "rxnormSample": 102479,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "400/80 mg",
+    "800/160 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "probenecid"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop trimethoprim-sulfamethoxazole suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

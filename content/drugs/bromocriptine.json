@@ -1,0 +1,34 @@
+{
+  "id": "bromocriptine",
+  "generic": "bromocriptine",
+  "brand": "Cycloset",
+  "class": "Antidiabetic",
+  "rxnormSample": 109213,
+  "indications": [
+    "type 2 diabetes mellitus"
+  ],
+  "dosages": [
+    "0.8 mg",
+    "2.5 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "beta blockers",
+    "diuretics",
+    "steroids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop bromocriptine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

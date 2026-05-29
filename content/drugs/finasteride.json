@@ -1,0 +1,35 @@
+{
+  "id": "finasteride",
+  "generic": "finasteride",
+  "brand": "Proscar",
+  "class": "Urology",
+  "rxnormSample": 117094,
+  "indications": [
+    "BPH",
+    "overactive bladder"
+  ],
+  "dosages": [
+    "1 mg",
+    "5 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "CYP3A inhibitors",
+    "antihypertensives",
+    "anticholinergics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CYP3A inhibitors.",
+    "Do not stop finasteride suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

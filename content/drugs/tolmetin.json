@@ -1,0 +1,38 @@
+{
+  "id": "tolmetin",
+  "generic": "tolmetin",
+  "brand": "Tolectin",
+  "class": "NSAID",
+  "rxnormSample": 100629,
+  "indications": [
+    "pain",
+    "fever",
+    "inflammation"
+  ],
+  "dosages": [
+    "200 mg",
+    "400 mg",
+    "600 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "lithium",
+    "methotrexate",
+    "lisinopril"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop tolmetin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

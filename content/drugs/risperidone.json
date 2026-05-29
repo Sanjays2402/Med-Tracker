@@ -1,0 +1,39 @@
+{
+  "id": "risperidone",
+  "generic": "risperidone",
+  "brand": "Risperdal",
+  "class": "Antipsychotic",
+  "rxnormSample": 113653,
+  "indications": [
+    "schizophrenia",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "0.25 mg",
+    "0.5 mg",
+    "1 mg",
+    "2 mg",
+    "3 mg",
+    "4 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "QT prolonging drugs",
+    "anticholinergics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop risperidone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

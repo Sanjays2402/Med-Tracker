@@ -1,0 +1,32 @@
+{
+  "id": "covid-19-vaccine",
+  "generic": "covid-19 vaccine",
+  "brand": "Comirnaty",
+  "class": "Vaccine",
+  "rxnormSample": 121016,
+  "indications": [
+    "immunization"
+  ],
+  "dosages": [
+    "0.3 mL"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "immunosuppressants",
+    "live vaccine cautions"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take immunosuppressants.",
+    "Do not stop covid-19 vaccine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

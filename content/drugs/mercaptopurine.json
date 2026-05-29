@@ -1,0 +1,33 @@
+{
+  "id": "mercaptopurine",
+  "generic": "mercaptopurine",
+  "brand": "Purinethol",
+  "class": "Oncology",
+  "rxnormSample": 118537,
+  "indications": [
+    "cancer treatment"
+  ],
+  "dosages": [
+    "50 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "NSAIDs",
+    "live vaccines"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop mercaptopurine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

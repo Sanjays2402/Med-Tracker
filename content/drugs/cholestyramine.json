@@ -1,0 +1,33 @@
+{
+  "id": "cholestyramine",
+  "generic": "cholestyramine",
+  "brand": "Questran",
+  "class": "Lipid lowering",
+  "rxnormSample": 106845,
+  "indications": [
+    "hyperlipidemia"
+  ],
+  "dosages": [
+    "4 g/dose"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "statins",
+    "cyclosporine"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop cholestyramine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

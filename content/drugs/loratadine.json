@@ -1,0 +1,35 @@
+{
+  "id": "loratadine",
+  "generic": "loratadine",
+  "brand": "Claritin",
+  "class": "Antihistamine",
+  "rxnormSample": 110730,
+  "indications": [
+    "allergic rhinitis",
+    "urticaria"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop loratadine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

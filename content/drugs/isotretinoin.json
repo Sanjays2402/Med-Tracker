@@ -1,0 +1,37 @@
+{
+  "id": "isotretinoin",
+  "generic": "isotretinoin",
+  "brand": "Accutane",
+  "class": "Dermatology",
+  "rxnormSample": 119314,
+  "indications": [
+    "acne",
+    "psoriasis",
+    "eczema"
+  ],
+  "dosages": [
+    "10 mg",
+    "20 mg",
+    "30 mg",
+    "40 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "other topicals",
+    "systemic steroids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take other topicals.",
+    "Do not stop isotretinoin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

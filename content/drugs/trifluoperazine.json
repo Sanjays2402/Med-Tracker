@@ -1,0 +1,37 @@
+{
+  "id": "trifluoperazine",
+  "generic": "trifluoperazine",
+  "brand": "Stelazine",
+  "class": "Antipsychotic",
+  "rxnormSample": 113468,
+  "indications": [
+    "schizophrenia",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "1 mg",
+    "2 mg",
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "QT prolonging drugs",
+    "anticholinergics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop trifluoperazine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,37 @@
+{
+  "id": "risedronate",
+  "generic": "risedronate",
+  "brand": "Actonel",
+  "class": "Bone health",
+  "rxnormSample": 117464,
+  "indications": [
+    "osteoporosis"
+  ],
+  "dosages": [
+    "5 mg",
+    "30 mg",
+    "35 mg",
+    "75 mg",
+    "150 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "calcium",
+    "antacids",
+    "NSAIDs"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take calcium.",
+    "Do not stop risedronate suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

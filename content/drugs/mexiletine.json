@@ -1,0 +1,37 @@
+{
+  "id": "mexiletine",
+  "generic": "mexiletine",
+  "brand": "Mexitil",
+  "class": "Antiarrhythmic",
+  "rxnormSample": 107807,
+  "indications": [
+    "atrial fibrillation",
+    "VT"
+  ],
+  "dosages": [
+    "150 mg",
+    "200 mg",
+    "250 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "digoxin",
+    "statins",
+    "grapefruit"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop mexiletine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

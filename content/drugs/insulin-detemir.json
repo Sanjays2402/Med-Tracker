@@ -1,0 +1,33 @@
+{
+  "id": "insulin-detemir",
+  "generic": "insulin detemir",
+  "brand": "Levemir",
+  "class": "Antidiabetic",
+  "rxnormSample": 108769,
+  "indications": [
+    "type 2 diabetes mellitus"
+  ],
+  "dosages": [
+    "100 units/mL"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "beta blockers",
+    "diuretics",
+    "steroids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop insulin detemir suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

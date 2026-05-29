@@ -1,0 +1,34 @@
+{
+  "id": "pramlintide",
+  "generic": "pramlintide",
+  "brand": "Symlin",
+  "class": "Antidiabetic",
+  "rxnormSample": 109176,
+  "indications": [
+    "type 2 diabetes mellitus"
+  ],
+  "dosages": [
+    "60 mcg",
+    "120 mcg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "beta blockers",
+    "diuretics",
+    "steroids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop pramlintide suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

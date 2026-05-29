@@ -1,0 +1,38 @@
+{
+  "id": "rivaroxaban",
+  "generic": "rivaroxaban",
+  "brand": "Xarelto",
+  "class": "Anticoagulant",
+  "rxnormSample": 107141,
+  "indications": [
+    "atrial fibrillation",
+    "DVT",
+    "PE"
+  ],
+  "dosages": [
+    "10 mg",
+    "15 mg",
+    "20 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "NSAIDs",
+    "aspirin",
+    "antibiotics",
+    "amiodarone"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take NSAIDs.",
+    "Do not stop rivaroxaban suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

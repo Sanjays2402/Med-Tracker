@@ -1,0 +1,38 @@
+{
+  "id": "nisoldipine",
+  "generic": "nisoldipine",
+  "brand": "Sular",
+  "class": "Calcium channel blocker",
+  "rxnormSample": 105328,
+  "indications": [
+    "hypertension",
+    "angina"
+  ],
+  "dosages": [
+    "8.5 mg",
+    "17 mg",
+    "25.5 mg",
+    "34 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "simvastatin",
+    "cyclosporine",
+    "grapefruit",
+    "beta blockers"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take simvastatin.",
+    "Do not stop nisoldipine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,44 @@
+{
+  "id": "warfarin",
+  "generic": "warfarin",
+  "brand": "Coumadin",
+  "class": "Anticoagulant",
+  "rxnormSample": 107067,
+  "indications": [
+    "atrial fibrillation",
+    "DVT",
+    "PE"
+  ],
+  "dosages": [
+    "1 mg",
+    "2 mg",
+    "2.5 mg",
+    "3 mg",
+    "4 mg",
+    "5 mg",
+    "6 mg",
+    "7.5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "NSAIDs",
+    "aspirin",
+    "antibiotics",
+    "amiodarone"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take NSAIDs.",
+    "Do not stop warfarin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

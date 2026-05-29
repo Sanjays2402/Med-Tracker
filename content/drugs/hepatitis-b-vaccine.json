@@ -1,0 +1,33 @@
+{
+  "id": "hepatitis-b-vaccine",
+  "generic": "hepatitis b vaccine",
+  "brand": "Engerix-B",
+  "class": "Vaccine",
+  "rxnormSample": 120831,
+  "indications": [
+    "immunization"
+  ],
+  "dosages": [
+    "0.5 mL",
+    "1 mL"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "immunosuppressants",
+    "live vaccine cautions"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take immunosuppressants.",
+    "Do not stop hepatitis b vaccine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

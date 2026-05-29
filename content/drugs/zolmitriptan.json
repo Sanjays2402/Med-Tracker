@@ -1,0 +1,34 @@
+{
+  "id": "zolmitriptan",
+  "generic": "zolmitriptan",
+  "brand": "Zomig",
+  "class": "Antimigraine",
+  "rxnormSample": 115947,
+  "indications": [
+    "migraine"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "SSRIs",
+    "ergot alkaloids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop zolmitriptan suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

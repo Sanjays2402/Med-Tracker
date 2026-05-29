@@ -1,0 +1,35 @@
+{
+  "id": "etanercept",
+  "generic": "etanercept",
+  "brand": "Enbrel",
+  "class": "Immunosuppressant",
+  "rxnormSample": 118981,
+  "indications": [
+    "autoimmune disease",
+    "transplant rejection prevention"
+  ],
+  "dosages": [
+    "25 mg",
+    "50 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "live vaccines",
+    "NSAIDs",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take live vaccines.",
+    "Do not stop etanercept suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

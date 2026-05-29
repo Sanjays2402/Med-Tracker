@@ -1,0 +1,39 @@
+{
+  "id": "lisinopril",
+  "generic": "lisinopril",
+  "brand": "Prinivil",
+  "class": "ACE inhibitor",
+  "rxnormSample": 104366,
+  "indications": [
+    "hypertension",
+    "heart failure"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg",
+    "10 mg",
+    "20 mg",
+    "40 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "potassium",
+    "NSAIDs",
+    "lithium",
+    "aliskiren"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take potassium.",
+    "Do not stop lisinopril suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

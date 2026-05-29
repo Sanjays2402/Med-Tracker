@@ -1,0 +1,35 @@
+{
+  "id": "cilostazol",
+  "generic": "cilostazol",
+  "brand": "Pletal",
+  "class": "Antiplatelet",
+  "rxnormSample": 107585,
+  "indications": [
+    "ACS",
+    "stroke prevention"
+  ],
+  "dosages": [
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "omeprazole",
+    "NSAIDs",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take omeprazole.",
+    "Do not stop cilostazol suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

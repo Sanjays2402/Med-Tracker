@@ -1,0 +1,35 @@
+{
+  "id": "cyclobenzaprine",
+  "generic": "cyclobenzaprine",
+  "brand": "Flexeril",
+  "class": "Muscle relaxant",
+  "rxnormSample": 116243,
+  "indications": [
+    "muscle spasm"
+  ],
+  "dosages": [
+    "5 mg",
+    "7.5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "MAO inhibitors",
+    "alcohol"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop cyclobenzaprine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

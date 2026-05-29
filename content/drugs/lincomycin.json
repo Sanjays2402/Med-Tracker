@@ -1,0 +1,33 @@
+{
+  "id": "lincomycin",
+  "generic": "lincomycin",
+  "brand": "Lincocin",
+  "class": "Antibiotic",
+  "rxnormSample": 102405,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "250 mg",
+    "500 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "probenecid"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop lincomycin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,37 @@
+{
+  "id": "amlodipine",
+  "generic": "amlodipine",
+  "brand": "Norvasc",
+  "class": "Calcium channel blocker",
+  "rxnormSample": 105032,
+  "indications": [
+    "hypertension",
+    "angina"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "simvastatin",
+    "cyclosporine",
+    "grapefruit",
+    "beta blockers"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take simvastatin.",
+    "Do not stop amlodipine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

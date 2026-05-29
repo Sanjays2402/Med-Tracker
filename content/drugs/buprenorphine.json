@@ -1,0 +1,35 @@
+{
+  "id": "buprenorphine",
+  "generic": "buprenorphine",
+  "brand": "Suboxone",
+  "class": "Opioid analgesic",
+  "rxnormSample": 100999,
+  "indications": [
+    "moderate to severe pain"
+  ],
+  "dosages": [
+    "2 mg",
+    "8 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "benzodiazepines",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop buprenorphine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

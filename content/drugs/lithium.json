@@ -1,0 +1,37 @@
+{
+  "id": "lithium",
+  "generic": "lithium",
+  "brand": "Lithobid",
+  "class": "Anticonvulsant / mood stabilizer",
+  "rxnormSample": 114578,
+  "indications": [
+    "epilepsy",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "150 mg",
+    "300 mg",
+    "450 mg",
+    "600 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "warfarin",
+    "oral contraceptives"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop lithium suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,36 @@
+{
+  "id": "cinacalcet",
+  "generic": "cinacalcet",
+  "brand": "Sensipar",
+  "class": "Endocrine",
+  "rxnormSample": 109583,
+  "indications": [
+    "thyroid disorders"
+  ],
+  "dosages": [
+    "30 mg",
+    "60 mg",
+    "90 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "calcium",
+    "iron",
+    "antacids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop cinacalcet suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

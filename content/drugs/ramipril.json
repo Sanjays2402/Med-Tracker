@@ -1,0 +1,38 @@
+{
+  "id": "ramipril",
+  "generic": "ramipril",
+  "brand": "Altace",
+  "class": "ACE inhibitor",
+  "rxnormSample": 104440,
+  "indications": [
+    "hypertension",
+    "heart failure"
+  ],
+  "dosages": [
+    "1.25 mg",
+    "2.5 mg",
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "potassium",
+    "NSAIDs",
+    "lithium",
+    "aliskiren"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take potassium.",
+    "Do not stop ramipril suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

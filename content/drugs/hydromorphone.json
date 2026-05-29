@@ -1,0 +1,36 @@
+{
+  "id": "hydromorphone",
+  "generic": "hydromorphone",
+  "brand": "Dilaudid",
+  "class": "Opioid analgesic",
+  "rxnormSample": 100777,
+  "indications": [
+    "moderate to severe pain"
+  ],
+  "dosages": [
+    "2 mg",
+    "4 mg",
+    "8 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "benzodiazepines",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop hydromorphone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

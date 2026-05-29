@@ -1,0 +1,38 @@
+{
+  "id": "diltiazem",
+  "generic": "diltiazem",
+  "brand": "Cardizem",
+  "class": "Calcium channel blocker",
+  "rxnormSample": 105106,
+  "indications": [
+    "hypertension",
+    "angina"
+  ],
+  "dosages": [
+    "120 mg",
+    "180 mg",
+    "240 mg",
+    "360 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "simvastatin",
+    "cyclosporine",
+    "grapefruit",
+    "beta blockers"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take simvastatin.",
+    "Do not stop diltiazem suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

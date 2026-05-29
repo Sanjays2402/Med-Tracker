@@ -1,0 +1,37 @@
+{
+  "id": "methotrexate",
+  "generic": "methotrexate",
+  "brand": "Trexall",
+  "class": "Oncology",
+  "rxnormSample": 118500,
+  "indications": [
+    "cancer treatment"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg",
+    "7.5 mg",
+    "10 mg",
+    "15 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "NSAIDs",
+    "live vaccines"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop methotrexate suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

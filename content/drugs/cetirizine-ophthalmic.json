@@ -1,0 +1,33 @@
+{
+  "id": "cetirizine-ophthalmic",
+  "generic": "cetirizine ophthalmic",
+  "brand": "Zerviate",
+  "class": "Allergy",
+  "rxnormSample": 117834,
+  "indications": [
+    "anaphylaxis",
+    "allergy"
+  ],
+  "dosages": [
+    "0.24% solution"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop cetirizine ophthalmic suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

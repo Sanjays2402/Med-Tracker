@@ -1,0 +1,35 @@
+{
+  "id": "chlorpheniramine",
+  "generic": "chlorpheniramine",
+  "brand": "Chlor-Trimeton",
+  "class": "Antihistamine",
+  "rxnormSample": 110952,
+  "indications": [
+    "allergic rhinitis",
+    "urticaria"
+  ],
+  "dosages": [
+    "4 mg",
+    "12 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop chlorpheniramine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

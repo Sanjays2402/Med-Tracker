@@ -1,0 +1,36 @@
+{
+  "id": "tadalafil",
+  "generic": "tadalafil",
+  "brand": "Cialis",
+  "class": "Phosphodiesterase 5 inhibitor",
+  "rxnormSample": 117316,
+  "indications": [
+    "erectile dysfunction"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg",
+    "10 mg",
+    "20 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "nitrates",
+    "alpha blockers",
+    "CYP3A inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take nitrates.",
+    "Do not stop tadalafil suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

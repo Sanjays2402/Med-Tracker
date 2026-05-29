@@ -1,0 +1,37 @@
+{
+  "id": "flecainide",
+  "generic": "flecainide",
+  "brand": "Tambocor",
+  "class": "Antiarrhythmic",
+  "rxnormSample": 107696,
+  "indications": [
+    "atrial fibrillation",
+    "VT"
+  ],
+  "dosages": [
+    "50 mg",
+    "100 mg",
+    "150 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "warfarin",
+    "digoxin",
+    "statins",
+    "grapefruit"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop flecainide suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

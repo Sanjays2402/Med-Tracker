@@ -1,0 +1,36 @@
+{
+  "id": "oxcarbazepine",
+  "generic": "oxcarbazepine",
+  "brand": "Trileptal",
+  "class": "Anticonvulsant / mood stabilizer",
+  "rxnormSample": 114763,
+  "indications": [
+    "epilepsy",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "150 mg",
+    "300 mg",
+    "600 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "warfarin",
+    "oral contraceptives"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop oxcarbazepine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

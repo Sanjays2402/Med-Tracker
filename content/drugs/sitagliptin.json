@@ -1,0 +1,35 @@
+{
+  "id": "sitagliptin",
+  "generic": "sitagliptin",
+  "brand": "Januvia",
+  "class": "Antidiabetic",
+  "rxnormSample": 108214,
+  "indications": [
+    "type 2 diabetes mellitus"
+  ],
+  "dosages": [
+    "25 mg",
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "beta blockers",
+    "diuretics",
+    "steroids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop sitagliptin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

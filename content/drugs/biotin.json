@@ -1,0 +1,35 @@
+{
+  "id": "biotin",
+  "generic": "biotin",
+  "brand": "B7",
+  "class": "Vitamin / supplement",
+  "rxnormSample": 120202,
+  "indications": [
+    "nutritional supplementation"
+  ],
+  "dosages": [
+    "1000 mcg",
+    "5000 mcg",
+    "10000 mcg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "levothyroxine",
+    "antibiotics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop biotin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

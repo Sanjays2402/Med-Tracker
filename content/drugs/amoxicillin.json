@@ -1,0 +1,35 @@
+{
+  "id": "amoxicillin",
+  "generic": "amoxicillin",
+  "brand": "Amoxil",
+  "class": "Penicillin antibiotic",
+  "rxnormSample": 101258,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "250 mg",
+    "500 mg",
+    "875 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "probenecid",
+    "methotrexate",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop amoxicillin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,37 @@
+{
+  "id": "metoprolol-tartrate",
+  "generic": "metoprolol tartrate",
+  "brand": "Lopressor",
+  "class": "Beta blocker",
+  "rxnormSample": 105365,
+  "indications": [
+    "hypertension",
+    "arrhythmia"
+  ],
+  "dosages": [
+    "25 mg",
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "verapamil",
+    "clonidine",
+    "NSAIDs",
+    "digoxin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take verapamil.",
+    "Do not stop metoprolol tartrate suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

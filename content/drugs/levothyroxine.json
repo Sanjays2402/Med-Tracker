@@ -1,0 +1,40 @@
+{
+  "id": "levothyroxine",
+  "generic": "levothyroxine",
+  "brand": "Synthroid",
+  "class": "Endocrine",
+  "rxnormSample": 109287,
+  "indications": [
+    "thyroid disorders"
+  ],
+  "dosages": [
+    "25 mcg",
+    "50 mcg",
+    "75 mcg",
+    "100 mcg",
+    "125 mcg",
+    "150 mcg",
+    "200 mcg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "calcium",
+    "iron",
+    "antacids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop levothyroxine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

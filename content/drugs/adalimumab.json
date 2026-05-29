@@ -1,0 +1,37 @@
+{
+  "id": "adalimumab",
+  "generic": "adalimumab",
+  "brand": "Humira",
+  "class": "Immunosuppressant",
+  "rxnormSample": 119018,
+  "indications": [
+    "autoimmune disease",
+    "transplant rejection prevention"
+  ],
+  "dosages": [
+    "10 mg",
+    "20 mg",
+    "40 mg",
+    "80 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "live vaccines",
+    "NSAIDs",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take live vaccines.",
+    "Do not stop adalimumab suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

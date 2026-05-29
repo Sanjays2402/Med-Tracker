@@ -1,0 +1,35 @@
+{
+  "id": "psyllium",
+  "generic": "psyllium",
+  "brand": "Metamucil",
+  "class": "GI motility",
+  "rxnormSample": 112173,
+  "indications": [
+    "constipation",
+    "diarrhea"
+  ],
+  "dosages": [
+    "3.4 g/serving"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "digoxin",
+    "salicylates",
+    "antacids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop psyllium suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

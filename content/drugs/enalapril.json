@@ -1,0 +1,38 @@
+{
+  "id": "enalapril",
+  "generic": "enalapril",
+  "brand": "Vasotec",
+  "class": "ACE inhibitor",
+  "rxnormSample": 104403,
+  "indications": [
+    "hypertension",
+    "heart failure"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg",
+    "10 mg",
+    "20 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "potassium",
+    "NSAIDs",
+    "lithium",
+    "aliskiren"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take potassium.",
+    "Do not stop enalapril suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

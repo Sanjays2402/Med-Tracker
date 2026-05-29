@@ -1,0 +1,36 @@
+{
+  "id": "fluticasone",
+  "generic": "fluticasone",
+  "brand": "Flovent",
+  "class": "Respiratory",
+  "rxnormSample": 110360,
+  "indications": [
+    "asthma",
+    "COPD"
+  ],
+  "dosages": [
+    "44 mcg",
+    "110 mcg",
+    "220 mcg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors",
+    "ketoconazole"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop fluticasone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

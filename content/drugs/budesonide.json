@@ -1,0 +1,37 @@
+{
+  "id": "budesonide",
+  "generic": "budesonide",
+  "brand": "Pulmicort",
+  "class": "Respiratory",
+  "rxnormSample": 110397,
+  "indications": [
+    "asthma",
+    "COPD"
+  ],
+  "dosages": [
+    "90 mcg",
+    "180 mcg",
+    "0.25 mg",
+    "0.5 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors",
+    "ketoconazole"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop budesonide suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

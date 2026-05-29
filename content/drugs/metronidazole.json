@@ -1,0 +1,33 @@
+{
+  "id": "metronidazole",
+  "generic": "metronidazole",
+  "brand": "Flagyl",
+  "class": "Antibiotic",
+  "rxnormSample": 102294,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "250 mg",
+    "500 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "probenecid"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop metronidazole suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

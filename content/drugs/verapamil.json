@@ -1,0 +1,38 @@
+{
+  "id": "verapamil",
+  "generic": "verapamil",
+  "brand": "Calan",
+  "class": "Calcium channel blocker",
+  "rxnormSample": 105143,
+  "indications": [
+    "hypertension",
+    "angina"
+  ],
+  "dosages": [
+    "80 mg",
+    "120 mg",
+    "180 mg",
+    "240 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "simvastatin",
+    "cyclosporine",
+    "grapefruit",
+    "beta blockers"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take simvastatin.",
+    "Do not stop verapamil suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

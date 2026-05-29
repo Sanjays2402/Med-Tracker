@@ -1,0 +1,37 @@
+{
+  "id": "sulindac",
+  "generic": "sulindac",
+  "brand": "Clinoril",
+  "class": "NSAID",
+  "rxnormSample": 100444,
+  "indications": [
+    "pain",
+    "fever",
+    "inflammation"
+  ],
+  "dosages": [
+    "150 mg",
+    "200 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "lithium",
+    "methotrexate",
+    "lisinopril"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop sulindac suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,32 @@
+{
+  "id": "varicella-vaccine",
+  "generic": "varicella vaccine",
+  "brand": "Varivax",
+  "class": "Vaccine",
+  "rxnormSample": 120942,
+  "indications": [
+    "immunization"
+  ],
+  "dosages": [
+    "0.5 mL"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "immunosuppressants",
+    "live vaccine cautions"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take immunosuppressants.",
+    "Do not stop varicella vaccine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

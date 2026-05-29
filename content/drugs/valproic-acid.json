@@ -1,0 +1,35 @@
+{
+  "id": "valproic-acid",
+  "generic": "valproic acid",
+  "brand": "Depakene",
+  "class": "Anticonvulsant / mood stabilizer",
+  "rxnormSample": 114615,
+  "indications": [
+    "epilepsy",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "250 mg",
+    "500 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "warfarin",
+    "oral contraceptives"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop valproic acid suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

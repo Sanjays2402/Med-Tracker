@@ -1,0 +1,35 @@
+{
+  "id": "sildenafil",
+  "generic": "sildenafil",
+  "brand": "Viagra",
+  "class": "Phosphodiesterase 5 inhibitor",
+  "rxnormSample": 117279,
+  "indications": [
+    "erectile dysfunction"
+  ],
+  "dosages": [
+    "25 mg",
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "nitrates",
+    "alpha blockers",
+    "CYP3A inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take nitrates.",
+    "Do not stop sildenafil suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

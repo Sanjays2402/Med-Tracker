@@ -1,0 +1,35 @@
+{
+  "id": "trihexyphenidyl",
+  "generic": "trihexyphenidyl",
+  "brand": "Artane",
+  "class": "Neurology",
+  "rxnormSample": 115466,
+  "indications": [
+    "Parkinson disease",
+    "movement disorders"
+  ],
+  "dosages": [
+    "2 mg",
+    "5 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "antipsychotics",
+    "levodopa"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop trihexyphenidyl suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

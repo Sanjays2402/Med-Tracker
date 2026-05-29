@@ -1,0 +1,33 @@
+{
+  "id": "meropenem",
+  "generic": "meropenem",
+  "brand": "Merrem",
+  "class": "Antibiotic",
+  "rxnormSample": 102738,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "500 mg",
+    "1 g"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "probenecid"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop meropenem suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

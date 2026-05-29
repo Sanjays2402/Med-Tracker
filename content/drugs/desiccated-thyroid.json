@@ -1,0 +1,38 @@
+{
+  "id": "desiccated-thyroid",
+  "generic": "desiccated thyroid",
+  "brand": "Armour Thyroid",
+  "class": "Endocrine",
+  "rxnormSample": 109398,
+  "indications": [
+    "thyroid disorders"
+  ],
+  "dosages": [
+    "15 mg",
+    "30 mg",
+    "60 mg",
+    "90 mg",
+    "120 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "calcium",
+    "iron",
+    "antacids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop desiccated thyroid suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,35 @@
+{
+  "id": "hydroxychloroquine",
+  "generic": "hydroxychloroquine",
+  "brand": "Plaquenil",
+  "class": "Immunosuppressant",
+  "rxnormSample": 118907,
+  "indications": [
+    "autoimmune disease",
+    "transplant rejection prevention"
+  ],
+  "dosages": [
+    "200 mg",
+    "400 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "live vaccines",
+    "NSAIDs",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take live vaccines.",
+    "Do not stop hydroxychloroquine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

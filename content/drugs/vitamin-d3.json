@@ -1,0 +1,37 @@
+{
+  "id": "vitamin-d3",
+  "generic": "vitamin d3",
+  "brand": "D3",
+  "class": "Vitamin / supplement",
+  "rxnormSample": 119758,
+  "indications": [
+    "nutritional supplementation"
+  ],
+  "dosages": [
+    "400 IU",
+    "1000 IU",
+    "2000 IU",
+    "5000 IU",
+    "50000 IU"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "levothyroxine",
+    "antibiotics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop vitamin d3 suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

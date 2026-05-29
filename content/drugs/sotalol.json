@@ -1,0 +1,38 @@
+{
+  "id": "sotalol",
+  "generic": "sotalol",
+  "brand": "Betapace",
+  "class": "Beta blocker",
+  "rxnormSample": 105735,
+  "indications": [
+    "hypertension",
+    "arrhythmia"
+  ],
+  "dosages": [
+    "80 mg",
+    "120 mg",
+    "160 mg",
+    "240 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "verapamil",
+    "clonidine",
+    "NSAIDs",
+    "digoxin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take verapamil.",
+    "Do not stop sotalol suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

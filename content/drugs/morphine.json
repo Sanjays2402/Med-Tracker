@@ -1,0 +1,38 @@
+{
+  "id": "morphine",
+  "generic": "morphine",
+  "brand": "MS Contin",
+  "class": "Opioid analgesic",
+  "rxnormSample": 100666,
+  "indications": [
+    "moderate to severe pain"
+  ],
+  "dosages": [
+    "15 mg",
+    "30 mg",
+    "60 mg",
+    "100 mg",
+    "200 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "benzodiazepines",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop morphine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

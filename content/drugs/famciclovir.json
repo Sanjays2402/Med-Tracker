@@ -1,0 +1,35 @@
+{
+  "id": "famciclovir",
+  "generic": "famciclovir",
+  "brand": "Famvir",
+  "class": "Antiviral",
+  "rxnormSample": 103700,
+  "indications": [
+    "viral infection"
+  ],
+  "dosages": [
+    "125 mg",
+    "250 mg",
+    "500 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "probenecid",
+    "rifampin",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop famciclovir suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

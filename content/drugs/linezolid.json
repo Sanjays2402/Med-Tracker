@@ -1,0 +1,32 @@
+{
+  "id": "linezolid",
+  "generic": "linezolid",
+  "brand": "Zyvox",
+  "class": "Antibiotic",
+  "rxnormSample": 102553,
+  "indications": [
+    "bacterial infection"
+  ],
+  "dosages": [
+    "600 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "probenecid"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop linezolid suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

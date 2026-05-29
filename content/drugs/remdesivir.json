@@ -1,0 +1,33 @@
+{
+  "id": "remdesivir",
+  "generic": "remdesivir",
+  "brand": "Veklury",
+  "class": "Antiviral",
+  "rxnormSample": 103848,
+  "indications": [
+    "viral infection"
+  ],
+  "dosages": [
+    "100 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "probenecid",
+    "rifampin",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop remdesivir suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

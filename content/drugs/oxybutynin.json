@@ -1,0 +1,36 @@
+{
+  "id": "oxybutynin",
+  "generic": "oxybutynin",
+  "brand": "Ditropan",
+  "class": "Urology",
+  "rxnormSample": 117168,
+  "indications": [
+    "BPH",
+    "overactive bladder"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg",
+    "15 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "CYP3A inhibitors",
+    "antihypertensives",
+    "anticholinergics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CYP3A inhibitors.",
+    "Do not stop oxybutynin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

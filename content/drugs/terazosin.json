@@ -1,0 +1,37 @@
+{
+  "id": "terazosin",
+  "generic": "terazosin",
+  "brand": "Hytrin",
+  "class": "Urology",
+  "rxnormSample": 117020,
+  "indications": [
+    "BPH",
+    "overactive bladder"
+  ],
+  "dosages": [
+    "1 mg",
+    "2 mg",
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "CYP3A inhibitors",
+    "antihypertensives",
+    "anticholinergics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CYP3A inhibitors.",
+    "Do not stop terazosin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

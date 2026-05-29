@@ -1,0 +1,37 @@
+{
+  "id": "levetiracetam",
+  "generic": "levetiracetam",
+  "brand": "Keppra",
+  "class": "Anticonvulsant / mood stabilizer",
+  "rxnormSample": 114874,
+  "indications": [
+    "epilepsy",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "250 mg",
+    "500 mg",
+    "750 mg",
+    "1000 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "warfarin",
+    "oral contraceptives"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop levetiracetam suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

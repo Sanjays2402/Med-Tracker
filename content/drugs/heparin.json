@@ -1,0 +1,37 @@
+{
+  "id": "heparin",
+  "generic": "heparin",
+  "brand": "Heparin",
+  "class": "Anticoagulant",
+  "rxnormSample": 107326,
+  "indications": [
+    "atrial fibrillation",
+    "DVT",
+    "PE"
+  ],
+  "dosages": [
+    "1000 units/mL",
+    "5000 units/mL"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "NSAIDs",
+    "aspirin",
+    "antibiotics",
+    "amiodarone"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take NSAIDs.",
+    "Do not stop heparin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

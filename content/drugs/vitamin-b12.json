@@ -1,0 +1,36 @@
+{
+  "id": "vitamin-b12",
+  "generic": "vitamin b12",
+  "brand": "Cyanocobalamin",
+  "class": "Vitamin / supplement",
+  "rxnormSample": 119795,
+  "indications": [
+    "nutritional supplementation"
+  ],
+  "dosages": [
+    "100 mcg",
+    "500 mcg",
+    "1000 mcg",
+    "5000 mcg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "levothyroxine",
+    "antibiotics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop vitamin b12 suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

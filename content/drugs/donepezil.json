@@ -1,0 +1,35 @@
+{
+  "id": "donepezil",
+  "generic": "donepezil",
+  "brand": "Aricept",
+  "class": "Dementia",
+  "rxnormSample": 115688,
+  "indications": [
+    "Alzheimer dementia"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg",
+    "23 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "anticholinergics",
+    "beta blockers",
+    "NSAIDs"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take anticholinergics.",
+    "Do not stop donepezil suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

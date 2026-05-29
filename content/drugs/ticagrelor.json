@@ -1,0 +1,35 @@
+{
+  "id": "ticagrelor",
+  "generic": "ticagrelor",
+  "brand": "Brilinta",
+  "class": "Antiplatelet",
+  "rxnormSample": 107474,
+  "indications": [
+    "ACS",
+    "stroke prevention"
+  ],
+  "dosages": [
+    "60 mg",
+    "90 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "omeprazole",
+    "NSAIDs",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take omeprazole.",
+    "Do not stop ticagrelor suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

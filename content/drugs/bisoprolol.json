@@ -1,0 +1,37 @@
+{
+  "id": "bisoprolol",
+  "generic": "bisoprolol",
+  "brand": "Zebeta",
+  "class": "Beta blocker",
+  "rxnormSample": 105550,
+  "indications": [
+    "hypertension",
+    "arrhythmia"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "verapamil",
+    "clonidine",
+    "NSAIDs",
+    "digoxin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take verapamil.",
+    "Do not stop bisoprolol suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

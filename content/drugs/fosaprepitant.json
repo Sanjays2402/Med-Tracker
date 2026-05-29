@@ -1,0 +1,35 @@
+{
+  "id": "fosaprepitant",
+  "generic": "fosaprepitant",
+  "brand": "Emend IV",
+  "class": "Antiemetic",
+  "rxnormSample": 111877,
+  "indications": [
+    "nausea",
+    "vomiting"
+  ],
+  "dosages": [
+    "150 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "apomorphine",
+    "tramadol",
+    "SSRIs",
+    "CNS depressants"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take apomorphine.",
+    "Do not stop fosaprepitant suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

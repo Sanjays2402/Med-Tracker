@@ -1,0 +1,37 @@
+{
+  "id": "dronabinol",
+  "generic": "dronabinol",
+  "brand": "Marinol",
+  "class": "Antiemetic",
+  "rxnormSample": 111914,
+  "indications": [
+    "nausea",
+    "vomiting"
+  ],
+  "dosages": [
+    "2.5 mg",
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "apomorphine",
+    "tramadol",
+    "SSRIs",
+    "CNS depressants"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take apomorphine.",
+    "Do not stop dronabinol suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

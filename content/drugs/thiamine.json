@@ -1,0 +1,35 @@
+{
+  "id": "thiamine",
+  "generic": "thiamine",
+  "brand": "B1",
+  "class": "Vitamin / supplement",
+  "rxnormSample": 120128,
+  "indications": [
+    "nutritional supplementation"
+  ],
+  "dosages": [
+    "50 mg",
+    "100 mg",
+    "250 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "warfarin",
+    "levothyroxine",
+    "antibiotics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop thiamine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

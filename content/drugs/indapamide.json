@@ -1,0 +1,36 @@
+{
+  "id": "indapamide",
+  "generic": "indapamide",
+  "brand": "Lozol",
+  "class": "Diuretic",
+  "rxnormSample": 105957,
+  "indications": [
+    "edema",
+    "hypertension"
+  ],
+  "dosages": [
+    "1.25 mg",
+    "2.5 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "lithium",
+    "NSAIDs",
+    "digoxin",
+    "potassium"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take lithium.",
+    "Do not stop indapamide suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

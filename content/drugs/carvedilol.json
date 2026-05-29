@@ -1,0 +1,38 @@
+{
+  "id": "carvedilol",
+  "generic": "carvedilol",
+  "brand": "Coreg",
+  "class": "Beta blocker",
+  "rxnormSample": 105513,
+  "indications": [
+    "hypertension",
+    "arrhythmia"
+  ],
+  "dosages": [
+    "3.125 mg",
+    "6.25 mg",
+    "12.5 mg",
+    "25 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "verapamil",
+    "clonidine",
+    "NSAIDs",
+    "digoxin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take verapamil.",
+    "Do not stop carvedilol suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

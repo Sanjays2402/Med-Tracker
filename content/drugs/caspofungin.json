@@ -1,0 +1,35 @@
+{
+  "id": "caspofungin",
+  "generic": "caspofungin",
+  "brand": "Cancidas",
+  "class": "Antifungal",
+  "rxnormSample": 103441,
+  "indications": [
+    "fungal infection"
+  ],
+  "dosages": [
+    "50 mg",
+    "70 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "statins",
+    "phenytoin",
+    "digoxin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop caspofungin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

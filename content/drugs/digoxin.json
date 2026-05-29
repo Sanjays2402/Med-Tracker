@@ -1,0 +1,37 @@
+{
+  "id": "digoxin",
+  "generic": "digoxin",
+  "brand": "Lanoxin",
+  "class": "Antiarrhythmic",
+  "rxnormSample": 107659,
+  "indications": [
+    "atrial fibrillation",
+    "VT"
+  ],
+  "dosages": [
+    "0.0625 mg",
+    "0.125 mg",
+    "0.25 mg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "warfarin",
+    "digoxin",
+    "statins",
+    "grapefruit"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop digoxin suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

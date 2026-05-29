@@ -1,0 +1,37 @@
+{
+  "id": "thioridazine",
+  "generic": "thioridazine",
+  "brand": "Mellaril",
+  "class": "Antipsychotic",
+  "rxnormSample": 113431,
+  "indications": [
+    "schizophrenia",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "10 mg",
+    "25 mg",
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "QT prolonging drugs",
+    "anticholinergics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop thioridazine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

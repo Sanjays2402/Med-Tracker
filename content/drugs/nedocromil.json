@@ -1,0 +1,33 @@
+{
+  "id": "nedocromil",
+  "generic": "nedocromil",
+  "brand": "Tilade",
+  "class": "Allergy",
+  "rxnormSample": 117797,
+  "indications": [
+    "anaphylaxis",
+    "allergy"
+  ],
+  "dosages": [
+    "1.75 mg/actuation"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop nedocromil suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

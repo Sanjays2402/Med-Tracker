@@ -1,0 +1,35 @@
+{
+  "id": "ciclesonide",
+  "generic": "ciclesonide",
+  "brand": "Alvesco",
+  "class": "Respiratory",
+  "rxnormSample": 110508,
+  "indications": [
+    "asthma",
+    "COPD"
+  ],
+  "dosages": [
+    "80 mcg",
+    "160 mcg"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors",
+    "ketoconazole"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop ciclesonide suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,37 @@
+{
+  "id": "propafenone",
+  "generic": "propafenone",
+  "brand": "Rythmol",
+  "class": "Antiarrhythmic",
+  "rxnormSample": 107733,
+  "indications": [
+    "atrial fibrillation",
+    "VT"
+  ],
+  "dosages": [
+    "150 mg",
+    "225 mg",
+    "300 mg"
+  ],
+  "routes": [
+    "patch",
+    "oral capsule"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "digoxin",
+    "statins",
+    "grapefruit"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop propafenone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

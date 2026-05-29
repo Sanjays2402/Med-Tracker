@@ -1,0 +1,35 @@
+{
+  "id": "baclofen",
+  "generic": "baclofen",
+  "brand": "Lioresal",
+  "class": "Muscle relaxant",
+  "rxnormSample": 116354,
+  "indications": [
+    "muscle spasm"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg",
+    "20 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "MAO inhibitors",
+    "alcohol"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop baclofen suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

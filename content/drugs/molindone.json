@@ -1,0 +1,36 @@
+{
+  "id": "molindone",
+  "generic": "molindone",
+  "brand": "Moban",
+  "class": "Antipsychotic",
+  "rxnormSample": 113579,
+  "indications": [
+    "schizophrenia",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg",
+    "25 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "QT prolonging drugs",
+    "anticholinergics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop molindone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "C",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

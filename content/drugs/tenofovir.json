@@ -1,0 +1,36 @@
+{
+  "id": "tenofovir",
+  "generic": "tenofovir",
+  "brand": "Viread",
+  "class": "Antiviral",
+  "rxnormSample": 104070,
+  "indications": [
+    "viral infection"
+  ],
+  "dosages": [
+    "150 mg",
+    "200 mg",
+    "250 mg",
+    "300 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "probenecid",
+    "rifampin",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop tenofovir suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,37 @@
+{
+  "id": "spironolactone",
+  "generic": "spironolactone",
+  "brand": "Aldactone",
+  "class": "Diuretic",
+  "rxnormSample": 106216,
+  "indications": [
+    "edema",
+    "hypertension"
+  ],
+  "dosages": [
+    "25 mg",
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "lithium",
+    "NSAIDs",
+    "digoxin",
+    "potassium"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take lithium.",
+    "Do not stop spironolactone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

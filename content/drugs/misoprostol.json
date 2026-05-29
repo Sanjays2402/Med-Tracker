@@ -1,0 +1,35 @@
+{
+  "id": "misoprostol",
+  "generic": "misoprostol",
+  "brand": "Cytotec",
+  "class": "Gastrointestinal",
+  "rxnormSample": 111470,
+  "indications": [
+    "GERD",
+    "PUD"
+  ],
+  "dosages": [
+    "100 mcg",
+    "200 mcg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "clopidogrel",
+    "warfarin",
+    "methotrexate"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take clopidogrel.",
+    "Do not stop misoprostol suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

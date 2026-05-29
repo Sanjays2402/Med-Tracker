@@ -1,0 +1,37 @@
+{
+  "id": "thiothixene",
+  "generic": "thiothixene",
+  "brand": "Navane",
+  "class": "Antipsychotic",
+  "rxnormSample": 113505,
+  "indications": [
+    "schizophrenia",
+    "bipolar disorder"
+  ],
+  "dosages": [
+    "1 mg",
+    "2 mg",
+    "5 mg",
+    "10 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "QT prolonging drugs",
+    "anticholinergics"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop thiothixene suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

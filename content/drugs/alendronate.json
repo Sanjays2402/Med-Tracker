@@ -1,0 +1,37 @@
+{
+  "id": "alendronate",
+  "generic": "alendronate",
+  "brand": "Fosamax",
+  "class": "Bone health",
+  "rxnormSample": 117427,
+  "indications": [
+    "osteoporosis"
+  ],
+  "dosages": [
+    "5 mg",
+    "10 mg",
+    "35 mg",
+    "40 mg",
+    "70 mg"
+  ],
+  "routes": [
+    "oral solution",
+    "topical cream"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "calcium",
+    "antacids",
+    "NSAIDs"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take calcium.",
+    "Do not stop alendronate suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

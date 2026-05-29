@@ -1,0 +1,33 @@
+{
+  "id": "molnupiravir",
+  "generic": "molnupiravir",
+  "brand": "Lagevrio",
+  "class": "Antiviral",
+  "rxnormSample": 103922,
+  "indications": [
+    "viral infection"
+  ],
+  "dosages": [
+    "200 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "every 12 hours",
+    "as needed"
+  ],
+  "interactions": [
+    "probenecid",
+    "rifampin",
+    "warfarin"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take probenecid.",
+    "Do not stop molnupiravir suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

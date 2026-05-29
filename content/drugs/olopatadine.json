@@ -1,0 +1,34 @@
+{
+  "id": "olopatadine",
+  "generic": "olopatadine",
+  "brand": "Patanol",
+  "class": "Allergy",
+  "rxnormSample": 117871,
+  "indications": [
+    "anaphylaxis",
+    "allergy"
+  ],
+  "dosages": [
+    "0.1% solution",
+    "0.2% solution"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "every 8 hours",
+    "every 12 hours"
+  ],
+  "interactions": [
+    "beta blockers",
+    "MAO inhibitors"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take beta blockers.",
+    "Do not stop olopatadine suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

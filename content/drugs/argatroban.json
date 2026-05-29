@@ -1,0 +1,36 @@
+{
+  "id": "argatroban",
+  "generic": "argatroban",
+  "brand": "Acova",
+  "class": "Anticoagulant",
+  "rxnormSample": 107400,
+  "indications": [
+    "atrial fibrillation",
+    "DVT",
+    "PE"
+  ],
+  "dosages": [
+    "100 mg/mL"
+  ],
+  "routes": [
+    "topical cream",
+    "patch"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "NSAIDs",
+    "aspirin",
+    "antibiotics",
+    "amiodarone"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take NSAIDs.",
+    "Do not stop argatroban suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,35 @@
+{
+  "id": "dronedarone",
+  "generic": "dronedarone",
+  "brand": "Multaq",
+  "class": "Antiarrhythmic",
+  "rxnormSample": 107770,
+  "indications": [
+    "atrial fibrillation",
+    "VT"
+  ],
+  "dosages": [
+    "400 mg"
+  ],
+  "routes": [
+    "oral tablet",
+    "oral solution"
+  ],
+  "frequencies": [
+    "once daily",
+    "twice daily"
+  ],
+  "interactions": [
+    "warfarin",
+    "digoxin",
+    "statins",
+    "grapefruit"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take warfarin.",
+    "Do not stop dronedarone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "A",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

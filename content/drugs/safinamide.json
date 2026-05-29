@@ -1,0 +1,35 @@
+{
+  "id": "safinamide",
+  "generic": "safinamide",
+  "brand": "Xadago",
+  "class": "Neurology",
+  "rxnormSample": 115392,
+  "indications": [
+    "Parkinson disease",
+    "movement disorders"
+  ],
+  "dosages": [
+    "50 mg",
+    "100 mg"
+  ],
+  "routes": [
+    "injection",
+    "inhaler"
+  ],
+  "frequencies": [
+    "three times daily",
+    "every 8 hours"
+  ],
+  "interactions": [
+    "MAO inhibitors",
+    "antipsychotics",
+    "levodopa"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take MAO inhibitors.",
+    "Do not stop safinamide suddenly without medical advice."
+  ],
+  "pregnancyCategory": "B",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

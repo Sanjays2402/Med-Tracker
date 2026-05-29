@@ -1,0 +1,37 @@
+{
+  "id": "temazepam",
+  "generic": "temazepam",
+  "brand": "Restoril",
+  "class": "Anxiolytic / hypnotic",
+  "rxnormSample": 114171,
+  "indications": [
+    "anxiety",
+    "insomnia"
+  ],
+  "dosages": [
+    "7.5 mg",
+    "15 mg",
+    "22.5 mg",
+    "30 mg"
+  ],
+  "routes": [
+    "inhaler",
+    "oral tablet"
+  ],
+  "frequencies": [
+    "as needed",
+    "once daily"
+  ],
+  "interactions": [
+    "CNS depressants",
+    "alcohol",
+    "opioids"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take CNS depressants.",
+    "Do not stop temazepam suddenly without medical advice."
+  ],
+  "pregnancyCategory": "D",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}

@@ -1,0 +1,36 @@
+{
+  "id": "eplerenone",
+  "generic": "eplerenone",
+  "brand": "Inspra",
+  "class": "Diuretic",
+  "rxnormSample": 106253,
+  "indications": [
+    "edema",
+    "hypertension"
+  ],
+  "dosages": [
+    "25 mg",
+    "50 mg"
+  ],
+  "routes": [
+    "oral capsule",
+    "injection"
+  ],
+  "frequencies": [
+    "twice daily",
+    "three times daily"
+  ],
+  "interactions": [
+    "lithium",
+    "NSAIDs",
+    "digoxin",
+    "potassium"
+  ],
+  "warnings": [
+    "Tell your prescriber if you take lithium.",
+    "Do not stop eplerenone suddenly without medical advice."
+  ],
+  "pregnancyCategory": "X",
+  "storage": "Store at room temperature, away from moisture and direct light.",
+  "sourceNote": "Synthetic seed for Med-Tracker. Not medical advice. Verify with a clinician or RxNorm before clinical use."
+}
