@@ -16,7 +16,7 @@
     "@med/utils": "workspace:*",
     "@med/config": "workspace:*",
     "@med/icons": "workspace:*",
-    "next": "15.0.0",
+    "next": "^16.2.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
