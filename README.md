@@ -296,6 +296,32 @@ scrape_configs:
   production take managed snapshots (RDS, Cloud SQL) plus a nightly
   `pg_dump` to object storage with at least 30 day retention.
 
+### Audit log
+
+Every mutating HTTP request (POST, PUT, PATCH, DELETE) and every `/auth/*`
+request is appended to a tamper resistant JSONL trail.
+
+- File location is set by `AUDIT_LOG_PATH` and defaults to `./data/audit.log`.
+  In production point this at a path on a durable volume that is shipped to a
+  SIEM or object store (for example a sidecar that tails the file to S3 or
+  Loki). The file is opened append only and never rewritten by the API.
+- Read traffic on non auth routes is not audited, keeping the log focused on
+  state changes and authentication events. `/health`, `/ready`, `/metrics`,
+  and `/admin/audit` itself are excluded to avoid noise and recursion.
+- Each entry is one JSON object per line with `ts`, `actor` (id and role from
+  the verified JWT, or null for anonymous traffic), `action`, `method`,
+  `route`, `status`, `reqId`, and `ip`. The `reqId` matches the
+  `x-request-id` response header so an audit entry can be joined to the
+  matching log line and metrics sample.
+- `GET /admin/audit` returns recent entries newest first. The endpoint is
+  disabled (HTTP 503) unless `ADMIN_TOKEN` is configured, and requests must
+  carry the matching `x-admin-token` header. Supported query parameters:
+  `actorId`, `action`, `since`, `until`, `limit` (default 200, capped at
+  1000). Limit and rotate the token like any other production secret.
+- The audit file is excluded by `.gitignore` (`*.log`). Ensure the deployment
+  volume hosting `AUDIT_LOG_PATH` is backed up alongside the database; the
+  audit trail is the source of truth for who did what when.
+
 ### On-call
 
 - Primary alerts: `up{job="med-api"} == 0` for 2 minutes, p95 of

@@ -65,6 +65,7 @@ import { registerColdChainStatus } from './cold-chain-status';
 import { registerCaregiversHandoff } from './caregivers-handoff';
 import { registerAdminStats } from './admin-stats';
 import { registerAdminUsers } from './admin-users';
+import { registerAdminAudit } from './admin-audit';
 
 export async function registerRoutes(app: FastifyInstance) {
   await registerHealth(app);
@@ -133,4 +134,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerCaregiversHandoff(app);
   await registerAdminStats(app);
   await registerAdminUsers(app);
+  await registerAdminAudit(app);
 }

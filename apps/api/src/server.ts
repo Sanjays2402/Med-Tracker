@@ -8,6 +8,7 @@ import { env } from './env';
 import requestIdPlugin from './plugins/requestId';
 import loggingPlugin from './plugins/logging';
 import metricsPlugin from './plugins/metrics';
+import auditPlugin from './plugins/audit';
 
 export async function build() {
   const isProd = process.env.NODE_ENV === 'production';
@@ -24,6 +25,7 @@ export async function build() {
   await app.register(requestIdPlugin);
   await app.register(loggingPlugin);
   await app.register(metricsPlugin);
+  await app.register(auditPlugin);
   await app.register(cors, { origin: env.WEB_ORIGIN, credentials: true });
   await app.register(helmet);
   await app.register(rateLimit, { max: 200, timeWindow: '1 minute' });
