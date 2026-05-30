@@ -62,6 +62,7 @@ import { registerRiskAdherence } from './risk-adherence';
 import { registerCostAlternatives } from './cost-alternatives';
 import { registerSideEffectsCorrelate } from './side-effects-correlate';
 import { registerColdChainStatus } from './cold-chain-status';
+import { registerCaregiversHandoff } from './caregivers-handoff';
 import { registerAdminStats } from './admin-stats';
 import { registerAdminUsers } from './admin-users';
 
@@ -129,6 +130,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerCostAlternatives(app);
   await registerSideEffectsCorrelate(app);
   await registerColdChainStatus(app);
+  await registerCaregiversHandoff(app);
   await registerAdminStats(app);
   await registerAdminUsers(app);
 }
