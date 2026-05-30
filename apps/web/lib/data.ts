@@ -166,6 +166,16 @@ export async function logDose(doseId: string, status: 'taken' | 'skipped'): Prom
   return localDoses.find(d => d.id === doseId)!;
 }
 
+export async function undoDose(doseId: string): Promise<DoseEvent> {
+  try {
+    await api.patch(`/doses/${doseId}`, { status: 'pending', takenAt: null });
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  localDoses = localDoses.map(d => d.id === doseId ? { ...d, status: 'pending', takenAt: undefined } : d);
+  return localDoses.find(d => d.id === doseId)!;
+}
+
 export async function listSchedules(): Promise<ScheduleEntry[]> {
   try {
     const res = await api.get<unknown>('/schedules');

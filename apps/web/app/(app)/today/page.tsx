@@ -4,7 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { Pill as PillIcon, Bell, CalendarCheck } from '@med/icons';
 import { Btn, Surface, Section, Empty, ErrorBox, SkeletonRow, Pill, formatTime } from '../../../components/uikit';
-import { listTodayDoses, logDose } from '../../../lib/data';
+import { listTodayDoses, logDose, undoDose } from '../../../lib/data';
 import type { DoseEvent } from '../../../lib/types';
 
 export default function TodayPage() {
@@ -29,6 +29,18 @@ export default function TodayPage() {
       setDoses(prev => (prev ?? []).map(d => d.id === id ? { ...d, status, takenAt: status === 'taken' ? new Date().toISOString() : d.takenAt } : d));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not log dose.');
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function undo(id: string) {
+    setBusy(id);
+    try {
+      await undoDose(id);
+      setDoses(prev => (prev ?? []).map(d => d.id === id ? { ...d, status: 'pending', takenAt: undefined } : d));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not undo dose.');
     } finally {
       setBusy(null);
     }
@@ -105,7 +117,7 @@ export default function TodayPage() {
                           <Btn size="sm" variant="primary" disabled={busy === d.id} onClick={() => act(d.id, 'taken')}>Take</Btn>
                         </div>
                       ) : (
-                        <Btn size="sm" variant="ghost" onClick={() => setDoses(prev => (prev ?? []).map(x => x.id === d.id ? { ...x, status: 'pending', takenAt: undefined } : x))}>Undo</Btn>
+                        <Btn size="sm" variant="ghost" disabled={busy === d.id} onClick={() => undo(d.id)}>Undo</Btn>
                       )}
                     </li>
                   ))}
