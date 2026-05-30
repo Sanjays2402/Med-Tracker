@@ -33,7 +33,14 @@ import { caregiverService } from '../services/caregiverInstance';
  * is visible.
  */
 export async function registerMeExport(app: FastifyInstance) {
-  app.get('/me/export', { schema: { tags: ['me'] }, config: app.rateLimitTier('export') }, async (req, reply) => {
+  app.get(
+    '/me/export',
+    {
+      schema: { tags: ['me'] },
+      config: app.rateLimitTier('export'),
+      preHandler: app.requireTenant(),
+    },
+    async (req, reply) => {
     let userId: string;
     try {
       userId = meUserId(req);
@@ -41,6 +48,16 @@ export async function registerMeExport(app: FastifyInstance) {
       const err = e as { statusCode?: number; message: string };
       return reply.status(err.statusCode ?? 401).send({
         error: { code: 'unauthenticated', message: err.message },
+      });
+    }
+
+    // Tenant isolation: an export is owned by the user-tenant. Refuse to
+    // honour a token whose tenant claim does not match the user the
+    // export is being produced for, even when both are technically valid,
+    // so a stolen cross-tenant token cannot be used to exfiltrate data.
+    if (!app.assertTenantOwns(req, userId)) {
+      return reply.status(403).send({
+        error: { code: 'tenant_mismatch', message: 'tenant does not own this resource' },
       });
     }
 
@@ -59,6 +76,7 @@ export async function registerMeExport(app: FastifyInstance) {
       schemaVersion: 2,
       exportedAt: new Date().toISOString(),
       userId,
+      tenantId: req.tenantId,
       auditEntries,
       auditEntryCount: auditEntries.length,
       caregiverShares,
@@ -71,5 +89,6 @@ export async function registerMeExport(app: FastifyInstance) {
       `attachment; filename="med-tracker-export-${userId}.json"`,
     );
     return reply.send(bundle);
-  });
+    },
+  );
 }

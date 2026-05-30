@@ -10,6 +10,7 @@ import metricsPlugin from './plugins/metrics';
 import auditPlugin from './plugins/audit';
 import sentryPlugin from './plugins/sentry';
 import authPlugin from './plugins/auth';
+import tenantPlugin from './plugins/tenant';
 import rateLimitPlugin from './plugins/rateLimit';
 import openapiPlugin from './plugins/openapi';
 
@@ -34,6 +35,9 @@ export async function build() {
   await app.register(helmet);
   await app.register(jwt, { secret: env.JWT_SECRET });
   await app.register(authPlugin);
+  // Tenant context derives from JWT claims populated by auth, so it must
+  // register after auth and before routes that call app.requireTenant().
+  await app.register(tenantPlugin);
   // Rate limiting must register after auth so the keyGenerator can read
   // req.authUser populated by per-route authenticate preHandlers.
   await app.register(rateLimitPlugin);

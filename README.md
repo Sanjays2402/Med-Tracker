@@ -276,6 +276,48 @@ Coverage lives in `apps/api/tests/rbac.test.ts` and exercises the 401,
 403, 200, malformed-token, and admin-role paths against an in-process
 Fastify instance.
 
+### Tenant isolation
+
+The `tenant` plugin (`apps/api/src/plugins/tenant.ts`) resolves a tenant
+identifier for every authenticated request and exposes helpers that
+routes and services use to scope reads and writes to a single tenant.
+
+Resolution order, first match wins:
+
+1. JWT claim `tid`
+2. JWT claim `tenant`
+3. JWT claim `org`
+4. JWT claim `tenant_id`
+5. `req.authUser.sub`, a single user tenancy fallback so isolation
+   degrades safely when an issuer has not added a tenant claim.
+
+The header `x-tenant-id` is consulted only in non production environments
+and only when no JWT tenant claim is present. It never overrides an
+authenticated claim.
+
+Two helpers are added to the Fastify instance:
+
+- `app.requireTenant()` returns a preHandler that runs `authenticate`
+  then asserts `req.tenantId` is resolved. Missing tenant returns `403`
+  with `error.code = 'tenant_required'`.
+- `app.assertTenantOwns(req, ownerTenantId)` compares a row's tenant
+  against the caller and returns a boolean. Both helpers increment the
+  Prometheus counter `http_tenant_access_denied_total{route,reason}`
+  where `reason` is one of `missing` or `mismatch`, so cross tenant
+  access attempts are observable in dashboards without log scraping.
+
+Applied to:
+
+- `GET /me/export` and `DELETE /me` use `requireTenant` and then call
+  `assertTenantOwns` against the resolved user id, so a token whose
+  tenant claim points elsewhere cannot exfiltrate or erase another
+  user's data even when the JWT itself verifies.
+
+New tenant scoped routes should compose `app.requireTenant()` into
+their `preHandler` chain and filter persistence calls on `req.tenantId`
+rather than trusting any client supplied identifier. Coverage lives in
+`apps/api/tests/tenant.test.ts`.
+
 ### Configuration validation
 
 Every API process validates its environment at boot with a zod schema in

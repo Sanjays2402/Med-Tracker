@@ -22,7 +22,14 @@ import { caregiverService } from '../services/caregiverInstance';
  * carrying user data on the server.
  */
 export async function registerMeDelete(app: FastifyInstance) {
-  app.delete('/me', { schema: { tags: ['me'] }, config: app.rateLimitTier('export') }, async (req, reply) => {
+  app.delete(
+    '/me',
+    {
+      schema: { tags: ['me'] },
+      config: app.rateLimitTier('export'),
+      preHandler: app.requireTenant(),
+    },
+    async (req, reply) => {
     let userId: string;
     try {
       userId = meUserId(req);
@@ -30,6 +37,15 @@ export async function registerMeDelete(app: FastifyInstance) {
       const err = e as { statusCode?: number; message: string };
       return reply.status(err.statusCode ?? 401).send({
         error: { code: 'unauthenticated', message: err.message },
+      });
+    }
+
+    // Refuse cross tenant deletes for the same reason as cross tenant
+    // exports. A token whose tenant claim points elsewhere cannot erase
+    // this user's record.
+    if (!app.assertTenantOwns(req, userId)) {
+      return reply.status(403).send({
+        error: { code: 'tenant_mismatch', message: 'tenant does not own this resource' },
       });
     }
 
@@ -45,15 +61,17 @@ export async function registerMeDelete(app: FastifyInstance) {
       status: 200,
       reqId: req.id,
       ip: req.ip,
-      meta: { removedEntries: removed, removedCaregiverShares },
+      meta: { removedEntries: removed, removedCaregiverShares, tenantId: req.tenantId },
     });
 
     return reply.send({
       ok: true,
       userId,
+      tenantId: req.tenantId,
       removedAuditEntries: removed,
       removedCaregiverShares,
       deletedAt: new Date().toISOString(),
     });
-  });
+    },
+  );
 }
