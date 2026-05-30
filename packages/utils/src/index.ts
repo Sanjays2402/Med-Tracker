@@ -1,6 +1,7 @@
 export * from './date';
 export * from './streak';
 export * from './adherence';
+export * from './adherence-metrics';
 export * from './format';
 export * from './schedule';
 export * from './refill-forecast';
