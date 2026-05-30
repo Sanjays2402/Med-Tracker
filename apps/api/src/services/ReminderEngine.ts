@@ -1,5 +1,5 @@
 import type { Schedule, Dose } from '@med/types';
-import { expandSchedule, addDays } from '@med/utils';
+import { expandSchedule, addDays, planReminders, type QuietHours, type ScheduledReminder } from '@med/utils';
 
 export interface PendingDose {
   medicationId: string;
@@ -36,4 +36,20 @@ export function pendingDoses(
 export function dueNow(pending: PendingDose[], now: Date = new Date(), leadMinutes = 5): PendingDose[] {
   const cutoff = now.getTime() + leadMinutes * 60_000;
   return pending.filter((p) => p.dueAt.getTime() <= cutoff && p.dueAt.getTime() >= now.getTime() - 60 * 60_000);
+}
+
+/**
+ * Plan upcoming reminders, deferring any that fall inside the user's quiet
+ * hours to the next allowed instant. Returns scheduled reminders sorted by
+ * fireAt so the caller can enqueue them directly.
+ */
+export function planUpcomingReminders(
+  pending: PendingDose[],
+  options: { now?: Date; leadMinutes?: number; quiet?: QuietHours | null },
+): ScheduledReminder[] {
+  return planReminders(pending, {
+    now: options.now ?? new Date(),
+    leadMinutes: options.leadMinutes,
+    quiet: options.quiet ?? null,
+  });
 }
