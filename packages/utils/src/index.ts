@@ -19,3 +19,4 @@ export * from './chunk';
 export * from './storage';
 export * from './result';
 export * from './titration';
+export * from './pill-identifier';
