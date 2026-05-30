@@ -144,7 +144,8 @@ Fastify server in `apps/api/src/server.ts`. Routes auto-registered from `apps/ap
 Auth
 
 - `POST /auth/signup`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`
-- `GET /me`, `PATCH /me`
+- `GET /me`, `PATCH /me`, `DELETE /me` (GDPR erasure)
+- `GET /me/export` (GDPR data portability)
 - `GET /preferences`, `PUT /preferences`
 
 Medications
@@ -406,6 +407,32 @@ request is appended to a tamper resistant JSONL trail.
 - The audit file is excluded by `.gitignore` (`*.log`). Ensure the deployment
   volume hosting `AUDIT_LOG_PATH` is backed up alongside the database; the
   audit trail is the source of truth for who did what when.
+
+### Data lifecycle
+
+GDPR-style export and erasure endpoints are exposed on `/me`. Identity is
+taken from the verified JWT subject when a bearer token is present, and
+falls back to the `x-user-id` header for local development and CLI scripts
+in line with the rest of the API.
+
+- `GET /me/export` returns a JSON bundle of every audit trail entry
+  attributed to the caller, sent with an `attachment` content disposition
+  so a browser saves it as `med-tracker-export-<userId>.json`. The bundle
+  has a `schemaVersion` field so downstream parsers can evolve. Up to 1000
+  most recent entries are included; deployments with heavier audit volume
+  should back the export with an async job queue and object storage.
+- `DELETE /me` purges every audit entry attributed to the caller via
+  `AuditService.purgeActor`, which rewrites the JSONL log atomically
+  through a sibling temp file and a rename. The route then appends a
+  single `me.delete` tombstone entry recording the deletion (actor, count
+  removed, timestamp) so an operator can later prove the request was
+  honoured without retaining the user's prior activity.
+- Both endpoints require an authenticated caller and return 401 otherwise.
+  Unparseable lines in the audit log are preserved during a purge so data
+  the platform cannot attribute is never destroyed silently.
+- When a future Prisma-backed deployment adds per-user rows (notifications,
+  subscriptions, shared views), fan the deletion out from `DELETE /me` so
+  the audit log remains the source of truth for erasure scope.
 
 ### Error tracking
 

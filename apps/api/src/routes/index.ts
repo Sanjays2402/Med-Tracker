@@ -5,6 +5,8 @@ import { registerAuthSignup } from './auth-signup';
 import { registerAuthRefresh } from './auth-refresh';
 import { registerAuthLogout } from './auth-logout';
 import { registerMe } from './me';
+import { registerMeExport } from './me-export';
+import { registerMeDelete } from './me-delete';
 import { registerPreferences } from './preferences';
 import { registerMedications } from './medications';
 import { registerMedicationsId } from './medications-id';
@@ -74,6 +76,8 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerAuthRefresh(app);
   await registerAuthLogout(app);
   await registerMe(app);
+  await registerMeExport(app);
+  await registerMeDelete(app);
   await registerPreferences(app);
   await registerMedications(app);
   await registerMedicationsId(app);

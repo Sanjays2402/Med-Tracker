@@ -1,4 +1,4 @@
-import { mkdirSync, createWriteStream, existsSync, readFileSync, type WriteStream } from 'node:fs';
+import { mkdirSync, createWriteStream, existsSync, readFileSync, writeFileSync, renameSync, type WriteStream } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 
 /**
@@ -108,6 +108,52 @@ export class AuditService {
 
   filePath(): string {
     return this.path;
+  }
+
+  /**
+   * Remove every entry whose actor.id matches actorId. The log is rewritten
+   * atomically: we drain the in-flight stream, write the surviving lines to
+   * a sibling temp file, rename it into place, then reopen the append
+   * stream. Returns the number of entries removed so callers can audit the
+   * deletion itself.
+   *
+   * This is the storage primitive behind the GDPR right-to-erasure endpoint
+   * (DELETE /me). It is synchronous around the file swap so a concurrent
+   * writer cannot append between the read and the rename.
+   */
+  async purgeActor(actorId: string): Promise<number> {
+    if (!actorId) return 0;
+    if (!this.stream) throw new Error('AuditService closed');
+    // Pause appends by closing the current stream, swap the file, reopen.
+    const s = this.stream;
+    this.stream = null;
+    await new Promise<void>((res) => s.end(() => res()));
+
+    let removed = 0;
+    if (existsSync(this.path)) {
+      const raw = readFileSync(this.path, 'utf8');
+      const lines = raw.split('\n').filter(Boolean);
+      const kept: string[] = [];
+      for (const line of lines) {
+        try {
+          const entry = JSON.parse(line) as AuditEntry;
+          if (entry.actor?.id === actorId) {
+            removed += 1;
+            continue;
+          }
+          kept.push(line);
+        } catch {
+          // Preserve unparseable lines so we never destroy data we cannot
+          // attribute. Operators can inspect them out of band.
+          kept.push(line);
+        }
+      }
+      const tmp = this.path + '.purge.tmp';
+      writeFileSync(tmp, kept.length ? kept.join('\n') + '\n' : '');
+      renameSync(tmp, this.path);
+    }
+    this.stream = createWriteStream(this.path, { flags: 'a' });
+    return removed;
   }
 
   async close(): Promise<void> {
