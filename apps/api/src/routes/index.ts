@@ -50,6 +50,7 @@ import { registerNotificationsTest } from './notifications-test';
 import { registerRemindersEngineRun } from './reminders-engine-run';
 import { registerRemindersPending } from './reminders-pending';
 import { registerWebhooksPharmacy } from './webhooks-pharmacy';
+import { registerTitration } from './titration';
 import { registerAdminStats } from './admin-stats';
 import { registerAdminUsers } from './admin-users';
 
@@ -105,6 +106,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerRemindersEngineRun(app);
   await registerRemindersPending(app);
   await registerWebhooksPharmacy(app);
+  await registerTitration(app);
   await registerAdminStats(app);
   await registerAdminUsers(app);
 }

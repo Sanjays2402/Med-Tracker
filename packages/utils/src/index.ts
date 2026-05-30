@@ -18,3 +18,4 @@ export * from './validation';
 export * from './chunk';
 export * from './storage';
 export * from './result';
+export * from './titration';
