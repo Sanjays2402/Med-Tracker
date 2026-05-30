@@ -22,3 +22,4 @@ export * from './titration';
 export * from './pill-identifier';
 export * from './adherence-risk';
 export * from './schedule-resolver';
+export * from './caregiver-escalation';
