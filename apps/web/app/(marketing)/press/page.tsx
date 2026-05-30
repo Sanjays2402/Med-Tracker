@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Press — Med Tracker',
+  title: 'Press · Med Tracker',
   description: 'Press kit, brand assets, and contact information for journalists writing about Med Tracker.',
 };
 

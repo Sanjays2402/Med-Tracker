@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { User } from '@med/icons';
 
 export const metadata = {
-  title: 'Team — Med Tracker',
+  title: 'Team · Med Tracker',
   description: 'The people building Med Tracker.',
 };
 

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight } from '@med/icons';
 
 export const metadata = {
-  title: 'Blog — Med Tracker',
+  title: 'Blog · Med Tracker',
   description: 'Notes from the team behind Med Tracker on adherence, tooling, and open source.',
 };
 

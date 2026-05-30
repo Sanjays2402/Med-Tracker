@@ -136,9 +136,9 @@ export default function MedicationDetail() {
       )}
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-        <StatTile label="Adherence 7d" value={sched7dEst > 0 ? `${adherencePct}%` : '—'} hint={sched7dEst > 0 ? `${taken7d} of ${sched7dEst} doses` : 'no data yet'} accent={adherencePct >= 90 ? 'ok' : adherencePct >= 70 ? 'warn' : 'danger'} />
-        <StatTile label="On hand" value={med.remainingDoses ?? '—'} hint="doses remaining" accent={(med.remainingDoses ?? 0) < 10 ? 'danger' : (med.remainingDoses ?? 0) < 20 ? 'warn' : 'ok'} />
-        <StatTile label="Refill in" value={`${med.refillThresholdDays ?? '—'}d`} hint="threshold" />
+        <StatTile label="Adherence 7d" value={sched7dEst > 0 ? `${adherencePct}%` : 'n/a'} hint={sched7dEst > 0 ? `${taken7d} of ${sched7dEst} doses` : 'no data yet'} accent={adherencePct >= 90 ? 'ok' : adherencePct >= 70 ? 'warn' : 'danger'} />
+        <StatTile label="On hand" value={med.remainingDoses ?? 'n/a'} hint="doses remaining" accent={(med.remainingDoses ?? 0) < 10 ? 'danger' : (med.remainingDoses ?? 0) < 20 ? 'warn' : 'ok'} />
+        <StatTile label="Refill in" value={`${med.refillThresholdDays ? med.refillThresholdDays + 'd' : 'n/a'}`} hint="threshold" />
       </div>
 
       <Section title="Doses today">
