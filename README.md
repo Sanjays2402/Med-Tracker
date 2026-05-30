@@ -384,8 +384,8 @@ and excluded from the audit log.
     if the file already exists it is a regular writable file.
   - `jwt_secret`: `JWT_SECRET` is set, at least 16 characters, and is not
     a `dev-secret-change-me` style placeholder when `NODE_ENV=production`.
-  A failing readiness probe takes the pod out of the Service rotation but
-  leaves it running so it can recover without a restart loop.
+    A failing readiness probe takes the pod out of the Service rotation but
+    leaves it running so it can recover without a restart loop.
 - `GET /health` is kept as a backward compatible alias for `/livez`. It
   returns the same liveness payload plus `ok: true` so existing uptime
   checks and the v0 Helm chart continue to work. New callers should
@@ -426,13 +426,13 @@ Key generation priority (first match wins):
 
 Tier table (max requests per window):
 
-| Tier      | Limit         | Applied to                                                       |
-| --------- | ------------- | ---------------------------------------------------------------- |
-| `default` | 200 per 1m    | Every route by default                                           |
-| `auth`    | 10 per 1m     | `POST /auth/login`, `/auth/signup`, `/auth/refresh`              |
-| `export`  | 20 per 1h     | `GET /me/export`, `DELETE /me`, `GET /reports/export/{csv,pdf,json,ics}` |
-| `admin`   | 60 per 1m     | `GET /admin/{users,stats,audit}`                                 |
-| `heavy`   | 30 per 1m     | `POST /pills/identify`, `GET /interactions/graph`                |
+| Tier      | Limit      | Applied to                                                               |
+| --------- | ---------- | ------------------------------------------------------------------------ |
+| `default` | 200 per 1m | Every route by default                                                   |
+| `auth`    | 10 per 1m  | `POST /auth/login`, `/auth/signup`, `/auth/refresh`                      |
+| `export`  | 20 per 1h  | `GET /me/export`, `DELETE /me`, `GET /reports/export/{csv,pdf,json,ics}` |
+| `admin`   | 60 per 1m  | `GET /admin/{users,stats,audit}`                                         |
+| `heavy`   | 30 per 1m  | `POST /pills/identify`, `GET /interactions/graph`                        |
 
 Probe and scrape endpoints (`/livez`, `/readyz`, `/health`, `/metrics`)
 are allow-listed so liveness checks and Prometheus polling are never
@@ -617,6 +617,65 @@ message: "Internal server error", request_id }`. The original error
   `http_requests_total{status_code=~"5.."}` rate above baseline.
 - Use the `reqId` from the `x-request-id` response header to correlate a
   user-reported failure with API logs.
+
+### Container images
+
+Both services ship as hardened multi-stage Alpine images. The runner
+stage carries only compiled output plus pruned production `node_modules`,
+so dev tooling (vitest, tsx, typescript, eslint) never reaches
+production.
+
+Shared properties (`apps/api/Dockerfile`, `apps/web/Dockerfile`):
+
+- Four named stages: `base`, `deps`, `build`, `runner` (the API adds
+  `prod-deps` so dev dependencies are pruned cleanly before copy).
+- Pinned `NODE_VERSION` and `PNPM_VERSION` build args. pnpm is activated
+  through corepack so the lockfile version is honoured.
+- Non-root execution. A `med` user and group are created with uid/gid
+  `10001` and own every file copied into `/app`. The Helm chart enforces
+  the same uid via `podSecurityContext.runAsUser`.
+- `tini` is installed and declared as `ENTRYPOINT`, so the Node process
+  runs under PID 1 with proper SIGTERM forwarding and zombie reaping
+  during rolling restarts.
+- `HEALTHCHECK` calls the service's liveness path (`/livez` for API,
+  `/` for web) every 30 seconds with a 5 second timeout. Docker engines
+  and orchestrators that respect `HEALTHCHECK` will mark the container
+  unhealthy without external probes.
+- `NODE_ENV=production`, `NEXT_TELEMETRY_DISABLED=1` (web), and
+  `NODE_OPTIONS=--enable-source-maps` (api) are set in the runner stage.
+- OpenContainers (`org.opencontainers.image.*`) labels are attached for
+  registry metadata.
+
+The API runner declares `VOLUME /app/data` for the append-only audit log.
+This is the only path expected to be writable at runtime, which is
+compatible with `readOnlyRootFilesystem: true` in the Helm chart's
+`securityContext`.
+
+Build context lives at the repo root. A repo-level `.dockerignore`
+excludes `**/node_modules`, `.env*` (except `.env.example`), `.git`,
+build artefacts, tests, docs, and Helm so the context stays small and
+secrets cannot leak into image layers.
+
+Build locally:
+
+```bash
+docker build -f apps/api/Dockerfile -t med-tracker-api:dev .
+docker build -f apps/web/Dockerfile -t med-tracker-web:dev .
+```
+
+Or build the whole stack via compose:
+
+```bash
+docker compose build
+docker compose up
+```
+
+The Dockerfiles are statically linted in CI by `tests/dockerfile.test.sh`,
+which asserts the multi-stage layout, non-root user, healthcheck, tini
+entrypoint, production `NODE_ENV`, OCI labels, and `.dockerignore`
+coverage. When `hadolint` is available on the runner it is also invoked
+for syntax-level checks. The check runs as the `dockerfile-lint` job in
+`.github/workflows/ci.yml`.
 
 ## License
 
