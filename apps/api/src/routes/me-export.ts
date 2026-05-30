@@ -1,13 +1,15 @@
 import type { FastifyInstance } from 'fastify';
 import { meUserId } from './me';
+import { caregiverService } from '../services/caregiverInstance';
 
 /**
  * GET /me/export
  *
- * GDPR right-to-portability endpoint. Returns every audit trail entry the
- * authenticated user produced, as a single JSON document with a download
- * disposition. The format is intentionally raw JSON, not transformed, so
- * the user receives the same shape the platform stores internally.
+ * GDPR right-to-portability endpoint. Returns the personal data the platform
+ * stores for the authenticated user as a single JSON document with a
+ * download disposition. The format is intentionally raw JSON, not
+ * transformed, so the user receives the same shape the platform stores
+ * internally.
  *
  * Identity is taken from the JWT bearer (sub claim) when present, with the
  * x-user-id fallback used elsewhere in the API for dev and CLI flows.
@@ -18,6 +20,12 @@ import { meUserId } from './me';
  *   - userId               the actor id the export was scoped to
  *   - auditEntries         every audit entry attributed to this user, oldest first
  *   - auditEntryCount      length of auditEntries
+ *   - caregiverShares      every caregiver share the user has issued
+ *                          (sensitive fields like full token bytes are not
+ *                          stored server-side and so are not included; only
+ *                          the last 16 chars of the current signature are
+ *                          retained for display and audit)
+ *   - caregiverShareCount  length of caregiverShares
  *
  * The endpoint itself is excluded from the audit trail by the audit plugin's
  * SKIP_ROUTES list addition, since the request is a read and would otherwise
@@ -45,12 +53,16 @@ export async function registerMeExport(app: FastifyInstance) {
       .slice()
       .reverse(); // oldest first for human readability
 
+    const caregiverShares = caregiverService().list(userId);
+
     const bundle = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       exportedAt: new Date().toISOString(),
       userId,
       auditEntries,
       auditEntryCount: auditEntries.length,
+      caregiverShares,
+      caregiverShareCount: caregiverShares.length,
     };
 
     reply.header('content-type', 'application/json; charset=utf-8');

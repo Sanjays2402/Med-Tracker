@@ -135,6 +135,24 @@ export class CaregiverService {
     return true;
   }
 
+  /**
+   * Purge every share owned by a user. Used by the GDPR right-to-erasure
+   * endpoint (DELETE /me) so caregiver tokens issued by the deleted user
+   * stop verifying immediately, even before garbage collection of the
+   * in-memory map. Returns the number of shares removed so the caller can
+   * report it to the user and record it in the deletion tombstone.
+   */
+  purgeUser(userId: string): number {
+    let removed = 0;
+    for (const [sid, share] of this.shares) {
+      if (share.userId === userId) {
+        this.shares.delete(sid);
+        removed += 1;
+      }
+    }
+    return removed;
+  }
+
   list(userId: string): CaregiverShareRecord[] {
     return Array.from(this.shares.values()).filter((s) => s.userId === userId);
   }

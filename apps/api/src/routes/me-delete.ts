@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { meUserId } from './me';
+import { caregiverService } from '../services/caregiverInstance';
 
 /**
  * DELETE /me
@@ -33,6 +34,7 @@ export async function registerMeDelete(app: FastifyInstance) {
     }
 
     const removed = await app.audit.purgeActor(userId);
+    const removedCaregiverShares = caregiverService().purgeUser(userId);
 
     // Tombstone. Recorded after the purge so it is not itself removed.
     await app.audit.record({
@@ -43,13 +45,14 @@ export async function registerMeDelete(app: FastifyInstance) {
       status: 200,
       reqId: req.id,
       ip: req.ip,
-      meta: { removedEntries: removed },
+      meta: { removedEntries: removed, removedCaregiverShares },
     });
 
     return reply.send({
       ok: true,
       userId,
       removedAuditEntries: removed,
+      removedCaregiverShares,
       deletedAt: new Date().toISOString(),
     });
   });

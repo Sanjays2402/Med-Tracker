@@ -565,23 +565,31 @@ falls back to the `x-user-id` header for local development and CLI scripts
 in line with the rest of the API.
 
 - `GET /me/export` returns a JSON bundle of every audit trail entry
-  attributed to the caller, sent with an `attachment` content disposition
-  so a browser saves it as `med-tracker-export-<userId>.json`. The bundle
-  has a `schemaVersion` field so downstream parsers can evolve. Up to 1000
-  most recent entries are included; deployments with heavier audit volume
-  should back the export with an async job queue and object storage.
+  attributed to the caller plus the caregiver shares the caller has
+  issued, sent with an `attachment` content disposition so a browser
+  saves it as `med-tracker-export-<userId>.json`. The bundle has a
+  `schemaVersion` field (currently `2`) so downstream parsers can evolve.
+  Up to 1000 most recent audit entries are included; deployments with
+  heavier audit volume should back the export with an async job queue
+  and object storage. Caregiver shares are returned with only the last
+  16 chars of the current token signature, never the raw token bytes
+  (which the server does not retain).
 - `DELETE /me` purges every audit entry attributed to the caller via
   `AuditService.purgeActor`, which rewrites the JSONL log atomically
-  through a sibling temp file and a rename. The route then appends a
-  single `me.delete` tombstone entry recording the deletion (actor, count
-  removed, timestamp) so an operator can later prove the request was
-  honoured without retaining the user's prior activity.
+  through a sibling temp file and a rename, then purges every caregiver
+  share owned by the caller via `CaregiverService.purgeUser` so any
+  outstanding share tokens immediately fail verification with
+  `unknown_share`. The route then appends a single `me.delete` tombstone
+  entry recording the deletion (actor, audit entries removed, caregiver
+  shares removed, timestamp) so an operator can later prove the request
+  was honoured without retaining the user's prior activity.
 - Both endpoints require an authenticated caller and return 401 otherwise.
   Unparseable lines in the audit log are preserved during a purge so data
   the platform cannot attribute is never destroyed silently.
-- When a future Prisma-backed deployment adds per-user rows (notifications,
-  subscriptions, shared views), fan the deletion out from `DELETE /me` so
-  the audit log remains the source of truth for erasure scope.
+- When a future Prisma-backed deployment adds further per-user rows
+  (notifications, subscriptions, shared views), fan the deletion out
+  from `DELETE /me` alongside the existing audit log and caregiver share
+  purges so erasure stays exhaustive.
 
 ### Error tracking
 

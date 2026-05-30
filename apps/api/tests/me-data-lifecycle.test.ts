@@ -101,7 +101,7 @@ describe('me data lifecycle (GDPR)', () => {
         auditEntries: Array<{ actor: { id: string } | null; action: string }>;
         auditEntryCount: number;
       };
-      expect(bundle.schemaVersion).toBe(1);
+      expect(bundle.schemaVersion).toBe(2);
       expect(bundle.userId).toBe('user_alice');
       expect(bundle.auditEntryCount).toBeGreaterThanOrEqual(2);
       for (const e of bundle.auditEntries) {
@@ -156,6 +156,57 @@ describe('me data lifecycle (GDPR)', () => {
         auditEntries: Array<{ action: string }>;
       };
       expect(afterBundle.auditEntries.every((e) => e.action === 'me.delete')).toBe(true);
+    } finally {
+      await app.close();
+    }
+  });
+
+  it('includes caregiver shares in export and purges them on delete', async () => {
+    const { build } = await import('../src/server');
+    const { caregiverService } = await import('../src/services/caregiverInstance');
+    const app = await build();
+    try {
+      const alice = { 'x-user-id': 'user_alice_cg' };
+      const bob = { 'x-user-id': 'user_bob_cg' };
+
+      const svc = caregiverService();
+      svc.issue({ userId: 'user_alice_cg', label: 'Dr Adams', scopes: ['view-meds'] });
+      svc.issue({ userId: 'user_alice_cg', label: 'Spouse', scopes: ['view-adherence', 'view-refills'] });
+      svc.issue({ userId: 'user_bob_cg', label: 'Dr Brown', scopes: ['view-meds'] });
+
+      const ex = await app.inject({ method: 'GET', url: '/me/export', headers: alice });
+      expect(ex.statusCode).toBe(200);
+      const bundle = ex.json() as {
+        schemaVersion: number;
+        caregiverShares: Array<{ userId: string; label: string }>;
+        caregiverShareCount: number;
+      };
+      expect(bundle.schemaVersion).toBe(2);
+      expect(bundle.caregiverShareCount).toBe(2);
+      for (const s of bundle.caregiverShares) {
+        expect(s.userId).toBe('user_alice_cg');
+      }
+      // Bob's share must not leak.
+      expect(bundle.caregiverShares.find((s) => s.label === 'Dr Brown')).toBeUndefined();
+
+      const del = await app.inject({ method: 'DELETE', url: '/me', headers: alice });
+      expect(del.statusCode).toBe(200);
+      const body = del.json() as { removedCaregiverShares: number };
+      expect(body.removedCaregiverShares).toBe(2);
+
+      // Alice has no shares left, Bob still has his.
+      expect(svc.list('user_alice_cg').length).toBe(0);
+      expect(svc.list('user_bob_cg').length).toBe(1);
+
+      // A follow-up export reflects the purge.
+      const after = await app.inject({ method: 'GET', url: '/me/export', headers: alice });
+      const afterBundle = after.json() as { caregiverShareCount: number };
+      expect(afterBundle.caregiverShareCount).toBe(0);
+
+      // Bob is unaffected.
+      const bobEx = await app.inject({ method: 'GET', url: '/me/export', headers: bob });
+      const bobBundle = bobEx.json() as { caregiverShareCount: number };
+      expect(bobBundle.caregiverShareCount).toBe(1);
     } finally {
       await app.close();
     }
