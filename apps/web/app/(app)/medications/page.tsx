@@ -29,10 +29,11 @@ export default function MedicationsPage() {
     <div className="space-y-6">
       <header className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Medications</h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">{meds?.length ?? 0} active</p>
+          <div className="eyebrow">your pillbox</div>
+          <h1 className="display text-[36px] leading-none tracking-tight mt-1">Medications</h1>
+          <p className="text-[13px] text-[var(--ink-muted)] mt-2">{meds?.length ?? 0} on file</p>
         </div>
-        <Link href="/medications/new"><Btn variant="primary">Add medication</Btn></Link>
+        <Link href="/medications/new"><Btn variant="primary">Add a medication</Btn></Link>
       </header>
 
       <Surface className="p-2">
@@ -50,12 +51,12 @@ export default function MedicationsPage() {
         meds.length === 0 ? (
           <Empty
             icon={<PillIcon size={32} />}
-            title="No medications yet"
-            description="Add your first medication to start tracking doses, schedules, and refills."
-            action={<Link href="/medications/new"><Btn variant="primary" size="sm">Add medication</Btn></Link>}
+            title="An empty pillbox"
+            description="Add your first medication. Doses, refills, and reminders wire themselves up."
+            action={<Link href="/medications/new"><Btn variant="primary" size="sm">Add a medication</Btn></Link>}
           />
         ) : (
-          <Empty title="No matches" description={`No medications match "${query}".`} />
+          <Empty title="Nothing matches" description={`No medications match "${query}".`} />
         )
       ) : (
         <Surface>

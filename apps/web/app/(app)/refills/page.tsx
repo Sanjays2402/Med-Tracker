@@ -43,8 +43,9 @@ export default function RefillsPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight">Refills</h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">Track what needs to be reordered and what is ready to pick up.</p>
+        <div className="eyebrow">pharmacy</div>
+        <h1 className="display text-[36px] leading-none tracking-tight mt-1">Refills</h1>
+        <p className="text-[13px] text-[var(--ink-muted)] mt-2">What needs reordering. What's ready to pick up.</p>
       </header>
 
       {refills === null ? (
@@ -52,8 +53,8 @@ export default function RefillsPage() {
       ) : refills.length === 0 ? (
         <Empty
           icon={<ChartBar size={32} />}
-          title="No refills to show"
-          description="Refills appear here as medications run low."
+          title="Bottles look full"
+          description="Refills show up here as medications run low."
         />
       ) : (
         <div className="space-y-6">

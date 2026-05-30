@@ -32,8 +32,9 @@ export default function UpcomingPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight">Upcoming</h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">Doses still pending today.</p>
+        <div className="eyebrow">still to come</div>
+        <h1 className="display text-[36px] leading-none tracking-tight mt-1">Upcoming</h1>
+        <p className="text-[13px] text-[var(--ink-muted)] mt-2">Doses still pending today.</p>
       </header>
 
       {doses === null ? (
@@ -41,8 +42,8 @@ export default function UpcomingPage() {
       ) : upcoming.length === 0 ? (
         <Empty
           icon={<Bell size={28} />}
-          title="No upcoming doses"
-          description="Everything for today is logged. Check back later."
+          title="Pillbox is closed for today"
+          description="Every dose for today is logged. We'll line tomorrow up overnight."
           action={<Link href="/today"><Btn size="sm">Open today</Btn></Link>}
         />
       ) : (

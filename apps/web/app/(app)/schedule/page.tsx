@@ -46,8 +46,9 @@ export default function SchedulePage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight">Schedule</h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">The next seven days at a glance.</p>
+        <div className="eyebrow">the week ahead</div>
+        <h1 className="display text-[36px] leading-none tracking-tight mt-1">Schedule</h1>
+        <p className="text-[13px] text-[var(--ink-muted)] mt-2">The next seven days, in one view.</p>
       </header>
 
       {schedules === null ? (
@@ -55,8 +56,8 @@ export default function SchedulePage() {
       ) : (schedules.length === 0) ? (
         <Empty
           icon={<Calendar size={32} />}
-          title="No schedules yet"
-          description="Add a medication and set its dosing times to populate the schedule."
+          title="A blank calendar"
+          description="Add a medication and set its dosing times. The week fills itself in."
           action={<Link href="/medications/new"><Btn variant="primary" size="sm">Add medication</Btn></Link>}
         />
       ) : (
