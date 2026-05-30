@@ -83,11 +83,22 @@ let localRefills = [...SEED_REFILLS];
 export async function listMedications(): Promise<Medication[]> {
   try {
     const res = await api.get<unknown>('/medications');
-    return unwrap<Medication[]>(res, 'medications', localMeds);
+    return unwrap<Medication[]>(res, 'medications', localMeds.filter(m => !m.archived));
   } catch (e) {
     if (e instanceof ApiError && e.status >= 500) throw e;
-    return localMeds;
+    return localMeds.filter(m => !m.archived);
   }
+}
+
+export async function listArchivedMedications(): Promise<Medication[]> {
+  try {
+    const res = await api.get<unknown>('/medications?archived=true');
+    const arr = unwrap<Medication[]>(res, 'medications', []);
+    if (arr.length) return arr.filter(m => m.archived);
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  return localMeds.filter(m => m.archived);
 }
 
 export async function getMedication(id: string): Promise<Medication | null> {
@@ -119,11 +130,20 @@ export async function createMedication(input: Omit<Medication, 'id'>): Promise<M
 
 export async function archiveMedication(id: string): Promise<void> {
   try {
-    await api.delete(`/medications/${id}`);
+    await api.post(`/medications/${id}/archive`, {});
   } catch (e) {
     if (e instanceof ApiError && e.status >= 500) throw e;
   }
-  localMeds = localMeds.filter(m => m.id !== id);
+  localMeds = localMeds.map(m => m.id === id ? { ...m, archived: true } : m);
+}
+
+export async function activateMedication(id: string): Promise<void> {
+  try {
+    await api.post(`/medications/${id}/activate`, {});
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  localMeds = localMeds.map(m => m.id === id ? { ...m, archived: false } : m);
 }
 
 export async function listTodayDoses(): Promise<DoseEvent[]> {
@@ -386,4 +406,32 @@ function hashString(s: string): number {
   let h = 0;
   for (let i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) | 0; }
   return Math.abs(h);
+}
+
+export interface InteractionReport {
+  pairs: Array<{ a: string; b: string; severity: 'low' | 'moderate' | 'high'; note?: string }>;
+  unknownDrugIds: string[];
+}
+
+export async function checkInteractions(drugIds: string[]): Promise<InteractionReport> {
+  if (drugIds.length === 0) return { pairs: [], unknownDrugIds: [] };
+  try {
+    const res = await api.post<unknown>('/interactions/check', { drugIds });
+    if (res && typeof res === 'object') {
+      const r = res as any;
+      if (Array.isArray(r.pairs) || Array.isArray(r.interactions)) {
+        return {
+          pairs: r.pairs ?? r.interactions ?? [],
+          unknownDrugIds: r.unknownDrugIds ?? r.unknown ?? [],
+        };
+      }
+    }
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  return { pairs: [], unknownDrugIds: drugIds };
+}
+
+export function medicationNameToDrugId(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
