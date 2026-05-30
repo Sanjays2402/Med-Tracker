@@ -5,12 +5,16 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Pill as PillIcon, Calendar, ChartBar, Bell, CalendarCheck } from '@med/icons';
 import { Btn, Surface, Section, ErrorBox, SkeletonRow, Pill, StatTile, formatTime, formatDate } from '../../../../components/uikit';
-import { getMedication, listTodayDoses, listSchedules, listRefills, logDose, getAdherence } from '../../../../lib/data';
+import { useRouter } from 'next/navigation';
+import { getMedication, listTodayDoses, listSchedules, listRefills, logDose, getAdherence, archiveMedication } from '../../../../lib/data';
 import type { Medication, DoseEvent, ScheduleEntry, Refill, AdherenceSummary } from '../../../../lib/types';
 
 export default function MedicationDetail() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const id = params?.id;
+  const [archiving, setArchiving] = React.useState(false);
+  const [confirmArchive, setConfirmArchive] = React.useState(false);
   const [med, setMed] = React.useState<Medication | null>(null);
   const [doses, setDoses] = React.useState<DoseEvent[]>([]);
   const [schedules, setSchedules] = React.useState<ScheduleEntry[]>([]);
@@ -91,6 +95,36 @@ export default function MedicationDetail() {
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight">{med.name} <span className="text-neutral-500 font-normal">{med.strength}</span></h1>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">{med.form ?? ''} {med.schedule ? `, ${med.schedule}` : ''}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {confirmArchive ? (
+            <>
+              <span className="text-xs text-neutral-500 dark:text-neutral-400">Archive this medication?</span>
+              <Btn size="sm" variant="ghost" onClick={() => setConfirmArchive(false)} disabled={archiving}>Cancel</Btn>
+              <Btn
+                size="sm"
+                variant="primary"
+                disabled={archiving}
+                onClick={async () => {
+                  if (!id) return;
+                  setArchiving(true);
+                  setError(null);
+                  try {
+                    await archiveMedication(id);
+                    router.push('/medications');
+                  } catch (e) {
+                    setError(e instanceof Error ? e.message : 'Could not archive.');
+                    setArchiving(false);
+                    setConfirmArchive(false);
+                  }
+                }}
+              >
+                {archiving ? 'Archiving...' : 'Confirm'}
+              </Btn>
+            </>
+          ) : (
+            <Btn size="sm" variant="ghost" onClick={() => setConfirmArchive(true)}>Archive</Btn>
+          )}
         </div>
       </header>
 

@@ -117,6 +117,15 @@ export async function createMedication(input: Omit<Medication, 'id'>): Promise<M
   return created;
 }
 
+export async function archiveMedication(id: string): Promise<void> {
+  try {
+    await api.delete(`/medications/${id}`);
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  localMeds = localMeds.filter(m => m.id !== id);
+}
+
 export async function listTodayDoses(): Promise<DoseEvent[]> {
   try {
     const res = await api.get<unknown>('/doses/today');
