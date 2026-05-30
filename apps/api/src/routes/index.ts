@@ -60,6 +60,7 @@ import { registerTitration } from './titration';
 import { registerPillsIdentify } from './pills-identify';
 import { registerRiskAdherence } from './risk-adherence';
 import { registerCostAlternatives } from './cost-alternatives';
+import { registerSideEffectsCorrelate } from './side-effects-correlate';
 import { registerAdminStats } from './admin-stats';
 import { registerAdminUsers } from './admin-users';
 
@@ -125,6 +126,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerPillsIdentify(app);
   await registerRiskAdherence(app);
   await registerCostAlternatives(app);
+  await registerSideEffectsCorrelate(app);
   await registerAdminStats(app);
   await registerAdminUsers(app);
 }
