@@ -20,6 +20,8 @@ export interface SeverityRule {
   severity: SeverityLevel;
   mechanism: string;
   action: string;
+  /** Stable rule identifier surfaced in results and logs. */
+  rule: string;
 }
 
 export interface ScoredInteraction extends Interaction {
