@@ -25,6 +25,7 @@ import { registerDosesUpcoming } from './doses-upcoming';
 import { registerDosesHistory } from './doses-history';
 import { registerStreaks } from './streaks';
 import { registerStreaksId } from './streaks-id';
+import { registerStreaksForecast } from './streaks-forecast';
 import { registerRefills } from './refills';
 import { registerRefillsId } from './refills-id';
 import { registerRefillsNeeded } from './refills-needed';
@@ -86,6 +87,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerDosesHistory(app);
   await registerStreaks(app);
   await registerStreaksId(app);
+  await registerStreaksForecast(app);
   await registerRefills(app);
   await registerRefillsId(app);
   await registerRefillsNeeded(app);
