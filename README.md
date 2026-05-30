@@ -234,6 +234,38 @@ Other
 
 Production-facing concerns for running the API service.
 
+### Configuration validation
+
+Every API process validates its environment at boot with a zod schema in
+`apps/api/src/env.ts`. The process exits with a non-zero status and a list
+of problems if anything is wrong, so a misconfigured deployment never starts
+serving traffic with unsafe defaults.
+
+General checks:
+
+- `NODE_ENV` must be `development`, `test`, or `production`.
+- `PORT` is coerced to an integer in `1..65535`.
+- `LOG_LEVEL` must be a known pino level.
+- `WEB_ORIGIN` must be a valid URL.
+- `SENTRY_TRACES_SAMPLE_RATE` must be in `[0, 1]`.
+- Whitespace is trimmed from string values before validation.
+
+Additional production rails (`NODE_ENV=production`):
+
+- `JWT_SECRET` must be at least 32 characters and must not be the dev
+  placeholder.
+- `WEB_ORIGIN` must be `https://` and must not resolve to `localhost`,
+  `127.0.0.1`, or `0.0.0.0`. Cluster-internal hosts ending in
+  `.cluster.local` are allowed over http for service-to-service traffic.
+- `ADMIN_TOKEN`, when set, must be at least 24 characters so a weak token
+  cannot become the only protection on `/admin/audit`.
+
+The loader aggregates every problem into a single error block so an operator
+gets the full diff in one boot log line instead of fixing one variable at a
+time. To probe the schema from a script or test without touching
+`process.env`, import `parseEnv` from `apps/api/src/env.ts` and pass an
+object. See `apps/api/tests/env.test.ts` for the full contract.
+
 ### Observability
 
 The API exposes Prometheus metrics, propagates request ids, and emits

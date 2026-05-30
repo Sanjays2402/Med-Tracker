@@ -43,7 +43,8 @@ function actionFor(method: string, route: string): string {
 }
 
 const plugin: FastifyPluginAsync = async (app) => {
-  const audit = new AuditService(process.env.AUDIT_LOG_PATH ?? './data/audit.log');
+  const { env } = await import('../env');
+  const audit = new AuditService(env.AUDIT_LOG_PATH);
   app.decorate('audit', audit);
 
   app.addHook('onResponse', async (req: FastifyRequest, reply: FastifyReply) => {

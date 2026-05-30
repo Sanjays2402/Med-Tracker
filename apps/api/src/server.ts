@@ -12,13 +12,13 @@ import auditPlugin from './plugins/audit';
 import sentryPlugin from './plugins/sentry';
 
 export async function build() {
-  const isProd = process.env.NODE_ENV === 'production';
+  const isProd = env.NODE_ENV === 'production';
   const app = Fastify({
     // Use pino-pretty in dev only; production emits structured JSON for log
     // aggregation (Loki, CloudWatch, Datadog, etc.).
     logger: isProd
-      ? { level: process.env.LOG_LEVEL ?? 'info' }
-      : { level: process.env.LOG_LEVEL ?? 'info', transport: { target: 'pino-pretty' } },
+      ? { level: env.LOG_LEVEL }
+      : { level: env.LOG_LEVEL, transport: { target: 'pino-pretty' } },
     // Disable Fastify's built-in request/response log lines; our logging
     // plugin emits a single structured `request_completed` event instead.
     disableRequestLogging: true,
