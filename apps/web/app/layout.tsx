@@ -1,18 +1,33 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter_Tight, Fraunces } from 'next/font/google';
 import './globals.css';
 
+const sansBody = Inter_Tight({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sans-body',
+  weight: ['400', '500', '600', '700'],
+});
+
+const serifDisplay = Fraunces({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-serif-display',
+  axes: ['opsz', 'SOFT'],
+});
+
 export const metadata: Metadata = {
-  title: 'Med-Tracker',
-  description: 'Open source medication adherence tracker.',
+  title: 'Med Tracker',
+  description: 'A calm, clinical pillbox. Track doses, refills, and adherence.',
   manifest: '/manifest.webmanifest',
 };
 
-export const viewport: Viewport = { themeColor: '#2aa06b' };
+export const viewport: Viewport = { themeColor: '#faf7f2' };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+    <html lang="en" className={`${sansBody.variable} ${serifDisplay.variable}`}>
+      <body className="font-sans antialiased">
         {children}
       </body>
     </html>

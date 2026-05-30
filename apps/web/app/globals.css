@@ -1,22 +1,298 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Med Tracker design tokens
+   Identity: calm, clinical, warm. Pharmacy-printout meets
+   Apple Health. Pill capsules are the recurring shape language.
+   ============================================================ */
+
 @theme {
-  --color-brand-50: #eef9f4;
-  --color-brand-100: #d6f1e3;
-  --color-brand-200: #aee2c8;
-  --color-brand-300: #7dcfa8;
-  --color-brand-400: #4cb886;
-  --color-brand-500: #2aa06b;
-  --color-brand-600: #1d8055;
-  --color-brand-700: #196745;
-  --color-brand-800: #175238;
-  --color-brand-900: #10402c;
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  /* Brand kept for backwards compat, but recolored to sage */
+  --color-brand-50:  #f1f5f1;
+  --color-brand-100: #dde8de;
+  --color-brand-200: #bcd1bf;
+  --color-brand-300: #97b89c;
+  --color-brand-400: #7ba282;
+  --color-brand-500: #6b8f71;
+  --color-brand-600: #547359;
+  --color-brand-700: #445c48;
+  --color-brand-800: #364a39;
+  --color-brand-900: #2a3a2d;
+
+  /* Warm paper */
+  --color-paper-50:  #fdfbf6;
+  --color-paper-100: #faf7f2;
+  --color-paper-200: #f3eee4;
+  --color-paper-300: #e7e0d2;
+  --color-paper-400: #d4cbb8;
+  --color-paper-500: #b7ad97;
+
+  /* Warm ink */
+  --color-ink-50:  #f6f3ee;
+  --color-ink-100: #ddd7cc;
+  --color-ink-200: #b9b1a3;
+  --color-ink-300: #8c8377;
+  --color-ink-400: #5e574d;
+  --color-ink-500: #3d3832;
+  --color-ink-600: #2a2622;
+  --color-ink-700: #1f1c19;
+  --color-ink-800: #1a1714;
+  --color-ink-900: #100e0c;
+
+  /* Sage accent */
+  --color-sage-50:  #eef4ef;
+  --color-sage-100: #d8e6db;
+  --color-sage-200: #b3ccb8;
+  --color-sage-300: #8db09a;
+  --color-sage-400: #759885;
+  --color-sage-500: #6b8f71;
+  --color-sage-600: #547359;
+  --color-sage-700: #445c48;
+
+  /* Coral, used for overdue + accents */
+  --color-coral-50:  #fdeee8;
+  --color-coral-100: #fbd9cd;
+  --color-coral-200: #f4b29a;
+  --color-coral-300: #ec8a69;
+  --color-coral-400: #e07856;
+  --color-coral-500: #c95f3e;
+  --color-coral-600: #a64a2e;
+  --color-coral-700: #823824;
+
+  /* Amber, used for upcoming */
+  --color-amber-50:  #fbf3e2;
+  --color-amber-100: #f4e1b4;
+  --color-amber-200: #ecc97a;
+  --color-amber-300: #d8a64b;
+  --color-amber-400: #b78534;
+  --color-amber-500: #8f6726;
+
+  /* Fonts wired to next/font CSS variables */
+  --font-sans:    var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
+  --font-serif:   var(--font-serif-display), ui-serif, Georgia, serif;
+  --font-mono:    ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Radii: pill-first shape language */
+  --radius-pill: 9999px;
+  --radius-capsule: 14px;
+  --radius-card: 18px;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-:root { color-scheme: light dark; }
+/* ---------- Semantic vars (light) ---------- */
+:root {
+  color-scheme: light dark;
+
+  --bg:           #faf7f2;      /* paper */
+  --bg-elev:      #fdfbf6;      /* card */
+  --bg-sunk:      #f3eee4;      /* rail track */
+  --line:         #e7e0d2;
+  --line-soft:    #efe9dd;
+  --ink:          #1a1714;
+  --ink-soft:     #5e574d;
+  --ink-muted:    #8c8377;
+  --accent:       #6b8f71;      /* sage */
+  --accent-soft:  #d8e6db;
+  --accent-ink:   #2f5238;
+
+  --ok:           #547359;
+  --ok-bg:        #e6efe7;
+  --warn:         #b78534;
+  --warn-bg:      #f7ead0;
+  --danger:       #c95f3e;
+  --danger-bg:    #fbe2d6;
+  --info:         #4d6b88;
+  --info-bg:      #e2ebf3;
+}
+
+/* ---------- Semantic vars (dark, warm) ---------- */
+.dark {
+  --bg:           #16130f;
+  --bg-elev:      #1f1b16;
+  --bg-sunk:      #110e0a;
+  --line:         #2c2620;
+  --line-soft:    #241f1a;
+  --ink:          #f1ebde;
+  --ink-soft:     #c2b9a6;
+  --ink-muted:    #8a8170;
+  --accent:       #97b89c;
+  --accent-soft:  #2d3d31;
+  --accent-ink:   #c5dcca;
+
+  --ok:           #97b89c;
+  --ok-bg:        #243027;
+  --warn:         #d8a64b;
+  --warn-bg:      #3a2e16;
+  --danger:       #ec8a69;
+  --danger-bg:    #3a1e12;
+  --info:         #8fb0c8;
+  --info-bg:      #1f2a35;
+}
 
 html, body { height: 100%; }
-body { font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+html { background: var(--bg); }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Subtle pharmacy-paper texture: two soft radial washes */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(900px 600px at 12% -10%, rgba(107,143,113,0.06), transparent 60%),
+    radial-gradient(900px 600px at 110% 10%, rgba(224,120,86,0.05), transparent 60%);
+}
+.dark body::before {
+  background:
+    radial-gradient(900px 600px at 12% -10%, rgba(151,184,156,0.05), transparent 60%),
+    radial-gradient(900px 600px at 110% 10%, rgba(236,138,105,0.04), transparent 60%);
+}
+
+/* Headlines use the serif display by default when given .display */
+.display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.018em;
+  font-feature-settings: "ss01", "ss02", "liga";
+  /* Fraunces optical sizing */
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ---------- Capsule motif ---------- */
+.capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 500;
+  background: var(--bg-sunk);
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+}
+.capsule-lg { padding: 8px 16px; font-size: 13px; }
+.capsule-ok      { background: var(--ok-bg);     color: var(--ok);     border-color: transparent; }
+.capsule-warn    { background: var(--warn-bg);   color: var(--warn);   border-color: transparent; }
+.capsule-danger  { background: var(--danger-bg); color: var(--danger); border-color: transparent; }
+.capsule-info    { background: var(--info-bg);   color: var(--info);   border-color: transparent; }
+.capsule-accent  { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; }
+
+/* The actual pill SVG-ish shape, used as a marker */
+.pill-mark {
+  position: relative;
+  display: inline-block;
+  width: 28px;
+  height: 12px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--accent) 0 50%, var(--accent-soft) 50% 100%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+}
+.pill-mark::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0,0,0,0.12);
+}
+.pill-mark-lg { width: 56px; height: 22px; }
+.pill-mark-warn   { background: linear-gradient(90deg, var(--warn) 0 50%, var(--warn-bg) 50% 100%); }
+.pill-mark-danger { background: linear-gradient(90deg, var(--danger) 0 50%, var(--danger-bg) 50% 100%); }
+.pill-mark-ok     { background: linear-gradient(90deg, var(--ok) 0 50%, var(--ok-bg) 50% 100%); }
+
+/* ---------- Card / sheet ---------- */
+.sheet {
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  position: relative;
+  z-index: 1;
+}
+.sheet-sunk {
+  background: var(--bg-sunk);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-card);
+}
+
+/* ---------- Pharmacy printout divider ---------- */
+.divider-script {
+  height: 1px;
+  background-image: linear-gradient(to right, var(--line) 50%, transparent 50%);
+  background-size: 8px 1px;
+  background-repeat: repeat-x;
+}
+
+/* ---------- Micro-interactions ---------- */
+@keyframes pillPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(0.92); }
+  70%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.anim-pop { animation: pillPop 360ms cubic-bezier(.22,1.4,.36,1) both; }
+
+@keyframes overduePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,95,62,0.45); }
+  50%      { box-shadow: 0 0 0 8px rgba(201,95,62,0); }
+}
+.anim-overdue { animation: overduePulse 1.8s ease-in-out infinite; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-in { animation: fadeUp 240ms ease-out both; }
+
+@keyframes checkSweep {
+  from { stroke-dashoffset: 24; }
+  to   { stroke-dashoffset: 0; }
+}
+.check-sweep path {
+  stroke-dasharray: 24;
+  animation: checkSweep 320ms ease-out forwards;
+}
+
+/* Subtle haptic-like button press */
+button, [role="button"] { transition: transform 120ms ease, background-color 160ms ease, color 160ms ease, border-color 160ms ease; }
+button:active:not(:disabled), [role="button"]:active { transform: scale(0.97); }
+
+/* Focus ring tuned to sage */
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Scrollbar in warm tones */
+* { scrollbar-color: var(--line) transparent; scrollbar-width: thin; }
+*::-webkit-scrollbar { height: 8px; width: 8px; }
+*::-webkit-scrollbar-thumb { background: var(--line); border-radius: 9999px; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .anim-pop, .anim-overdue, .anim-in, .check-sweep path { animation: none !important; }
+  button:active:not(:disabled), [role="button"]:active { transform: none; }
+}
