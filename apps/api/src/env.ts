@@ -16,4 +16,12 @@ export const env = {
    * misconfigured deployment.
    */
   ADMIN_TOKEN: process.env.ADMIN_TOKEN ?? '',
+  /**
+   * Sentry DSN. When unset Sentry initialisation is skipped and errors are
+   * only logged. Set this in staging and production to ship server side
+   * errors to Sentry with request id, route, method, and user context.
+   */
+  SENTRY_DSN: process.env.SENTRY_DSN ?? '',
+  SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT ?? process.env.NODE_ENV ?? 'development',
+  SENTRY_RELEASE: process.env.SENTRY_RELEASE ?? '',
 };

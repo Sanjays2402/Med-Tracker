@@ -21,6 +21,7 @@
     "@med/db": "workspace:*",
     "@med/types": "workspace:*",
     "@med/utils": "workspace:*",
+    "@sentry/node": "^8",
     "fastify": "^5.8.5",
     "fastify-plugin": "^5.0.1",
     "pino-pretty": "^11.2.0",

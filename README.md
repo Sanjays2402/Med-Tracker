@@ -322,6 +322,33 @@ request is appended to a tamper resistant JSONL trail.
   volume hosting `AUDIT_LOG_PATH` is backed up alongside the database; the
   audit trail is the source of truth for who did what when.
 
+### Error tracking
+
+Unhandled exceptions in route handlers are captured by a single Fastify
+error handler that ships them to Sentry when configured. When Sentry is
+disabled the handler still normalises responses so clients always receive a
+consistent error envelope.
+
+- Set `SENTRY_DSN` to enable. `SENTRY_ENVIRONMENT` defaults to `NODE_ENV`,
+  and `SENTRY_RELEASE` should be set to your build SHA so source maps and
+  regressions can be tracked. `SENTRY_TRACES_SAMPLE_RATE` defaults to `0`
+  (errors only, no performance traces). Leave `SENTRY_DSN` empty in dev and
+  CI so no network calls are made.
+- Captured events are tagged with `request_id`, `http.method`, and
+  `http.route`. When the request carries a verified JWT the user id and
+  email are attached to the Sentry scope. The original error stack and the
+  request URL go into the `request` context.
+- Response envelope for 500s is `{ error: "internal_server_error",
+  message: "Internal server error", request_id }`. The original error
+  message is logged at error level with the request id but never returned
+  to the client, so internal stack details cannot leak via responses.
+- 4xx errors (validation, auth, not found) are passed through with their
+  original message and are not sent to Sentry, keeping the issue stream
+  focused on real server faults.
+- During graceful shutdown the API waits up to 2 seconds for in-flight
+  Sentry events to flush before the process exits, so the last burst of
+  errors before a SIGTERM is not lost.
+
 ### On-call
 
 - Primary alerts: `up{job="med-api"} == 0` for 2 minutes, p95 of
