@@ -308,6 +308,33 @@ time. To probe the schema from a script or test without touching
 `process.env`, import `parseEnv` from `apps/api/src/env.ts` and pass an
 object. See `apps/api/tests/env.test.ts` for the full contract.
 
+### API documentation
+
+The API publishes its contract as a live OpenAPI 3.0 document built from
+the Fastify route schemas at boot.
+
+- `GET /openapi.json` returns the raw OpenAPI 3.0 document. It is always
+  exposed and unauthenticated, so external partners and codegen tools
+  (openapi-typescript, openapi-generator, Postman import) can consume a
+  stable contract that always matches the deployed binary.
+- `GET /docs` serves an interactive Swagger UI. "Try it out" is enabled
+  and authorisation persists across reloads, so QA and on-call can paste
+  a JWT once and exercise any route. The UI can be disabled per
+  environment with `OPENAPI_UI_ENABLED=false` (the JSON document keeps
+  working) for production deployments that prefer to publish docs only
+  through an internal portal.
+
+Both surfaces are excluded from the audit log so docs traffic does not
+bury real user activity, and the bearer security scheme mirrors the
+actual `Authorization: Bearer <jwt>` flow used by `app.authenticate`.
+
+Regenerating a typed client from a running instance:
+
+```bash
+curl -s http://localhost:4000/openapi.json > openapi.json
+npx openapi-typescript openapi.json -o packages/types/src/api.generated.ts
+```
+
 ### Observability
 
 The API exposes Prometheus metrics, propagates request ids, and emits

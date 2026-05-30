@@ -42,6 +42,15 @@ const baseSchema = z.object({
   SENTRY_ENVIRONMENT: z.preprocess(trimmed, z.string().min(1)).optional(),
   SENTRY_RELEASE: z.preprocess(trimmed, z.string()).default(''),
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0),
+
+  // OpenAPI / Swagger UI. The JSON document at /openapi.json is always
+  // exposed (it is the API contract); the interactive UI at /docs is
+  // gated so operators can hide it in production deployments that prefer
+  // to publish docs through an internal portal instead.
+  OPENAPI_UI_ENABLED: z
+    .preprocess((v) => (typeof v === 'string' ? v.trim().toLowerCase() : v), z.enum(['true', 'false']))
+    .transform((v) => v === 'true')
+    .default('true'),
 });
 
 const DEV_JWT_PLACEHOLDERS = new Set([

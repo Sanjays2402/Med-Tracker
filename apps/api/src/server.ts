@@ -11,6 +11,7 @@ import auditPlugin from './plugins/audit';
 import sentryPlugin from './plugins/sentry';
 import authPlugin from './plugins/auth';
 import rateLimitPlugin from './plugins/rateLimit';
+import openapiPlugin from './plugins/openapi';
 
 export async function build() {
   const isProd = env.NODE_ENV === 'production';
@@ -36,6 +37,9 @@ export async function build() {
   // Rate limiting must register after auth so the keyGenerator can read
   // req.authUser populated by per-route authenticate preHandlers.
   await app.register(rateLimitPlugin);
+  // OpenAPI must be registered before routes so @fastify/swagger can
+  // observe every route schema as it is added.
+  await app.register(openapiPlugin);
   await registerRoutes(app);
   return app;
 }
