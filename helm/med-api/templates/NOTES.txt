@@ -5,7 +5,8 @@ Replicas: {{ if .Values.autoscaling.enabled }}{{ .Values.autoscaling.minReplicas
 
 Port-forward to check health:
   kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "med-api.fullname" . }} 8080:{{ .Values.service.port }}
-  curl http://localhost:8080/health
+  curl http://localhost:8080/livez
+  curl http://localhost:8080/readyz
 
 Prometheus metrics: GET /metrics (port {{ .Values.service.port }}).
 Audit log volume mounted at {{ .Values.audit.mountPath }} ({{ .Values.audit.persistence.size }}).

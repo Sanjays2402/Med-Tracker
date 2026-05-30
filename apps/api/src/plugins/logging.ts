@@ -9,7 +9,7 @@ import type { FastifyPluginAsync } from 'fastify';
  * endpoints are intentionally logged at debug level to keep production
  * dashboards readable.
  */
-const QUIET_ROUTES = new Set(['/health', '/ready', '/metrics']);
+const QUIET_ROUTES = new Set(['/health', '/livez', '/readyz', '/ready', '/metrics']);
 
 const plugin: FastifyPluginAsync = async (app) => {
   const starts = new WeakMap<object, bigint>();

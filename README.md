@@ -284,8 +284,8 @@ structured JSON logs in production.
 - In production (`NODE_ENV=production`) the logger emits structured JSON at
   `LOG_LEVEL` (default `info`). One `request_completed` event is logged per
   request with `reqId`, `method`, `route`, `status`, and `duration_ms`.
-  `/health`, `/ready`, and `/metrics` are demoted to debug so scrape and
-  liveness traffic does not flood dashboards.
+  `/health`, `/livez`, `/readyz`, and `/metrics` are demoted to debug so
+  scrape and probe traffic does not flood dashboards.
 
 Example Prometheus scrape config:
 
@@ -299,11 +299,38 @@ scrape_configs:
 
 ### Health and readiness
 
-- `GET /health` is the liveness probe. It returns 200 as long as the process
-  is accepting connections.
-- Wire `/health` as the Kubernetes `livenessProbe` and (for now) the
-  `readinessProbe`. A dedicated `/ready` that gates on database connectivity
-  is tracked separately.
+The API exposes three probe endpoints. All three are unauthenticated, fast,
+and excluded from the audit log.
+
+- `GET /livez` is the liveness probe. It returns 200 with `status: "ok"`,
+  `pid`, and `uptime` (seconds) as long as the event loop is running. It
+  never touches the audit log, the database, or any other external system.
+  A failing liveness probe means the pod is wedged and should be killed by
+  the kubelet.
+- `GET /readyz` is the readiness probe. It returns 200 with
+  `status: "ready"` only when the process is willing to accept new
+  requests, and 503 with `status: "not_ready"` otherwise. The response
+  body includes a per-check breakdown so operators can see which
+  dependency is failing. Current checks:
+  - `audit_log`: the directory holding `AUDIT_LOG_PATH` is writable, and
+    if the file already exists it is a regular writable file.
+  - `jwt_secret`: `JWT_SECRET` is set, at least 16 characters, and is not
+    a `dev-secret-change-me` style placeholder when `NODE_ENV=production`.
+  A failing readiness probe takes the pod out of the Service rotation but
+  leaves it running so it can recover without a restart loop.
+- `GET /health` is kept as a backward compatible alias for `/livez`. It
+  returns the same liveness payload plus `ok: true` so existing uptime
+  checks and the v0 Helm chart continue to work. New callers should
+  prefer `/livez` and `/readyz`.
+
+The shipped Helm chart wires `livenessProbe` to `/livez` and
+`readinessProbe` to `/readyz` by default. Override
+`livenessProbe.httpGet.path` or `readinessProbe.httpGet.path` in
+`values.yaml` only if a load balancer requires a different path.
+
+Readiness checks live in `apps/api/src/routes/health.ts` as
+`runReadinessChecks()` so they can be reused from a smoke test or a
+sidecar without going through HTTP.
 
 ### Deploy
 

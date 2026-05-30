@@ -77,13 +77,16 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
-# Probes hit the API's /health endpoint. /health performs a cheap in-process
-# check and does not touch the database, so it is safe for both liveness and
-# readiness. If a deeper readiness check is added later, point readinessProbe
-# at it.
+# Liveness hits /livez. /livez never touches external state, it only
+# confirms the event loop is running. A failing liveness probe means the
+# pod is wedged and should be restarted.
+#
+# Readiness hits /readyz. /readyz returns 503 if the audit log directory
+# is not writable or JWT signing is not configured, so a misconfigured
+# pod is taken out of the Service rotation without being killed.
 livenessProbe:
   httpGet:
-    path: /health
+    path: /livez
     port: http
   initialDelaySeconds: 15
   periodSeconds: 20
@@ -92,7 +95,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /health
+    path: /readyz
     port: http
   initialDelaySeconds: 5
   periodSeconds: 10

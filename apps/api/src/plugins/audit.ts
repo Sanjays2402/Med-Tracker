@@ -16,7 +16,7 @@ import { AuditService, type AuditActor } from '../services/AuditService';
  */
 
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
-const SKIP_ROUTES = new Set(['/health', '/ready', '/metrics', '/admin/audit']);
+const SKIP_ROUTES = new Set(['/health', '/livez', '/readyz', '/ready', '/metrics', '/admin/audit']);
 
 function actorFrom(req: FastifyRequest): AuditActor {
   // Fastify JWT decorates req.user when a token is verified. We treat any
