@@ -29,6 +29,7 @@ import { registerStreaksForecast } from './streaks-forecast';
 import { registerRefills } from './refills';
 import { registerRefillsId } from './refills-id';
 import { registerRefillsNeeded } from './refills-needed';
+import { registerRefillsBatch } from './refills-batch';
 import { registerCaregivers } from './caregivers';
 import { registerCaregiversId } from './caregivers-id';
 import { registerCaregiversIdRotate } from './caregivers-id-rotate';
@@ -91,6 +92,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerRefills(app);
   await registerRefillsId(app);
   await registerRefillsNeeded(app);
+  await registerRefillsBatch(app);
   await registerCaregivers(app);
   await registerCaregiversId(app);
   await registerCaregiversIdRotate(app);
