@@ -1,10 +1,8 @@
-import { PageHeader, Card } from '@med/ui';
+'use client';
 
-export default function Page() {
-  return (
-    <div className="p-6 space-y-4">
-      <PageHeader>Refills</PageHeader>
-      <Card>This is the shared/[token]/refills/page screen of Med-Tracker.</Card>
-    </div>
-  );
+import { useParams, redirect } from 'next/navigation';
+
+export default function SharedRefills() {
+  const routed = useParams<{ token: string }>();
+  redirect(`/shared/${routed?.token ?? ''}`);
 }

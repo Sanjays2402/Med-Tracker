@@ -1,10 +1,5 @@
-import { PageHeader, Card } from '@med/ui';
+import { redirect } from 'next/navigation';
 
-export default function Page() {
-  return (
-    <div className="p-6 space-y-4">
-      <PageHeader>Notifications</PageHeader>
-      <Card>This is the (app)/settings/notifications/page screen of Med-Tracker.</Card>
-    </div>
-  );
+export default function SettingsNotificationsPage() {
+  redirect('/notifications/settings');
 }

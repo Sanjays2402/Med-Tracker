@@ -452,3 +452,34 @@ export async function updateMedication(id: string, patch: Partial<Omit<Medicatio
   if (!updated) throw new Error('Medication not found');
   return updated;
 }
+
+export interface SharedView {
+  share: { id: string; label: string; scopes: string[]; expiresAt?: string | null; };
+  medications?: Medication[];
+  adherence?: AdherenceSummary;
+  refills?: Refill[];
+}
+
+export async function fetchSharedView(token: string, scopes: string[] = ['view-meds', 'view-adherence', 'view-refills']): Promise<SharedView | { error: string; status: number }> {
+  const qs = new URLSearchParams({ token, scopes: scopes.join(',') }).toString();
+  try {
+    const res = await api.get<unknown>(`/shared/view?${qs}`);
+    if (res && typeof res === 'object' && (res as any).share) {
+      const r = res as any;
+      return {
+        share: r.share,
+        medications: r.medications,
+        adherence: r.adherence,
+        refills: r.refills,
+      };
+    }
+    return { error: 'Unexpected response from server', status: 0 };
+  } catch (e) {
+    if (e instanceof ApiError) {
+      if (e.status === 401) return { error: 'This link is not valid.', status: 401 };
+      if (e.status === 403) return { error: 'This link does not allow viewing that information.', status: 403 };
+      if (e.status === 410) return { error: 'This link has expired or been revoked.', status: 410 };
+    }
+    return { error: e instanceof Error ? e.message : 'Could not load shared view.', status: 0 };
+  }
+}
