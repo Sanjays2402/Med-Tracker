@@ -381,8 +381,62 @@ sidecar without going through HTTP.
 - Required environment: `JWT_SECRET` (rotate per environment, never reuse
   `change-me`), `DATABASE_URL`, `WEB_ORIGIN`, optional `LOG_LEVEL`,
   optional `PORT` (default 4000).
-- Rate limiting is on by default at 200 req/min per IP via
-  `@fastify/rate-limit`.
+
+### Rate limiting
+
+Rate limits are layered, not a single global throttle. The plugin lives at
+`apps/api/src/plugins/rateLimit.ts` and wraps `@fastify/rate-limit` with an
+auth-aware key generator and per-route tier helper.
+
+Key generation priority (first match wins):
+
+1. `user:<sub>` when the request carries an authenticated `req.authUser`
+   (JWT bearer or, in non-production, the dev `x-user-id` header). One
+   misbehaving user cannot exhaust the budget for an entire office NAT.
+2. `key:<prefix>` when an `x-api-key` header is present (per-key throttle
+   for partner integrations and CLI tooling).
+3. `ip:<remoteAddress>` as the unauthenticated fallback.
+
+Tier table (max requests per window):
+
+| Tier      | Limit         | Applied to                                                       |
+| --------- | ------------- | ---------------------------------------------------------------- |
+| `default` | 200 per 1m    | Every route by default                                           |
+| `auth`    | 10 per 1m     | `POST /auth/login`, `/auth/signup`, `/auth/refresh`              |
+| `export`  | 20 per 1h     | `GET /me/export`, `DELETE /me`, `GET /reports/export/{csv,pdf,json,ics}` |
+| `admin`   | 60 per 1m     | `GET /admin/{users,stats,audit}`                                 |
+| `heavy`   | 30 per 1m     | `POST /pills/identify`, `GET /interactions/graph`                |
+
+Probe and scrape endpoints (`/livez`, `/readyz`, `/health`, `/metrics`)
+are allow-listed so liveness checks and Prometheus polling are never
+throttled.
+
+A breach returns `HTTP 429` with the body:
+
+```json
+{
+  "error": "rate_limited",
+  "message": "Too many requests. Retry after 60s.",
+  "request_id": "...",
+  "tier": "auth",
+  "retryAfterMs": 59989
+}
+```
+
+Every breach increments the Prometheus counter
+`http_rate_limit_exceeded_total{tier,route}` which is exposed by `/metrics`.
+A reasonable alert is `sum by (tier, route) (rate(http_rate_limit_exceeded_total[5m])) > 0.5`
+on the `auth` and `export` tiers, since sustained throttling there usually
+indicates credential stuffing or a runaway export script.
+
+Adding a new tiered route from inside a route module:
+
+```ts
+app.post('/expensive-thing', {
+  schema: { ... },
+  config: app.rateLimitTier('heavy'),
+}, handler);
+```
 
 ### Kubernetes (Helm)
 

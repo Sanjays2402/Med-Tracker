@@ -25,7 +25,7 @@ import { meUserId } from './me';
  * is visible.
  */
 export async function registerMeExport(app: FastifyInstance) {
-  app.get('/me/export', { schema: { tags: ['me'] } }, async (req, reply) => {
+  app.get('/me/export', { schema: { tags: ['me'] }, config: app.rateLimitTier('export') }, async (req, reply) => {
     let userId: string;
     try {
       userId = meUserId(req);

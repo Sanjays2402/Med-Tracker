@@ -42,6 +42,7 @@ export async function registerReportsExportIcs(app: FastifyInstance) {
           },
         },
       },
+      config: app.rateLimitTier('export'),
     },
     async (req, reply) => {
       const q = req.query as { from?: string; to?: string; alarmMinutesBefore?: number; timeZone?: string };

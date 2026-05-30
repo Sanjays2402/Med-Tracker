@@ -56,7 +56,7 @@ const singleton = new PillIdentifierService(DEFAULT_PILL_CATALOG);
  * outright so the matcher does not return the whole catalog.
  */
 export async function registerPillsIdentify(app: FastifyInstance) {
-  app.post('/pills/identify', { schema: { tags: ['pills'] } }, async (req, reply) => {
+  app.post('/pills/identify', { schema: { tags: ['pills'] }, config: app.rateLimitTier('heavy') }, async (req, reply) => {
     const parsed = Body.safeParse(req.body);
     if (!parsed.success) {
       return reply.code(400).send({ error: { code: 'bad_request', message: parsed.error.message } });

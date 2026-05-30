@@ -25,7 +25,7 @@ function parseIds(raw: string | string[] | undefined): string[] {
  * candidates ordered by how much each removal lowers the risk score.
  */
 export async function registerInteractionsGraph(app: FastifyInstance) {
-  app.get('/interactions/graph', { schema: { tags: ['interactions'] } }, async (req, reply) => {
+  app.get('/interactions/graph', { schema: { tags: ['interactions'] }, config: app.rateLimitTier('heavy') }, async (req, reply) => {
     const parsed = Query.safeParse(req.query);
     if (!parsed.success) {
       return reply.status(400).send({ error: { code: 'bad_request', message: parsed.error.message } });

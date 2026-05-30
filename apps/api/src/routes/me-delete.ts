@@ -21,7 +21,7 @@ import { meUserId } from './me';
  * carrying user data on the server.
  */
 export async function registerMeDelete(app: FastifyInstance) {
-  app.delete('/me', { schema: { tags: ['me'] } }, async (req, reply) => {
+  app.delete('/me', { schema: { tags: ['me'] }, config: app.rateLimitTier('export') }, async (req, reply) => {
     let userId: string;
     try {
       userId = meUserId(req);

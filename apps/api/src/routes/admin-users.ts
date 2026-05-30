@@ -10,7 +10,7 @@ import type { FastifyInstance } from 'fastify';
 export async function registerAdminUsers(app: FastifyInstance) {
   app.get(
     '/admin/users',
-    { schema: { tags: ['admin'] }, preHandler: app.requireRole('admin') },
+    { schema: { tags: ['admin'] }, config: app.rateLimitTier('admin'), preHandler: app.requireRole('admin') },
     async (req, reply) => {
       return reply.send({
         ok: true,

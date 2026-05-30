@@ -20,7 +20,7 @@ import type { FastifyInstance } from 'fastify';
  *   limit    max entries returned, capped at 1000, default 200
  */
 export async function registerAdminAudit(app: FastifyInstance) {
-  app.get('/admin/audit', async (req, reply) => {
+  app.get('/admin/audit', { config: app.rateLimitTier('admin') }, async (req, reply) => {
     const adminToken = process.env.ADMIN_TOKEN ?? '';
     const tokenHdr = req.headers['x-admin-token'];
     const providedToken = Array.isArray(tokenHdr) ? tokenHdr[0] : tokenHdr;

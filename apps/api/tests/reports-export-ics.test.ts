@@ -26,6 +26,9 @@ const sampleItems: IcsMedication[] = [
 function buildApp(loader: ScheduleExportLoader | undefined) {
   const app = Fastify();
   if (loader) (app as any).scheduleExportLoader = loader;
+  // Stub the rate limit tier helper. The real plugin is registered by
+  // src/server.ts; this isolated test only exercises the ICS route.
+  (app as any).rateLimitTier = () => ({});
   return registerReportsExportIcs(app).then(() => app);
 }
 

@@ -94,6 +94,12 @@ const plugin: FastifyPluginAsync = async (app) => {
       error: status >= 500 ? 'internal_server_error' : (err.code ?? 'bad_request'),
       message: status >= 500 ? 'Internal server error' : err.message,
       request_id: req.id,
+      ...((err as unknown as { rateLimitTier?: string }).rateLimitTier
+        ? {
+            tier: (err as unknown as { rateLimitTier?: string }).rateLimitTier,
+            retryAfterMs: (err as unknown as { rateLimitRetryAfterMs?: number }).rateLimitRetryAfterMs,
+          }
+        : {}),
     });
   });
 

@@ -2,7 +2,6 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import jwt from '@fastify/jwt';
-import rateLimit from '@fastify/rate-limit';
 import { registerRoutes } from './routes';
 import { env } from './env';
 import requestIdPlugin from './plugins/requestId';
@@ -11,6 +10,7 @@ import metricsPlugin from './plugins/metrics';
 import auditPlugin from './plugins/audit';
 import sentryPlugin from './plugins/sentry';
 import authPlugin from './plugins/auth';
+import rateLimitPlugin from './plugins/rateLimit';
 
 export async function build() {
   const isProd = env.NODE_ENV === 'production';
@@ -31,9 +31,11 @@ export async function build() {
   await app.register(sentryPlugin);
   await app.register(cors, { origin: env.WEB_ORIGIN, credentials: true });
   await app.register(helmet);
-  await app.register(rateLimit, { max: 200, timeWindow: '1 minute' });
   await app.register(jwt, { secret: env.JWT_SECRET });
   await app.register(authPlugin);
+  // Rate limiting must register after auth so the keyGenerator can read
+  // req.authUser populated by per-route authenticate preHandlers.
+  await app.register(rateLimitPlugin);
   await registerRoutes(app);
   return app;
 }
