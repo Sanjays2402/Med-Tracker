@@ -45,7 +45,7 @@ export async function registerReportsExportIcs(app: FastifyInstance) {
     async (req, reply) => {
       const q = req.query as { from?: string; to?: string; alarmMinutesBefore?: number };
       const from = q.from ? new Date(q.from) : startOfToday();
-      const to = q.to ? new Date(q.to) : addDays(from, 30);
+      const to = q.to ? endOfDay(new Date(q.to)) : addDays(from, 30);
       if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) {
         return reply.code(400).send({ error: 'invalid_date' });
       }
@@ -75,6 +75,12 @@ function startOfToday(): Date {
   const d = new Date();
   d.setUTCHours(0, 0, 0, 0);
   return d;
+}
+
+function endOfDay(d: Date): Date {
+  const r = new Date(d.getTime());
+  r.setUTCHours(23, 59, 59, 999);
+  return r;
 }
 
 function addDays(d: Date, n: number): Date {
