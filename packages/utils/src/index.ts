@@ -21,3 +21,4 @@ export * from './result';
 export * from './titration';
 export * from './pill-identifier';
 export * from './adherence-risk';
+export * from './schedule-resolver';

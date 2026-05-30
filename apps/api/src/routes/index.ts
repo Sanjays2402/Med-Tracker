@@ -13,6 +13,7 @@ import { registerMedicationsIdArchive } from './medications-id-archive';
 import { registerSchedules } from './schedules';
 import { registerSchedulesId } from './schedules-id';
 import { registerSchedulesConflicts } from './schedules-conflicts';
+import { registerSchedulesResolve } from './schedules-resolve';
 import { registerDoses } from './doses';
 import { registerDosesId } from './doses-id';
 import { registerDosesIdTake } from './doses-id-take';
@@ -71,6 +72,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerSchedules(app);
   await registerSchedulesId(app);
   await registerSchedulesConflicts(app);
+  await registerSchedulesResolve(app);
   await registerDoses(app);
   await registerDosesId(app);
   await registerDosesIdTake(app);
