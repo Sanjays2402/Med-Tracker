@@ -4,6 +4,7 @@ export * from './adherence';
 export * from './format';
 export * from './schedule';
 export * from './interactions';
+export * from './interaction-severity';
 export * from './ids';
 export * from './csv';
 export * from './validation';
