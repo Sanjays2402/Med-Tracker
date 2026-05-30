@@ -435,3 +435,20 @@ export async function checkInteractions(drugIds: string[]): Promise<InteractionR
 export function medicationNameToDrugId(name: string): string {
   return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
+
+export async function updateMedication(id: string, patch: Partial<Omit<Medication, 'id'>>): Promise<Medication> {
+  try {
+    const res = await api.patch<unknown>(`/medications/${id}`, patch);
+    const m = unwrapObj<Medication | null>(res, 'medication', null);
+    if (m && (m as Medication).id) {
+      localMeds = localMeds.map(x => x.id === id ? (m as Medication) : x);
+      return m as Medication;
+    }
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  localMeds = localMeds.map(x => x.id === id ? { ...x, ...patch } : x);
+  const updated = localMeds.find(x => x.id === id);
+  if (!updated) throw new Error('Medication not found');
+  return updated;
+}
