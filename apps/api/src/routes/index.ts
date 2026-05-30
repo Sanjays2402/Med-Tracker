@@ -14,6 +14,7 @@ import { registerSchedules } from './schedules';
 import { registerSchedulesId } from './schedules-id';
 import { registerSchedulesConflicts } from './schedules-conflicts';
 import { registerSchedulesResolve } from './schedules-resolve';
+import { registerSchedulesTravel } from './schedules-travel';
 import { registerEscalation } from './escalation';
 import { registerDoses } from './doses';
 import { registerDosesId } from './doses-id';
@@ -77,6 +78,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerSchedulesId(app);
   await registerSchedulesConflicts(app);
   await registerSchedulesResolve(app);
+  await registerSchedulesTravel(app);
   await registerEscalation(app);
   await registerDoses(app);
   await registerDosesId(app);
