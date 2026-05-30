@@ -1,7 +1,7 @@
 'use client';
 
 import { api, ApiError } from './api-client';
-import type { Medication, DoseEvent, ScheduleEntry, Refill, AdherenceSummary } from './types';
+import type { Medication, DoseEvent, ScheduleEntry, Refill, AdherenceSummary, Drug, NotificationItem, CaregiverShare } from './types';
 
 /**
  * The reference REST API in this repo returns scaffolded responses of the form
@@ -196,4 +196,194 @@ export async function getAdherence(): Promise<AdherenceSummary> {
     streakDays: 12,
     trend: 'up',
   };
+}
+
+// ---- Drugs catalog ----
+
+export async function searchDrugs(q: string, limit = 25): Promise<Drug[]> {
+  const qs = new URLSearchParams({ q, limit: String(limit) }).toString();
+  try {
+    const res = await api.get<unknown>(`/drugs/search?${qs}`);
+    if (res && typeof res === 'object' && Array.isArray((res as any).results)) {
+      return (res as any).results as Drug[];
+    }
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  return [];
+}
+
+export async function getDrug(id: string): Promise<Drug | null> {
+  try {
+    const res = await api.get<unknown>(`/drugs/${encodeURIComponent(id)}`);
+    if (res && typeof res === 'object' && (res as any).id) return res as Drug;
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 404) return null;
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  return null;
+}
+
+// ---- Notifications ----
+
+const SEED_NOTIFICATIONS: NotificationItem[] = [
+  { id: 'n1', title: 'Time for Lisinopril', body: '10 mg with water.', kind: 'reminder', createdAt: new Date(Date.now() - 30 * 60_000).toISOString(), href: '/today' },
+  { id: 'n2', title: 'Refill suggested: Atorvastatin', body: '6 days of supply remaining.', kind: 'refill', createdAt: new Date(Date.now() - 6 * 3600_000).toISOString(), href: '/refills/needed' },
+  { id: 'n3', title: 'Weekly adherence report ready', body: 'You took 92% of scheduled doses this week.', kind: 'system', createdAt: new Date(Date.now() - 26 * 3600_000).toISOString(), href: '/reports/weekly' },
+  { id: 'n4', title: 'Caregiver share viewed', body: 'Your share for Dr. Reyes was opened.', kind: 'caregiver', createdAt: new Date(Date.now() - 2 * 86400_000).toISOString(), read: true, href: '/caregivers' },
+  { id: 'n5', title: 'Amoxicillin course ends Wednesday', body: 'Finish the full course as prescribed.', kind: 'reminder', createdAt: new Date(Date.now() - 3 * 86400_000).toISOString(), read: true, href: '/medications/med_amox' },
+];
+
+let localNotifications: NotificationItem[] = [...SEED_NOTIFICATIONS];
+
+export async function listNotifications(): Promise<NotificationItem[]> {
+  try {
+    const res = await api.get<unknown>('/notifications');
+    if (res && typeof res === 'object' && Array.isArray((res as any).notifications)) {
+      const arr = (res as any).notifications as NotificationItem[];
+      if (arr.length) return arr;
+    }
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  return localNotifications;
+}
+
+export async function markNotificationRead(id: string): Promise<void> {
+  try {
+    await api.post(`/notifications/${id}`, { read: true });
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  localNotifications = localNotifications.map(n => n.id === id ? { ...n, read: true } : n);
+}
+
+export async function markAllNotificationsRead(): Promise<void> {
+  try {
+    await api.post('/notifications/mark-read', { all: true });
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  localNotifications = localNotifications.map(n => ({ ...n, read: true }));
+}
+
+// ---- Refills subgroups ----
+
+export async function listRefillsNeeded(): Promise<Refill[]> {
+  const all = await listRefills();
+  return all.filter(r => r.status === 'needed');
+}
+
+export async function listRefillsHistory(): Promise<Refill[]> {
+  const all = await listRefills();
+  return all
+    .filter(r => r.status === 'ready' || r.status === 'picked_up' || r.status === 'requested')
+    .sort((a, b) => +new Date(b.refillBy) - +new Date(a.refillBy));
+}
+
+// ---- Caregivers ----
+
+const SEED_CAREGIVERS: CaregiverShare[] = [
+  { id: 'cg_reyes', label: 'Dr. Reyes (PCP)', scopes: ['view-meds', 'view-adherence'], createdAt: new Date(Date.now() - 14 * 86400_000).toISOString(), expiresAt: new Date(Date.now() + 30 * 86400_000).toISOString(), lastViewedAt: new Date(Date.now() - 2 * 86400_000).toISOString() },
+  { id: 'cg_mom', label: 'Mom', scopes: ['view-meds'], createdAt: new Date(Date.now() - 60 * 86400_000).toISOString(), expiresAt: null, lastViewedAt: new Date(Date.now() - 9 * 86400_000).toISOString() },
+  { id: 'cg_pharm', label: 'CVS Pharmacy', scopes: ['view-meds', 'request-refill'], createdAt: new Date(Date.now() - 5 * 86400_000).toISOString(), expiresAt: new Date(Date.now() + 90 * 86400_000).toISOString(), lastViewedAt: null },
+];
+
+let localCaregivers: CaregiverShare[] = [...SEED_CAREGIVERS];
+
+export async function listCaregivers(): Promise<CaregiverShare[]> {
+  try {
+    const res = await api.get<unknown>('/caregivers');
+    if (res && typeof res === 'object' && Array.isArray((res as any).caregivers)) {
+      const arr = (res as any).caregivers as CaregiverShare[];
+      if (arr.length) return arr;
+    }
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+    if (e instanceof ApiError && e.status === 401) return localCaregivers;
+  }
+  return localCaregivers;
+}
+
+export async function getCaregiver(id: string): Promise<CaregiverShare | null> {
+  try {
+    const res = await api.get<unknown>(`/caregivers/${id}`);
+    if (res && typeof res === 'object' && (res as any).id) return res as CaregiverShare;
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 404) return null;
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  return localCaregivers.find(c => c.id === id) ?? null;
+}
+
+export async function createCaregiver(input: { label: string; scopes: string[]; ttlDays?: number | null }): Promise<CaregiverShare> {
+  const ttlSeconds = input.ttlDays && input.ttlDays > 0 ? input.ttlDays * 86400 : null;
+  try {
+    const res = await api.post<unknown>('/caregivers', { label: input.label, scopes: input.scopes, ttlSeconds });
+    if (res && typeof res === 'object' && (res as any).id) {
+      const c = res as CaregiverShare;
+      localCaregivers = [c, ...localCaregivers];
+      return c;
+    }
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  const created: CaregiverShare = {
+    id: `cg_${Date.now().toString(36)}`,
+    label: input.label,
+    scopes: input.scopes,
+    createdAt: new Date().toISOString(),
+    expiresAt: ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000).toISOString() : null,
+    lastViewedAt: null,
+  };
+  localCaregivers = [created, ...localCaregivers];
+  return created;
+}
+
+export async function revokeCaregiver(id: string): Promise<void> {
+  try {
+    await api.delete(`/caregivers/${id}`);
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  localCaregivers = localCaregivers.filter(c => c.id !== id);
+}
+
+// ---- Dose history (per date) ----
+
+export async function listDosesForDate(date: string /* YYYY-MM-DD */): Promise<DoseEvent[]> {
+  try {
+    const res = await api.get<unknown>(`/doses/history?date=${encodeURIComponent(date)}`);
+    if (res && typeof res === 'object' && Array.isArray((res as any).doses)) {
+      const arr = (res as any).doses as DoseEvent[];
+      if (arr.length) return arr;
+    }
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  // Synthesize from today's seed when API is a stub. Deterministic from date.
+  const seed = hashString(date);
+  return localDoses.map((d, i) => {
+    const taken = ((seed + i) % 7) < 6;
+    return {
+      ...d,
+      id: `${d.id}_${date}`,
+      scheduledAt: replaceDate(d.scheduledAt, date),
+      status: taken ? 'taken' : 'missed',
+      takenAt: taken ? replaceDate(d.scheduledAt, date) : undefined,
+    };
+  });
+}
+
+function replaceDate(iso: string, ymd: string): string {
+  const d = new Date(iso);
+  const [y, m, day] = ymd.split('-').map(Number);
+  d.setFullYear(y!, (m! - 1), day!);
+  return d.toISOString();
+}
+
+function hashString(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) | 0; }
+  return Math.abs(h);
 }
