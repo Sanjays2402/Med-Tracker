@@ -34,3 +34,4 @@ export * from './shift-handoff';
 export * from './inventory-ledger';
 export * from './taper-plan';
 export * from './food-windows';
+export * from './pediatric-dose';
