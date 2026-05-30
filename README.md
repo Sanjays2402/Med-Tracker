@@ -230,6 +230,80 @@ Other
 └── pnpm-workspace.yaml
 ```
 
+## Operations
+
+Production-facing concerns for running the API service.
+
+### Observability
+
+The API exposes Prometheus metrics, propagates request ids, and emits
+structured JSON logs in production.
+
+- `GET /metrics` returns the standard Prometheus text exposition format. It
+  includes Node.js default process metrics (CPU, memory, event loop, GC) plus
+  `http_requests_total` and `http_request_duration_seconds` histograms
+  labelled with `method`, `route`, and `status_code`. All series carry a
+  `service="med-api"` label.
+- Every response carries an `x-request-id` header. Inbound
+  `x-request-id` values are honored when they match `[A-Za-z0-9._-]{1,128}`,
+  otherwise a fresh UUID v4 is generated. The id is bound to the per-request
+  logger, so every log line for that request carries `reqId`.
+- In production (`NODE_ENV=production`) the logger emits structured JSON at
+  `LOG_LEVEL` (default `info`). One `request_completed` event is logged per
+  request with `reqId`, `method`, `route`, `status`, and `duration_ms`.
+  `/health`, `/ready`, and `/metrics` are demoted to debug so scrape and
+  liveness traffic does not flood dashboards.
+
+Example Prometheus scrape config:
+
+```yaml
+scrape_configs:
+  - job_name: med-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['med-api:4000']
+```
+
+### Health and readiness
+
+- `GET /health` is the liveness probe. It returns 200 as long as the process
+  is accepting connections.
+- Wire `/health` as the Kubernetes `livenessProbe` and (for now) the
+  `readinessProbe`. A dedicated `/ready` that gates on database connectivity
+  is tracked separately.
+
+### Deploy
+
+- Build the API image with `docker build -f apps/api/Dockerfile .` or via
+  `docker compose build api`. The Dockerfile is multi-stage and ships only
+  the compiled `dist/` plus production `node_modules`.
+- Required environment: `JWT_SECRET` (rotate per environment, never reuse
+  `change-me`), `DATABASE_URL`, `WEB_ORIGIN`, optional `LOG_LEVEL`,
+  optional `PORT` (default 4000).
+- Rate limiting is on by default at 200 req/min per IP via
+  `@fastify/rate-limit`.
+
+### Scale
+
+- The API is stateless; scale horizontally behind a load balancer. Sticky
+  sessions are not required.
+- Use the `http_request_duration_seconds` histogram p95 and
+  `process_resident_memory_bytes` as HPA signals.
+
+### Backup
+
+- Postgres data lives in the `pgdata` volume in `docker-compose.yml`. In
+  production take managed snapshots (RDS, Cloud SQL) plus a nightly
+  `pg_dump` to object storage with at least 30 day retention.
+
+### On-call
+
+- Primary alerts: `up{job="med-api"} == 0` for 2 minutes, p95 of
+  `http_request_duration_seconds` over 1s for 5 minutes, sustained
+  `http_requests_total{status_code=~"5.."}` rate above baseline.
+- Use the `reqId` from the `x-request-id` response header to correlate a
+  user-reported failure with API logs.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
