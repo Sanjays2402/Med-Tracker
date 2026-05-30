@@ -29,6 +29,7 @@ import { registerRefillsNeeded } from './refills-needed';
 import { registerCaregivers } from './caregivers';
 import { registerCaregiversId } from './caregivers-id';
 import { registerCaregiversIdRotate } from './caregivers-id-rotate';
+import { registerCaregiversIdDigest } from './caregivers-id-digest';
 import { registerSharedView } from './shared-view';
 import { registerReportsAdherence } from './reports-adherence';
 import { registerReportsWeekly } from './reports-weekly';
@@ -83,6 +84,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerCaregivers(app);
   await registerCaregiversId(app);
   await registerCaregiversIdRotate(app);
+  await registerCaregiversIdDigest(app);
   await registerSharedView(app);
   await registerReportsAdherence(app);
   await registerReportsWeekly(app);
