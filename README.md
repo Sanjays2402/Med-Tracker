@@ -235,6 +235,47 @@ Other
 
 Production-facing concerns for running the API service.
 
+### Authentication and RBAC
+
+The API exposes two reusable preHandlers via the `auth` plugin
+(`apps/api/src/plugins/auth.ts`):
+
+- `app.authenticate` verifies the bearer JWT through `@fastify/jwt` and
+  populates `req.authUser` with `{ sub, role, email }`. The role is read
+  from the `role` claim, falling back to the first entry of a `roles`
+  array claim, and finally to `'user'` when the token carries neither.
+- `app.requireRole(role)` runs `authenticate` and then asserts the
+  resolved role matches, returning `403` with `error.code = 'forbidden'`
+  when it does not.
+
+Applied to:
+
+- `GET /admin/users` and `GET /admin/stats` are gated by
+  `app.requireRole('admin')`.
+- `GET /admin/audit` accepts either an admin-roled JWT or the legacy
+  `x-admin-token` header (kept as a break-glass path for operators who
+  do not yet have a provisioned admin account). When `ADMIN_TOKEN` is
+  empty, only the JWT path is accepted.
+
+Issuing an operator token, given a configured `JWT_SECRET`:
+
+```
+node -e "const jwt=require('jsonwebtoken');console.log(jwt.sign({sub:'ops-alice',role:'admin',email:'alice@example.com'},process.env.JWT_SECRET,{expiresIn:'8h'}))"
+```
+
+Then call admin endpoints with `Authorization: Bearer <token>`. Denials
+are logged at warn level as `rbac_denied` with the request id, required
+role, actual role, and subject for incident review.
+
+Non-production environments additionally accept `x-user-id` (and
+optional `x-user-role`) as a developer convenience. These headers are
+refused entirely when `NODE_ENV=production` so a stray header cannot
+bypass authentication in a real deployment.
+
+Coverage lives in `apps/api/tests/rbac.test.ts` and exercises the 401,
+403, 200, malformed-token, and admin-role paths against an in-process
+Fastify instance.
+
 ### Configuration validation
 
 Every API process validates its environment at boot with a zod schema in

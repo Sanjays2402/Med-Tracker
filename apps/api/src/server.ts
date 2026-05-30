@@ -10,6 +10,7 @@ import loggingPlugin from './plugins/logging';
 import metricsPlugin from './plugins/metrics';
 import auditPlugin from './plugins/audit';
 import sentryPlugin from './plugins/sentry';
+import authPlugin from './plugins/auth';
 
 export async function build() {
   const isProd = env.NODE_ENV === 'production';
@@ -32,6 +33,7 @@ export async function build() {
   await app.register(helmet);
   await app.register(rateLimit, { max: 200, timeWindow: '1 minute' });
   await app.register(jwt, { secret: env.JWT_SECRET });
+  await app.register(authPlugin);
   await registerRoutes(app);
   return app;
 }

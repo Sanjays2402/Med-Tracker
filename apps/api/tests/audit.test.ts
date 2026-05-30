@@ -105,13 +105,38 @@ describe('audit log', () => {
     }
   });
 
-  it('disables /admin/audit when ADMIN_TOKEN is unset', async () => {
+  it('requires auth on /admin/audit when ADMIN_TOKEN is unset (JWT admin path still works)', async () => {
     delete process.env.ADMIN_TOKEN;
     const { build } = await import('../src/server');
     const app = await build();
     try {
-      const res = await app.inject({ method: 'GET', url: '/admin/audit' });
-      expect(res.statusCode).toBe(503);
+      // Anonymous: 401 (no token, no JWT).
+      const anon = await app.inject({ method: 'GET', url: '/admin/audit' });
+      expect(anon.statusCode).toBe(401);
+
+      // Non-admin JWT: 403.
+      const userTok = (app as unknown as { jwt: { sign: (p: Record<string, unknown>) => string } }).jwt.sign({
+        sub: 'u1',
+        role: 'user',
+      });
+      const forbidden = await app.inject({
+        method: 'GET',
+        url: '/admin/audit',
+        headers: { authorization: `Bearer ${userTok}` },
+      });
+      expect(forbidden.statusCode).toBe(403);
+
+      // Admin JWT: 200.
+      const adminTok = (app as unknown as { jwt: { sign: (p: Record<string, unknown>) => string } }).jwt.sign({
+        sub: 'a1',
+        role: 'admin',
+      });
+      const ok = await app.inject({
+        method: 'GET',
+        url: '/admin/audit',
+        headers: { authorization: `Bearer ${adminTok}` },
+      });
+      expect(ok.statusCode).toBe(200);
     } finally {
       await app.close();
     }

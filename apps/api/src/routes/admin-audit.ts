@@ -3,9 +3,14 @@ import type { FastifyInstance } from 'fastify';
 /**
  * GET /admin/audit
  *
- * Query the persisted audit trail. Requires an x-admin-token header that
- * matches ADMIN_TOKEN. If ADMIN_TOKEN is unset the route is disabled and
- * returns 503 so a misconfigured deployment cannot leak the trail.
+ * Query the persisted audit trail. Two ways to authorise:
+ *
+ *   1. JWT bearer with role=admin (normal operator path; see plugins/auth.ts)
+ *   2. x-admin-token header matching ADMIN_TOKEN (break-glass for ops without
+ *      a provisioned admin user; disabled when ADMIN_TOKEN is empty)
+ *
+ * At least one must succeed. If ADMIN_TOKEN is unset and the caller is not
+ * an admin-roled JWT subject, the route returns 401.
  *
  * Query params:
  *   actorId  filter by actor id
@@ -17,18 +22,21 @@ import type { FastifyInstance } from 'fastify';
 export async function registerAdminAudit(app: FastifyInstance) {
   app.get('/admin/audit', async (req, reply) => {
     const adminToken = process.env.ADMIN_TOKEN ?? '';
-    if (!adminToken) {
-      return reply.status(503).send({
-        error: { code: 'admin_disabled', message: 'ADMIN_TOKEN is not configured' },
-      });
+    const tokenHdr = req.headers['x-admin-token'];
+    const providedToken = Array.isArray(tokenHdr) ? tokenHdr[0] : tokenHdr;
+    const tokenOk = adminToken.length > 0 && providedToken === adminToken;
+
+    if (!tokenOk) {
+      // Fall through to JWT RBAC. authenticate sets req.authUser or sends a 401.
+      await app.authenticate(req, reply);
+      if (reply.sent) return;
+      if (req.authUser?.role !== 'admin') {
+        return reply.status(403).send({
+          error: { code: 'forbidden', message: "role 'admin' required" },
+        });
+      }
     }
-    const token = req.headers['x-admin-token'];
-    const provided = Array.isArray(token) ? token[0] : token;
-    if (provided !== adminToken) {
-      return reply.status(401).send({
-        error: { code: 'unauthorized', message: 'admin token required' },
-      });
-    }
+
     const q = (req.query ?? {}) as Record<string, string | undefined>;
     const limitNum = q.limit ? Number(q.limit) : undefined;
     const entries = app.audit.query({
