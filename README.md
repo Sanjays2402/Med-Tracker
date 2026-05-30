@@ -397,6 +397,37 @@ structured JSON logs in production.
   `/health`, `/livez`, `/readyz`, and `/metrics` are demoted to debug so
   scrape and probe traffic does not flood dashboards.
 
+Distributed tracing is propagated at the HTTP edge using the W3C Trace
+Context specification (https://www.w3.org/TR/trace-context/). The plugin
+at `apps/api/src/plugins/tracing.ts` runs on every request and:
+
+- Parses an inbound `traceparent` header when present. A well formed header
+  contributes its trace id (which the API adopts) and its span id (which
+  becomes the parent of this server span). Malformed, reserved (`ff`), or
+  all zero ids are rejected per spec and a fresh context is generated.
+- Always mints a fresh 8 byte `span_id` so two hops never share the same
+  span identifier even when they share a trace.
+- Forwards an opaque `tracestate` header through unchanged when it is
+  printable ASCII and at most 512 chars, so vendor specific propagation
+  (Honeycomb, Datadog, Lightstep) survives the hop.
+- Binds `traceId`, `spanId`, and `parentSpanId` to the per request pino
+  logger. The `request_completed` event therefore carries both `reqId` and
+  `traceId` so an operator can pivot between request id correlation and
+  full trace correlation in the same query.
+- Tags the Sentry scope with `trace_id` and `span_id`, so an exception
+  captured in Sentry deep links to the trace in Tempo, Jaeger, Honeycomb,
+  or any other W3C aware backend.
+- Echoes the resulting `traceparent` (and any preserved `tracestate`) on
+  the response so downstream services can stitch the trace forward.
+
+This plugin deliberately does not emit OTLP spans itself. Span export is
+left to an OpenTelemetry SDK or a sidecar collector. Propagation is the
+piece that cannot be retrofitted without losing trace continuity for in
+flight requests, so we ship it standalone with no extra dependencies.
+Coverage lives in `apps/api/tests/tracing.test.ts` and exercises parsing,
+context construction, and end to end HTTP propagation against the real
+Fastify instance.
+
 Example Prometheus scrape config:
 
 ```yaml

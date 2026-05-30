@@ -5,6 +5,7 @@ import jwt from '@fastify/jwt';
 import { registerRoutes } from './routes';
 import { env } from './env';
 import requestIdPlugin from './plugins/requestId';
+import tracingPlugin from './plugins/tracing';
 import loggingPlugin from './plugins/logging';
 import metricsPlugin from './plugins/metrics';
 import auditPlugin from './plugins/audit';
@@ -27,6 +28,11 @@ export async function build() {
     disableRequestLogging: true,
   });
   await app.register(requestIdPlugin);
+  // Tracing must register after requestId so the trace context can be bound
+  // to the per request child logger and after Sentry-aware scope helpers are
+  // available. It registers before logging so the request_completed event
+  // carries trace ids.
+  await app.register(tracingPlugin);
   await app.register(loggingPlugin);
   await app.register(metricsPlugin);
   await app.register(auditPlugin);
