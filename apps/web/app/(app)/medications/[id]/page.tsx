@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Pill as PillIcon, Calendar, ChartBar, Bell, CalendarCheck } from '@med/icons';
 import { Btn, Surface, Section, ErrorBox, SkeletonRow, Pill, StatTile, formatTime, formatDate } from '../../../../components/uikit';
-import { getMedication, listTodayDoses, listSchedules, listRefills, logDose } from '../../../../lib/data';
-import type { Medication, DoseEvent, ScheduleEntry, Refill } from '../../../../lib/types';
+import { getMedication, listTodayDoses, listSchedules, listRefills, logDose, getAdherence } from '../../../../lib/data';
+import type { Medication, DoseEvent, ScheduleEntry, Refill, AdherenceSummary } from '../../../../lib/types';
 
 export default function MedicationDetail() {
   const params = useParams<{ id: string }>();
@@ -15,6 +15,7 @@ export default function MedicationDetail() {
   const [doses, setDoses] = React.useState<DoseEvent[]>([]);
   const [schedules, setSchedules] = React.useState<ScheduleEntry[]>([]);
   const [refills, setRefills] = React.useState<Refill[]>([]);
+  const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
 
@@ -23,11 +24,12 @@ export default function MedicationDetail() {
     setLoading(true);
     setError(null);
     try {
-      const [m, d, s, r] = await Promise.all([getMedication(id), listTodayDoses(), listSchedules(), listRefills()]);
+      const [m, d, s, r, a] = await Promise.all([getMedication(id), listTodayDoses(), listSchedules(), listRefills(), getAdherence()]);
       setMed(m);
       setDoses(d.filter(x => x.medicationId === id));
       setSchedules(s.filter(x => x.medicationId === id));
       setRefills(r.filter(x => x.medicationId === id));
+      setAdherence(a);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not load medication.');
     } finally {
@@ -65,9 +67,14 @@ export default function MedicationDetail() {
     );
   }
 
-  const taken7d = 14;
-  const sched7d = 18;
-  const adherence = Math.round((taken7d / sched7d) * 100);
+  // Per-med 7d view: scale the user's overall adherence window to a 7d slice for this med.
+  // When the API exposes per-medication adherence we will switch to that endpoint.
+  const window = adherence?.windowDays ?? 30;
+  const scale = Math.min(1, 7 / window);
+  const sched7d = Math.max(0, Math.round((adherence?.scheduled ?? 0) * scale / Math.max(1, ((adherence?.scheduled ?? 0) > 0 ? 1 : 1))));
+  const taken7d = Math.round((adherence?.taken ?? 0) * scale);
+  const sched7dEst = Math.round((adherence?.scheduled ?? 0) * scale);
+  const adherencePct = sched7dEst > 0 ? Math.min(100, Math.round((taken7d / sched7dEst) * 100)) : 0;
 
   return (
     <div className="space-y-8">
@@ -95,7 +102,7 @@ export default function MedicationDetail() {
       )}
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-        <StatTile label="Adherence 7d" value={`${adherence}%`} hint={`${taken7d} of ${sched7d} doses`} accent={adherence >= 90 ? 'ok' : 'warn'} />
+        <StatTile label="Adherence 7d" value={sched7dEst > 0 ? `${adherencePct}%` : '—'} hint={sched7dEst > 0 ? `${taken7d} of ${sched7dEst} doses` : 'no data yet'} accent={adherencePct >= 90 ? 'ok' : adherencePct >= 70 ? 'warn' : 'danger'} />
         <StatTile label="On hand" value={med.remainingDoses ?? '—'} hint="doses remaining" accent={(med.remainingDoses ?? 0) < 10 ? 'danger' : (med.remainingDoses ?? 0) < 20 ? 'warn' : 'ok'} />
         <StatTile label="Refill in" value={`${med.refillThresholdDays ?? '—'}d`} hint="threshold" />
       </div>
