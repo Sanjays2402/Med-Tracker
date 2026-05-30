@@ -1,0 +1,11 @@
+Med-Tracker API installed as {{ include "med-api.fullname" . }}.
+
+Image:    {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+Replicas: {{ if .Values.autoscaling.enabled }}{{ .Values.autoscaling.minReplicas }}-{{ .Values.autoscaling.maxReplicas }} (HPA){{ else }}{{ .Values.replicaCount }}{{ end }}
+
+Port-forward to check health:
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "med-api.fullname" . }} 8080:{{ .Values.service.port }}
+  curl http://localhost:8080/health
+
+Prometheus metrics: GET /metrics (port {{ .Values.service.port }}).
+Audit log volume mounted at {{ .Values.audit.mountPath }} ({{ .Values.audit.persistence.size }}).

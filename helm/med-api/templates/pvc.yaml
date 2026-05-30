@@ -1,0 +1,17 @@
+{{- if .Values.audit.persistence.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "med-api.fullname" . }}-audit
+  labels:
+    {{- include "med-api.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.audit.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.audit.persistence.size }}
+  {{- with .Values.audit.persistence.storageClass }}
+  storageClassName: {{ . }}
+  {{- end }}
+{{- end -}}

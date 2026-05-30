@@ -1,0 +1,3 @@
+# Helm values lint output and rendered manifests can be safely ignored.
+*.tgz
+charts/

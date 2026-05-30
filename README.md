@@ -283,6 +283,59 @@ scrape_configs:
 - Rate limiting is on by default at 200 req/min per IP via
   `@fastify/rate-limit`.
 
+### Kubernetes (Helm)
+
+A production grade Helm chart for the API lives in `helm/med-api`. It
+renders a Deployment, Service, ConfigMap, Secret, ServiceAccount,
+HorizontalPodAutoscaler, PodDisruptionBudget, NetworkPolicy, optional
+Ingress, optional ServiceMonitor, and a PersistentVolumeClaim for the
+append only audit log.
+
+Defaults that matter:
+
+- 2 replicas, HPA min 2 / max 6 on 75% CPU and 80% memory.
+- Pod runs as non root with a read only root filesystem, all capabilities
+  dropped, `RuntimeDefault` seccomp, and `automountServiceAccountToken:
+false`.
+- Resource requests 100m / 256Mi, limits 500m / 512Mi.
+- PDB `minAvailable: 1` so rolling node drains never take the service to
+  zero.
+- NetworkPolicy allows ingress only from the `ingress-nginx` and
+  `monitoring` namespaces on port 4000, and egress only to DNS, the
+  database CIDR on port 5432, and outbound HTTPS for Sentry.
+- A 5Gi PVC backs `/app/data` so `AUDIT_LOG_PATH=/app/data/audit.log`
+  survives pod restarts.
+- Liveness and readiness probes both hit `/health`. Prometheus scrape
+  annotations are set on the pod so the existing `kube-prometheus` setup
+  will pick `/metrics` up automatically; flip `serviceMonitor.enabled=true`
+  if you run the operator.
+
+Install against staging:
+
+```bash
+helm upgrade --install med-api ./helm/med-api \
+  --namespace med-staging --create-namespace \
+  --set image.tag=$GIT_SHA \
+  --set-string secrets.JWT_SECRET=$JWT_SECRET \
+  --set-string secrets.DATABASE_URL=$DATABASE_URL \
+  --set-string secrets.ADMIN_TOKEN=$ADMIN_TOKEN \
+  --set-string secrets.SENTRY_DSN=$SENTRY_DSN
+```
+
+Install against production using an externally managed Secret (sealed
+secrets, ExternalSecrets, Vault sidecar, etc.):
+
+```bash
+helm upgrade --install med-api ./helm/med-api \
+  --namespace med-prod --create-namespace \
+  -f helm/med-api/values-production.yaml \
+  --set image.tag=$GIT_SHA
+```
+
+The chart is exercised in CI by `tests/helm-chart.test.sh`, which runs
+`helm lint` and asserts that the critical enterprise resources render for
+both the default and production value files.
+
 ### Scale
 
 - The API is stateless; scale horizontally behind a load balancer. Sticky
@@ -339,7 +392,7 @@ consistent error envelope.
   email are attached to the Sentry scope. The original error stack and the
   request URL go into the `request` context.
 - Response envelope for 500s is `{ error: "internal_server_error",
-  message: "Internal server error", request_id }`. The original error
+message: "Internal server error", request_id }`. The original error
   message is logged at error level with the request id but never returned
   to the client, so internal stack details cannot leak via responses.
 - 4xx errors (validation, auth, not found) are passed through with their

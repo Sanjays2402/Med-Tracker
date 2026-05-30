@@ -1,0 +1,60 @@
+# Production overrides for med-api.
+# Use:  helm upgrade --install med-api ./helm/med-api -f helm/med-api/values-production.yaml --namespace med-prod
+
+replicaCount: 3
+
+image:
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 384Mi
+  limits:
+    cpu: '1'
+    memory: 768Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 12
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 75
+
+pdb:
+  enabled: true
+  minAvailable: 2
+
+config:
+  NODE_ENV: production
+  LOG_LEVEL: info
+  SENTRY_ENVIRONMENT: production
+  SENTRY_TRACES_SAMPLE_RATE: '0.05'
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: 2m
+  hosts:
+    - host: api.med-tracker.example
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: med-api-tls
+      hosts:
+        - api.med-tracker.example
+
+serviceMonitor:
+  enabled: true
+
+audit:
+  persistence:
+    enabled: true
+    size: 20Gi
+
+# Manage secrets out of band (sealed-secrets / ExternalSecret).
+secrets:
+  existingSecret: med-api-secrets

@@ -1,0 +1,154 @@
+# Default values for med-api.
+# Override per environment via -f values-staging.yaml or --set.
+
+replicaCount: 2
+
+image:
+  repository: ghcr.io/sanjays2402/med-tracker-api
+  pullPolicy: IfNotPresent
+  tag: '' # defaults to .Chart.AppVersion
+
+imagePullSecrets: []
+
+nameOverride: ''
+fullnameOverride: ''
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ''
+
+podAnnotations:
+  prometheus.io/scrape: 'true'
+  prometheus.io/port: '4000'
+  prometheus.io/path: '/metrics'
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ['ALL']
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 4000
+
+ingress:
+  enabled: false
+  className: ''
+  annotations: {}
+  hosts:
+    - host: api.med-tracker.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 80
+
+# Pod Disruption Budget. Keeps at least minAvailable pods serving during
+# voluntary disruptions (node drain, cluster upgrade).
+pdb:
+  enabled: true
+  minAvailable: 1
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Probes hit the API's /health endpoint. /health performs a cheap in-process
+# check and does not touch the database, so it is safe for both liveness and
+# readiness. If a deeper readiness check is added later, point readinessProbe
+# at it.
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Volume for the append-only audit log. In production this must be a durable
+# PVC so audit records survive pod restarts. Disable only for ephemeral envs.
+audit:
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: ''
+    accessMode: ReadWriteOnce
+  mountPath: /app/data
+
+# Non-secret configuration. Rendered into a ConfigMap and mounted as env.
+config:
+  NODE_ENV: production
+  PORT: '4000'
+  LOG_LEVEL: info
+  WEB_ORIGIN: https://app.med-tracker.example
+  AUDIT_LOG_PATH: /app/data/audit.log
+  SENTRY_ENVIRONMENT: production
+  SENTRY_TRACES_SAMPLE_RATE: '0.05'
+
+# Secrets. Set via --set-string or external secret manager (ExternalSecrets,
+# sealed-secrets, etc). Do NOT commit real values. Leaving a value empty
+# omits it from the Secret so an external operator can manage it instead.
+secrets:
+  # If `existingSecret` is set, all other values here are ignored and the
+  # named Secret is mounted as env directly. Use this with ExternalSecrets.
+  existingSecret: ''
+  JWT_SECRET: ''
+  DATABASE_URL: ''
+  ADMIN_TOKEN: ''
+  SENTRY_DSN: ''
+
+# NetworkPolicy. Locks the pod to only egress to DNS and the database, and
+# ingress only from the ingress controller namespace + prometheus scrape.
+networkPolicy:
+  enabled: true
+  ingressNamespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: ingress-nginx
+  prometheusNamespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: monitoring
+  # CIDR for the managed database. Override to match the actual subnet.
+  databaseCIDR: 10.0.0.0/8
+  databasePort: 5432
+
+# Optional ServiceMonitor for kube-prometheus-stack. Requires the
+# monitoring.coreos.com CRDs to be installed in the cluster.
+serviceMonitor:
+  enabled: false
+  interval: 30s
+  scrapeTimeout: 10s
+  labels: {}

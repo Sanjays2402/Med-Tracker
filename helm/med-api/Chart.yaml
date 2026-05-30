@@ -1,0 +1,15 @@
+apiVersion: v2
+name: med-api
+description: Helm chart for the Med-Tracker API service.
+type: application
+version: 0.1.0
+appVersion: '0.1.0'
+home: https://github.com/Sanjays2402/Med-Tracker
+sources:
+  - https://github.com/Sanjays2402/Med-Tracker
+maintainers:
+  - name: Sanjay Santhanam
+keywords:
+  - med-tracker
+  - fastify
+  - api
