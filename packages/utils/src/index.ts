@@ -6,6 +6,7 @@ export * from './adherence-metrics';
 export * from './ics';
 export * from './schedule-conflicts';
 export * from './caregiver-digest';
+export * from './schedule-timezone';
 export * from './format';
 export * from './schedule';
 export * from './refill-forecast';

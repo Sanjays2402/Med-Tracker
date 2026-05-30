@@ -1,5 +1,6 @@
 import type { Medication, Schedule } from '@med/types';
 import { expandSchedule } from './schedule';
+import { expandScheduleInZone } from './schedule-timezone';
 
 /**
  * iCalendar (RFC 5545) export for medication dose schedules.
@@ -31,6 +32,13 @@ export interface IcsOptions {
   prodId?: string;
   /** Optional VALARM lead time in minutes. Omit for no alarm. */
   alarmMinutesBefore?: number;
+  /**
+   * IANA timezone (for example "America/Los_Angeles") in which the
+   * schedule's HH:MM times should be interpreted. When omitted the schedule
+   * is expanded in the host's local timezone, which matches legacy behavior
+   * but is generally wrong in production. Always pass the patient's timezone.
+   */
+  timeZone?: string;
 }
 
 const CRLF = '\r\n';
@@ -49,7 +57,9 @@ export function buildIcs(items: IcsMedication[], opts: IcsOptions): string {
   ];
   const stamp = formatIcsDate(new Date());
   for (const item of items) {
-    const times = expandSchedule(item.schedule, opts.from, opts.to);
+    const times = opts.timeZone
+      ? expandScheduleInZone(item.schedule, { timeZone: opts.timeZone, from: opts.from, to: opts.to })
+      : expandSchedule(item.schedule, opts.from, opts.to);
     for (const dueAt of times) {
       const end = new Date(dueAt.getTime() + durMin * 60_000);
       const uid = `dose-${item.medication.id}-${dueAt.getTime()}@med-tracker`;

@@ -60,6 +60,18 @@ describe('GET /reports/export/ics', () => {
     await app.close();
   });
 
+  it('respects an explicit timeZone for HH:MM expansion', async () => {
+    const app = await buildApp({ loadForUser: async () => sampleItems });
+    // 09:00 in America/Los_Angeles on 2026-01-15 (PST, UTC-8) is 17:00 UTC.
+    const res = await app.inject({
+      method: 'GET',
+      url: '/reports/export/ics?from=2026-01-15&to=2026-01-15&timeZone=America/Los_Angeles',
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toContain('DTSTART:20260115T170000Z');
+    await app.close();
+  });
+
   it('includes VALARM when alarmMinutesBefore is positive', async () => {
     const app = await buildApp({ loadForUser: async () => sampleItems });
     const res = await app.inject({

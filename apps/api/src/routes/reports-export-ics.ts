@@ -38,12 +38,13 @@ export async function registerReportsExportIcs(app: FastifyInstance) {
             from: { type: 'string', format: 'date' },
             to: { type: 'string', format: 'date' },
             alarmMinutesBefore: { type: 'integer', minimum: 0, maximum: 1440 },
+            timeZone: { type: 'string', minLength: 1, maxLength: 64 },
           },
         },
       },
     },
     async (req, reply) => {
-      const q = req.query as { from?: string; to?: string; alarmMinutesBefore?: number };
+      const q = req.query as { from?: string; to?: string; alarmMinutesBefore?: number; timeZone?: string };
       const from = q.from ? new Date(q.from) : startOfToday();
       const to = q.to ? endOfDay(new Date(q.to)) : addDays(from, 30);
       if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) {
@@ -61,6 +62,7 @@ export async function registerReportsExportIcs(app: FastifyInstance) {
         from,
         to,
         alarmMinutesBefore: q.alarmMinutesBefore,
+        timeZone: q.timeZone,
         calendarName: 'Med-Tracker schedule',
       });
       reply
