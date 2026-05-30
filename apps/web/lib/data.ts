@@ -1,7 +1,7 @@
 'use client';
 
 import { api, ApiError } from './api-client';
-import type { Medication, DoseEvent, ScheduleEntry, Refill, AdherenceSummary, Drug, NotificationItem, CaregiverShare } from './types';
+import type { Medication, DoseEvent, ScheduleEntry, Refill, AdherenceSummary, Drug, NotificationItem, CaregiverShare, PillQuery, PillIdentifyResponse, PillCatalogResponse, PillDescriptor } from './types';
 
 /**
  * The reference REST API in this repo returns scaffolded responses of the form
@@ -491,5 +491,37 @@ export async function fetchSharedView(token: string, scopes: string[] = ['view-m
       if (e.status === 410) return { error: 'This link has expired or been revoked.', status: 410 };
     }
     return { error: e instanceof Error ? e.message : 'Could not load shared view.', status: 0 };
+  }
+}
+
+// Pills
+
+export async function listPillCatalog(): Promise<PillDescriptor[]> {
+  try {
+    const res = await api.get<PillCatalogResponse>('/pills/catalog');
+    return res.entries ?? [];
+  } catch (e) {
+    if (e instanceof ApiError) throw new Error(`Could not load catalog (${e.status}).`);
+    throw e;
+  }
+}
+
+export async function getPill(id: string): Promise<PillDescriptor | null> {
+  const entries = await listPillCatalog();
+  return entries.find(e => e.id === id) ?? null;
+}
+
+export async function identifyPills(query: PillQuery): Promise<PillIdentifyResponse> {
+  try {
+    return await api.post<PillIdentifyResponse>('/pills/identify', query);
+  } catch (e) {
+    if (e instanceof ApiError) {
+      const body = e.body as { error?: { code?: string; message?: string } } | undefined;
+      if (body?.error?.code === 'empty_query') {
+        throw new Error('Add at least one detail to search.');
+      }
+      throw new Error(body?.error?.message ?? `Search failed (${e.status}).`);
+    }
+    throw e;
   }
 }

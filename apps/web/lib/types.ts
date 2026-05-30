@@ -85,3 +85,47 @@ export interface CaregiverShare {
   expiresAt?: string | null;
   lastViewedAt?: string | null;
 }
+
+export type PillShape =
+  | 'round' | 'oval' | 'oblong' | 'capsule' | 'triangle'
+  | 'square' | 'rectangle' | 'diamond' | 'pentagon' | 'hexagon' | 'other';
+
+export type PillColor =
+  | 'white' | 'off-white' | 'yellow' | 'orange' | 'red' | 'pink'
+  | 'purple' | 'blue' | 'green' | 'brown' | 'gray' | 'black' | 'clear';
+
+export interface PillDescriptor {
+  id: string;
+  name: string;
+  imprint?: string;
+  shape?: PillShape;
+  colors?: PillColor[];
+  scored?: boolean;
+  sizeMm?: number;
+}
+
+export interface PillQuery {
+  imprint?: string;
+  shape?: PillShape;
+  colors?: PillColor[];
+  scored?: boolean;
+  sizeMm?: number;
+}
+
+export interface PillMatch {
+  descriptor: PillDescriptor;
+  score: number;
+  reasons: string[];
+}
+
+export interface PillIdentifyResponse {
+  catalogSize: number;
+  count: number;
+  matches: PillMatch[];
+}
+
+export interface PillCatalogResponse {
+  count: number;
+  entries: PillDescriptor[];
+}
+

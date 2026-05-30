@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Pill, Dashboard, Calendar, Bell, ChartBar, Sun, Moon } from '@med/icons';
+import { Pill, Dashboard, Calendar, Bell, ChartBar, Sun, Moon, MagnifyingGlass } from '@med/icons';
 import { useTheme } from '../../lib/use-theme';
 
 const NAV = [
@@ -12,6 +12,7 @@ const NAV = [
   { href: '/medications', label: 'Medications', icon: Pill },
   { href: '/schedule', label: 'Schedule', icon: Calendar },
   { href: '/refills', label: 'Refills', icon: ChartBar },
+  { href: '/pills', label: 'Identify pill', icon: MagnifyingGlass },
 ] as const;
 
 export default function Layout({ children }: { children: React.ReactNode }) {
