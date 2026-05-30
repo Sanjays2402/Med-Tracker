@@ -103,7 +103,12 @@ export async function getMedication(id: string): Promise<Medication | null> {
 
 export async function createMedication(input: Omit<Medication, 'id'>): Promise<Medication> {
   try {
-    await api.post('/medications', input);
+    const res = await api.post<unknown>('/medications', input);
+    const m = unwrapObj<Medication | null>(res, 'medication', null);
+    if (m && (m as Medication).id) {
+      localMeds = [m as Medication, ...localMeds];
+      return m as Medication;
+    }
   } catch (e) {
     if (e instanceof ApiError && e.status >= 500) throw e;
   }
