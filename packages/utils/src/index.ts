@@ -20,3 +20,4 @@ export * from './storage';
 export * from './result';
 export * from './titration';
 export * from './pill-identifier';
+export * from './adherence-risk';
