@@ -22,3 +22,6 @@ playwright-report
 test-results
 storybook-static
 .cache
+
+# Stray TS->JS build artifacts under package src/ dirs
+packages/*/src/**/*.js
