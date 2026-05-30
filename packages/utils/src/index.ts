@@ -33,3 +33,4 @@ export * from './cold-chain';
 export * from './shift-handoff';
 export * from './inventory-ledger';
 export * from './taper-plan';
+export * from './food-windows';
