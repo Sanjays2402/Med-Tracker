@@ -42,6 +42,7 @@ import { registerReportsExportJson } from './reports-export-json';
 import { registerReportsExportIcs } from './reports-export-ics';
 import { registerInteractionsCheck } from './interactions-check';
 import { registerInteractionsForUser } from './interactions-for-user';
+import { registerInteractionsGraph } from './interactions-graph';
 import { registerDrugsSearch } from './drugs-search';
 import { registerDrugsId } from './drugs-id';
 import { registerDrugsClasses } from './drugs-classes';
@@ -102,6 +103,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerReportsExportIcs(app);
   await registerInteractionsCheck(app);
   await registerInteractionsForUser(app);
+  await registerInteractionsGraph(app);
   await registerDrugsSearch(app);
   await registerDrugsId(app);
   await registerDrugsClasses(app);

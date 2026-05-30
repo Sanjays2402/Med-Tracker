@@ -23,3 +23,4 @@ export * from './pill-identifier';
 export * from './adherence-risk';
 export * from './schedule-resolver';
 export * from './caregiver-escalation';
+export * from './interaction-graph';
