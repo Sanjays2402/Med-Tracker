@@ -16,6 +16,6 @@
     "@testing-library/react": "^16.0.0",
     "@testing-library/jest-dom": "^6.5.0",
     "jsdom": "^25.0.0",
-    "vitest": "^2.0.0"
+    "vitest": "^4.1.0"
   }
 }
