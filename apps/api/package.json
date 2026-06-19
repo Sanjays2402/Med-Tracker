@@ -24,7 +24,7 @@
     "@med/utils": "workspace:*",
     "@sentry/node": "^8",
     "fastify": "^5.8.5",
-    "fastify-plugin": "^5.0.1",
+    "fastify-plugin": "^6.0.0",
     "pino-pretty": "^11.2.0",
     "prom-client": "^15.1.3",
     "zod": "^3.23.8"
