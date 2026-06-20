@@ -51,3 +51,4 @@ export * from './pill-burden';
 export * from './pharmacy-distance-pick';
 export * from './dose-adherence-trend';
 export * from './regimen-summary';
+export * from './interaction-pair-search';
