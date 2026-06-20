@@ -37,3 +37,4 @@ export * from './food-windows';
 export * from './pediatric-dose';
 export * from './renewal-window';
 export * from './missed-dose-replan';
+export * from './dose-rounding';
