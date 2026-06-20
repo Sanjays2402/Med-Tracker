@@ -70,13 +70,19 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 18. [x] `reminder-snooze-policy` — Snooze policy: max snoozes, escalation, auto-skip after N misses (tick 4 / 4d333c4).
 19. [x] `vacation-overrides` — Per-day schedule overrides for vacations / travel days (tick 4 / 9fff87d).
 20. [x] `medication-history-import` — Import external history (CSV) into normalized doses with dedup (tick 4 / 6274a75).
-21. [ ] `dose-time-drift` — Detect chronic time-shifting (08:00 doses creeping to 10:00) and surface as a soft alert.
-22. [ ] `caregiver-permission-matrix` — Per-caregiver capability matrix (view/edit/log per medication).
-23. [ ] `insurance-tier-pick` — Choose cheapest covered alternative across plan tiers (uses cost-alternatives).
+21. [x] `dose-time-drift` — Detect chronic time-shifting (08:00 doses creeping to 10:00) and surface as a soft alert (tick 5 / 700a65f).
+22. [x] `caregiver-permission-matrix` — Per-caregiver capability matrix (view/edit/log per medication) (tick 5 / fd20e05).
+23. [x] `insurance-tier-pick` — Choose cheapest covered alternative across plan tiers (uses cost-alternatives) (tick 5 / f3fa325).
 24. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, timestamp drift, dimensions).
 25. [ ] `pill-image-fingerprint` — Compute perceptual fingerprint hash for pill-identifier matching.
-26. [ ] `regimen-change-diff` — Diff two snapshots of a regimen (added / removed / dose-changed meds).
-27. [ ] `caregiver-summary-rollup` — Roll up multiple patients' adherence into a household digest.
+26. [x] `regimen-change-diff` — Diff two snapshots of a regimen (added / removed / dose-changed meds) (tick 5 / 7e54a51).
+27. [x] `caregiver-summary-rollup` — Roll up multiple patients' adherence into a household digest (tick 5 / 02d181f).
+28. [ ] `medication-name-fuzzy-match` — Fuzzy match a typed med name against the drug catalog (Levenshtein + brand/generic alias).
+29. [ ] `dose-time-suggest` — Suggest optimal times given quiet hours, meal windows, and existing schedules (composes with quiet-hours + food-windows).
+30. [ ] `caregiver-share-token` — Generate / verify caregiver share tokens with optional expiry and scope payload.
+31. [ ] `medication-conflict-resolver` — Resolve conflicts between two medication records merged from different sources (e.g. EHR + manual entry).
+32. [ ] `pill-cutter-plan` — Plan tablet splitting for a non-dispensable strength (e.g. 5mg from 10mg scored tablets), respecting scored flag.
+33. [ ] `adverse-event-log` — Patient-reported adverse event log with severity classification + temporal proximity to last dose.
 
 ### Tier 2 — UI / app slices (web + ui pkg)
 
@@ -194,3 +200,63 @@ buried under pre-existing failures.)
     helper so the settings UI can show "5, 10, 20 minutes" for
     the user's chosen factor/cap. Total-elapsed `autoSkipAfterMinutes`
     is a belt-and-braces cap independent of snooze count.
+
+- 2026-06-20 16:27 PDT — tick 5: 5 features shipped.
+  Commits: 700a65f dose-time-drift, 7e54a51 regimen-change-diff,
+  fd20e05 caregiver-permission-matrix, f3fa325 insurance-tier-pick,
+  02d181f caregiver-summary-rollup.
+  Gate: 624/624 tests pass in `@med/utils` (82 new this tick:
+  15+16+20+15+16). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to origin/main; zero
+  new errors introduced by tick 5 (verified by listing the unique
+  error files: taper-plan, titration, schedule-resolver,
+  adherence-risk, date, ics — none of the 5 new tick-5 modules
+  appear). `@med/ui` 228/228 JSX runtime failures unchanged from
+  baseline.
+
+  Notes:
+  - `dose-time-drift` filters by medicationId at the per-med
+    entrypoint AND in the multi-med entrypoint groups before
+    calling computeDoseTimeDrift; reports are sorted by confidence
+    descending so the UI surfaces actionable rows first. Noise
+    clipping (default 240 min) keeps the median robust without
+    discarding the sample (count is preserved). When sample size
+    is below minSamples, direction='insufficient' and message
+    cites the actual count.
+  - `regimen-change-diff` normalizes schedules through a sorted-
+    key (sorted times, sorted daysOfWeek, kind, interval, cron,
+    enabled) so reordered times do NOT register as a change. A
+    kind change (daily -> interval) shows up as both a
+    schedules-removed and schedules-added diff entry, which the
+    UI bullet renderer surfaces clearly. The `fields` allow-list
+    lets callers restrict to a subset when only certain fields
+    are interesting (e.g. dashboard cares about strength +
+    schedules, refill page cares about supply only).
+  - `caregiver-permission-matrix` uses deny-wins-over-grant
+    semantics so a medication marked deny=['view-medications'] is
+    invisible even if the global scope grants view-medications.
+    Expired shares return a matrix with expired=true and ALL
+    helpers short-circuit to false / empty (no leaking access via
+    the per-medication map). Capability vocabulary is explicit:
+    no implicit "admin" capability. Scope -> capability map is
+    typed against `NonNullable<CaregiverShare['scopes']>[number]`
+    so adding a new scope in @med/types is a type error here
+    until handled.
+  - `insurance-tier-pick` charges fullPriceCents while the
+    patient's remaining deductible could cover the full fill,
+    falling back to copay once the deductible cannot. This is an
+    approximation (an exact tracker would partial-bill the first
+    fill); the 'deductible-applies' flag discloses it. Tiebreak
+    on equal cost prefers offerings WITHOUT prior-auth /
+    step-therapy flags. Mail-order + daysSupply >= 90 produces
+    both 'mail-order-discount' and 'ninety-day-pack' flags so
+    the UI can compose a "Switch to mail order for $X less"
+    nudge.
+  - `caregiver-summary-rollup` composes directly with
+    composeCaregiverDigest's DigestInput type so callers can
+    fan-out a single SQL query into both per-patient emails and
+    a combined household summary. Singular/plural is hand-rolled
+    (no Intl.PluralRules) so the messages render the same in
+    every environment. attentionMedications are sorted by PDC
+    ascending and capped at perPatientMissedLimit with an
+    "and N more" tail.
