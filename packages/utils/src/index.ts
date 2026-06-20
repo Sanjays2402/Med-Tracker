@@ -39,3 +39,4 @@ export * from './renewal-window';
 export * from './missed-dose-replan';
 export * from './dose-rounding';
 export * from './streak-rescue';
+export * from './pharmacy-hours';
