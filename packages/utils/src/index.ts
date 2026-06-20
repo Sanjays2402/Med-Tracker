@@ -36,3 +36,4 @@ export * from './taper-plan';
 export * from './food-windows';
 export * from './pediatric-dose';
 export * from './renewal-window';
+export * from './missed-dose-replan';
