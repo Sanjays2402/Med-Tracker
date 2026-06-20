@@ -41,3 +41,4 @@ export * from './dose-rounding';
 export * from './streak-rescue';
 export * from './pharmacy-hours';
 export * from './notification-batcher';
+export * from './dose-history-aggregator';
