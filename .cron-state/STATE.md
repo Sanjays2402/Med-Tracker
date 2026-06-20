@@ -58,18 +58,25 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 6. [x] `notification-batcher` — Coalesce multiple due reminders inside a small window into one notification (tick 2 / 8facf2b).
 7. [x] `dose-history-aggregator` — Group dose history into day/week/month buckets with status counts (tick 2 / 67a446b).
 8. [x] `bp-log` — Blood-pressure paired-reading log with hypertension classification (tick 2 / 439ca7b).
-9. [ ] `weight-trend` — Rolling 7d/30d weight trend with EMA + outlier rejection.
+9. [x] `weight-trend` — Rolling 7d/30d weight trend with EMA + outlier rejection (tick 3 / 3ade8e7).
 10. [x] `glucose-log` — Pre/post-prandial glucose log with in-range %, hypo/hyper flags (tick 2 / 14b59ba).
 11. [x] `prn-budget` — As-needed (PRN) usage budget tracker (e.g. max 4 doses / 24h) (tick 2 / 966a513).
 12. [ ] `regimen-summary` — Plain-language regimen summary: counts, timing buckets, top hubs.
-13. [ ] `dose-streak-by-med` — Per-medication streak (not just overall) with longest-streak history.
-14. [ ] `pill-burden` — Daily pill burden (count + total mg / mL) for de-prescribing review.
-15. [ ] `pharmacy-distance-pick` — Pick closest open pharmacy given lat/lng + hours + carries-drug list.
+13. [x] `dose-streak-by-med` — Per-medication streak (not just overall) with longest-streak history (tick 3 / 9b929d0).
+14. [x] `pill-burden` — Daily pill burden (count + total mg / mL) for de-prescribing review (tick 3 / 580dedd).
+15. [x] `pharmacy-distance-pick` — Pick closest open pharmacy given lat/lng + hours + carries-drug list (tick 3 / d242169).
 16. [ ] `interaction-pair-search` — Fast lookup of pair severity across full drug list (memoised classifier).
-17. [ ] `dose-adherence-trend` — Linear-fit adherence trend (slope, intercept, projected 30d %).
+17. [x] `dose-adherence-trend` — Linear-fit adherence trend (slope, intercept, projected 30d %) (tick 3 / 044406f).
 18. [ ] `reminder-snooze-policy` — Snooze policy: max snoozes, escalation, auto-skip after N misses.
 19. [ ] `vacation-overrides` — Per-day schedule overrides for vacations / travel days.
 20. [ ] `medication-history-import` — Import external history (CSV) into normalized doses with dedup.
+21. [ ] `dose-time-drift` — Detect chronic time-shifting (08:00 doses creeping to 10:00) and surface as a soft alert.
+22. [ ] `caregiver-permission-matrix` — Per-caregiver capability matrix (view/edit/log per medication).
+23. [ ] `insurance-tier-pick` — Choose cheapest covered alternative across plan tiers (uses cost-alternatives).
+24. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, timestamp drift, dimensions).
+25. [ ] `pill-image-fingerprint` — Compute perceptual fingerprint hash for pill-identifier matching.
+26. [ ] `regimen-change-diff` — Diff two snapshots of a regimen (added / removed / dose-changed meds).
+27. [ ] `caregiver-summary-rollup` — Roll up multiple patients' adherence into a household digest.
 
 ### Tier 2 — UI / app slices (web + ui pkg)
 
@@ -108,3 +115,35 @@ buried under pre-existing failures.)
     aggregator's local-time bucketing. Use `new Date(2026, 5, 15)`
     (Y, monthIndex, day) instead. Documented in
     `tests/dose-history-aggregator.test.ts`.
+
+- 2026-06-20 08:17 PDT — tick 3: 5 features shipped.
+  Commits: 3ade8e7 weight-trend, 9b929d0 dose-streak-by-med,
+  580dedd pill-burden, d242169 pharmacy-distance-pick,
+  044406f dose-adherence-trend.
+  Gate: 448/448 tests pass in `@med/utils` (80 new this tick: 16+12+19+17+16);
+  full `pnpm -r test` shows `@med/ui` 228/228 failures unchanged from
+  baseline (React JSX runtime missing — confirmed reproduces on
+  origin/main by re-running tests with main's `packages/utils` checked
+  out). `@med/utils typecheck` baseline still 43 errors, all in
+  pre-existing files (titration, taper-plan, schedule-resolver,
+  adherence-risk, ics, date) — zero new errors from tick 3.
+
+  Notes:
+  - `weight-trend` MAD outlier detection needed a fallback: pure MAD
+    is zero on a near-constant window, so a single outlier scored 0
+    deviation. Falls back to `mean(nonZeroDeviations) / 8` so a 72 ->
+    200 spike trips the `>= madFactor * scale` threshold. Future
+    summarizers with similar "robust scale on near-constant data"
+    needs should consider the same fallback.
+  - `pill-burden` uses a small `parseStrength` helper (exported) to
+    coerce "500 mg" / "5 mL" / "100 mcg" / "0.5 g" into canonical
+    units. Reusable for other modules needing strength parsing.
+  - `pharmacy-distance-pick` composes with `pharmacy-hours.ts` and
+    introduces a clean `haversineDistanceKm` (exported) for
+    distance math elsewhere (refill-batching could weight by it).
+  - `dose-adherence-trend` composes directly with
+    `dose-history-aggregator.ts` — pass a `DoseAggregation` straight
+    in. r2 floor (`minR2: 0.1` default) prevents bouncing series
+    from producing false trends. Useful precedent: future
+    "trend" utilities should expose both a slope AND an r2-based
+    confidence gate.
