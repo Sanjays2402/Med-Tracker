@@ -44,3 +44,4 @@ export * from './notification-batcher';
 export * from './dose-history-aggregator';
 export * from './bp-log';
 export * from './glucose-log';
+export * from './prn-budget';
