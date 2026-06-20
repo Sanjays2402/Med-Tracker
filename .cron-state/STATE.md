@@ -55,12 +55,12 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 3. [x] `dose-rounding` — Round computed doses to dispensable strengths (tick 1 / 4f6e2df).
 4. [x] `streak-rescue` — Detect at-risk streaks (tick 1 / 19d5df9).
 5. [x] `pharmacy-hours` — Pharmacy hours resolver (tick 1 / 6e174b1).
-6. [ ] `notification-batcher` — Coalesce multiple due reminders inside a small window into one notification.
-7. [ ] `dose-history-aggregator` — Group dose history into day/week/month buckets with status counts.
-8. [ ] `bp-log` — Blood-pressure paired-reading log with hypertension classification.
+6. [x] `notification-batcher` — Coalesce multiple due reminders inside a small window into one notification (tick 2 / 8facf2b).
+7. [x] `dose-history-aggregator` — Group dose history into day/week/month buckets with status counts (tick 2 / 67a446b).
+8. [x] `bp-log` — Blood-pressure paired-reading log with hypertension classification (tick 2 / 439ca7b).
 9. [ ] `weight-trend` — Rolling 7d/30d weight trend with EMA + outlier rejection.
-10. [ ] `glucose-log` — Pre/post-prandial glucose log with in-range %, hypo/hyper flags.
-11. [ ] `prn-budget` — As-needed (PRN) usage budget tracker (e.g. max 4 doses / 24h).
+10. [x] `glucose-log` — Pre/post-prandial glucose log with in-range %, hypo/hyper flags (tick 2 / 14b59ba).
+11. [x] `prn-budget` — As-needed (PRN) usage budget tracker (e.g. max 4 doses / 24h) (tick 2 / 966a513).
 12. [ ] `regimen-summary` — Plain-language regimen summary: counts, timing buckets, top hubs.
 13. [ ] `dose-streak-by-med` — Per-medication streak (not just overall) with longest-streak history.
 14. [ ] `pill-burden` — Daily pill burden (count + total mg / mL) for de-prescribing review.
@@ -87,3 +87,24 @@ buried under pre-existing failures.)
   full `pnpm typecheck` fails on pre-existing `@med/config`, `@med/db`,
   `@med/ui`, `@med/utils/titration.ts` errors that reproduce on main
   with no autoship changes applied.
+
+- 2026-06-20 05:13 PDT — tick 2: 5 features shipped.
+  Commits: 8facf2b notification-batcher, 67a446b dose-history-aggregator,
+  439ca7b bp-log, 14b59ba glucose-log, 966a513 prn-budget.
+  Gate: 368/368 tests pass in `@med/utils` (63 new + 305 existing);
+  `@med/utils typecheck` baseline = 43 errors identical to origin/main,
+  zero new errors introduced by tick 2 (verified by checking out
+  `origin/main` packages/utils and recounting). Lint + build remain
+  placeholder echo in this package.
+
+  Notes:
+  - Both `bp-log` and `glucose-log` exported `SummaryOptions`; renamed
+    to `BpSummaryOptions` and `GlucoseSummaryOptions` to keep
+    `export *` re-exports unambiguous. Future tickets adding more
+    summary utilities should follow the `<Module>SummaryOptions`
+    pattern.
+  - Test dates: avoid `new Date('YYYY-MM-DD')` which parses as UTC
+    midnight; on PDT it lands on the prior local day and breaks the
+    aggregator's local-time bucketing. Use `new Date(2026, 5, 15)`
+    (Y, monthIndex, day) instead. Documented in
+    `tests/dose-history-aggregator.test.ts`.
