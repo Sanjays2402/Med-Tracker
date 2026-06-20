@@ -26,7 +26,7 @@
 
 import type { Drug, Medication, Schedule } from '@med/types';
 
-export type TimeBucket = 'morning' | 'midday' | 'afternoon' | 'evening' | 'overnight';
+export type RegimenTimeBucket = 'morning' | 'midday' | 'afternoon' | 'evening' | 'overnight';
 
 export interface RegimenInput {
   medications: Medication[];
@@ -58,13 +58,13 @@ export interface RegimenSummary {
   prnMedications: number;
   scheduledDosesPerDay: number;
   distinctClasses: number;
-  timeBuckets: Record<TimeBucket, number>;
+  timeBuckets: Record<RegimenTimeBucket, number>;
   topClasses: ClassRollup[];
   /** Human-readable lines: one per claim. UI joins or renders as bullets. */
   sentences: string[];
 }
 
-const BUCKET_BOUNDS: Array<{ bucket: TimeBucket; from: number; to: number }> = [
+const BUCKET_BOUNDS: Array<{ bucket: RegimenTimeBucket; from: number; to: number }> = [
   { bucket: 'morning', from: 5 * 60, to: 11 * 60 },     // 05:00-11:00
   { bucket: 'midday', from: 11 * 60, to: 14 * 60 },     // 11:00-14:00
   { bucket: 'afternoon', from: 14 * 60, to: 17 * 60 },  // 14:00-17:00
@@ -72,7 +72,7 @@ const BUCKET_BOUNDS: Array<{ bucket: TimeBucket; from: number; to: number }> = [
 ];
 // Overnight = 22:00-05:00 (wraps).
 
-function timeToBucket(hhmm: string): TimeBucket {
+function timeToBucket(hhmm: string): RegimenTimeBucket {
   const parts = hhmm.split(':').map(Number);
   const h = parts[0] ?? 0;
   const m = parts[1] ?? 0;
@@ -129,7 +129,7 @@ export function summarizeRegimen(
     schedulesByMed.set(s.medicationId, arr);
   }
 
-  const timeBuckets: Record<TimeBucket, number> = {
+  const timeBuckets: Record<RegimenTimeBucket, number> = {
     morning: 0,
     midday: 0,
     afternoon: 0,
@@ -217,7 +217,7 @@ export function summarizeRegimen(
   );
 
   // Top-bucket sentence: where is the heaviest dose load?
-  const bucketOrder: TimeBucket[] = [
+  const bucketOrder: RegimenTimeBucket[] = [
     'morning',
     'midday',
     'afternoon',
