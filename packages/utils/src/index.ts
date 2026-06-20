@@ -54,3 +54,4 @@ export * from './regimen-summary';
 export * from './interaction-pair-search';
 export * from './reminder-snooze-policy';
 export * from './vacation-overrides';
+export * from './medication-history-import';
