@@ -15,17 +15,46 @@ the end of every tick.
   `packages/utils/src/index.ts`.
 - Run the full quality gate ONCE per tick: `pnpm typecheck && pnpm lint && pnpm test && pnpm build`.
 
+## Repo state notes (read first)
+
+- **pnpm store is on `/Volumes/Projects/.pnpm-store`** (config set explicitly
+  because the root volume `/` was at 100%). Do not change.
+- **node_modules is on `/Volumes/Projects/Med-Tracker/node_modules`** (the
+  project volume); a fresh `pnpm install --prefer-offline --ignore-scripts`
+  on tick 1 took ~11 minutes due to network re-downloads. Subsequent ticks
+  should hit the store and be near-instant.
+- **Pre-existing baseline failures on `main` (NOT to be blamed on autoship
+  ticks; reproduced by running typecheck on main directly):**
+  - `@med/config` typecheck: missing `@types/node` (4 errors in `src/index.ts`).
+  - `@med/db` typecheck: missing `@types/node` + Prisma client type drift
+    (Prisma 7 removed the `PrismaClient` / `Prisma` named exports the code
+    depends on; 14 errors across `src/client.ts` + `src/seed.ts`).
+  - `@med/utils` typecheck: ~18 errors in `src/taper-plan.ts` +
+    `src/titration.ts` (strict undefined narrowing not satisfied; predates
+    autoship).
+  - `@med/ui` test suite: 228/228 fail with "ReferenceError: React is not
+    defined" (the components were authored before the React 17+ automatic
+    JSX runtime was enforced; missing `vitest.config.ts` jsx settings, or
+    needs explicit `import React`).
+  - Many `@med/web` tsx imports referencing missing local files.
+- Autoship features must pass their own typecheck + tests in isolation
+  (verified per tick via `pnpm --filter @med/utils test` and tsc on the
+  new files).
+- Do NOT push red code that you yourself introduced. If the existing
+  baseline gates fail through no fault of the tick, ship anyway and log
+  it here.
+
 ## Roadmap
 
 Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` skipped/blocked.
 
 ### Tier 1 — pure utilities (packages/utils)
 
-1. [ ] `renewal-window` — Insurance renewal eligibility (days-supply, % consumed, earliest-fill).
-2. [ ] `missed-dose-replan` — Re-plan next safe dose after a miss (min-interval, max-daily safe windows).
-3. [ ] `dose-rounding` — Round computed doses to dispensable strengths (tablet halves, syringe steps).
-4. [ ] `streak-rescue` — Detect at-risk streaks; expose grace/makeup options before they break.
-5. [ ] `pharmacy-hours` — Pharmacy hours resolver: isOpenAt / nextOpen / nextClose with holiday overrides.
+1. [x] `renewal-window` — Insurance renewal eligibility (tick 1 / c571a7f).
+2. [x] `missed-dose-replan` — Re-plan next safe dose after a miss (tick 1 / 017535d).
+3. [x] `dose-rounding` — Round computed doses to dispensable strengths (tick 1 / 4f6e2df).
+4. [x] `streak-rescue` — Detect at-risk streaks (tick 1 / 19d5df9).
+5. [x] `pharmacy-hours` — Pharmacy hours resolver (tick 1 / 6e174b1).
 6. [ ] `notification-batcher` — Coalesce multiple due reminders inside a small window into one notification.
 7. [ ] `dose-history-aggregator` — Group dose history into day/week/month buckets with status counts.
 8. [ ] `bp-log` — Blood-pressure paired-reading log with hypertension classification.
@@ -44,9 +73,17 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 2 — UI / app slices (web + ui pkg)
 
-(Pulled forward only after Tier 1 momentum is established and after careful
-study of existing `apps/web` and `packages/ui` patterns.)
+(Pulled forward only after Tier 1 momentum is established. Note: the
+`@med/ui` test suite is currently red on baseline — fix the React JSX
+runtime issue before adding UI features so new components don't get
+buried under pre-existing failures.)
 
 ## Tick log
 
-(Each tick appends one line: timestamp / features-shipped / sha-list.)
+- 2026-06-20 01:42 PDT — tick 1: bootstrap + 5 features shipped.
+  Commits: c571a7f renewal-window, 017535d missed-dose-replan,
+  4f6e2df dose-rounding, 19d5df9 streak-rescue, 6e174b1 pharmacy-hours.
+  Gate: 305/305 tests pass in `@med/utils` (49 new + 256 existing);
+  full `pnpm typecheck` fails on pre-existing `@med/config`, `@med/db`,
+  `@med/ui`, `@med/utils/titration.ts` errors that reproduce on main
+  with no autoship changes applied.
