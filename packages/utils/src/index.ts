@@ -49,3 +49,4 @@ export * from './weight-trend';
 export * from './dose-streak-by-med';
 export * from './pill-burden';
 export * from './pharmacy-distance-pick';
+export * from './dose-adherence-trend';
