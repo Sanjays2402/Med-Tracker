@@ -61,15 +61,15 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 9. [x] `weight-trend` — Rolling 7d/30d weight trend with EMA + outlier rejection (tick 3 / 3ade8e7).
 10. [x] `glucose-log` — Pre/post-prandial glucose log with in-range %, hypo/hyper flags (tick 2 / 14b59ba).
 11. [x] `prn-budget` — As-needed (PRN) usage budget tracker (e.g. max 4 doses / 24h) (tick 2 / 966a513).
-12. [ ] `regimen-summary` — Plain-language regimen summary: counts, timing buckets, top hubs.
+12. [x] `regimen-summary` — Plain-language regimen summary: counts, timing buckets, top hubs (tick 4 / 6adaa92, +2e5511d fix).
 13. [x] `dose-streak-by-med` — Per-medication streak (not just overall) with longest-streak history (tick 3 / 9b929d0).
 14. [x] `pill-burden` — Daily pill burden (count + total mg / mL) for de-prescribing review (tick 3 / 580dedd).
 15. [x] `pharmacy-distance-pick` — Pick closest open pharmacy given lat/lng + hours + carries-drug list (tick 3 / d242169).
-16. [ ] `interaction-pair-search` — Fast lookup of pair severity across full drug list (memoised classifier).
+16. [x] `interaction-pair-search` — Fast lookup of pair severity across full drug list (memoised classifier) (tick 4 / 33f69ff).
 17. [x] `dose-adherence-trend` — Linear-fit adherence trend (slope, intercept, projected 30d %) (tick 3 / 044406f).
-18. [ ] `reminder-snooze-policy` — Snooze policy: max snoozes, escalation, auto-skip after N misses.
-19. [ ] `vacation-overrides` — Per-day schedule overrides for vacations / travel days.
-20. [ ] `medication-history-import` — Import external history (CSV) into normalized doses with dedup.
+18. [x] `reminder-snooze-policy` — Snooze policy: max snoozes, escalation, auto-skip after N misses (tick 4 / 4d333c4).
+19. [x] `vacation-overrides` — Per-day schedule overrides for vacations / travel days (tick 4 / 9fff87d).
+20. [x] `medication-history-import` — Import external history (CSV) into normalized doses with dedup (tick 4 / 6274a75).
 21. [ ] `dose-time-drift` — Detect chronic time-shifting (08:00 doses creeping to 10:00) and surface as a soft alert.
 22. [ ] `caregiver-permission-matrix` — Per-caregiver capability matrix (view/edit/log per medication).
 23. [ ] `insurance-tier-pick` — Choose cheapest covered alternative across plan tiers (uses cost-alternatives).
@@ -147,3 +147,50 @@ buried under pre-existing failures.)
     from producing false trends. Useful precedent: future
     "trend" utilities should expose both a slope AND an r2-based
     confidence gate.
+
+- 2026-06-20 13:42 PDT — tick 4: 5 features shipped + 1 fixup.
+  Commits: 6adaa92 regimen-summary, 33f69ff interaction-pair-search,
+  4d333c4 reminder-snooze-policy, 9fff87d vacation-overrides,
+  6274a75 medication-history-import, 2e5511d fix (rename
+  regimen-summary's TimeBucket to RegimenTimeBucket to resolve
+  re-export collision with pill-burden).
+  Gate: 542/542 tests pass in `@med/utils` (94 new this tick:
+  16+22+17+17+22). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to origin/main; zero
+  new errors introduced by tick 4 (verified by grep of tsc output
+  against the 5 new module file names — no hits). No other
+  package imports the new modules so `@med/ui` baseline
+  failures (228/228 JSX runtime) are unaffected.
+
+  Notes:
+  - `pill-burden` already exports `TimeBucket` (4 buckets:
+    morning/midday/evening/bedtime). `regimen-summary` needed a
+    different 5-bucket set (adds explicit `afternoon` and
+    `overnight`) and the two are semantically different windows,
+    so renamed `regimen-summary`'s type to `RegimenTimeBucket`
+    rather than collapsing them. Future modules with a "time of
+    day" bucket type should add a module-prefixed name to avoid
+    re-export collisions; the `@med/utils` index re-exports
+    everything with `export *` so name clashes break typecheck.
+  - `medication-history-import` initially used a round-to-bucket
+    dedup key on the timestamp, which produced false negatives
+    at bucket boundaries (08:04 -> bucket 0, 08:06 -> bucket 10
+    with 5-min tolerance both miss each other). Switched to a
+    per-med list of `{ ms, index }` with abs-diff <= tolerance
+    check. Slightly slower (O(rows-per-med)) but exact at the
+    boundary; for human-scale histories the cost is invisible.
+  - `interaction-pair-search` composes with `interaction-severity`
+    by calling `classifyInteractions` once at index time, plus
+    on-demand 2-drug runs for candidates outside the active list.
+    Cache hits are written so a repeat query is O(1). Stays in
+    lockstep with SEVERITY_RULES — no duplicate rules.
+  - `vacation-overrides` operates on `DoseInstance[]` (a small
+    `{ medicationId, dueAt: Date }` tuple) so it composes with
+    `expandSchedule` output without dragging the full Dose Zod
+    type through. Per-med overrides win over regimen-wide ones
+    for the same date; that lets a "fasting day" skip everything
+    except a critical seizure med via a more-specific override.
+  - `reminder-snooze-policy` exposes a `snoozeLadder()` preview
+    helper so the settings UI can show "5, 10, 20 minutes" for
+    the user's chosen factor/cap. Total-elapsed `autoSkipAfterMinutes`
+    is a belt-and-braces cap independent of snooze count.
