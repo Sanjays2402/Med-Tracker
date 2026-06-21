@@ -78,3 +78,4 @@ export * from './pharmacy-fill-reconciliation';
 export * from './pdc-trend';
 export * from './medication-conflict-resolver';
 export * from './interaction-time-spacer';
+export * from './inventory-low-stock-forecast';
