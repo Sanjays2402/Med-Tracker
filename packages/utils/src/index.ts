@@ -73,3 +73,4 @@ export * from './caregiver-event-feed';
 export * from './prescriber-directory';
 export * from './drug-class-coverage';
 export * from './prescription-fill-history';
+export * from './pdc-by-medication';
