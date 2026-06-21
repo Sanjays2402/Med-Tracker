@@ -87,3 +87,4 @@ export * from './dose-late-escalation-policy';
 export * from './regimen-snapshot-archive';
 export * from './prescriber-contact-card';
 export * from './appointment-followup-tracker';
+export * from './medication-refusal-log';
