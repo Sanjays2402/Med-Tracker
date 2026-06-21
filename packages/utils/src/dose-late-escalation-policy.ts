@@ -71,7 +71,7 @@ export interface BuildPolicyInput {
   resolveOn?: EscalationPolicy['resolveOn'];
 }
 
-export interface ValidationError {
+export interface EscalationValidationError {
   code:
     | 'duplicate-tier-id'
     | 'negative-delay'
@@ -85,9 +85,9 @@ export interface ValidationError {
   message: string;
 }
 
-export interface ValidationResult {
+export interface EscalationValidationResult {
   ok: boolean;
-  errors: ValidationError[];
+  errors: EscalationValidationError[];
 }
 
 export interface SimulationTierEvent {
@@ -145,8 +145,8 @@ const PRESET_TEMPLATES: Record<PolicyTemplate, Omit<PolicyTierSpec, 'recipients'
   ],
 };
 
-function validateTier(t: PolicyTierSpec): ValidationError[] {
-  const errs: ValidationError[] = [];
+function validateTier(t: PolicyTierSpec): EscalationValidationError[] {
+  const errs: EscalationValidationError[] = [];
   if (!t.id || t.id.trim() === '') {
     errs.push({ code: 'empty-tier-id', message: 'tier id must be non-empty' });
   }
@@ -185,8 +185,8 @@ function validateTier(t: PolicyTierSpec): ValidationError[] {
  * runtime caregiver-escalation engine is guaranteed by the type
  * structure itself.
  */
-export function validateEscalationPolicy(input: BuildPolicyInput): ValidationResult {
-  const errors: ValidationError[] = [];
+export function validateEscalationPolicy(input: BuildPolicyInput): EscalationValidationResult {
+  const errors: EscalationValidationError[] = [];
   const seenIds = new Set<string>();
   const seenDelays = new Set<number>();
   let lastDelay = -Infinity;
