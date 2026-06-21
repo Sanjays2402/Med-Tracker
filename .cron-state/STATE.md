@@ -89,15 +89,28 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 34. [ ] `medication-conflict-resolver` — Merge conflicts when the same medication arrives from EHR + manual entry; pick which fields win, surface manual review queue.
 35. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, EXIF timestamp drift vs dueAt, min dimensions).
 36. [ ] `pill-image-fingerprint` — Compute perceptual hash (aHash/dHash) for pill-identifier image matching; pure pixel math, no native deps.
-37. [ ] `refill-cost-projector` — Project annual cost across the regimen given current copays, refill cadence, and an optional plan-change date.
-38. [ ] `caregiver-event-feed` — Stream of dose / refill / adverse-event entries for a caregiver, paginated, deny-aware via permission-matrix.
-39. [ ] `lab-window-tracker` — Track lab-test windows for medications that require periodic monitoring (warfarin INR, statin LFT, lithium level), with overdue / upcoming flags.
+37. [x] `refill-cost-projector` — Project annual cost across the regimen given current copays, refill cadence, and an optional plan-change date (tick 7 / e824fd7).
+38. [x] `caregiver-event-feed` — Stream of dose / refill / adverse-event entries for a caregiver, paginated, deny-aware via permission-matrix (tick 7 / bc90168).
+39. [x] `lab-window-tracker` — Track lab-test windows for medications that require periodic monitoring (warfarin INR, statin LFT, lithium level), with overdue / upcoming flags (tick 7 / f637675).
 40. [ ] `prescription-fill-history` — Normalize pharmacy fill history (NDC + days_supply + fill_date) into a continuous-coverage map, surface gaps.
 41. [ ] `pdc-by-medication` — Per-medication Proportion of Days Covered metric, the FDA-style adherence number caregivers and PBMs ask for.
-42. [ ] `dose-instruction-parser` — Parse free-text "sig" strings ("1 tab po qid prn pain") into structured Schedule + amountPerDose; deterministic vocabulary, no LLM.
-43. [ ] `temperature-excursion-log` — Log + classify cold-chain excursions for refrigerated meds (insulin, biologics) using cold-chain.ts rules.
+42. [x] `dose-instruction-parser` — Parse free-text "sig" strings ("1 tab po qid prn pain") into structured Schedule + amountPerDose; deterministic vocabulary, no LLM (tick 7 / 1c9bbe6).
+43. [x] `temperature-excursion-log` — Log + classify cold-chain excursions for refrigerated meds (insulin, biologics) using cold-chain.ts rules (tick 7 / 82bfe32).
 44. [ ] `med-list-print-layout` — Generate a paginated, print-ready medication list (one row per med, with refill date / prescriber / strength); pure layout math, no rendering.
 45. [ ] `caregiver-notification-throttle` — Throttle caregiver notifications so a noisy day doesn't trigger 20 pings; coalesce by severity tier.
+
+### Tier 1C — fresh roadmap (refill after tick 7)
+
+46. [ ] `prescriber-directory` — Normalize prescriber records (NPI dedup, name fuzzy-match), surface "which doctor prescribes what" rollup.
+47. [ ] `drug-class-coverage` — Per-class coverage check across the regimen ("you have 2 statins but no antiplatelet") for cardio-risk review.
+48. [ ] `pharmacy-fill-reconciliation` — Reconcile pharmacy fill events against expected supplyRemaining; surface short/over-fills and dispensing errors.
+49. [ ] `dose-batch-export` — Export a date-range slice of dose events as FHIR MedicationAdministration JSON; pure shape translation, no network.
+50. [ ] `regimen-printable-summary` — Wallet-card data layout (name / strength / route / sig / prescriber / pharmacy) sized to fit a 3.5x2" card.
+51. [ ] `dose-import-csv` — Import dose history from common pharmacy CSV formats (Walgreens / CVS layouts) with column auto-mapping.
+52. [ ] `interaction-time-spacer` — Suggest minimum time gap between two interacting meds (e.g. levothyroxine + calcium) and check existing schedules against it.
+53. [ ] `caregiver-notification-throttle-policy` — Tier-aware notification throttler that batches non-urgent pings and rate-limits caregiver pages.
+54. [ ] `appointment-prep-checklist` — Generate a structured pre-visit checklist (current meds, recent labs, reported AEs) given last-visit + upcoming-visit dates.
+55. [ ] `regimen-load-score` — Composite regimen-burden score (pill count + dosing frequency + monitoring cadence + cost) for de-prescribing prioritization.
 
 ### Tier 2 — UI / app slices (web + ui pkg)
 
@@ -107,6 +120,75 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-20 22:14 PDT — tick 7: 5 features shipped.
+  Commits: 1c9bbe6 dose-instruction-parser, e824fd7 refill-cost-projector,
+  f637675 lab-window-tracker, 82bfe32 temperature-excursion-log,
+  bc90168 caregiver-event-feed.
+  Gate: 834/834 tests pass in `@med/utils` (104 new this tick:
+  32+22+18+15+17). Lint + build placeholder ok. `@med/utils` typecheck
+  baseline = 43 errors identical to start-of-tick (1 adherence-risk +
+  1 date + 1 ics + 15 schedule-resolver + 8 taper-plan + 17 titration);
+  zero new errors introduced by tick 7. `pnpm -r test` confirms
+  `@med/ui` 228/228 JSX runtime failures unchanged from baseline.
+  Refilled roadmap (Tier 1C) with 10 new candidates (#46-#55).
+
+  Notes:
+  - `dose-instruction-parser` is the first @med/utils module designed
+    explicitly to AVOID an LLM. Sig parsing is on the trust-critical
+    dosing path; every output must be reproducible and auditable.
+    Frequency patterns are ordered longest-first so "twice daily"
+    wins over the bare "daily" entry on qd — a subtle bug the test
+    suite caught immediately. Stop-word lists prevent "for pain qid"
+    from leaking the qid token into the reason field. Reason
+    extraction supports both `for X` and `prn X` constructions
+    (a common second variant on real sigs). Confidence is reported
+    in [0, 1] so the UI can route low-confidence parses to human
+    review instead of auto-applying them. The `unparsed` array
+    surfaces every token the parser couldn't map; future enrichments
+    should add tokens to NOISE_TOKENS rather than silently swallow.
+  - `refill-cost-projector` does the cadence-anchor math carefully:
+    if firstFillAt is in the past, it walks forward by daysSupply
+    steps to land on or after `from` WITHOUT drifting cadence. A
+    naive `from` reset would have introduced systematic over-counting
+    for chronic patients with old anchor dates. Plan-change support
+    runs a phantom "without plan change" projection so the savings
+    delta is exact, and `preChangeCents` / `postChangeCents` are
+    exposed separately for the UI's split bar chart. All math is in
+    cents to avoid float drift; formatCentsUsd handles display.
+  - `lab-window-tracker` introduces a status-rank ladder (overdue >
+    due-soon > no-history > on-track > not-due-yet) so the per-
+    medication rollup always headlines the most actionable item.
+    requireBaseline + baselineDueDays handle the "must draw a
+    baseline LFT within 2 weeks of starting a statin" case: when the
+    grace window expires with no result, the window flips from
+    no-history to overdue so it actually surfaces. The flat list is
+    sorted by daysUntilDue ascending so the most-overdue item is
+    always row 1; future trackers with similar "due-by-date"
+    semantics should match this convention.
+  - `temperature-excursion-log` composes with computeColdChainStatus
+    rather than reimplementing budget math. Per-entry severity
+    classifier uses fixed bands relative to spec.maxAllowedC
+    (within-fridge <= 8C, mild <= nominal, severe >= 85% of max,
+    over-max > max). budgetCostHours uses the same
+    temperatureDerating function cold-chain.ts uses, so there is
+    NO drift between the UI chip ("severe") and the underlying
+    discard math ("overheat"). Stable IDs (start__end__temp-to-0.1)
+    make form re-submissions idempotent. Validation rejects bad
+    dates, end-before-start, and out-of-plausible-range temperatures
+    with a per-index error so the UI can report "1 added, 2
+    duplicates skipped, 1 rejected".
+  - `caregiver-event-feed` is the second major consumer of
+    caregiver-permission-matrix (after caregiver-summary-rollup
+    composing with caregiver-digest). The fixed KIND_CAPABILITY map
+    is the bridge: each event kind needs a specific capability, and
+    `canCaregiverDo(matrix, capability, medicationId)` does the
+    deny-wins / per-medication lookup the matrix already implements.
+    Pagination is cursor-based — `${occurredAt}|${id}` — because
+    offset-based pagination becomes incorrect when new events are
+    appended at the head. Stable tie-break by id descending. Malformed
+    cursors degrade to the first page silently. collectCaregiverFeed
+    has a 1000-page safety bound so a bad cursor cannot spin forever.
 
 - 2026-06-20 01:42 PDT — tick 1: bootstrap + 5 features shipped.
   Commits: c571a7f renewal-window, 017535d missed-dose-replan,
