@@ -143,13 +143,31 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 ### Tier 1F — fresh roadmap (refill after tick 10)
 
 78. [x] `prescriber-contact-card` — Wallet-printable prescriber contact block plus vCard 4.0 export; phone normalised to E.164 (tick 11 / 3ce449c).
-79. [ ] `appointment-prep-text-export` — Format AppointmentChecklist as a wallet-pocket print layout (3.5x2") for the front-desk handoff. (Duplicate of #75; consolidate when picking up.)
-80. [ ] `medication-refusal-trend` — Track refusal density per medication over rolling 30/90/180 windows; flag rising tolerability refusals BEFORE the de-prescribing-candidate threshold trips.
+79. [x] `appointment-prep-text-export` — Wallet-pocket print layout for AppointmentChecklist (40 col x 10 line, urgency-ordered) (tick 12 / 381f648).
+80. [x] `medication-refusal-trend` — Rolling-window refusal trend (30/90/180d) with independent tolerability sub-stream and rising-tolerability lead flag (tick 12 / 0cc677e).
 81. [ ] `dose-export-csv` — CSV companion to dose-batch-export for pharmacy-CSV-compatible round-trips.
-82. [ ] `followup-overdue-digest` — Compose appointment-followup-tracker + caregiver-digest to produce a weekly "you have N overdue follow-ups, oldest is X" caregiver email.
-83. [ ] `lab-window-completion-feed` — When a lab result lands, mark the matching FollowupRequirement (kind='lab') completed automatically.
-84. [ ] `prescriber-contact-roster-print` — Multi-card layout for printing a 1-page contact roster across all prescribers in a directory.
+82. [x] `followup-overdue-digest` — Caregiver weekly digest composer for FollowupReport with urgency-ordered phrasing and null short-circuit on silent weeks (tick 12 / fc3f82a).
+83. [x] `lab-window-completion-feed` — Auto-complete lab-kind FollowupRequirement from LabResult; both code-in-title + medicationId match strategies with window + recommendedAt gating (tick 12 / 13c4a9d).
+84. [x] `prescriber-contact-roster-print` — Multi-page 1-card-per-prescriber roster with specialty grouping, US Letter / A4 sizing parameters, form-feed page separators (tick 12 / 75867f3).
 85. [ ] `refusal-reason-suggest` — Suggest a likely refusal reason given dose context (time-of-day matches sleeping window; date matches a known procedure date).
+
+### Tier 1G — fresh roadmap (refill after tick 12)
+
+86. [ ] `dose-export-csv` — CSV companion to dose-batch-export for pharmacy-CSV-compatible round-trips. Walgreens / CVS column layouts; null for missing fields rather than empty strings.
+87. [ ] `refusal-reason-suggest` — Suggest a likely refusal reason given dose context (time-of-day matches sleeping window; date matches a known procedure date) so the patient UI defaults the reason picker.
+88. [ ] `followup-digest-html` — HTML render of FollowupDigest (table + status chips) parallel to caregiver-digest-html when that lands; same null short-circuit semantics.
+89. [ ] `refusal-trend-summary-html` — HTML chart payload for medication-refusal-trend windows (per-medication sparkline data, ready for the dashboard chart component).
+90. [ ] `lab-window-completion-feed-csv-import` — Import a pharmacy lab-result CSV into LabResult[] feed for direct lab-window-completion-feed chaining.
+91. [ ] `regimen-snapshot-archive-restore` — Restore a regimen from a signed snapshot envelope (round-trip companion to regimen-snapshot-archive); verify signature before producing the restore plan.
+92. [ ] `prescriber-roster-print-html` — HTML/CSS companion to prescriber-contact-roster-print using grid layout for browser print preview without a monospace font requirement.
+93. [ ] `appointment-prep-html-export` — Print-friendly HTML/CSS variant of appointment-prep-checklist (full-page) parallel to the text export.
+94. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, EXIF timestamp drift vs dueAt, min dimensions).
+95. [ ] `pill-image-fingerprint` — Compute perceptual hash (aHash/dHash) for pill-identifier image matching; pure pixel math, no native deps.
+96. [ ] `medication-conflict-history` — Persistent log of past conflict-resolver decisions so the manual review queue stays append-only and adjudications can be audited.
+97. [ ] `caregiver-notification-throttle-policy` — Tier-aware notification throttler that batches non-urgent pings and rate-limits caregiver pages.
+98. [ ] `dose-reminder-quiet-hours-override` — Per-medication exception to global quiet-hours (e.g. seizure rescue meds always ring through).
+99. [ ] `medication-name-spell-suggest` — One-letter typo suggester for the rxnorm catalog; produces "did you mean X?" suggestions distinct from the broader fuzzy match.
+100. [ ] `fill-history-csv-import` — Import a pharmacy fill history CSV (column auto-map) into PharmacyFillEvent[]; feeds prescription-fill-history + pdc-by-medication directly.
 
 
 
@@ -159,6 +177,115 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-21 13:51 PDT — tick 12: 5 features shipped.
+  Commits: 0cc677e medication-refusal-trend, fc3f82a followup-overdue-digest,
+  13c4a9d lab-window-completion-feed, 381f648 appointment-prep-text-export,
+  75867f3 prescriber-contact-roster-print.
+  Gate: 1466/1466 tests pass in `@med/utils` (146 new this tick:
+  32+31+32+26+25). Lint + build placeholder ok. `@med/utils` typecheck
+  baseline = 43 errors identical to start-of-tick; zero new errors
+  introduced by tick 12. `pnpm -r test` confirms `@med/ui` 228/228 JSX
+  runtime failures unchanged from baseline. SECOND clean tick in a row
+  (no fixup commits) — module-domain-noun prefix discipline holding.
+  Refilled roadmap (Tier 1G) with 15 new candidates (#86-#100).
+
+  Notes:
+  - This tick was deliberately a "composition" tick — every module
+    composes on at least one prior module rather than introducing a
+    brand-new domain. The pattern that's emerged is: foundation
+    module ships in an earlier tick (medication-refusal-log,
+    appointment-followup-tracker, prescriber-contact-card,
+    appointment-prep-checklist), then a follow-on tick adds the
+    trend / digest / cross-cut / print layer. This keeps each
+    module small and revertible while making the surface area
+    feel genuinely useful for downstream UI work.
+  - `medication-refusal-trend` mirrors pdc-trend / regimen-load-
+    trend's structural decisions but with a CRITICAL semantic
+    inversion: rising density = bad (more refusals climbing) vs
+    pdc-trend where rising = good. The per-direction labels are
+    "rising / falling / stable / insufficient" — distinct verb
+    choice from "improving / declining" so the dashboard can
+    render the same chart component without label confusion.
+    Added a tolerability sub-stream (nausea + side-effect) tracked
+    INDEPENDENTLY of total density because the actionable signal
+    is the tolerability subset, not the total — a patient with 5
+    "sleeping" refusals and 0 nausea refusals is a schedule
+    problem, not a tolerability problem. The risingTolerability
+    lead flag (recent >= 2 AND share >= 0.4) is strictly weaker
+    than the de-prescribing candidate threshold in medication-
+    refusal-log (recent >= 3 AND share >= 0.5) — by design, so
+    the UI sees the soft alert before the harder candidate flag
+    trips and the prescriber has lead time.
+  - `followup-overdue-digest` adopts a deliberate null-short-
+    circuit behaviour that's NOT in caregiver-digest.ts: silent
+    weeks return null instead of producing an "everything's fine"
+    body. The justification: caregivers have inbox fatigue, and
+    a "no actionable items" email teaches them to delete unread
+    on sight, which they will then do to the actionable ones too.
+    Cron callers use hasFollowupDigest as a cheap predicate
+    BEFORE composing to avoid the unnecessary SMTP call entirely.
+    Subject/body opener leads with the most-overdue item by title
+    — that's the line caregivers act on; the seventh line of an
+    email is never read. SMS variant exists separately (160-char
+    target) for caregivers without email; same null behaviour.
+    Past-grace flag triggers an extra "may need re-referral"
+    advisory in the body since those items were missed long
+    enough that the clinical team may need to re-engage.
+  - `lab-window-completion-feed` is the FIRST cross-module
+    "auto-bridge" — when a LabResult lands we already KNOW the
+    draw happened and should not require the patient to also tap
+    "done" on the corresponding FollowupRequirement. Match logic
+    is intentionally STRICT to avoid silent mis-completion:
+    word-boundary substring on title (NOT plain substring — "INR"
+    cannot match "INRange"), draw must fall inside
+    [dueAt - leadDays, dueAt + graceDays], draw must be on or
+    after recommendedAt when present, earliest qualifying draw
+    wins (first lab IS the follow-up; subsequent draws in window
+    are surveillance). Manual completions ALWAYS win over auto
+    via the mergeCompletions helper — auto can never overwrite
+    a clinician's adjudication. Critical bug-fix in development:
+    initial implementation used `new Date()` for YYYY-MM-DD
+    strings which produces UTC midnight and shifts the draw back
+    one day in PDT — causing earliest-wins to pick the wrong
+    candidate. The cure is a local-date parser matching the
+    appointment-followup-tracker's parseIsoDate (both endpoints
+    must live in the same local-date space).
+  - `appointment-prep-text-export` is the wallet-pocket (3.5x2",
+    40 col x 10 line) counterpart to appointment-prep-checklist's
+    full-page text rendering. Layout is RIGOROUSLY priority-
+    ordered: name -> visit info -> counts row -> urgent rows ->
+    optional footer. The counts row ("Meds X  Adv Y  Labs Z  Rfl
+    W") is sacrosanct under truncation — it's the highest-density
+    single line on the card. Urgent rows show worst-lab (overdue
+    beats due-soon), top adverse event when severity >= major
+    (minor/moderate filtered OUT because they don't change front-
+    desk routing), and urgent refills under 3 days of supply.
+    "OUT" shorthand for daysOfSupplyLeft <= 0 — patients should
+    NOT be the audience for negative-day-supply math, identical
+    to the appointment-prep-checklist text rendering rule.
+  - `prescriber-contact-roster-print` is the multi-page roster
+    layout for prescriber-contact-card. The packer keeps a
+    specialty group on one page when it fits the remaining slot
+    count — a group that doesn't fit pushes to the next page
+    rather than splitting mid-group. (A group that exceeds one
+    page CAN split; that's a fallback for unusual roster sizes,
+    not the common path.) Default sizing is US Letter
+    (80 col x 60 row) at 35 col x 10 line cards = 10 cards/page
+    in a 2x5 grid. All sizing parameterised so A4 (84x64) +
+    narrower printer profiles work. serializeRoster joins multi-
+    page output with form-feed (\x0c) for direct lpr piping.
+  - Second clean tick in a row (no fixup commits). The pattern
+    of prefixing new module types with the module's domain noun
+    is now fully reflexive — every new export this tick used a
+    module-prefixed name where any generic name (Result, Window,
+    Trend, Event, Card) could have collided:
+    RefusalTrendDirection (not TrendDirection), FollowupDigest
+    (not Digest), LabCompletionFeedResult (not Result),
+    AppointmentTextExport (not TextExport), ContactRoster (not
+    Roster). The 5-tick rename history (4/6/8/9/10) appears to
+    have ended; ticks 11 + 12 have both been zero-fixup.
+
 
 - 2026-06-21 10:33 PDT — tick 11: 5 features shipped.
   Commits: 3ce449c prescriber-contact-card, c1a333d appointment-followup-tracker,
