@@ -165,7 +165,9 @@ export function findTimingRules(a: Drug, b: Drug): TimingRequirement[] {
     if (!aSideA && !aSideB) continue;
     const direction = rule.gapDirection ?? 'symmetric';
     const primaryId = direction === 'a-before-b' ? (aSideA ? a.id : b.id) : undefined;
-    const [drugIdA, drugIdB] = [a.id, b.id].sort();
+    const sorted = [a.id, b.id].sort();
+    const drugIdA = sorted[0]!;
+    const drugIdB = sorted[1]!;
     out.push({
       drugIdA,
       drugIdB,
@@ -290,7 +292,9 @@ export function detectSpacingConflicts(
         const severity: 'minor' | 'major' = ratio >= minorRatio ? 'minor' : 'major';
         const [doseAt, pairedDoseAt] =
           aT.getTime() < bestB.getTime() ? [aT, bestB] : [bestB, aT];
-        const [medA, medB] = [A.medicationId, B.medicationId].sort();
+        const medsSorted = [A.medicationId, B.medicationId].sort();
+        const medA = medsSorted[0]!;
+        const medB = medsSorted[1]!;
         conflicts.push({
           medicationIdA: medA,
           medicationIdB: medB,

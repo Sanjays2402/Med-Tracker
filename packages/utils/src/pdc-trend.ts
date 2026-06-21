@@ -46,7 +46,7 @@ export interface PdcTrendOptions {
   stableBandDelta?: number;
 }
 
-export type TrendDirection =
+export type PdcTrendDirection =
   | 'improving'
   | 'declining'
   | 'stable'
@@ -78,7 +78,7 @@ export interface MedicationPdcTrend {
    * units per day. Null when fewer than 2 windows have a fill.
    */
   slopePerDay: number | null;
-  direction: TrendDirection;
+  direction: PdcTrendDirection;
   /**
    * Plain-English message suitable for surfacing in a dashboard chip.
    * Examples:
@@ -130,7 +130,7 @@ function describe(
   latest: number | null,
   baseline: number | null,
   longestWindow: number,
-  direction: TrendDirection,
+  direction: PdcTrendDirection,
 ): string {
   if (direction === 'insufficient') {
     return 'Not enough fill history to compute a trend.';
@@ -235,7 +235,7 @@ export function computePdcTrend(
     let baselinePdc: number | null = null;
     let delta: number | null = null;
     let slopePerDay: number | null = null;
-    let direction: TrendDirection;
+    let direction: PdcTrendDirection;
 
     if (realPoints.length === 0) {
       direction = 'insufficient';
