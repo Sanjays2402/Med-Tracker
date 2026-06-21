@@ -80,3 +80,4 @@ export * from './medication-conflict-resolver';
 export * from './interaction-time-spacer';
 export * from './inventory-low-stock-forecast';
 export * from './drug-class-coverage-bundles-builder';
+export * from './appointment-prep-checklist';
