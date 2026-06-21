@@ -116,14 +116,29 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 56. [ ] `medication-name-spell-suggest` — One-letter typo suggester for the rxnorm catalog; produces "did you mean X?" suggestions distinct from the broader fuzzy match.
 57. [ ] `dose-reminder-quiet-hours-override` — Per-medication exception to global quiet-hours (e.g. seizure rescue meds always ring through).
-58. [ ] `caregiver-handoff-summary` — Generate a structured handoff summary for shift-change between caregivers (last 24h doses, alerts, meds added/removed).
+58. [x] `caregiver-handoff-summary` — Structured handoff summary for shift-change between caregivers (last 24h doses, alerts, meds added/removed) (tick 10 / 5f73ce0).
 59. [x] `pdc-trend` — Track PDC over rolling 90/180/365-day windows so the dashboard can show whether adherence is trending up or down (tick 9 / 1d912f9).
 60. [ ] `fill-history-csv-import` — Import a pharmacy fill history CSV (column auto-map) into PharmacyFillEvent[]; feeds prescription-fill-history + pdc-by-medication directly.
-61. [ ] `regimen-snapshot-archive` — Snapshot a regimen at a moment in time (e.g. for legal records); produces a stable signed JSON blob.
+61. [x] `regimen-snapshot-archive` — Snapshot a regimen at a moment in time (e.g. for legal records); produces a stable signed JSON blob (tick 10 / afcf06f).
 62. [x] `drug-class-coverage-bundles-builder` — Compose custom bundle expectations from condition codes (ICD-10 -> classes) so the patient gets a personalised "what's missing" check (tick 9 / 2ed2101).
-63. [ ] `dose-late-escalation-policy` — Define multi-tier escalation: 5min reminder -> 30min caregiver ping -> 2h family call, all configurable per medication.
+63. [x] `dose-late-escalation-policy` — Define multi-tier escalation: 5min reminder -> 30min caregiver ping -> 2h family call, all configurable per medication (tick 10 / b4e0081).
 64. [x] `inventory-low-stock-forecast` — Per-medication "this lot runs out on YYYY-MM-DD" forecast that composes inventory-ledger + refill-forecast (tick 9 / f26d1ad).
 65. [ ] `prescriber-contact-card` — Format a prescriber's contact info (name + specialty + phone + fax + NPI) into a wallet-printable vCard-like block.
+
+### Tier 1E — fresh roadmap (refill after tick 9)
+
+66. [ ] `appointment-followup-tracker` — Track recommended follow-up appointments from clinic notes (`see in 3 months`, lab follow-up) with due dates and overdue flagging.
+67. [ ] `medication-refusal-log` — Per-dose refusal log (patient declined, sleeping, NPO for procedure) with reason codes that feed adherence-risk's denominator handling.
+68. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, EXIF timestamp drift vs dueAt, min dimensions).
+69. [ ] `pill-image-fingerprint` — Compute perceptual hash (aHash/dHash) for pill-identifier image matching; pure pixel math, no native deps.
+70. [ ] `prescription-renewal-window` — Compose renewal-window with prescriber-directory to surface "your atorvastatin Rx expires in 14d AND your prescriber requires an annual visit; book one" in a single nudge.
+71. [ ] `caregiver-notification-throttle-policy` — Tier-aware notification throttler that batches non-urgent pings and rate-limits caregiver pages.
+72. [ ] `medication-conflict-history` — Persistent log of past conflict-resolver decisions so the manual review queue stays append-only and adjudications can be audited.
+73. [ ] `regimen-load-trend` — Track regimen-load-score over time (30/90/180 day windows) so the de-prescribing review can show "burden has climbed 40% in 6 months".
+74. [ ] `dose-batch-export` — Export a date-range slice of dose events as FHIR MedicationAdministration JSON; pure shape translation, no network.
+75. [ ] `appointment-prep-text-export` — Format an AppointmentChecklist as a wallet-pocket print layout (sized to 3.5x2") for the front-desk handoff.
+76. [x] `appointment-prep-checklist` — Generate a structured pre-visit checklist (current meds, recent labs, reported AEs) given last-visit + upcoming-visit dates (tick 10 / 157ab4a).
+77. [x] `regimen-load-score` — Composite regimen-burden score (pill count + dosing frequency + monitoring cadence + cost) for de-prescribing prioritization (tick 10 / 265bb49).
 
 
 
@@ -133,6 +148,124 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-21 07:35 PDT — tick 10: 5 features shipped + 1 fixup.
+  Commits: 157ab4a appointment-prep-checklist, 265bb49 regimen-load-score,
+  5f73ce0 caregiver-handoff-summary, b4e0081 dose-late-escalation-policy,
+  afcf06f regimen-snapshot-archive, 0e185c0 fix (ValidationResult/Error
+  rename to EscalationValidationResult/Error).
+  Gate: 1163/1163 tests pass in `@med/utils` (116 new this tick:
+  20+21+23+28+24). Lint + build placeholder ok. `@med/utils` typecheck
+  baseline = 43 errors identical to start-of-tick after the fixup commit;
+  zero new errors introduced by tick 10. `pnpm -r test` confirms `@med/ui`
+  228/228 JSX runtime failures unchanged from baseline. Refilled
+  roadmap (Tier 1E) with 12 new candidates (#66-#77 — but #76 +
+  #77 are also marked shipped since they pull tick 10 work forward
+  into the index for easy reference).
+
+  Notes:
+  - `appointment-prep-checklist` is the first @med/utils module
+    intended for a PRINTOUT workflow. The text-block renderer
+    composes 6 sections (medications / adverse / labs / refills /
+    questions / vitals) with section omission when empty so the
+    one-page printout stays tight. Adverse events use a strict
+    lastVisit boundary (only events with onsetAt > lastVisitIso) —
+    this filter is what makes the "since-last-visit delta" useful
+    instead of a full history dump. Labs filter to overdue +
+    due-soon ONLY; on-track and not-due-yet items are silently
+    dropped because the clinician already has the cadence in
+    their system. The hasOverdueLabs / hasUrgentRefills flags
+    drive the dashboard banner color (red if either is true).
+    refillsNeeded items render as "OUT" when daysOfSupplyLeft <= 0
+    rather than a negative number — patients should NOT be the
+    audience for negative-day-supply math.
+  - `regimen-load-score` produces a 0..100 composite score from
+    five components with sensible defaults: dosing 0.30, pills
+    0.25, monitoring 0.20, cost 0.15, prn 0.10. The lab
+    overdue-penalty table (overdue 0.50, due-soon 0.15, no-history
+    0.25, on-track 0, not-due-yet 0) was tuned so "no history yet"
+    is heavier than "due soon" — a baseline that should exist but
+    doesn't is a bigger gap than a known cadence approaching. Weight
+    normalisation re-scales any positive sum and falls back to
+    defaults on an all-zero set, so callers cannot accidentally
+    collapse the score. The summary names the top 2 weighted-
+    contribution drivers, NOT raw component scores — this matches
+    the UI's "what drove this number" tooltip semantics. Non-finite
+    + negative inputs clamp to zero (NaN admins, -5 med count) so a
+    partial-data dashboard render still completes instead of
+    throwing. A previous attempt to type DEFAULT_WEIGHTS with `as
+    const` narrowed each field to its literal value and made
+    normalizeWeights's return type unassignable; explicit `Weights`
+    interface is the fix and the prescription for future "fall
+    back to defaults" patterns.
+  - `caregiver-handoff-summary` is the asynchronous COMPLEMENT to
+    shift-handoff.ts. shift-handoff produces a real-time check-list
+    transcript with a 12h lookahead for two caregivers physically
+    swapping shifts; this module produces a 4-6 sentence narrative
+    paragraph for retrospective handoffs (overnight aide -> day
+    aide, on-call sibling -> primary caregiver). Events outside
+    [windowStart, windowEnd] are silently dropped — the caller
+    passes a wide net and this filter is the canonical bound.
+    Dose events use actedAt when present (late doses logged this
+    window but due earlier still count), falling back to dueAt.
+    The narrative is constructed sentence-by-sentence with a fixed
+    template so it reads naturally across edge cases (zero-dose
+    window, no adverse events, single-medication regimen). PRN
+    rollup deduplicates reasons in observation order rather than
+    alphabetising — preserves the patient's actual narrative.
+  - `dose-late-escalation-policy` is the declarative LAYER above
+    caregiver-escalation.ts (which is the runtime that fires
+    alerts). Validator returns { ok, errors } with stable error
+    codes (negative-delay, duplicate-delay, expire-before-delay,
+    no-recipients, etc) so the UI maps codes to messages without
+    parsing strings. Four presets (default / critical-rescue /
+    low-touch / controlled-substance) materialise from
+    PRESET_TEMPLATES + caller-supplied recipients per tier id;
+    template tiers without recipients are dropped, so a patient
+    can opt into a 3-tier rescue without naming an emergency-
+    services contact and still get the first 3. Simulator is a
+    pure preview function — does NOT consult dispatch state. I
+    initially added an `expired` flag to SimulationTierEvent so
+    the UI could render "would have fired but expired", but the
+    validator forbids expireMinutes <= delayMinutes which makes
+    `expired` dead code under valid inputs. Removed; the doc
+    string now explicitly notes that expireMinutes is a
+    runtime-only safety net. Builder copies recipient arrays so
+    caller-side mutation cannot leak into the runtime artifact.
+  - `regimen-snapshot-archive` is the second @med/utils module to
+    touch globalThis.crypto.subtle (after caregiver-share-token).
+    Reuses the same asBufferSource shim for TS 5.7+
+    Uint8Array<ArrayBufferLike> handling and the same 32-char
+    minimum secret length. The envelope binds payload + takenAt +
+    snapshotId via the sign material so tampering with ANY of
+    the three invalidates the signature; the separate payloadHash
+    catches blind payload edits without needing the secret (so a
+    quick integrity check is cheap). canonicalStringify uses
+    recursive sorted-key JSON so identical regimens with
+    different input order produce identical hash + signature —
+    items are sorted by medicationId; schedules within each item
+    are sorted by scheduleId; times within each schedule are
+    sorted lexicographically. Verification returns a discriminated
+    union with 5 specific failure reasons (malformed, bad-version,
+    signature-mismatch, payload-tampered, secret-too-short). The
+    diff helper does shallow added/removed/strength-changed
+    detection only — schedule-level diff is left to
+    regimen-change-diff which has richer kind-aware semantics.
+  - The fixup (0e185c0) is the fifth `<Module>Foo` rename in the
+    autoship history:
+    - tick 4: RegimenTimeBucket vs pill-burden's TimeBucket
+    - tick 6: AdverseDoseHistoryEntry vs dose-history-aggregator's
+    - tick 8: PharmacyFillEvent vs refill-cost-projector's FillEvent
+    - tick 9: PdcTrendDirection vs weight-trend's TrendDirection
+    - tick 10: EscalationValidationResult/Error vs food-windows's
+      ValidationResult
+    The pattern is settled: prefix the NEW module's type with its
+    domain noun. food-windows ValidationResult has shipped for
+    many ticks and renaming it would break consumers. Generic
+    type names (Result / Error / Bucket / Event / Direction) are
+    the recurring danger zone — future modules with similar
+    semantics should default to a domain prefix at first-write
+    rather than fixing the collision post-hoc.
 
 - 2026-06-21 04:29 PDT — tick 9: 5 features shipped + 1 fixup.
   Commits: 1d912f9 pdc-trend, fa14d62 medication-conflict-resolver,
