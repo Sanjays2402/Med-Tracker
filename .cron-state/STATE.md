@@ -127,18 +127,29 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 1E — fresh roadmap (refill after tick 9)
 
-66. [ ] `appointment-followup-tracker` — Track recommended follow-up appointments from clinic notes (`see in 3 months`, lab follow-up) with due dates and overdue flagging.
-67. [ ] `medication-refusal-log` — Per-dose refusal log (patient declined, sleeping, NPO for procedure) with reason codes that feed adherence-risk's denominator handling.
+66. [x] `appointment-followup-tracker` — Track recommended follow-up appointments from clinic notes (`see in 3 months`, lab follow-up) with due dates and overdue flagging (tick 11 / c1a333d).
+67. [x] `medication-refusal-log` — Per-dose refusal log (patient declined, sleeping, NPO for procedure) with reason codes that feed adherence-risk's denominator handling (tick 11 / 603d16a).
 68. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, EXIF timestamp drift vs dueAt, min dimensions).
 69. [ ] `pill-image-fingerprint` — Compute perceptual hash (aHash/dHash) for pill-identifier image matching; pure pixel math, no native deps.
 70. [ ] `prescription-renewal-window` — Compose renewal-window with prescriber-directory to surface "your atorvastatin Rx expires in 14d AND your prescriber requires an annual visit; book one" in a single nudge.
 71. [ ] `caregiver-notification-throttle-policy` — Tier-aware notification throttler that batches non-urgent pings and rate-limits caregiver pages.
 72. [ ] `medication-conflict-history` — Persistent log of past conflict-resolver decisions so the manual review queue stays append-only and adjudications can be audited.
-73. [ ] `regimen-load-trend` — Track regimen-load-score over time (30/90/180 day windows) so the de-prescribing review can show "burden has climbed 40% in 6 months".
-74. [ ] `dose-batch-export` — Export a date-range slice of dose events as FHIR MedicationAdministration JSON; pure shape translation, no network.
+73. [x] `regimen-load-trend` — Track regimen-load-score over time (30/90/180 day windows) so the de-prescribing review can show "burden has climbed 40% in 6 months" (tick 11 / 0057b41).
+74. [x] `dose-batch-export` — Export a date-range slice of dose events as FHIR MedicationAdministration JSON; pure shape translation, no network (tick 11 / c7a414c).
 75. [ ] `appointment-prep-text-export` — Format an AppointmentChecklist as a wallet-pocket print layout (sized to 3.5x2") for the front-desk handoff.
 76. [x] `appointment-prep-checklist` — Generate a structured pre-visit checklist (current meds, recent labs, reported AEs) given last-visit + upcoming-visit dates (tick 10 / 157ab4a).
 77. [x] `regimen-load-score` — Composite regimen-burden score (pill count + dosing frequency + monitoring cadence + cost) for de-prescribing prioritization (tick 10 / 265bb49).
+
+### Tier 1F — fresh roadmap (refill after tick 10)
+
+78. [x] `prescriber-contact-card` — Wallet-printable prescriber contact block plus vCard 4.0 export; phone normalised to E.164 (tick 11 / 3ce449c).
+79. [ ] `appointment-prep-text-export` — Format AppointmentChecklist as a wallet-pocket print layout (3.5x2") for the front-desk handoff. (Duplicate of #75; consolidate when picking up.)
+80. [ ] `medication-refusal-trend` — Track refusal density per medication over rolling 30/90/180 windows; flag rising tolerability refusals BEFORE the de-prescribing-candidate threshold trips.
+81. [ ] `dose-export-csv` — CSV companion to dose-batch-export for pharmacy-CSV-compatible round-trips.
+82. [ ] `followup-overdue-digest` — Compose appointment-followup-tracker + caregiver-digest to produce a weekly "you have N overdue follow-ups, oldest is X" caregiver email.
+83. [ ] `lab-window-completion-feed` — When a lab result lands, mark the matching FollowupRequirement (kind='lab') completed automatically.
+84. [ ] `prescriber-contact-roster-print` — Multi-card layout for printing a 1-page contact roster across all prescribers in a directory.
+85. [ ] `refusal-reason-suggest` — Suggest a likely refusal reason given dose context (time-of-day matches sleeping window; date matches a known procedure date).
 
 
 
@@ -148,6 +159,117 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-21 10:33 PDT — tick 11: 5 features shipped.
+  Commits: 3ce449c prescriber-contact-card, c1a333d appointment-followup-tracker,
+  603d16a medication-refusal-log, 0057b41 regimen-load-trend,
+  c7a414c dose-batch-export.
+  Gate: 1320/1320 tests pass in `@med/utils` (157 new this tick:
+  29+34+34+23+37). Lint + build placeholder ok. `@med/utils` typecheck
+  baseline = 43 errors identical to start-of-tick; zero new errors
+  introduced by tick 11. `pnpm -r test` confirms `@med/ui` 228/228 JSX
+  runtime failures unchanged from baseline. NO fixup commits this
+  tick — first clean tick since tick 7. Refilled roadmap (Tier 1F)
+  with 8 new candidates (#78-#85).
+
+  Notes:
+  - `prescriber-contact-card` is the wallet-printable counterpart to
+    prescriber-directory. Phone normalisation promotes 10-digit US
+    numbers to +1 E.164 in the `.e164` field (separate from the
+    raw `.digits` form) so saved-to-contacts cards dial correctly
+    from outside the US. The `renderVcard` output is a strict RFC
+    6350 (vCard 4.0) subset: BEGIN/END envelope, structured N
+    field split on the comma in displayName, `tel:` URIs using the
+    E.164 form (NOT digits — that distinction matters for iOS
+    Contacts importing the file), CRLF line endings, lines folded
+    at 75 chars per spec. `renderWalletCard` produces an 8-line
+    max plain-text block sized for a 3.5x2" business card (32 col,
+    ellipsis-truncated). Warnings accumulate on the card object so
+    the UI can surface "phone number is not 10 digits" / "NPI
+    failed Luhn validation" without throwing. `warnOnMissingContact`
+    is true by default but disable-able for legal-record exports
+    where you want the card row even when no contact is on file.
+  - `appointment-followup-tracker` deliberately stays independent
+    of lab-window-tracker — that module handles recurring cadence
+    (warfarin INR every 28d), this one handles one-shot scheduled
+    follow-ups. Composing them at the dashboard layer is the right
+    granularity; folding them into one module would tangle two
+    different "due-by-date" semantics. Per-kind warn windows
+    default to lab=7d, referral=21d (longer scheduling lead time),
+    visit/imaging/vaccination/procedure/other=14d. `graceDays`
+    (default 60) keeps overdue items overdue (vs. expired) but
+    escalates the message wording so the UI can render a different
+    chip color without losing the status bucket. Completion wins
+    over cancellation when both rows arrive for the same id —
+    "we did it anyway" is the more actionable record. The
+    `deriveFollowupFromRecommendation` helper translates clinic-
+    shorthand offsets ("3 months", "6 weeks", "14 days") into
+    absolute dueAt; day-of-month clips when the target month is
+    shorter (Jan 31 + 1 month -> Feb 28). Explicit dueAt wins over
+    relative offsets; within offsets days > weeks > months precedence.
+  - `medication-refusal-log` introduces the FIRST exclusion-aware
+    adherence path in @med/utils. The REFUSAL_EXCLUDED_REASONS set
+    is narrow on purpose (npo, prescriber-paused, out-of-supply) —
+    the patient had NO honest opportunity to take those doses, so
+    counting them as misses is statistical noise, not adherence
+    signal. `sleeping` is deliberately NOT excluded — a sleep-time
+    miss is a real adherence problem that should drive a schedule
+    change conversation, not a free pass. REFUSAL_TOLERABILITY_
+    REASONS = {nausea, side-effect} drives the de-prescribing
+    candidate flag (default: recent count >= 3 AND tolerability
+    share >= 0.5). computeAdherenceWithRefusals returns BOTH
+    strict (what PBMs ask for) and honest (what the patient and
+    prescriber should look at). When honest denominator collapses
+    to zero (every dose was an NPO day), we report honest=1 — the
+    dashboard does NOT alert on a "no opportunity to fail" window.
+    Validation never throws; per-row error collection lets the UI
+    surface bad rows without losing the rest of the batch.
+  - `regimen-load-trend` mirrors pdc-trend's structural decisions
+    so the dashboard can render both with the same chart component.
+    Critical inversion: positive delta in PDC = improving (good);
+    positive delta here = RISING burden = bad. Per-component
+    direction is exposed so the "what drove the climb?" panel can
+    say "dosing rising while pills hold steady" — the single most
+    actionable de-prescribing tell. The distinct-days gate is the
+    important guard: a single snapshot replicated across 3
+    overlapping windows is NOT a trend, even though it has 3 real
+    points; the guard requires >= 2 distinct day-timestamps in the
+    largest window. We do NOT recompute scores from inputs —
+    snapshots are the authoritative input because historical
+    pill-burden / cost state isn't preserved at runtime. Each
+    window's number is the MEAN of in-window snapshots, not the
+    latest snapshot inside the window — mean is robust against
+    single-day spikes like a deductible reset that doesn't
+    represent steady-state burden.
+  - `dose-batch-export` is the FIRST interop-export module in
+    @med/utils. FHIR R4 MedicationAdministration is the canonical
+    healthcare answer for "patient took medication X at time Y";
+    the alternative (custom JSON) loses round-trip fidelity with
+    any EHR. Bundle type is `'collection'`, NOT `'transaction'` —
+    a collection is a read-only export; transaction would instruct
+    the receiving FHIR server to ingest, which we explicitly do
+    NOT want (the consumer should re-wrap on their side if they
+    want ingestion). Status mapping is the documented R4 one:
+    taken/late -> completed (late gets a note annotation); skipped
+    -> not-done + statusReason 'patient-skipped'; missed ->
+    not-done + statusReason 'missed'; scheduled -> in-progress
+    (dropped by default because exports normally ship realised
+    history). Route mapping uses HL7 v3 RouteOfAdministration
+    codes via the form -> route table (tablet/capsule/liquid/
+    powder=PO; injection=IM; patch/cream=TD; etc). Entries sorted
+    by effectiveDateTime asc for stable diffable output. The
+    `fullUrlBase` option allows callers to emit canonical URIs
+    when the export will live on a known FHIR server.
+  - First clean tick since tick 7 — no name collisions, no
+    type-narrowing fixups, no rename commits. The pattern of
+    prefixing new module types with the module's domain noun
+    (PrescriberPhoneNumber, FollowupRequirement, RegimenLoadWindow,
+    RefusalValidationResult, FhirMedicationAdministration) has
+    fully internalised — every new export this tick used a
+    module-prefixed name where any generic name (Result, Window,
+    Trend, Event) could have collided. The lesson from ticks 4 /
+    6 / 8 / 9 / 10 was the right one and is now reflexive.
+
 
 - 2026-06-21 07:35 PDT — tick 10: 5 features shipped + 1 fixup.
   Commits: 157ab4a appointment-prep-checklist, 265bb49 regimen-load-score,
