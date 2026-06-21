@@ -85,3 +85,4 @@ export * from './regimen-load-score';
 export * from './caregiver-handoff-summary';
 export * from './dose-late-escalation-policy';
 export * from './regimen-snapshot-archive';
+export * from './prescriber-contact-card';
