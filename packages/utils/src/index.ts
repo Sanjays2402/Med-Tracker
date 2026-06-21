@@ -92,3 +92,4 @@ export * from './regimen-load-trend';
 export * from './dose-batch-export';
 export * from './medication-refusal-trend';
 export * from './followup-overdue-digest';
+export * from './lab-window-completion-feed';
