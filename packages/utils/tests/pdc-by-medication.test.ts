@@ -4,9 +4,9 @@ import {
   pdcBand,
   summarizePdc,
 } from '../src/pdc-by-medication';
-import type { FillEvent } from '../src/prescription-fill-history';
+import type { PharmacyFillEvent } from '../src/prescription-fill-history';
 
-function fill(o: Partial<FillEvent>): FillEvent {
+function fill(o: Partial<PharmacyFillEvent>): PharmacyFillEvent {
   return {
     medicationId: o.medicationId ?? 'm1',
     ndc: o.ndc,
@@ -35,7 +35,7 @@ describe('computePdc — basic adherence', () => {
   it('reports PDC=1.0 for a continuously-filled medication', () => {
     // 13 fills, 30 days each = ~390 days of coverage starting Jan 1 ->
     // fully covers the 365-day measurement period.
-    const fills: FillEvent[] = [];
+    const fills: PharmacyFillEvent[] = [];
     for (let i = 0; i < 13; i++) {
       fills.push(fill({ fillDate: new Date(2026, 0, 1 + i * 30), daysSupply: 30 }));
     }
@@ -53,7 +53,7 @@ describe('computePdc — basic adherence', () => {
 
   it('reports correct denominator from anchor (NOT period start)', () => {
     // First fill on April 1 -> denominator is Apr 1 through Dec 31.
-    const fills: FillEvent[] = [fill({ fillDate: new Date(2026, 3, 1), daysSupply: 30 })];
+    const fills: PharmacyFillEvent[] = [fill({ fillDate: new Date(2026, 3, 1), daysSupply: 30 })];
     const report = computePdc(fills, {
       measurementStart: PERIOD_START,
       measurementEnd: PERIOD_END,
@@ -69,7 +69,7 @@ describe('computePdc — basic adherence', () => {
   it('caps PDC at 1.0 when patient stockpiles (no double-count)', () => {
     // Two 30-day fills 20 days apart -> 60 days of coverage from Jan 1
     // through Mar 1, NOT 60 days from Jan 1 + 60 from Jan 20.
-    const fills: FillEvent[] = [
+    const fills: PharmacyFillEvent[] = [
       fill({ fillDate: new Date(2026, 0, 1), daysSupply: 30 }),
       fill({ fillDate: new Date(2026, 0, 20), daysSupply: 30 }),
     ];
@@ -83,7 +83,7 @@ describe('computePdc — basic adherence', () => {
 
   it('classifies as non-adherent below the threshold', () => {
     // Only one 30-day fill in a 365-day measurement period.
-    const fills: FillEvent[] = [fill({ fillDate: new Date(2026, 0, 1), daysSupply: 30 })];
+    const fills: PharmacyFillEvent[] = [fill({ fillDate: new Date(2026, 0, 1), daysSupply: 30 })];
     const report = computePdc(fills, {
       measurementStart: PERIOD_START,
       measurementEnd: PERIOD_END,
@@ -94,7 +94,7 @@ describe('computePdc — basic adherence', () => {
   });
 
   it('honors a custom adherentThreshold', () => {
-    const fills: FillEvent[] = [
+    const fills: PharmacyFillEvent[] = [
       fill({ fillDate: new Date(2026, 0, 1), daysSupply: 30 }),
       fill({ fillDate: new Date(2026, 0, 31), daysSupply: 30 }),
       fill({ fillDate: new Date(2026, 1, 28), daysSupply: 30 }),
@@ -110,7 +110,7 @@ describe('computePdc — basic adherence', () => {
 
 describe('computePdc — multi-medication', () => {
   it('separates per-medication and produces a regimen mean', () => {
-    const fills: FillEvent[] = [
+    const fills: PharmacyFillEvent[] = [
       // m-a: fully covered, PDC=1
       ...Array.from({ length: 4 }, (_, i) =>
         fill({ medicationId: 'm-a', fillDate: new Date(2026, 0, 1 + i * 30), daysSupply: 30 }),
@@ -133,7 +133,7 @@ describe('computePdc — multi-medication', () => {
   });
 
   it('rolls up to class-level PDC when medicationClasses provided', () => {
-    const fills: FillEvent[] = [
+    const fills: PharmacyFillEvent[] = [
       fill({ medicationId: 'm-metformin', fillDate: new Date(2026, 0, 1), daysSupply: 90 }),
       fill({ medicationId: 'm-metformin', fillDate: new Date(2026, 2, 31), daysSupply: 90 }),
       fill({ medicationId: 'm-sglt2', fillDate: new Date(2026, 0, 1), daysSupply: 90 }),
@@ -156,7 +156,7 @@ describe('computePdc — multi-medication', () => {
 
 describe('computePdc — edge cases', () => {
   it('excludes a medication whose fills are entirely before the period', () => {
-    const fills: FillEvent[] = [
+    const fills: PharmacyFillEvent[] = [
       fill({ medicationId: 'm-old', fillDate: new Date(2025, 0, 1), daysSupply: 30 }),
     ];
     const report = computePdc(fills, {
@@ -178,7 +178,7 @@ describe('computePdc — edge cases', () => {
   });
 
   it('uses default measurement window (365 days back from latest fill end)', () => {
-    const fills: FillEvent[] = [
+    const fills: PharmacyFillEvent[] = [
       fill({ fillDate: new Date(2026, 0, 1), daysSupply: 30 }),
     ];
     const report = computePdc(fills);
@@ -188,7 +188,7 @@ describe('computePdc — edge cases', () => {
   });
 
   it('flags a medication with only a pre-period fill as noFill when listed in classes', () => {
-    const fills: FillEvent[] = [
+    const fills: PharmacyFillEvent[] = [
       fill({ medicationId: 'm-pre', fillDate: new Date(2025, 0, 1), daysSupply: 30 }),
     ];
     const report = computePdc(fills, {
@@ -204,7 +204,7 @@ describe('computePdc — edge cases', () => {
 
 describe('summarizePdc', () => {
   it('produces a single-line headline', () => {
-    const fills: FillEvent[] = [
+    const fills: PharmacyFillEvent[] = [
       ...Array.from({ length: 13 }, (_, i) =>
         fill({ medicationId: 'm-a', fillDate: new Date(2026, 0, 1 + i * 30), daysSupply: 30 }),
       ),

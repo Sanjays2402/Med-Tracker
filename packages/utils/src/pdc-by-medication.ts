@@ -31,7 +31,7 @@
 import { addDays, startOfDay } from './date';
 import {
   normalizeFillHistory,
-  type FillEvent,
+  type PharmacyFillEvent,
   type MedicationCoverage,
 } from './prescription-fill-history';
 
@@ -142,7 +142,7 @@ function numeratorFromGaps(
  * the measurement period count toward noFillCount with pdc=0.
  */
 export function computePdc(
-  fills: FillEvent[],
+  fills: PharmacyFillEvent[],
   options: PdcOptions = {},
 ): PdcReport {
   const threshold = options.adherentThreshold ?? 0.8;
@@ -170,7 +170,7 @@ export function computePdc(
   let noFillCount = 0;
 
   // Determine anchor (first fill on or after startMs) per medication.
-  const fillsByMed = new Map<string, FillEvent[]>();
+  const fillsByMed = new Map<string, PharmacyFillEvent[]>();
   for (const f of fills) {
     const arr = fillsByMed.get(f.medicationId);
     if (arr) arr.push(f);
@@ -289,7 +289,7 @@ export function computePdc(
   };
 }
 
-function maxFillEnd(fills: FillEvent[]): Date {
+function maxFillEnd(fills: PharmacyFillEvent[]): Date {
   let best = -Infinity;
   for (const f of fills) {
     const d = f.fillDate instanceof Date ? f.fillDate : new Date(f.fillDate);

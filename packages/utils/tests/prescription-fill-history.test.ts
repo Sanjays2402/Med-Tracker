@@ -4,10 +4,10 @@ import {
   isCoveredOn,
   activeGap,
   summarizeFillHistory,
-  type FillEvent,
+  type PharmacyFillEvent,
 } from '../src/prescription-fill-history';
 
-function fill(o: Partial<FillEvent>): FillEvent {
+function fill(o: Partial<PharmacyFillEvent>): PharmacyFillEvent {
   return {
     medicationId: o.medicationId ?? 'm1',
     ndc: o.ndc,

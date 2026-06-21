@@ -34,7 +34,7 @@
 
 import { addDays, startOfDay } from './date';
 
-export interface FillEvent {
+export interface PharmacyFillEvent {
   medicationId: string;
   /** National Drug Code. Distinct NDCs collapse to medicationId for coverage. */
   ndc?: string;
@@ -80,7 +80,7 @@ export interface FillHistoryReport {
   /** Sum of all medicationIds; useful for an aggregate banner. */
   totalGapDays: number;
   /** Fills rejected as malformed; reason per rejection. */
-  rejected: { fill: FillEvent; reason: string }[];
+  rejected: { fill: PharmacyFillEvent; reason: string }[];
 }
 
 export interface NormalizeOptions {
@@ -120,7 +120,7 @@ interface ValidatedFill {
 }
 
 function validate(
-  fill: FillEvent,
+  fill: PharmacyFillEvent,
 ): { ok: true; value: ValidatedFill } | { ok: false; reason: string } {
   if (!fill.medicationId) return { ok: false, reason: 'missing-medicationId' };
   if (!fill.daysSupply || fill.daysSupply <= 0 || !Number.isFinite(fill.daysSupply)) {
@@ -226,12 +226,12 @@ function intervalsToGaps(
  * end = max(fillEnd) across all fills.
  */
 export function normalizeFillHistory(
-  fills: FillEvent[],
+  fills: PharmacyFillEvent[],
   options: NormalizeOptions = {},
 ): FillHistoryReport {
   const minGapDays = Math.max(1, options.minGapDays ?? 1);
   const valid: ValidatedFill[] = [];
-  const rejected: { fill: FillEvent; reason: string }[] = [];
+  const rejected: { fill: PharmacyFillEvent; reason: string }[] = [];
   for (const f of fills) {
     const r = validate(f);
     if (r.ok) valid.push(r.value);
