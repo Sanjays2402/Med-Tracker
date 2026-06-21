@@ -71,3 +71,4 @@ export * from './lab-window-tracker';
 export * from './temperature-excursion-log';
 export * from './caregiver-event-feed';
 export * from './prescriber-directory';
+export * from './drug-class-coverage';
