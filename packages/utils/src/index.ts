@@ -75,3 +75,4 @@ export * from './drug-class-coverage';
 export * from './prescription-fill-history';
 export * from './pdc-by-medication';
 export * from './pharmacy-fill-reconciliation';
+export * from './pdc-trend';
