@@ -77,12 +77,27 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 25. [ ] `pill-image-fingerprint` — Compute perceptual fingerprint hash for pill-identifier matching.
 26. [x] `regimen-change-diff` — Diff two snapshots of a regimen (added / removed / dose-changed meds) (tick 5 / 7e54a51).
 27. [x] `caregiver-summary-rollup` — Roll up multiple patients' adherence into a household digest (tick 5 / 02d181f).
-28. [ ] `medication-name-fuzzy-match` — Fuzzy match a typed med name against the drug catalog (Levenshtein + brand/generic alias).
-29. [ ] `dose-time-suggest` — Suggest optimal times given quiet hours, meal windows, and existing schedules (composes with quiet-hours + food-windows).
-30. [ ] `caregiver-share-token` — Generate / verify caregiver share tokens with optional expiry and scope payload.
+28. [x] `medication-name-fuzzy-match` — Fuzzy match a typed med name against the drug catalog (Damerau-Levenshtein + brand/generic alias) (tick 6 / fb307a1).
+29. [x] `dose-time-suggest` — Suggest optimal times given quiet hours, meal windows, and existing schedules (composes with quiet-hours + food-windows) (tick 6 / 9ef22b1).
+30. [x] `caregiver-share-token` — Generate / verify HMAC-SHA-256 caregiver share tokens with optional expiry and scope payload (tick 6 / 47e9dab + 1ddaa48 fix).
 31. [ ] `medication-conflict-resolver` — Resolve conflicts between two medication records merged from different sources (e.g. EHR + manual entry).
-32. [ ] `pill-cutter-plan` — Plan tablet splitting for a non-dispensable strength (e.g. 5mg from 10mg scored tablets), respecting scored flag.
-33. [ ] `adverse-event-log` — Patient-reported adverse event log with severity classification + temporal proximity to last dose.
+32. [x] `pill-cutter-plan` — Plan tablet splitting for a non-dispensable strength (e.g. 5mg from 10mg scored tablets), respecting scored flag (tick 6 / 988c180).
+33. [x] `adverse-event-log` — Patient-reported adverse event log with severity classification + temporal proximity to last dose (tick 6 / 3a4773a).
+
+### Tier 1B — fresh roadmap (refill after tick 6)
+
+34. [ ] `medication-conflict-resolver` — Merge conflicts when the same medication arrives from EHR + manual entry; pick which fields win, surface manual review queue.
+35. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, EXIF timestamp drift vs dueAt, min dimensions).
+36. [ ] `pill-image-fingerprint` — Compute perceptual hash (aHash/dHash) for pill-identifier image matching; pure pixel math, no native deps.
+37. [ ] `refill-cost-projector` — Project annual cost across the regimen given current copays, refill cadence, and an optional plan-change date.
+38. [ ] `caregiver-event-feed` — Stream of dose / refill / adverse-event entries for a caregiver, paginated, deny-aware via permission-matrix.
+39. [ ] `lab-window-tracker` — Track lab-test windows for medications that require periodic monitoring (warfarin INR, statin LFT, lithium level), with overdue / upcoming flags.
+40. [ ] `prescription-fill-history` — Normalize pharmacy fill history (NDC + days_supply + fill_date) into a continuous-coverage map, surface gaps.
+41. [ ] `pdc-by-medication` — Per-medication Proportion of Days Covered metric, the FDA-style adherence number caregivers and PBMs ask for.
+42. [ ] `dose-instruction-parser` — Parse free-text "sig" strings ("1 tab po qid prn pain") into structured Schedule + amountPerDose; deterministic vocabulary, no LLM.
+43. [ ] `temperature-excursion-log` — Log + classify cold-chain excursions for refrigerated meds (insulin, biologics) using cold-chain.ts rules.
+44. [ ] `med-list-print-layout` — Generate a paginated, print-ready medication list (one row per med, with refill date / prescriber / strength); pure layout math, no rendering.
+45. [ ] `caregiver-notification-throttle` — Throttle caregiver notifications so a noisy day doesn't trigger 20 pings; coalesce by severity tier.
 
 ### Tier 2 — UI / app slices (web + ui pkg)
 
@@ -213,6 +228,87 @@ buried under pre-existing failures.)
   adherence-risk, date, ics — none of the 5 new tick-5 modules
   appear). `@med/ui` 228/228 JSX runtime failures unchanged from
   baseline.
+
+- 2026-06-20 19:27 PDT — tick 6: 5 features shipped + 1 fixup.
+  Commits: fb307a1 medication-name-fuzzy-match, 9ef22b1 dose-time-suggest,
+  47e9dab caregiver-share-token, 988c180 pill-cutter-plan,
+  3a4773a adverse-event-log, 1ddaa48 fix (Uint8Array<ArrayBufferLike>
+  on crypto.subtle + DoseHistoryEntry name collision).
+  Gate: 730/730 tests pass in `@med/utils` (106 new this tick:
+  25+19+21+18+23). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick (1
+  adherence-risk + 1 date + 1 ics + 15 schedule-resolver + 8
+  taper-plan + 17 titration); zero new errors introduced by tick 6
+  after the fixup commit. `pnpm -r test` confirms `@med/ui`
+  228/228 JSX runtime failures unchanged from baseline.
+  Refilled roadmap (Tier 1B) with 12 new candidates (#34-#45).
+
+  Notes:
+  - `medication-name-fuzzy-match` uses Damerau-Levenshtein (single-edit
+    transposition cost) so common typos like `metforimn` resolve to
+    `metformin`. Class is scored at 0.7 weight so a class-name typo
+    can never outrank a real generic/brand match. A small prefix bonus
+    (capped 0.05) helps single-letter queries surface a useful list
+    without letting an exact match be displaced. Three thresholds:
+    `minScore` (default 0.55) for the visible list, `acceptScore`
+    (default 0.8) for the auto-select path via `bestDrugMatch`, and
+    `prefixBonus` toggle. Normalization strips dosage-form suffixes
+    (XL, ER, HCL) BEFORE distance is computed so "Metformin XR"
+    matches "Metformin" exactly.
+  - `dose-time-suggest` is the first @med/utils module that COMPOSES
+    quiet-hours + food-windows + existing doses in one decision. Per-
+    slot penalties are typed (`SuggestionPenaltyKind`) so the UI can
+    render expandable "why this time?" panels. ER/required-food rule
+    uses a graceful fallback: even when avoidance is mathematically
+    impossible (e.g. 3 doses + 9h quiet window), the suggester picks
+    the least-bad anchor instead of throwing. Spacing-too-tight is
+    soft so dosesPerDay=1 always produces a result.
+  - `caregiver-share-token` uses `globalThis.crypto.subtle` not
+    `node:crypto` to stay isomorphic (Node 18+ AND browser) WITHOUT
+    requiring `@types/node`. HMAC-SHA-256 with a base64url-encoded
+    JSON payload `{v, sid, scp, iat, exp?}`. Scopes are encoded as
+    2-char codes (vm/va/vr) to keep tokens compact. The verification
+    result is a discriminated union so the API can distinguish
+    malformed / bad-version / signature-mismatch / expired /
+    not-yet-valid / secret-too-short without leaking the difference
+    to an unauthenticated edge. Secret must be >= 32 bytes; constant-
+    time signature comparison; 60s clock-skew tolerance on iat.
+    Future utilities that touch crypto.subtle should reuse the
+    `asBufferSource(b: Uint8Array): ArrayBuffer` shim — TS 5.7+
+    rejects raw `Uint8Array<ArrayBufferLike>` as a `BufferSource`
+    because `ArrayBufferLike` could be `SharedArrayBuffer`. The shim
+    copies into a fresh `ArrayBuffer`.
+  - `pill-cutter-plan` complements dose-rounding rather than
+    duplicating it. dose-rounding picks across multiple strengths;
+    pill-cutter-plan specialises on splitting a SINGLE strength with
+    strict safety rules: only `scored` allows halves, only `scored +
+    crossScored` allows quarters, ER tablets NEVER split. Default 5%
+    deviation cap (tighter than dose-rounding's 10%) because real-
+    world execution of splits is more error-prone. ER warnings on
+    tablets the plan does NOT use are surfaced as informational but
+    do NOT block feasibility — the user can still take the non-ER
+    options safely.
+  - `adverse-event-log` is the per-EVENT companion to
+    side-effect-correlation (which is a corpus-level signal).
+    Severity comes from MAX(tag severity, patient-severity threshold).
+    Escalation rule is intentionally narrow: life-threatening always,
+    major only when at least one suspect medication is within the
+    proximity window — prevents nuisance escalations for major
+    events that pre-date any current medication. IDs are deterministic
+    from (onsetAt, sorted tags) so re-importing the same event from
+    external sources is idempotent.
+  - Fixup commit caught two issues:
+    (a) Uint8Array<ArrayBufferLike> not assignable to BufferSource on
+        TS 5.7+ for crypto.subtle calls. Fixed via the asBufferSource
+        shim documented above.
+    (b) `DoseHistoryEntry` name collision when both adverse-event-log
+        and dose-history-aggregator are re-exported via `export *`
+        from index.ts. Renamed adverse-event-log's type to
+        `AdverseDoseHistoryEntry` — same precedent as tick 4's
+        `RegimenTimeBucket` rename. The `<Module>Foo` convention now
+        has multiple uses: future modules adding an existing-name
+        type should prefix the module name to avoid breaking the
+        index re-export.
 
   Notes:
   - `dose-time-drift` filters by medicationId at the per-med
