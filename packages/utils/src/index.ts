@@ -68,3 +68,4 @@ export * from './adverse-event-log';
 export * from './dose-instruction-parser';
 export * from './refill-cost-projector';
 export * from './lab-window-tracker';
+export * from './temperature-excursion-log';
