@@ -86,7 +86,7 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 1B — fresh roadmap (refill after tick 6)
 
-34. [ ] `medication-conflict-resolver` — Merge conflicts when the same medication arrives from EHR + manual entry; pick which fields win, surface manual review queue.
+34. [x] `medication-conflict-resolver` — Merge conflicts when the same medication arrives from EHR + manual entry; pick which fields win, surface manual review queue (tick 9 / fa14d62).
 35. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, EXIF timestamp drift vs dueAt, min dimensions).
 36. [ ] `pill-image-fingerprint` — Compute perceptual hash (aHash/dHash) for pill-identifier image matching; pure pixel math, no native deps.
 37. [x] `refill-cost-projector` — Project annual cost across the regimen given current copays, refill cadence, and an optional plan-change date (tick 7 / e824fd7).
@@ -107,7 +107,7 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 49. [ ] `dose-batch-export` — Export a date-range slice of dose events as FHIR MedicationAdministration JSON; pure shape translation, no network.
 50. [ ] `regimen-printable-summary` — Wallet-card data layout (name / strength / route / sig / prescriber / pharmacy) sized to fit a 3.5x2" card.
 51. [ ] `dose-import-csv` — Import dose history from common pharmacy CSV formats (Walgreens / CVS layouts) with column auto-mapping.
-52. [ ] `interaction-time-spacer` — Suggest minimum time gap between two interacting meds (e.g. levothyroxine + calcium) and check existing schedules against it.
+52. [x] `interaction-time-spacer` — Suggest minimum time gap between two interacting meds (e.g. levothyroxine + calcium) and check existing schedules against it (tick 9 / 14c150a).
 53. [ ] `caregiver-notification-throttle-policy` — Tier-aware notification throttler that batches non-urgent pings and rate-limits caregiver pages.
 54. [ ] `appointment-prep-checklist` — Generate a structured pre-visit checklist (current meds, recent labs, reported AEs) given last-visit + upcoming-visit dates.
 55. [ ] `regimen-load-score` — Composite regimen-burden score (pill count + dosing frequency + monitoring cadence + cost) for de-prescribing prioritization.
@@ -117,12 +117,12 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 56. [ ] `medication-name-spell-suggest` — One-letter typo suggester for the rxnorm catalog; produces "did you mean X?" suggestions distinct from the broader fuzzy match.
 57. [ ] `dose-reminder-quiet-hours-override` — Per-medication exception to global quiet-hours (e.g. seizure rescue meds always ring through).
 58. [ ] `caregiver-handoff-summary` — Generate a structured handoff summary for shift-change between caregivers (last 24h doses, alerts, meds added/removed).
-59. [ ] `pdc-trend` — Track PDC over rolling 90/180/365-day windows so the dashboard can show whether adherence is trending up or down.
+59. [x] `pdc-trend` — Track PDC over rolling 90/180/365-day windows so the dashboard can show whether adherence is trending up or down (tick 9 / 1d912f9).
 60. [ ] `fill-history-csv-import` — Import a pharmacy fill history CSV (column auto-map) into PharmacyFillEvent[]; feeds prescription-fill-history + pdc-by-medication directly.
 61. [ ] `regimen-snapshot-archive` — Snapshot a regimen at a moment in time (e.g. for legal records); produces a stable signed JSON blob.
-62. [ ] `drug-class-coverage-bundles-builder` — Compose custom bundle expectations from condition codes (ICD-10 -> classes) so the patient gets a personalised "what's missing" check.
+62. [x] `drug-class-coverage-bundles-builder` — Compose custom bundle expectations from condition codes (ICD-10 -> classes) so the patient gets a personalised "what's missing" check (tick 9 / 2ed2101).
 63. [ ] `dose-late-escalation-policy` — Define multi-tier escalation: 5min reminder -> 30min caregiver ping -> 2h family call, all configurable per medication.
-64. [ ] `inventory-low-stock-forecast` — Per-medication "this lot runs out on YYYY-MM-DD" forecast that composes inventory-ledger + refill-forecast.
+64. [x] `inventory-low-stock-forecast` — Per-medication "this lot runs out on YYYY-MM-DD" forecast that composes inventory-ledger + refill-forecast (tick 9 / f26d1ad).
 65. [ ] `prescriber-contact-card` — Format a prescriber's contact info (name + specialty + phone + fax + NPI) into a wallet-printable vCard-like block.
 
 
@@ -133,6 +133,103 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-21 04:29 PDT — tick 9: 5 features shipped + 1 fixup.
+  Commits: 1d912f9 pdc-trend, fa14d62 medication-conflict-resolver,
+  14c150a interaction-time-spacer, f26d1ad inventory-low-stock-forecast,
+  2ed2101 drug-class-coverage-bundles-builder, 53a3d2f fix (TrendDirection
+  rename + .sort() destructure narrowing).
+  Gate: 1047/1047 tests pass in `@med/utils` (112 new this tick:
+  17+22+22+19+32). Lint + build placeholder ok. `@med/utils` typecheck
+  baseline = 43 errors identical to start-of-tick after the fixup commit;
+  zero new errors introduced by tick 9. `pnpm -r test` confirms `@med/ui`
+  228/228 JSX runtime failures unchanged from baseline. Roadmap has 14
+  unstarted items across Tier 1B/1C/1D — no refill needed (threshold <5).
+
+  Notes:
+  - `pdc-trend` runs computePdc once per window (default 90/180/365d)
+    with an explicit measurementStart/measurementEnd so gap counting
+    is scoped properly — the per-medication natural window default in
+    prescription-fill-history would distort PDC numerators across the
+    trend stack. Direction = improving/declining/stable/insufficient
+    classified by delta = latestPdc - baselinePdc against a
+    stableBandDelta (default 0.05 = 5pp). Slope = OLS over
+    (windowDays, pdc). The "latest=shortest, baseline=longest"
+    convention is the inverse of what slope sign suggests: declining
+    trend gives positive slope (PDC rises as windowDays rises, older
+    windows healthier than newer). Both signs surface to the UI.
+  - `medication-conflict-resolver` uses an explicit per-field
+    precedence map with sensible defaults (pharmacy > ehr > caregiver
+    > manual > import). Non-empty ALWAYS beats empty — this is the
+    right default for partial EHR imports that would otherwise blank
+    out pharmacy-curated fields. Same-tier disagreement on a
+    SUBSTANTIVE field (strength, dosesPerRefill, drugId, dates,
+    active, form) breaks deterministically (newest first, then alpha)
+    AND surfaces a manualReview entry so a human can adjudicate.
+    Non-substantive field disagreement (e.g. name casing variants)
+    merges silently. resolveAll() groups records by
+    medicationId|drug:drugId and resolves each cluster.
+  - `interaction-time-spacer` introduces the first @med/utils module
+    whose curated rule table addresses a TIMING problem rather than
+    a co-administration problem. 6 rules cover the canonical
+    clinical scenarios: levothyroxine+cation (4h, levo first),
+    tetracycline+cation (2h symmetric), fluoroquinolone+cation (2h,
+    fq first), bisphosphonate+food (1h, bisphosphonate first),
+    cholestyramine+bound drugs (4h symmetric), PPI+azole (2h). The
+    `gapDirection: 'a-before-b'` semantics matters — the rule fires
+    bidirectionally for conflict detection but the action string
+    tells the patient which drug to take first. detectSpacingConflicts
+    expands each medication's enabled schedules and finds the NEAREST
+    opposite-drug dose for each scheduled time; severity bands on
+    observedGapMinutes / requiredGapMinutes against minorRatio (default
+    0.75 = within 75% of required gap is minor; below is major).
+  - `inventory-low-stock-forecast` is the first module that JOINs
+    inventory-ledger and refill-forecast. The key insight is that
+    refill-forecast operates on a SCALAR supplyRemaining and has no
+    concept of lot expiry — silently folding expiring lots into
+    supplyRemaining over-counts days-of-supply. This module walks
+    available lots in FEFO order using inventory-ledger's
+    summarizeLots() and CAPS each lot's contribution at
+    floor(daysUntilExpiry * dailyUsage). Units that cannot be
+    consumed before expiry surface as totalUnitsWasted so the
+    dashboard can prompt the patient to refill BEFORE expensive
+    waste accrues (the inverse of the usual out-of-supply alert).
+    PRN regimens (dailyUsage=0) return infinite supply and a null
+    runOutDate but still report per-lot exhaustion at expiry as
+    the worst-case projection.
+  - `drug-class-coverage-bundles-builder` is the first module to
+    introduce ICD-10 -> condition mapping. 10 conditions (cad,
+    hfref, dm2, copd, asthma, ckd, mdd, gerd, afib, htn) with
+    prefix-match ICD-10 routing (I50.4* HFrEF vs I50.3* HFpEF
+    correctly distinguished; HFpEF intentionally omitted as
+    pharmacotherapy is less settled). Each condition contributes
+    required classes, preferSingle hints, AND an AVOID list.
+    buildBundleFromConditions unions required across conditions
+    and collects avoid rules; a class that is REQUIRED by one
+    condition AND AVOIDED by another (DM2 metformin vs CKD)
+    surfaces in `conflicts` with both sides cited so the
+    prescriber sees the tension directly. Result extends
+    BundleExpectation so it feeds computeCoverage(meds, bundle)
+    unchanged.
+  - The fixup (53a3d2f) is the fourth `<Module>Foo` rename in the
+    autoship history:
+    - tick 4: RegimenTimeBucket vs pill-burden's TimeBucket
+    - tick 6: AdverseDoseHistoryEntry vs dose-history-aggregator's
+    - tick 8: PharmacyFillEvent vs refill-cost-projector's FillEvent
+    - tick 9: PdcTrendDirection vs weight-trend's TrendDirection
+    Same prescription as the previous cases: prefix the NEW module's
+    type with its domain noun ("Pdc", "Pharmacy", "Adverse",
+    "Regimen") rather than touching the older type. The `@med/utils`
+    index re-exports everything via `export *`, so any name clash
+    breaks build at the index level — and the cure is always rename
+    the newcomer.
+  - The fixup ALSO caught a second-class TS strict pattern: `const
+    [a, b] = [x, y].sort()` cannot narrow to `[string, string]`
+    because Array.sort() returns Array<T> (length isn't preserved
+    in the static type). The cure is explicit `sorted[0]!` /
+    `sorted[1]!` indexing. Future modules that need a sorted-pair
+    destructure should use the explicit-index pattern rather than
+    relying on tuple destructuring.
 
 - 2026-06-21 00:54 PDT — tick 8: 5 features shipped + 1 fixup.
   Commits: b1f3202 prescriber-directory, 32b0a4f drug-class-coverage,
