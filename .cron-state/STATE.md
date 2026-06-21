@@ -92,8 +92,8 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 37. [x] `refill-cost-projector` — Project annual cost across the regimen given current copays, refill cadence, and an optional plan-change date (tick 7 / e824fd7).
 38. [x] `caregiver-event-feed` — Stream of dose / refill / adverse-event entries for a caregiver, paginated, deny-aware via permission-matrix (tick 7 / bc90168).
 39. [x] `lab-window-tracker` — Track lab-test windows for medications that require periodic monitoring (warfarin INR, statin LFT, lithium level), with overdue / upcoming flags (tick 7 / f637675).
-40. [ ] `prescription-fill-history` — Normalize pharmacy fill history (NDC + days_supply + fill_date) into a continuous-coverage map, surface gaps.
-41. [ ] `pdc-by-medication` — Per-medication Proportion of Days Covered metric, the FDA-style adherence number caregivers and PBMs ask for.
+40. [x] `prescription-fill-history` — Normalize pharmacy fill history (NDC + days_supply + fill_date) into a continuous-coverage map, surface gaps (tick 8 / edd16b9).
+41. [x] `pdc-by-medication` — Per-medication Proportion of Days Covered metric, the FDA-style adherence number caregivers and PBMs ask for (tick 8 / fe4eb39).
 42. [x] `dose-instruction-parser` — Parse free-text "sig" strings ("1 tab po qid prn pain") into structured Schedule + amountPerDose; deterministic vocabulary, no LLM (tick 7 / 1c9bbe6).
 43. [x] `temperature-excursion-log` — Log + classify cold-chain excursions for refrigerated meds (insulin, biologics) using cold-chain.ts rules (tick 7 / 82bfe32).
 44. [ ] `med-list-print-layout` — Generate a paginated, print-ready medication list (one row per med, with refill date / prescriber / strength); pure layout math, no rendering.
@@ -101,9 +101,9 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 1C — fresh roadmap (refill after tick 7)
 
-46. [ ] `prescriber-directory` — Normalize prescriber records (NPI dedup, name fuzzy-match), surface "which doctor prescribes what" rollup.
-47. [ ] `drug-class-coverage` — Per-class coverage check across the regimen ("you have 2 statins but no antiplatelet") for cardio-risk review.
-48. [ ] `pharmacy-fill-reconciliation` — Reconcile pharmacy fill events against expected supplyRemaining; surface short/over-fills and dispensing errors.
+46. [x] `prescriber-directory` — Normalize prescriber records (NPI dedup, name fuzzy-match), surface "which doctor prescribes what" rollup (tick 8 / b1f3202).
+47. [x] `drug-class-coverage` — Per-class coverage check across the regimen ("you have 2 statins but no antiplatelet") for cardio-risk review (tick 8 / 32b0a4f).
+48. [x] `pharmacy-fill-reconciliation` — Reconcile pharmacy fill events against expected supplyRemaining; surface short/over-fills and dispensing errors (tick 8 / d8ba29b).
 49. [ ] `dose-batch-export` — Export a date-range slice of dose events as FHIR MedicationAdministration JSON; pure shape translation, no network.
 50. [ ] `regimen-printable-summary` — Wallet-card data layout (name / strength / route / sig / prescriber / pharmacy) sized to fit a 3.5x2" card.
 51. [ ] `dose-import-csv` — Import dose history from common pharmacy CSV formats (Walgreens / CVS layouts) with column auto-mapping.
@@ -112,7 +112,20 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 54. [ ] `appointment-prep-checklist` — Generate a structured pre-visit checklist (current meds, recent labs, reported AEs) given last-visit + upcoming-visit dates.
 55. [ ] `regimen-load-score` — Composite regimen-burden score (pill count + dosing frequency + monitoring cadence + cost) for de-prescribing prioritization.
 
-### Tier 2 — UI / app slices (web + ui pkg)
+### Tier 1D — fresh roadmap (refill after tick 8)
+
+56. [ ] `medication-name-spell-suggest` — One-letter typo suggester for the rxnorm catalog; produces "did you mean X?" suggestions distinct from the broader fuzzy match.
+57. [ ] `dose-reminder-quiet-hours-override` — Per-medication exception to global quiet-hours (e.g. seizure rescue meds always ring through).
+58. [ ] `caregiver-handoff-summary` — Generate a structured handoff summary for shift-change between caregivers (last 24h doses, alerts, meds added/removed).
+59. [ ] `pdc-trend` — Track PDC over rolling 90/180/365-day windows so the dashboard can show whether adherence is trending up or down.
+60. [ ] `fill-history-csv-import` — Import a pharmacy fill history CSV (column auto-map) into PharmacyFillEvent[]; feeds prescription-fill-history + pdc-by-medication directly.
+61. [ ] `regimen-snapshot-archive` — Snapshot a regimen at a moment in time (e.g. for legal records); produces a stable signed JSON blob.
+62. [ ] `drug-class-coverage-bundles-builder` — Compose custom bundle expectations from condition codes (ICD-10 -> classes) so the patient gets a personalised "what's missing" check.
+63. [ ] `dose-late-escalation-policy` — Define multi-tier escalation: 5min reminder -> 30min caregiver ping -> 2h family call, all configurable per medication.
+64. [ ] `inventory-low-stock-forecast` — Per-medication "this lot runs out on YYYY-MM-DD" forecast that composes inventory-ledger + refill-forecast.
+65. [ ] `prescriber-contact-card` — Format a prescriber's contact info (name + specialty + phone + fax + NPI) into a wallet-printable vCard-like block.
+
+
 
 (Pulled forward only after Tier 1 momentum is established. Note: the
 `@med/ui` test suite is currently red on baseline — fix the React JSX
@@ -120,6 +133,117 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-21 00:54 PDT — tick 8: 5 features shipped + 1 fixup.
+  Commits: b1f3202 prescriber-directory, 32b0a4f drug-class-coverage,
+  edd16b9 prescription-fill-history, fe4eb39 pdc-by-medication,
+  d8ba29b pharmacy-fill-reconciliation, da40f27 fix (FillEvent ->
+  PharmacyFillEvent rename to avoid re-export collision with
+  refill-cost-projector's FillEvent).
+  Gate: 935/935 tests pass in `@med/utils` (101 new this tick:
+  25+23+23+13+17). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick after
+  the fixup commit; zero new errors introduced by tick 8. `pnpm -r
+  test` confirms `@med/ui` 228/228 JSX runtime failures unchanged
+  from baseline. Refilled roadmap (Tier 1D) with 10 new candidates
+  (#56-#65).
+
+  Notes:
+  - `prescriber-directory` learned a structural lesson the hard way:
+    `stripDecorations` collapses commas, which means the inner check
+    for "Smith, Jane"-form names had to happen BEFORE the strip, not
+    after. The fix: detect the comma in the raw string and parse the
+    two halves separately, falling through to "Jane Smith"-form only
+    when the right-of-comma side is empty after decoration strip
+    (handles "Jane Smith, MD" correctly). NPI validation uses the
+    CMS spec Luhn-mod-10 on the 80840-prefixed string; bad checksums
+    still collapse on the NPI key so a typo in the last digit doesn't
+    create a phantom new prescriber, but the entry is flagged
+    npiValid=false. NPI-less records merge into matching NPI buckets
+    when canonical name + specialty agree (or when one specialty is
+    blank). The display-name aliases array carries every observed
+    variant — a real-world feature because patient records spell the
+    same doctor three ways across pharmacy/EHR/manual entries.
+  - `drug-class-coverage` introduces the `BUNDLES` map (4 curated
+    chronic-disease bundles: CAD secondary prevention, HFrEF, DM2,
+    COPD). Each bundle declares its required classes as either a
+    single `code` or an `anyOf` list — the latter handles ACE-I/ARB
+    equivalence and LABA/LAMA bronchodilator choice cleanly. The
+    `preferSingle` list flags duplicates of classes where two
+    typically indicates a de-prescribing review (two statins, two
+    SSRIs) without flagging legitimately-stacked combos like two
+    diabetes meds. CLASS_DEFINITIONS uses substring matching against
+    drug.class, generic, brand, and warnings so wording variants
+    ("ACE-Inhibitor", "Angiotensin-Converting Enzyme Inhibitor",
+    "ace inhibitor") all classify, AND combo drugs (amlodipine +
+    benazepril) end up in BOTH classes. Substring match is a
+    deliberate looseness; if a future drug catalog needs strict
+    matching, the matchers list can be tightened per-class without
+    changing call sites.
+  - `prescription-fill-history` is the cornerstone of the new
+    refill-coverage analytics stack. The "extend, don't reset" rule
+    is the non-obvious win: when a 30-day fill arrives on day 20 of
+    an existing 30-day fill's coverage, the tail extends by 30 days
+    (patient is stockpiling) rather than starting a fresh 30-day
+    interval that overlaps. This naturally caps coverage at 1.0 per
+    day, which is the FDA-PQA definition of PDC's numerator. The
+    initial bug was a classic: `intervals.length === 0` worked as the
+    "first iteration" sentinel only when the first fill DID NOT
+    start a new run, but the second fill always evaluated against
+    intervals.length===0 too (since I only push at run-boundary).
+    Fixed with an explicit `initialized` flag. Second subtler bug:
+    default windowEnd used max fillEnd across the regimen, which
+    gives a medication whose fills end early a phantom trailing gap
+    caused by an unrelated longer-tail medication. Switched to a
+    per-medication default window — shared windows are still
+    available when the caller passes both bounds. This is the right
+    default for "did patient X run out of medication Y?" but the
+    explicit-window path is what the PDC computer uses.
+  - `pdc-by-medication` is the FDA Star Rating adherence metric.
+    Composes directly on prescription-fill-history with an explicit
+    shared measurement window — the per-medication window default
+    would distort PDC numerators. Anchor date = first fill at or
+    after the measurement start; denominator = anchor through period
+    end inclusive; numerator = denominator minus gap days inside
+    that range. Stockpiling caps at 1.0 naturally because of the
+    "extend, don't reset" rule (this is the entire reason PDC was
+    designed). Custom adherentThreshold defaults to 0.80 per CMS Star
+    spec. The medicationClasses argument enables class-level rollup
+    so the dashboard can compute a "diabetes PDC" by averaging
+    metformin + sglt2; medications listed in classes but with no
+    in-period fills count toward noFillCount with pdc=0, so the
+    class rollup is honest about documentation gaps. pdcBand
+    bucketing matches CMS Star colour bands (>=0.90 excellent,
+    >=0.80 good, >=0.50 watch, <0.50 critical).
+  - `pharmacy-fill-reconciliation` walks pharmacy fill events
+    against the expected supply trajectory and classifies each fill
+    into one of {duplicate, short-fill, over-fill, late-refill,
+    early-refill, ok}. Classification ORDER matters: duplicate wins
+    (POS double-charge dedupe), then quantity mismatches (most
+    actionable for cost-recovery and patient education), then
+    timing flags. I initially had timing first and the short-fill
+    test failed because the second fill arrived exactly when supply
+    ran out — flagged as late instead of short. The reorder is the
+    right design choice: a partial fill that LATER causes a late
+    refill is still primarily a partial-fill problem. daysLate is
+    computed against the prior fill's scheduled run-out (lastFill +
+    expectedUnits/dailyUsage), so an on-time fill exactly when
+    supply hits zero classifies as 'ok', not 'late' — matches how
+    pharmacy QA actually thinks about this. Early-refill uses
+    safeRefillDaysOfSupply (default 7) to catch the PBM fraud-
+    screening pattern (refilling with 21 days still on hand). PRN
+    medications (dailyUsage=0) have infinite days-of-supply so
+    late-refill never triggers for them.
+  - The fixup (da40f27) is the third example of the
+    `<Module>Foo` rename pattern established in earlier ticks:
+    - tick 4: RegimenTimeBucket vs pill-burden's TimeBucket
+    - tick 6: AdverseDoseHistoryEntry vs dose-history-aggregator's
+    - tick 8: PharmacyFillEvent vs refill-cost-projector's FillEvent
+    Rule of thumb for the next collision: prefix the NEW module's
+    type with its domain noun ("Pharmacy", "Adverse", "Regimen")
+    rather than touching the older type. The `@med/utils` index
+    uses `export *` everywhere, so the test (and the cure) is
+    always the same.
 
 - 2026-06-20 22:14 PDT — tick 7: 5 features shipped.
   Commits: 1c9bbe6 dose-instruction-parser, e824fd7 refill-cost-projector,
