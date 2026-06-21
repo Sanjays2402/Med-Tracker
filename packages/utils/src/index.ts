@@ -90,3 +90,4 @@ export * from './appointment-followup-tracker';
 export * from './medication-refusal-log';
 export * from './regimen-load-trend';
 export * from './dose-batch-export';
+export * from './medication-refusal-trend';
