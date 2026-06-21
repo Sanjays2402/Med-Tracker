@@ -82,3 +82,4 @@ export * from './inventory-low-stock-forecast';
 export * from './drug-class-coverage-bundles-builder';
 export * from './appointment-prep-checklist';
 export * from './regimen-load-score';
+export * from './caregiver-handoff-summary';
