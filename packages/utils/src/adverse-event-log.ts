@@ -66,7 +66,7 @@ export interface AdverseEventInput {
   patientSeverity?: number;
 }
 
-export interface DoseHistoryEntry {
+export interface AdverseDoseHistoryEntry {
   medicationId: string;
   /** Medication display name (for the report sentence). */
   medicationName: string;
@@ -226,7 +226,7 @@ function classifySeverity(
 }
 
 function computeProximities(
-  history: DoseHistoryEntry[],
+  history: AdverseDoseHistoryEntry[],
   onsetAt: string,
   windowHours: number,
 ): MedicationProximity[] {
@@ -324,7 +324,7 @@ function buildSummary(
  */
 export function logAdverseEvent(
   input: AdverseEventInput,
-  history: DoseHistoryEntry[] = [],
+  history: AdverseDoseHistoryEntry[] = [],
   options: AdverseEventLogOptions = {},
 ): AdverseEventRecord {
   if (!input.description || !input.description.trim()) {

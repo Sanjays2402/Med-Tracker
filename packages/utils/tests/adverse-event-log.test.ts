@@ -3,12 +3,12 @@ import {
   logAdverseEvent,
   summarizeAdverseEvents,
   type AdverseEventInput,
-  type DoseHistoryEntry,
+  type AdverseDoseHistoryEntry,
 } from '../src/adverse-event-log';
 
 const ONSET = '2026-06-20T15:00:00Z';
 
-const HISTORY: DoseHistoryEntry[] = [
+const HISTORY: AdverseDoseHistoryEntry[] = [
   { medicationId: 'm-lisin', medicationName: 'Lisinopril', takenAt: '2026-06-20T08:00:00Z' },
   { medicationId: 'm-lisin', medicationName: 'Lisinopril', takenAt: '2026-06-19T08:00:00Z' },
   { medicationId: 'm-metf', medicationName: 'Metformin', takenAt: '2026-06-20T13:00:00Z' },

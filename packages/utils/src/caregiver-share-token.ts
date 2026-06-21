@@ -118,10 +118,23 @@ function bytesToString(b: Uint8Array): string {
   return new TextDecoder().decode(b);
 }
 
+/**
+ * Coerce a Uint8Array to an ArrayBuffer-backed BufferSource that
+ * crypto.subtle accepts. TS 5.7+ no longer treats
+ * `Uint8Array<ArrayBufferLike>` as a subtype of `ArrayBufferView`,
+ * so we hand subtle a fresh ArrayBuffer-backed view.
+ */
+function asBufferSource(b: Uint8Array): ArrayBuffer {
+  // Copy into a fresh ArrayBuffer to discard the ArrayBufferLike wrapper.
+  const fresh = new ArrayBuffer(b.byteLength);
+  new Uint8Array(fresh).set(b);
+  return fresh;
+}
+
 async function importHmacKey(secret: string): Promise<CryptoKey> {
   return globalThis.crypto.subtle.importKey(
     'raw',
-    stringToBytes(secret),
+    asBufferSource(stringToBytes(secret)),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign', 'verify'],
@@ -169,7 +182,7 @@ export async function issueCaregiverShareToken(input: IssueTokenInput): Promise<
   const payloadJson = JSON.stringify(payload);
   const payloadB64 = bytesToBase64Url(stringToBytes(payloadJson));
   const key = await importHmacKey(input.secret);
-  const signedBytes = await globalThis.crypto.subtle.sign('HMAC', key, stringToBytes(payloadB64));
+  const signedBytes = await globalThis.crypto.subtle.sign('HMAC', key, asBufferSource(stringToBytes(payloadB64)));
   const sigB64 = bytesToBase64Url(new Uint8Array(signedBytes));
   return `${PREFIX}${payloadB64}.${sigB64}`;
 }
@@ -209,7 +222,7 @@ export async function verifyCaregiverShareToken(input: VerifyTokenInput): Promis
     return { ok: false, reason: 'malformed' };
   }
   const expectedSig = new Uint8Array(
-    await globalThis.crypto.subtle.sign('HMAC', key, stringToBytes(payloadB64)),
+    await globalThis.crypto.subtle.sign('HMAC', key, asBufferSource(stringToBytes(payloadB64))),
   );
   if (!constantTimeEqual(givenSig, expectedSig)) return { ok: false, reason: 'signature-mismatch' };
 
