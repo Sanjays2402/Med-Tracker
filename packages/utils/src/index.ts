@@ -65,3 +65,4 @@ export * from './dose-time-suggest';
 export * from './caregiver-share-token';
 export * from './pill-cutter-plan';
 export * from './adverse-event-log';
+export * from './dose-instruction-parser';
