@@ -125,3 +125,4 @@ export * from './regimen-snapshot-archive-history-rollup-html';
 export * from './regimen-snapshot-archive-history-rollup-csv-export';
 export * from './regimen-snapshot-archive-history-rollup-csv-export-merge';
 export * from './regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise';
+export * from './regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate';
