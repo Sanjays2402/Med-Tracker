@@ -103,6 +103,7 @@ export * from './regimen-snapshot-archive-restore';
 export * from './dose-export-csv-import-roundtrip-validator';
 export * from './dose-export-csv-import-roundtrip-validator-html';
 export * from './dose-export-csv-import-roundtrip-validator-summary-text';
+export * from './dose-export-csv-import-roundtrip-validator-summary-text-slack';
 export * from './refusal-reason-suggest-i18n';
 export * from './refusal-reason-suggest-i18n-rollup';
 export * from './refusal-reason-suggest-i18n-rollup-html';
