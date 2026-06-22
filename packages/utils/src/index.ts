@@ -123,6 +123,7 @@ export * from './prescriber-contact-card-emergency-card-pdf';
 export * from './prescriber-contact-card-emergency-card-pdf-two-up';
 export * from './prescriber-contact-card-emergency-card-pdf-two-up-watermark';
 export * from './prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster';
+export * from './prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc';
 export * from './regimen-snapshot-archive-history-rollup';
 export * from './regimen-snapshot-archive-history-rollup-html';
 export * from './regimen-snapshot-archive-history-rollup-csv-export';
