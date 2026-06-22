@@ -244,20 +244,38 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 ### Tier 1L — fresh roadmap (refill after tick 17)
 
 161. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-per-class` — Compose merge (#146) with per-class (#151): produce a multi-patient CSV grouped by drug class, for a cardiology clinic comparing siblings' antihypertensive trajectories side-by-side.
-162. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher` — Roll N day's worth of round-trip summaries into a single Slack thread (one parent message + N reply blocks) for the daily QA on-call digest, avoiding channel noise from N separate posts.
-163. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer` — Wrap each caregiver entry in a SMTP-ready multipart/alternative envelope (subject + text + html bodies) for direct hand-off to a mailer queue; the cron writes payloads, the mailer ships them.
-164. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet` — Single-page cover sheet for the print roster (patient name, panel size, date generated, signature block for the reviewer) preceding the paginated body; matches typical clinical-records paper packets.
-165. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster` — Roster variant: apply the watermark uniformly across a 20+ card batch with a per-page header strip ("Page N of M, Verified 2026-06-22") so a stack of cards stays traceable on a single binder pull.
+162. [x] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher` — Roll N day's worth of round-trip summaries into a single Slack thread (one parent message + N reply blocks) for the daily QA on-call digest, avoiding channel noise from N separate posts (tick 18 / bbe11f9).
+163. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer` — Wrap each caregiver entry in a SMTP-ready multipart/alternative envelope (subject + text + html bodies) for direct hand-off to a mailer queue; the cron writes payloads, the mailer ships them (tick 18 / d5009fb).
+164. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet` — Single-page cover sheet for the print roster (patient name, panel size, date generated, signature block for the reviewer) preceding the paginated body; matches typical clinical-records paper packets (tick 18 / b73cbc6).
+165. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster` — Roster variant: apply the watermark uniformly across a 20+ card batch with a per-page header strip ("Page N of M, Verified 2026-06-22") so a stack of cards stays traceable on a single binder pull (tick 18 / 6bd5a92).
 166. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-pivot` — Pivot the merged CSV from event-rows to patient-cols (one row per medication, one column per patient with their strength-on-date) for the cross-sibling comparison view.
 167. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-attachment-fallback` — Slack `attachments` fallback (legacy attachment shape used by older Slack workspaces that don't render Block Kit) parallel to the blocks output; same content, structured for Slack legacy clients.
 168. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-suppress-policy` — Per-caregiver suppression policy (no pings on weekends; no pings during caregiver vacations; max one ping per week) layered onto the cron batcher's output before mailer dispatch.
 169. [ ] `refusal-reason-suggest-i18n-rollup-html-print-signature-page` — Companion to cover-sheet (#164): a trailing signature page where the reviewer signs off on the whole batch with a per-source attestation grid.
 170. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-trifold` — Trifold layout: emergency cards on the outer panels, watermark across all three, for clinics that print trifold patient packets at admission.
-171. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise` — Hash patient names + ids before export merge so a multi-patient sheet can be shared with a third-party analytics tool without exposing PHI.
+171. [x] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise` — Hash patient names + ids before export merge so a multi-patient sheet can be shared with a third-party analytics tool without exposing PHI (tick 18 / d7d365a).
 172. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-mention-policy` — Per-tier @mention policy (e.g. structural diffs page on-call, note-only doesn't) so the Slack message routes the right severity to the right person.
 173. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-coverage-report` — Standalone coverage report (locales used, silent caregivers, skipped caregivers) parallel to summarizeFollowupDigestCronBatch but as a structured JSON payload for the analytics pipeline.
 174. [ ] `refusal-reason-suggest-i18n-rollup-html-print-binder-tab` — Tabbed binder-style cover (patient name + section ribbon) for a multi-patient print packet at a household review meeting.
 175. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-qr-suppress` — When watermark = DRAFT, suppress QR codes (don't let downstream apps scan a DRAFT vCard) — a small but real safety hook for the legal-records workflow.
+
+### Tier 1M — fresh roadmap (refill after tick 18)
+
+176. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate` — Rotate-secret companion to anonymise (#171): given two HMAC secrets (old, new), output a stable old-pseudonym -> new-pseudonym mapping so a clinic switching secrets can update its lookup table without losing patient continuity.
+177. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours` — Suppress thread parent posting during caregiver quiet hours (default 22:00-07:00 PT) so a midnight nightly run doesn't ping a sleeping on-call.
+178. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc` — Carbon-copy policy: secondary destinations (primary care physician, family escalation) BCC'd on the same envelope so a household admin sees the same weekly view their caregivers see.
+179. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine` — Vertical spine-label fragment (3.5x1.5 cm sticker layout) for the binder spine matching the cover sheet's patient name + date — clinics file rosters by spine label not cover.
+180. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc` — Table-of-contents page preceding the roster (page 0): list of prescribers by name + page number, generated from the same emergencyCards array so the toc never drifts from the cards.
+181. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-coverage-report` — Standalone coverage report (entries anonymised, collision count, hash truncation in use, name strategy applied) for the audit trail.
+182. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-archive` — Persistent archive of N day's worth of thread batches as a single rolling JSON blob suitable for CI artefact storage.
+183. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-retry-queue` — Wrap each envelope with retry metadata (attemptCount, lastErrorAt) so the mailer layer's queue can re-enqueue failed deliveries without losing context.
+184. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-i18n` — Localise the cover sheet's chrome text (hero subtitle, table labels, signature block prompts) by extending the existing i18n bundle layer.
+185. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html` — HTML/CSS companion to the roster TOC (browser print preview without a monospace font requirement) parallel to the existing PDF-block output.
+186. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-fhir` — Compose anonymise (#171) with the future fhir export (#156) for de-identified FHIR Bundle sharing.
+187. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-stats` — Per-day statistics rollup (mean diffs / mean parser skips / max diffs / consecutive clean days) appended as a final reply on the thread for trend visibility.
+188. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-attachments` — Attachment slot (optional FollowupDigest as PDF or ICS file) for caregivers who prefer downloadable formats alongside the inline body.
+189. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-batch` — Multi-patient cover sheet (one cover per N-patient household roster) parallel to the per-patient cover; preserves the per-patient breakdowns inside a single packet.
+190. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-export-csv` — CSV export of the roster header strip texts (one row per page: pageNumber, batchId, watermarkText, generatedAt) for audit log archives.
 
 
 
@@ -268,6 +286,132 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-22 10:23 PDT — tick 18: 5 features shipped.
+  Commits: d7d365a regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise,
+  bbe11f9 dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher,
+  d5009fb followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer,
+  b73cbc6 refusal-reason-suggest-i18n-rollup-html-print-cover-sheet,
+  6bd5a92 prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster.
+  Gate: 2229/2229 tests pass in `@med/utils` (124 new this tick:
+  23+26+23+27+25). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick (same
+  6 pre-existing files: adherence-risk, date, ics, schedule-resolver,
+  taper-plan, titration); zero new errors introduced by tick 18.
+  EIGHTH clean tick in a row (no fixup commits, no force-push, no
+  revert). Refilled roadmap (Tier 1M) with 15 new candidates (#176-#190).
+
+  Notes:
+  - Eighth composition tick in a row. Every tick 18 module composes
+    on at least one tick 17 output OR a parallel-pattern T17 module:
+    merge-anonymise on csv-export-merge (T16) + parallel design
+    pattern to merge-per-class (#151 unbuilt), thread-batcher on
+    summary-text-slack (T17), cron-batcher-html-mailer on cron-batcher
+    (T17), html-print-cover-sheet on html-print (T17), watermark-
+    roster on two-up-watermark (T17). Composition rhythm continues
+    eight ticks deep: T11 -> T18.
+  - `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise`
+    is the FIRST PHI-safe export companion in the package. HMAC-
+    SHA-256 via Web Crypto (globalThis.crypto.subtle, no @types/node
+    dep) matches the caregiver-share-token + regimen-snapshot-archive
+    pattern — functions are therefore async. Three name strategies:
+    'sequential' (default, Patient A/B/C by HASHED-ID-SORTED order so
+    sibling 1 is always "Patient A" regardless of input array order),
+    'hashed' (Patient <hex>), 'redacted' (literal "REDACTED" for the
+    most conservative pipelines). Hash truncation configurable
+    (default 16 hex chars / 8 bytes entropy, clamped [4, 64]).
+    collisionDetected flag surfaces same-hash-different-id pairs.
+    Medication name / strength / snapshotId / takenAt deliberately
+    NOT touched — per HIPAA safe harbor (45 CFR 164.514) those
+    columns are not PHI once stripped of patient identifiers.
+    Convenience helper hashPatientIdForAnonymisedMerge for pre-
+    computing lookup tables out of band.
+  - `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher`
+    is the FIRST Slack thread-shape module in the package. Slack
+    threads are the standard "one new line in channel + N replies"
+    pattern QA on-call channels use to avoid noise. Two
+    chat.postMessage calls per day regardless of N runs: parent
+    first (returns ts), each reply with thread_ts=ts. Parent stack:
+    header / context (date + runCount) / section (aggregate stats) /
+    context (per-tier rollup, only tiers with >0 count, omitted
+    entirely when no diffs) / context (clean-run hint, only when
+    some are clean) / actions (https-only dashboard button).
+    suppressCleanRuns drops clean replies but STILL counts them in
+    the parent rollup so aggregate is honest. Parser-skip-only runs
+    count as actionable (parser skips are a real problem signal,
+    not a clean run).
+  - `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer`
+    wraps each per-caregiver cron-batch entry into an SMTP-ready
+    multipart/alternative envelope (to + subject + text + html). The
+    four fields map 1:1 to Nodemailer / AWS SES / Sendgrid envelope
+    fields. Per-locale subject templates with {caregiverName} and
+    {dateLabel} interpolation; trailing "()" / " - " collapsed when
+    dateLabel is empty. Multi-patient body composition via per-
+    patient section concatenation with a default horizontal-rule
+    separator (text) or bordered <section> (HTML). Patient labels
+    HTML-escaped so a name like '<Alice & "the kid">' doesn't break
+    markup. Silent / suppressed caregivers from the cron batch
+    preserved in a separate list with reason discriminator
+    ('silent-week' / 'unknown-locale-skipped') so the mailer layer
+    decides to ship a heartbeat or skip entirely. Convenience:
+    filterEnvelopesWithDestination (drops envelopes without `to`)
+    and per-entry single-envelope builder for spot reviews.
+  - `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet`
+    is the FIRST cover-sheet pattern in the package (sets the
+    template for future validator-html-print-cover-sheet,
+    prescriber-contact-card-emergency-card-pdf-binder-cover, etc).
+    Hero block (32pt patient name + 14pt small-caps panel subtitle,
+    2px bottom border, top padding). Metadata table (dateLabel,
+    doses reviewed, suggested count, body page count, locale
+    fallback hint) where every row is optional and OMITTED when
+    not provided — the cover stays clean for small panels.
+    Source breakdown in declared priority order (NPO first) NOT
+    by count so cover shape is stable across reviews; empty-state
+    when no source fired. Locale breakdown sorted by count desc.
+    Signature block (default 3 lines: Reviewer signature / Date /
+    Printed name) with long underlines for wet-signature attestation;
+    configurable per clinical setting; hideable for automated
+    archive pipelines. page-break-after:always (default) so the
+    body starts on page 2 when concatenated; turnable off for
+    splice-into-larger-document scenarios.
+  - `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster`
+    adds the FIRST per-page traceability strip in the package
+    (sets the pattern for future multi-page roster modules).
+    Header strip on every page with configurable template (5
+    tokens: pageNumber, totalPages, batchId, watermarkText,
+    generatedAtLabel). Default: "Page N of M  ·  <watermark>  ·
+    Batch <id>  ·  Generated YYYY-MM-DD". batchId explicit when
+    provided, otherwise auto-generated via djb2 hash of (generatedAt
+    + totalCardCount + watermarkPreset) so two identical inputs yield
+    the same id and different inputs yield different ids. Auto ids
+    prefixed "roster-" for visual distinction. Strip is returned
+    as a SEPARATE field on each page result so PDF renderers that
+    don't know about it can skip it; convenience
+    rosterHeaderStripsAsBlocks folds into footer-kind blocks for
+    callers that want a single block stream. watermarkVerifiedAt
+    locked at the ROSTER level (defaults to generatedAt) so the
+    underlying multi-page builder uses the same date for every page
+    AND the batchId hash sees the same locked timestamp.
+  - Module-domain-noun prefix discipline continues:
+    RegimenHistoryCsvMergeAnonymiseResult (not AnonymiseResult),
+    DoseRoundtripThreadBatcherEntry (not ThreadBatcherEntry),
+    FollowupDigestHtmlMailerEnvelope (not Envelope),
+    RefusalReasonI18nRollupHtmlPrintCoverSheet (not CoverSheet),
+    EmergencyCardPdfTwoUpRosterHeaderStrip (not HeaderStrip).
+    Every tick 18 export uses a module-prefixed name where any
+    generic name could have collided.
+  - 8 clean ticks in a row (no fixup commits, no force-push, no
+    revert). Every commit revertible in isolation; every commit has
+    its own test suite; every commit passes the full @med/utils gate
+    in isolation AND in batch.
+  - Hardware corner cases handled this tick: HMAC short-secret
+    rejection (early throw with byte count surfaced), URL https://
+    gating on Slack dashboard button (matching the per-run renderer's
+    same pattern), HTML escaping on user-controlled labels (cover
+    sheet patient + panel labels, mailer patient labels), date
+    locking across multi-page batches (watermark + roster both lock
+    once for a batch to prevent midnight rollover producing mixed-
+    date stacks).
 
 - 2026-06-22 06:44 PDT — tick 17: 5 features shipped.
   Commits: 64991e0 regimen-snapshot-archive-history-rollup-csv-export-merge,
