@@ -110,3 +110,4 @@ export * from './prescriber-contact-card-emergency-card';
 export * from './prescriber-contact-card-emergency-card-pdf';
 export * from './regimen-snapshot-archive-history-rollup';
 export * from './regimen-snapshot-archive-history-rollup-html';
+export * from './regimen-snapshot-archive-history-rollup-csv-export';
