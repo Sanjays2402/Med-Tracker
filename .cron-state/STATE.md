@@ -207,11 +207,11 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 1J — fresh roadmap (refill after tick 15)
 
-131. [ ] `regimen-snapshot-archive-history-rollup-csv-export` — CSV export of RegimenHistoryRollup for sharing with non-Med-Tracker clinicians (one row per event: snapshotId, medication, kind, before, after, observedAt). Pure shape translation, no I/O.
-132. [ ] `dose-export-csv-import-roundtrip-validator-summary-text` — Plain-text companion to summarizeRoundtripResult that produces a per-tier breakdown (5 lines: tier name + count + sample doseIds) for cron logs / CI artifacts.
-133. [ ] `followup-digest-text-html-bundle-i18n-multi-locale` — Build the same digest in N locales in one call, returning a map keyed on locale; for households where each caregiver reads a different language.
-134. [ ] `refusal-reason-suggest-i18n-rollup-html` — HTML render of LocalisedRefusalSuggestion[]: per-source grouped tables with localised tooltips and per-dose accept/reject controls for the adjudication queue.
-135. [ ] `prescriber-contact-card-emergency-card-pdf-two-up` — Landscape two-up variant of the emergency PDF: two cards side-by-side on a single A4 / Letter sheet for clinics that print double-sided binder pages.
+131. [x] `regimen-snapshot-archive-history-rollup-csv-export` — CSV export of RegimenHistoryRollup for sharing with non-Med-Tracker clinicians (one row per event: snapshotId, medication, kind, before, after, observedAt). Pure shape translation, no I/O (tick 16 / c4d4a0b).
+132. [x] `dose-export-csv-import-roundtrip-validator-summary-text` — Plain-text companion to summarizeRoundtripResult that produces a per-tier breakdown (5 lines: tier name + count + sample doseIds) for cron logs / CI artifacts (tick 16 / d5dbe6f).
+133. [x] `followup-digest-text-html-bundle-i18n-multi-locale` — Build the same digest in N locales in one call, returning a map keyed on locale; for households where each caregiver reads a different language (tick 16 / 09acfbf).
+134. [x] `refusal-reason-suggest-i18n-rollup-html` — HTML render of LocalisedRefusalSuggestion[]: per-source grouped tables with localised tooltips and per-dose accept/reject controls for the adjudication queue (tick 16 / 39feccb).
+135. [x] `prescriber-contact-card-emergency-card-pdf-two-up` — Landscape two-up variant of the emergency PDF: two cards side-by-side on a single A4 / Letter sheet for clinics that print double-sided binder pages (tick 16 / 3628ba8).
 136. [ ] `regimen-snapshot-archive-history-rollup-titration-summary` — Filter + format RegimenHistoryRollup to a "titration-only" view: per-medication strength trajectory with a one-line summary like "5mg → 10mg → 20mg over 3 quarters".
 137. [ ] `dose-export-csv-import-roundtrip-validator-auto-accept` — Policy helper that returns the doseId subset eligible for auto-accept under a given policy (default: note-only rows whose risk is `note-only` AND whose note delta is short). Composes with applyAcceptedDiffs.
 138. [ ] `followup-digest-text-html-bundle-empty-state` — Optional "no actionable items" digest variant for caregivers who explicitly OPT IN to weekly status pings even on silent weeks (e.g. distant family member who reads it as a heartbeat).
@@ -223,6 +223,24 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 144. [ ] `prescriber-contact-card-emergency-card-pdf-watermark` — Add optional "DRAFT" / "VERIFIED YYYY-MM-DD" watermark for legal-records exports of the emergency card.
 145. [ ] `refusal-reason-suggest-i18n-rollup-per-caregiver` — Roll up suggestions for an entire caregiver's patient panel (multiple patients) in one call, returning a per-patient breakdown.
 
+### Tier 1K — fresh roadmap (refill after tick 16)
+
+146. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge` — Merge two RegimenHistoryRollup CSVs (one from each of two patients) into a single combined sheet for the family-history pediatric appointment use case; columns gain patientId + patientName.
+147. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack` — Slack-block-kit companion to summary-text that wraps the same content as a Slack message payload with code blocks + buttons; for the QA on-call channel.
+148. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher` — Roll N caregivers (each with their own locale preference) across M patients into a per-caregiver mailer payload bundle for a cron job that runs once per week.
+149. [ ] `refusal-reason-suggest-i18n-rollup-html-print` — Print-friendly variant of i18n-rollup-html (no controls, paginated, header on each page) for caregivers reviewing on paper before adjudicating in-app — parallel to dose-export-csv-import-roundtrip-validator-html-print (#142).
+150. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark` — Add optional "DRAFT" / "VERIFIED YYYY-MM-DD" / "ICU COPY" watermark across both slots in the landscape layout — parallel to prescriber-contact-card-emergency-card-pdf-watermark (#144).
+151. [ ] `regimen-snapshot-archive-history-rollup-csv-export-per-class` — Group rollup events by drug class (statins, antihypertensives, etc) before CSV export so a cardiologist reading the events.csv can filter to their own class without parsing a free-text medication name.
+152. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-html-mailer` — HTML mailer wrapper for summary-text that ships the fenced block inside an email envelope with subject line + opener; for adjudication queues that get reviewed via email instead of portal.
+153. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-html-print` — Print-friendly variant of multi-locale that paginates each locale's HTML body for households printing the digest out for distant family.
+154. [ ] `refusal-reason-suggest-i18n-rollup-html-summary-card` — Single-card summary that rolls i18n-rollup-html into a compact dashboard widget (count per source, top fallback locale) parallel to refusal-trend-summary-html.
+155. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-binder-cover` — ED-binder front-page variant of two-up: left slot is the patient summary, right slot is the primary-care emergency card — composes with the binder-cover variant (#140).
+156. [ ] `regimen-snapshot-archive-history-rollup-csv-export-fhir` — FHIR MedicationStatement Bundle JSON companion to the CSV export — pure shape translation, no network — for clinicians whose EHR ingests FHIR but not CSV.
+157. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-json` — Structured JSON companion to summary-text for analytics pipelines that want per-tier counts + sample doseIds as a strict JSON payload instead of free-text.
+158. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-fallback-policy` — Configurable fallback chain (e.g. ja-JP -> en-US, fr-CA -> fr-FR -> en-US) so households can request a target locale and get a deterministic next-best.
+159. [ ] `refusal-reason-suggest-i18n-rollup-html-per-medication` — Per-medication grouping variant of i18n-rollup-html so a clinician reviewing one medication's refusal patterns can drill in without seeing other meds.
+160. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-double-sided` — Duplex variant that puts emergency card on the front and a vCard QR-only back face on the reverse for clinics that print double-sided binder pages.
+
 
 
 (Pulled forward only after Tier 1 momentum is established. Note: the
@@ -231,6 +249,145 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-22 03:17 PDT — tick 16: 5 features shipped.
+  Commits: c4d4a0b regimen-snapshot-archive-history-rollup-csv-export,
+  d5dbe6f dose-export-csv-import-roundtrip-validator-summary-text,
+  09acfbf followup-digest-text-html-bundle-i18n-multi-locale,
+  39feccb refusal-reason-suggest-i18n-rollup-html,
+  3628ba8 prescriber-contact-card-emergency-card-pdf-two-up.
+  Gate: 1995/1995 tests pass in `@med/utils` (93 new this tick:
+  17+17+15+17+27). Lint + build placeholder ok. `@med/utils` typecheck
+  baseline = 43 errors identical to start-of-tick (across the same 6
+  pre-existing files: adherence-risk, date, ics, schedule-resolver,
+  taper-plan, titration); zero new errors introduced by tick 16.
+  `pnpm -r test` shows @med/api 16/131 fail with 5000ms timeouts on
+  tracing.test.ts under parallel-load — known flake when @med/api
+  runs concurrent with the larger @med/utils suite (documented in
+  T14, T15 state notes). Re-run in ISOLATION (`pnpm --filter @med/api
+  test`) ALSO showed 15/131 timeouts on the same tracing.test.ts
+  cases — this is a pre-existing @med/api infrastructure issue, NOT
+  caused by this tick (diff is 100% under packages/utils/, zero
+  touches to apps/api). SIXTH clean tick in a row (no fixup commits,
+  no force-push, no revert). Refilled roadmap (Tier 1K) with 15 new
+  candidates (#146-#160).
+
+  Notes:
+  - Sixth composition tick in a row — every module composes on at
+    least one prior module. The composition rhythm is now SIX TICKS
+    DEEP: T11 ships foundation modules, T12 ships first-derivative
+    companions (htm, i18n), T13 ships second-derivative companions
+    (html, csv variants), T14 ships third-derivative companions
+    (validator, bundle, i18n), T15 ships fourth-derivative companions
+    (html, i18n rollup, bundle i18n, emergency PDF), T16 ships
+    FIFTH-derivative companions — every module a layer above a T15
+    output: csv-export on history-rollup-html, summary-text on
+    validator-html, bundle-i18n-multi-locale on bundle-i18n,
+    i18n-rollup-html on i18n-rollup, pdf-two-up on pdf. The pattern
+    is now mechanically reliable across six consecutive ticks.
+  - `regimen-snapshot-archive-history-rollup-csv-export` ships TWO
+    CSVs (eventsCsv + timelineCsv) because clinicians ask for
+    different shapes — events for filter/sort review, timeline for
+    plotting regimen-size-over-time in analytics tooling. Default
+    `eventOrder='medication'` (rollup grouping preserved) matches
+    how a prescriber READS the timeline; `'time'` is the alternative
+    for analytics pipelines that want events as a flat fact table.
+    MED_TRACKER CSV conventions match dose-export-csv: RFC 4180
+    quoting, optional BOM for Excel-on-Windows UTF-8, header always
+    emitted (even on empty rollup), empty cells for null fields (NOT
+    the literal string "null") so spreadsheet formulas treat them as
+    blank. Convenience helpers
+    `exportRegimenHistoryEventsCsvForMedication` slices to a single
+    medication for per-drug share workflows.
+  - `dose-export-csv-import-roundtrip-validator-summary-text` is the
+    FIRST multi-line TEXT companion to a one-line summarize helper.
+    Use case: the on-call engineer at 2am reading a CI artifact, or
+    QA tooling scanning a pipeline log, wants per-tier sample
+    doseIds and parser-skip reason groupings — not just the headline.
+    Output is a fenced block (=== delimiters) suitable for cron logs,
+    CI artifacts, terminal stdout, or a Slack code-fenced message.
+    Tier blocks render in priority order (structural -> mixed ->
+    status-edit -> note-only) matching the HTML render so an
+    engineer who has both windows open sees the same prioritisation.
+    Parser-skip block groups by reason and emits sample row numbers
+    so a recurring skip pattern is easy to spot — formatted like
+    "invalid status [4x; rows 5, 12, 18, +1 more]" so a glance tells
+    the engineer "always the same reason at row N and following".
+    Sample caps configurable per tier / per adjacent list / per
+    skip reason; extras collapse to "...and N more".
+  - `followup-digest-text-html-bundle-i18n-multi-locale` solves a real
+    multi-household pain point: a Spanish-speaking caregiver and an
+    English-speaking adult child both watching the same patient
+    each want the weekly digest in their own language. Today the
+    caller would loop the i18n module per locale, paying for the
+    underlying digest construction (row selection, null short-circuit,
+    stat computation) N times. This module builds it once and applies
+    each locale via the existing i18n layer. Coverage rollup has the
+    QA-critical telemetry: requestedCount / renderedCount (mismatch
+    surfaces malformed locales that refused to render — defensive
+    guard for future per-locale short-circuit), locales (dedup, input
+    order), noopLocales (locales whose output was character-identical
+    to the English baseline — the QA signal that a bundle has no real
+    translation, e.g. "the ja-JP bundle shipped empty; please review").
+    Null short-circuit is GLOBAL — when the underlying digest is null
+    (silent week), the entire multi-locale call returns null so no
+    caregiver gets an empty pulse in their own language. Duplicate
+    locale ids dedupe last-wins so household-specific overrides beat
+    global defaults; encounter order is preserved for the first
+    appearance of each locale so output is deterministic.
+  - `refusal-reason-suggest-i18n-rollup-html` is the SECOND HTML
+    render in a sibling pair with `dose-export-csv-import-roundtrip-
+    validator-html`. Shared chip palette + table layout + font
+    stack so the patient adjudication queue feels visually
+    consistent across both modules. Suggestions GROUPED BY SOURCE
+    in priority order (npo-window -> prescriber-pause -> out-of-
+    supply -> sleeping-window -> recent-pattern); each row carries
+    the localised explanation, the locale id, a FALLBACK badge when
+    the i18n layer used the English fallback, the suggested reason
+    code, and accept / reject controls bound to the dose id. Doses
+    with no suggestion are DROPPED — the suggester's "nothing fired"
+    entries aren't actionable in the queue, and including them would
+    bloat the row count. Coverage strip at the top mirrors the
+    rollup's telemetry; missing placeholders are explicitly surfaced
+    because they're the QA signal that a locale bundle has bad keys.
+    Per-source row cap (default 25), per-source filter (drilldown
+    view), and `renderRefusalReasonI18nRollupTableOnly` variant for
+    embedding inside an existing adjudication container. Header
+    underline color is `#6d28d9` (purple) to distinguish from
+    validator-html's `#0f766e` (teal) at a glance when both panels
+    open adjacent.
+  - `prescriber-contact-card-emergency-card-pdf-two-up` is the FIRST
+    landscape multi-card layout in the module. Physical use case:
+    cardiology / oncology ED-binder cover — patient walks in with a
+    4-card mini-deck on two sheets instead of a 4-page packet, with
+    a scissor-cut gutter so the cards split into individual wallet
+    inserts. Page geometry: same paper rotated to LANDSCAPE,
+    vertical centerline dividing into left + right halves with a
+    configurable gutter (default 18pt / ~0.25"). Each half preserves
+    the single-up card's block ordering and visual hierarchy. Font
+    sizes step down a notch (hero 36pt vs single-up 48pt, name
+    16pt vs 18pt, QR 180pt vs 240pt) to fit the narrower slot
+    without losing the design language. Crucially we RE-DO the
+    block math for half-page coordinates rather than calling the
+    single-up builder twice and offsetting blocks — the single-up
+    coordinates are page-relative, not half-page-relative, and naive
+    translation would put the hero phone at the wrong y. The two
+    layouts share visual language but compute their own positions.
+    Odd-count terminal page renders left slot with right=null
+    (`rightSlotEmpty=true`) so the binder doesn't end on a blank
+    half-card.
+  - Module-domain-noun prefix discipline continues to hold:
+    RegimenHistoryCsvExportOptions (not CsvExportOptions),
+    DoseRoundtripSummaryTextOptions (not SummaryTextOptions),
+    FollowupDigestMultiLocaleResult (not MultiLocaleResult),
+    RefusalReasonI18nRollupHtml (not Html),
+    EmergencyCardPdfTwoUpPage (not TwoUpPage) — every export this
+    tick used a module-prefixed name where any generic name
+    (Options, Result, Html, Page) could have collided.
+  - 6 clean ticks in a row (no fixup commits, no force-push, no
+    revert). Every commit revertible in isolation; every commit has
+    its own test suite; every commit passes the full @med/utils gate
+    in isolation AND in batch.
 
 - 2026-06-21 23:25 PDT — tick 15: 5 features shipped.
   Commits: e81504f regimen-snapshot-archive-history-rollup-html,
