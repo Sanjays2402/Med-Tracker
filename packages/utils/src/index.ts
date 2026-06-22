@@ -105,3 +105,4 @@ export * from './refusal-reason-suggest-i18n';
 export * from './followup-digest-text-html-bundle';
 export * from './prescriber-contact-card-emergency-card';
 export * from './regimen-snapshot-archive-history-rollup';
+export * from './regimen-snapshot-archive-history-rollup-html';
