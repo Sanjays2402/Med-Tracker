@@ -105,6 +105,7 @@ export * from './dose-export-csv-import-roundtrip-validator-html';
 export * from './dose-export-csv-import-roundtrip-validator-summary-text';
 export * from './refusal-reason-suggest-i18n';
 export * from './refusal-reason-suggest-i18n-rollup';
+export * from './refusal-reason-suggest-i18n-rollup-html';
 export * from './followup-digest-text-html-bundle';
 export * from './followup-digest-text-html-bundle-i18n';
 export * from './followup-digest-text-html-bundle-i18n-multi-locale';
