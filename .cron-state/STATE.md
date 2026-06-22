@@ -171,13 +171,13 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 1H — fresh roadmap (refill after tick 13)
 
-101. [ ] `dose-export-csv-import-roundtrip-validator` — Round-trip a dose-export-csv through parseDoseCsvExport + diff back against the source Dose[]; produces a per-field difference report so CSV-edited rows can be safely re-imported.
-102. [ ] `refusal-reason-suggest-i18n` — i18n the explanation strings in refusal-reason-suggest by pulling from a string table keyed on the stable `source` discriminator; keeps the rule logic English-only while exposing the picker tooltip in any locale.
+101. [x] `dose-export-csv-import-roundtrip-validator` — Round-trip a dose-export-csv through parseDoseCsvExport + diff back against the source Dose[]; produces a per-field difference report so CSV-edited rows can be safely re-imported (tick 14 / c72a767).
+102. [x] `refusal-reason-suggest-i18n` — i18n the explanation strings in refusal-reason-suggest by pulling from a string table keyed on the stable `source` discriminator; keeps the rule logic English-only while exposing the picker tooltip in any locale (tick 14 / 61ec903).
 103. [ ] `regimen-snapshot-archive-restore-diff-html` — HTML render of RegimenRestorePlan (per-action chips + side-by-side strength/schedule diffs) parallel to followup-digest-html for a restore-preview email or portal page.
-104. [ ] `followup-digest-text-html-bundle` — Tiny wrapper that returns both the text and HTML follow-up digests in one shot; for SMTP layers that need to ship `text/plain` + `text/html` as a multipart/alternative.
+104. [x] `followup-digest-text-html-bundle` — Tiny wrapper that returns both the text and HTML follow-up digests in one shot; for SMTP layers that need to ship `text/plain` + `text/html` as a multipart/alternative (tick 14 / 86592bc).
 105. [ ] `refusal-trend-summary-html-png-payload` — Compute a server-side bar-chart PNG-data-uri (canvas-on-Node via @napi-rs/canvas or fallback to inline SVG) for refusal-trend-summary-html consumers that block inline HTML bars.
 106. [ ] `dose-export-csv-cms-extract` — Extract a CMS-1500-claim-line subset of dose events (NDC + administration date + units) from dose-export-csv for billing reconciliation downstream.
-107. [ ] `prescriber-contact-card-emergency-card` — Wallet card variant of prescriber-contact-card emphasising the ON-CALL number (largest font, top of card) for emergency-room handoff scenarios.
+107. [x] `prescriber-contact-card-emergency-card` — Wallet card variant of prescriber-contact-card emphasising the ON-CALL number (largest font, top of card) for emergency-room handoff scenarios (tick 14 / b677d53).
 108. [ ] `lab-window-completion-feed-csv-import` — Import a pharmacy lab-result CSV into LabResult[] feed for direct lab-window-completion-feed chaining (re-listing from Tier 1G #90).
 109. [ ] `medication-refusal-trend-html-weekly-digest` — Weekly digest composer combining refusal-trend-summary-html with the medication-refusal-log rollup; null short-circuit when no actionable rows.
 110. [ ] `regimen-snapshot-archive-restore-apply-plan` — Concrete RestoreApplication pipeline producing Medication / Schedule / Patient mutation events from a RegimenRestorePlan, suitable for direct dispatch onto a CQRS-style command bus.
@@ -185,7 +185,25 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 112. [ ] `caregiver-handoff-summary-html` — HTML wrapper for caregiver-handoff-summary's narrative text — keeps the paragraph shape but adds collapsible sections for the longer dose / adverse / refill blocks.
 113. [ ] `dose-export-csv-merge` — Merge two MED_TRACKER CSV exports (same patient, overlapping ranges) with conflict resolution rules (later actedAt wins; dose_id collisions surface as a manual queue).
 114. [ ] `prescriber-contact-roster-print-html` — HTML/CSS multi-page roster variant of prescriber-contact-roster-print using @page CSS for direct browser print without a monospace font.
-115. [ ] `regimen-snapshot-archive-history-rollup` — Roll a chronological list of SignedRegimenSnapshot envelopes into a per-medication add/remove/change timeline; uses diffRegimenSnapshots pairwise.
+115. [x] `regimen-snapshot-archive-history-rollup` — Roll a chronological list of SignedRegimenSnapshot envelopes into a per-medication add/remove/change timeline; uses diffRegimenSnapshots pairwise (tick 14 / cb71f6c).
+
+### Tier 1I — fresh roadmap (refill after tick 14)
+
+116. [ ] `prescriber-contact-card-emergency-card-pdf` — One-page printable PDF layout payload for the emergency card (single sheet, large QR code with vCard contents) for ED triage binder use.
+117. [ ] `regimen-snapshot-archive-history-rollup-html` — HTML render of RegimenHistoryRollup: per-medication timeline with chips for added/removed/strength-change, sortable by tenure or by event count, suitable for the de-prescribing review screen.
+118. [ ] `followup-digest-text-html-bundle-i18n` — Localise the followup-digest opener + section headings via a bundle pattern parallel to refusal-reason-suggest-i18n.
+119. [ ] `dose-export-csv-import-roundtrip-validator-html` — HTML render of DoseRoundtripValidateResult: per-risk-tier grouped tables with accept/reject toggles for the adjudication UI.
+120. [ ] `refusal-reason-suggest-i18n-rollup` — Helper that walks a NormalizedRefusal[] history, suggests reasons per dose, localises them all in one pass, returns map keyed on doseId.
+121. [ ] `regimen-snapshot-archive-history-rollup-burden-trend` — Compose RegimenHistoryRollup with regimen-load-trend so the timeline can carry a per-snapshot burden score (\"3 meds avg pill burden 2.1\" -> \"7 meds avg pill burden 4.8\").
+122. [ ] `prescriber-contact-card-emergency-card-roster` — Roster variant: one emergency card per prescriber, ED-binder ordered (specialty grouped, on-call number first per card) for triage handoff at admission.
+123. [ ] `dose-export-csv-import-roundtrip-validator-merge-csv` — Round-trip variant of dose-export-csv-merge that also returns the per-row diff for the patient adjudication queue.
+124. [ ] `followup-digest-text-html-bundle-cron-batcher` — Coalesce N caregivers worth of follow-up digests into a single mailer payload with per-caregiver bundles attached.
+125. [ ] `regimen-snapshot-archive-restore-history` — Persistent log of past restore decisions so the audit trail captures \"which snapshot was restored when, by whom, with which adjudications\" — companion to medication-conflict-history.
+126. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, EXIF timestamp drift vs dueAt, min dimensions). (Recycled from earlier tier; still unstarted.)
+127. [ ] `pill-image-fingerprint` — Compute perceptual hash (aHash/dHash) for pill-identifier image matching; pure pixel math, no native deps. (Recycled.)
+128. [ ] `medication-conflict-history` — Persistent log of past conflict-resolver decisions so the manual review queue stays append-only and adjudications can be audited. (Recycled.)
+129. [ ] `caregiver-notification-throttle-policy` — Tier-aware notification throttler that batches non-urgent pings and rate-limits caregiver pages. (Recycled.)
+130. [ ] `medication-name-spell-suggest` — One-letter typo suggester for the rxnorm catalog; produces \"did you mean X?\" suggestions distinct from the broader fuzzy match. (Recycled.)
 
 
 
@@ -195,6 +213,123 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-21 20:35 PDT — tick 14: 5 features shipped.
+  Commits: c72a767 dose-export-csv-import-roundtrip-validator,
+  61ec903 refusal-reason-suggest-i18n,
+  86592bc followup-digest-text-html-bundle,
+  b677d53 prescriber-contact-card-emergency-card,
+  cb71f6c regimen-snapshot-archive-history-rollup.
+  Gate: 1720/1720 tests pass in `@med/utils` (120 new this tick:
+  27+25+20+28+20). Lint + build placeholder ok. `@med/utils` typecheck
+  baseline = 43 errors identical to start-of-tick; zero new errors
+  introduced by tick 14. `pnpm -r test` confirms `@med/ui` 228/228 JSX
+  runtime failures unchanged from baseline, `@med/api` 131/131 pass.
+  FOURTH clean tick in a row (no fixup commits). Refilled roadmap
+  (Tier 1I) with 15 new candidates (#116-#130, recycling a few
+  long-deferred items at the tail).
+
+  Notes:
+  - Fourth composition tick in a row — every module composes on at
+    least one prior module. This is now the established multi-tick
+    pattern: T10 / T11 ship foundation modules, T12 ships first-
+    derivative companions, T13 ships second-derivative companions,
+    T14 ships THIRD-derivative companions (validator + i18n +
+    bundle + variant + history rollup, where each is a layer above
+    a tick-12/13 output). Four of the five rely DIRECTLY on
+    tick-11+ work: validator on dose-export-csv (T13), i18n on
+    refusal-reason-suggest (T13), bundle on followup-overdue-digest
+    + followup-digest-html (T12+T13), history rollup on regimen-
+    snapshot-archive (T10) + diffRegimenSnapshots (same module).
+    One ships a fresh cross-cut: prescriber-contact-card-emergency-
+    card is a new layout variant of a T11 module, not a derivative
+    of a derivative.
+  - `dose-export-csv-import-roundtrip-validator` is the FIRST
+    diff-aware re-import path. Risk classifier collapses to ONE of
+    four tiers (note-only / status-edit / structural / mixed) so
+    the adjudication UI can map to chip colors without re-parsing
+    field lists. Pure note edits are the auto-acceptable safe tier
+    — UI's "auto-accept low-risk changes" toggle bulk-applies
+    note-only without surfacing them. The mixed tier exists for
+    cross-category edits (structural + status, status + note) so
+    the UI knows to surface the row even when individual fields
+    look benign in isolation. `applyAcceptedDiffs` is intentionally
+    a NEW-ARRAY helper, not an in-place mutator — patient adjudic-
+    ation runs in React + Redux flows where source-mutation breaks
+    every memoisation. Empty-note vs missing-note treated as the
+    SAME value so a clean round-trip produces zero spurious diffs;
+    learned from dose-export-csv where the writer emits an empty
+    cell for both and the parser converts back to undefined.
+  - `refusal-reason-suggest-i18n` is the FIRST i18n layer in
+    @med/utils. Pattern: stable `source` discriminator is the i18n
+    key (NOT the English text), so locale tables are pure JS
+    objects mapping source -> ICU template. Suggester logic stays
+    English-only (cron logs, dev tooling unchanged); only the
+    picker tooltip is localised. Placeholders are extracted by
+    REGEX on the English explanation strings — this avoids changing
+    the suggester's public shape. Triple fallback chain: missing
+    locale key -> suggestion's own English; unrecognised English
+    template -> same fallback; unknown placeholder in template ->
+    leave as `{placeholder}` and record in missingPlaceholders so
+    bad locale entries surface in QA without crashing the picker.
+    Ships a validate function for CI-grade locale file checking:
+    REQUIRED_PLACEHOLDERS + ALLOWED_PLACEHOLDERS tables enforce
+    the per-source contract.
+  - `followup-digest-text-html-bundle` is the FIRST composition that
+    GUARANTEES drift-free output across two single-body builders.
+    Naive composition (call buildFollowupDigest + buildFollowupDigestHtml
+    separately) has two drift modes: section limits diverging
+    (text capped, html unbounded), and independent null short-
+    circuits putting one body in the inbox without the other. This
+    wrapper threads shared options to BOTH builders and uses ONE
+    null check (text-digest null implies bundle null). Returned
+    shape ships text/html top-level + an explicit alternatives
+    array for the few SMTP providers (SES raw, mailgun raw) that
+    need the MIME shape directly. Defensive throw when text-digest
+    non-null but html-digest null — unreachable today but catches
+    future divergence of the two predicates instead of silently
+    shipping a half-built bundle.
+  - `prescriber-contact-card-emergency-card` is the FIRST layout
+    variant of an existing card type rather than a wrapper. ED
+    handoff context inverts the standard hierarchy: ON-CALL number
+    leads at 32px, daytime drops to a fallback line, fax/NPI/
+    address/scheduling URL DROP entirely (out of scope at the
+    ED). Specialty must be present — without it the ED clerk
+    cannot route the patient; missing-specialty drives a warning.
+    Text render uses centred ASCII with == separators around the
+    hero phone line so it remains the visually dominant element
+    even on a black-and-white pharmacy printer at the ED. HTML
+    render adds a red border + red EMERGENCY CONTACT header for
+    in-portal identification. Source PrescriberContactCard is
+    preserved as `card.source` so any downstream code that needs
+    the dropped fields (e.g. an exporter) can still reach them.
+  - `regimen-snapshot-archive-history-rollup` rolls a chronologic-
+    al list of snapshots into a per-medication add/remove/change
+    timeline. Critical design choice: use diffRegimenSnapshots
+    PAIRWISE for every adjacent pair so the rollup is byte-for-
+    byte consistent with single-pair diffs — a future maintainer
+    fixing a diff bug fixes the rollup at the same time. Cycled
+    medication detection (added then removed then added) is a
+    specific clinical signal (rebound; off-label restart) that
+    deserves its own list. Re-add preserves firstSeen as the
+    ORIGINAL first appearance — cumulative tenure is what
+    clinicians read; resetting on re-add would mask "you've been
+    on this for 18 months total even though we paused for 60
+    days." `name` always carries the MOST RECENT name (medications
+    get renamed: brand vs generic, formulation changes,
+    combination drugs splitting). Prescriber + pharmacy joins
+    deliberately IGNORED — they churn for non-clinical reasons
+    (insurance changes, locums) and would crowd out the
+    strength/presence signals the prescriber actually cares about.
+  - Fourth clean tick in a row (no fixup commits). Module-domain-
+    noun prefix discipline continues to hold: DoseRoundtripField
+    (not Field), RefusalReasonI18nResult (not I18nResult),
+    FollowupDigestBundle (not Bundle), PrescriberEmergencyCard
+    (not EmergencyCard), RegimenHistoryEvent (not HistoryEvent) —
+    every export this tick used a module-prefixed name where any
+    generic name (Field, Result, Bundle, Card, Event) could have
+    collided.
+
 
 - 2026-06-21 17:14 PDT — tick 13: 5 features shipped.
   Commits: 01a07a6 dose-export-csv, 3d77ee6 refusal-reason-suggest,
