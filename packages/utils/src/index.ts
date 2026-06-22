@@ -97,3 +97,4 @@ export * from './appointment-prep-text-export';
 export * from './prescriber-contact-roster-print';
 export * from './dose-export-csv';
 export * from './refusal-reason-suggest';
+export * from './followup-digest-html';
