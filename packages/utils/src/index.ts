@@ -101,6 +101,7 @@ export * from './followup-digest-html';
 export * from './refusal-trend-summary-html';
 export * from './regimen-snapshot-archive-restore';
 export * from './dose-export-csv-import-roundtrip-validator';
+export * from './dose-export-csv-import-roundtrip-validator-html';
 export * from './refusal-reason-suggest-i18n';
 export * from './followup-digest-text-html-bundle';
 export * from './prescriber-contact-card-emergency-card';
