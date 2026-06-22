@@ -115,3 +115,4 @@ export * from './prescriber-contact-card-emergency-card-pdf-two-up';
 export * from './regimen-snapshot-archive-history-rollup';
 export * from './regimen-snapshot-archive-history-rollup-html';
 export * from './regimen-snapshot-archive-history-rollup-csv-export';
+export * from './regimen-snapshot-archive-history-rollup-csv-export-merge';
