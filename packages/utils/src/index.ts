@@ -110,6 +110,7 @@ export * from './refusal-reason-suggest-i18n-rollup-html';
 export * from './followup-digest-text-html-bundle';
 export * from './followup-digest-text-html-bundle-i18n';
 export * from './followup-digest-text-html-bundle-i18n-multi-locale';
+export * from './followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher';
 export * from './prescriber-contact-card-emergency-card';
 export * from './prescriber-contact-card-emergency-card-pdf';
 export * from './prescriber-contact-card-emergency-card-pdf-two-up';
