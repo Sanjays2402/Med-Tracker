@@ -111,6 +111,7 @@ export * from './followup-digest-text-html-bundle-i18n';
 export * from './followup-digest-text-html-bundle-i18n-multi-locale';
 export * from './prescriber-contact-card-emergency-card';
 export * from './prescriber-contact-card-emergency-card-pdf';
+export * from './prescriber-contact-card-emergency-card-pdf-two-up';
 export * from './regimen-snapshot-archive-history-rollup';
 export * from './regimen-snapshot-archive-history-rollup-html';
 export * from './regimen-snapshot-archive-history-rollup-csv-export';
