@@ -104,6 +104,7 @@ export * from './dose-export-csv-import-roundtrip-validator';
 export * from './dose-export-csv-import-roundtrip-validator-html';
 export * from './refusal-reason-suggest-i18n';
 export * from './followup-digest-text-html-bundle';
+export * from './followup-digest-text-html-bundle-i18n';
 export * from './prescriber-contact-card-emergency-card';
 export * from './regimen-snapshot-archive-history-rollup';
 export * from './regimen-snapshot-archive-history-rollup-html';
