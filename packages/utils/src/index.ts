@@ -111,6 +111,7 @@ export * from './refusal-reason-suggest-i18n-rollup';
 export * from './refusal-reason-suggest-i18n-rollup-html';
 export * from './refusal-reason-suggest-i18n-rollup-html-print';
 export * from './refusal-reason-suggest-i18n-rollup-html-print-cover-sheet';
+export * from './refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine';
 export * from './followup-digest-text-html-bundle';
 export * from './followup-digest-text-html-bundle-i18n';
 export * from './followup-digest-text-html-bundle-i18n-multi-locale';
