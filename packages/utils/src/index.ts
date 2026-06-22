@@ -116,6 +116,7 @@ export * from './followup-digest-text-html-bundle-i18n';
 export * from './followup-digest-text-html-bundle-i18n-multi-locale';
 export * from './followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher';
 export * from './followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer';
+export * from './followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc';
 export * from './prescriber-contact-card-emergency-card';
 export * from './prescriber-contact-card-emergency-card-pdf';
 export * from './prescriber-contact-card-emergency-card-pdf-two-up';
