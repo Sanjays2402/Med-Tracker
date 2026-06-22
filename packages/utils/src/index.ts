@@ -103,6 +103,7 @@ export * from './regimen-snapshot-archive-restore';
 export * from './dose-export-csv-import-roundtrip-validator';
 export * from './dose-export-csv-import-roundtrip-validator-html';
 export * from './refusal-reason-suggest-i18n';
+export * from './refusal-reason-suggest-i18n-rollup';
 export * from './followup-digest-text-html-bundle';
 export * from './followup-digest-text-html-bundle-i18n';
 export * from './prescriber-contact-card-emergency-card';
