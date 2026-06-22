@@ -153,12 +153,12 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 1G — fresh roadmap (refill after tick 12)
 
-86. [ ] `dose-export-csv` — CSV companion to dose-batch-export for pharmacy-CSV-compatible round-trips. Walgreens / CVS column layouts; null for missing fields rather than empty strings.
-87. [ ] `refusal-reason-suggest` — Suggest a likely refusal reason given dose context (time-of-day matches sleeping window; date matches a known procedure date) so the patient UI defaults the reason picker.
-88. [ ] `followup-digest-html` — HTML render of FollowupDigest (table + status chips) parallel to caregiver-digest-html when that lands; same null short-circuit semantics.
-89. [ ] `refusal-trend-summary-html` — HTML chart payload for medication-refusal-trend windows (per-medication sparkline data, ready for the dashboard chart component).
+86. [x] `dose-export-csv` — CSV companion to dose-batch-export for pharmacy-CSV-compatible round-trips. Walgreens / CVS column layouts; null for missing fields rather than empty strings (tick 13 / 01a07a6).
+87. [x] `refusal-reason-suggest` — Suggest a likely refusal reason given dose context (time-of-day matches sleeping window; date matches a known procedure date) so the patient UI defaults the reason picker (tick 13 / 3d77ee6).
+88. [x] `followup-digest-html` — HTML render of FollowupDigest (table + status chips) parallel to caregiver-digest-html when that lands; same null short-circuit semantics (tick 13 / 302c24b).
+89. [x] `refusal-trend-summary-html` — HTML chart payload for medication-refusal-trend windows (per-medication sparkline data, ready for the dashboard chart component) (tick 13 / 9a6f3a8).
 90. [ ] `lab-window-completion-feed-csv-import` — Import a pharmacy lab-result CSV into LabResult[] feed for direct lab-window-completion-feed chaining.
-91. [ ] `regimen-snapshot-archive-restore` — Restore a regimen from a signed snapshot envelope (round-trip companion to regimen-snapshot-archive); verify signature before producing the restore plan.
+91. [x] `regimen-snapshot-archive-restore` — Restore a regimen from a signed snapshot envelope (round-trip companion to regimen-snapshot-archive); verify signature before producing the restore plan (tick 13 / 4d77255).
 92. [ ] `prescriber-roster-print-html` — HTML/CSS companion to prescriber-contact-roster-print using grid layout for browser print preview without a monospace font requirement.
 93. [ ] `appointment-prep-html-export` — Print-friendly HTML/CSS variant of appointment-prep-checklist (full-page) parallel to the text export.
 94. [ ] `dose-confirmation-photo-meta` — Validate confirmation photo metadata (size, EXIF timestamp drift vs dueAt, min dimensions).
@@ -169,6 +169,24 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 99. [ ] `medication-name-spell-suggest` — One-letter typo suggester for the rxnorm catalog; produces "did you mean X?" suggestions distinct from the broader fuzzy match.
 100. [ ] `fill-history-csv-import` — Import a pharmacy fill history CSV (column auto-map) into PharmacyFillEvent[]; feeds prescription-fill-history + pdc-by-medication directly.
 
+### Tier 1H — fresh roadmap (refill after tick 13)
+
+101. [ ] `dose-export-csv-import-roundtrip-validator` — Round-trip a dose-export-csv through parseDoseCsvExport + diff back against the source Dose[]; produces a per-field difference report so CSV-edited rows can be safely re-imported.
+102. [ ] `refusal-reason-suggest-i18n` — i18n the explanation strings in refusal-reason-suggest by pulling from a string table keyed on the stable `source` discriminator; keeps the rule logic English-only while exposing the picker tooltip in any locale.
+103. [ ] `regimen-snapshot-archive-restore-diff-html` — HTML render of RegimenRestorePlan (per-action chips + side-by-side strength/schedule diffs) parallel to followup-digest-html for a restore-preview email or portal page.
+104. [ ] `followup-digest-text-html-bundle` — Tiny wrapper that returns both the text and HTML follow-up digests in one shot; for SMTP layers that need to ship `text/plain` + `text/html` as a multipart/alternative.
+105. [ ] `refusal-trend-summary-html-png-payload` — Compute a server-side bar-chart PNG-data-uri (canvas-on-Node via @napi-rs/canvas or fallback to inline SVG) for refusal-trend-summary-html consumers that block inline HTML bars.
+106. [ ] `dose-export-csv-cms-extract` — Extract a CMS-1500-claim-line subset of dose events (NDC + administration date + units) from dose-export-csv for billing reconciliation downstream.
+107. [ ] `prescriber-contact-card-emergency-card` — Wallet card variant of prescriber-contact-card emphasising the ON-CALL number (largest font, top of card) for emergency-room handoff scenarios.
+108. [ ] `lab-window-completion-feed-csv-import` — Import a pharmacy lab-result CSV into LabResult[] feed for direct lab-window-completion-feed chaining (re-listing from Tier 1G #90).
+109. [ ] `medication-refusal-trend-html-weekly-digest` — Weekly digest composer combining refusal-trend-summary-html with the medication-refusal-log rollup; null short-circuit when no actionable rows.
+110. [ ] `regimen-snapshot-archive-restore-apply-plan` — Concrete RestoreApplication pipeline producing Medication / Schedule / Patient mutation events from a RegimenRestorePlan, suitable for direct dispatch onto a CQRS-style command bus.
+111. [ ] `appointment-prep-checklist-html` — HTML companion to appointment-prep-checklist text export; uses the same section omission + lab/refill priority rules as the text variant.
+112. [ ] `caregiver-handoff-summary-html` — HTML wrapper for caregiver-handoff-summary's narrative text — keeps the paragraph shape but adds collapsible sections for the longer dose / adverse / refill blocks.
+113. [ ] `dose-export-csv-merge` — Merge two MED_TRACKER CSV exports (same patient, overlapping ranges) with conflict resolution rules (later actedAt wins; dose_id collisions surface as a manual queue).
+114. [ ] `prescriber-contact-roster-print-html` — HTML/CSS multi-page roster variant of prescriber-contact-roster-print using @page CSS for direct browser print without a monospace font.
+115. [ ] `regimen-snapshot-archive-history-rollup` — Roll a chronological list of SignedRegimenSnapshot envelopes into a per-medication add/remove/change timeline; uses diffRegimenSnapshots pairwise.
+
 
 
 (Pulled forward only after Tier 1 momentum is established. Note: the
@@ -177,6 +195,127 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-21 17:14 PDT — tick 13: 5 features shipped.
+  Commits: 01a07a6 dose-export-csv, 3d77ee6 refusal-reason-suggest,
+  302c24b followup-digest-html, 9a6f3a8 refusal-trend-summary-html,
+  4d77255 regimen-snapshot-archive-restore.
+  Gate: 1600/1600 tests pass in `@med/utils` (134 new this tick:
+  30+30+28+21+25). Lint + build placeholder ok. `@med/utils` typecheck
+  baseline = 43 errors identical to start-of-tick; zero new errors
+  introduced by tick 13. `pnpm -r test` confirms `@med/ui` 228/228 JSX
+  runtime failures unchanged from baseline, `@med/api` 131/131 pass.
+  THIRD clean tick in a row (no fixup commits). Refilled roadmap
+  (Tier 1H) with 15 new candidates (#101-#115).
+
+  Notes:
+  - Another composition tick — every module composes on at least
+    one prior module rather than introducing a brand-new domain.
+    This is now a multi-tick rhythm: T11 ships foundation
+    modules, T12 ships first-derivative companions, T13 ships
+    second-derivative companions (CSV / HTML / restore variants
+    of the T12 outputs). Three of the five rely DIRECTLY on
+    tick-11 + tick-12 work: dose-export-csv on dose-batch-export,
+    followup-digest-html on followup-overdue-digest, refusal-
+    trend-summary-html on medication-refusal-trend. Two ship
+    new cross-cutting concerns: refusal-reason-suggest is a new
+    rule-based picker, regimen-snapshot-archive-restore is the
+    round-trip companion to a tick-10 module.
+  - `dose-export-csv` is the FIRST data-export module with a
+    deliberate ROUND-TRIP parser (parseDoseCsvExport). FHIR is
+    the right interop format for clinical handoff but the retail-
+    pharmacy world still speaks CSV — Walgreens / CVS export
+    histories as chain-published column sets, and a patient
+    moving between chains is asked for one of those. The three
+    layouts (MED_TRACKER, WALGREENS, CVS) match the chains'
+    actual headers, not what FHIR thinks the columns should be.
+    Pharmacy-status mapping (TAKEN / TAKEN-LATE / MISSED /
+    SKIPPED / PENDING) is the documented retail label, not the
+    DoseStatus enum value — DO NOT widen without a sample
+    export from each chain because the labels drift between
+    pharmacy quarterly releases. RFC-4180 quoting is implemented
+    inline; the chains' parsers reject quoted empty strings
+    (`""`) so we emit bare empty cells (`,,`) instead. Round-trip
+    parser deliberately tolerates BOM + CRLF + LF interchangeably
+    because patients hand-edit CSV in Excel-on-Windows and the
+    output ends up with a BOM the patient didn't put there.
+  - `refusal-reason-suggest` introduces the FIRST rule-based
+    suggestion pipeline in @med/utils. We don't auto-apply — the
+    patient is always the source of truth for refusal reasons —
+    but the controlled vocabulary in medication-refusal-log is
+    big enough (10 reasons) that the picker defaults to
+    `declined` if we don't pre-select. That destroys the signal
+    in honest-adherence math because "declined" is the
+    everything-bucket. Five rules in strict priority order: NPO
+    window (0.95 confidence; strongest clinical signal) > pause
+    (0.9) > out-of-supply (0.85) > sleeping (0.7) > pattern
+    (0.4-0.65 scaled, capped). The sleeping rule uses
+    quiet-hours.isInQuietHours so the wrap-midnight semantics
+    are identical to the reminder engine. Pattern-tie-break
+    prefers tolerability (nausea > side-effect > everything
+    else) so the more-actionable de-prescribing signal surfaces
+    first.
+  - `followup-digest-html` is the FIRST module to render an HTML
+    fragment for an email body. Structural decisions deliberately
+    mirror followup-overdue-digest (same null short-circuit, same
+    subject line — VERIFIED by parity test, same most-overdue-
+    leads opener, same hasExpired advisory) so the two outputs
+    stay in lockstep. All styles inline because Gmail strips
+    <style> blocks; colour values match the Tailwind palette the
+    dashboard already uses for visual consistency. The HTML
+    fragment has no envelope (no <html>/<body>) — the email layer
+    wraps. User-controlled strings (patient name, row titles,
+    portal URL) HTML-escape via the standard 5-char replace —
+    verified by an explicit <script>-tag patient-name test
+    because mailbox previews render HTML.
+  - `refusal-trend-summary-html` is the FIRST module to produce
+    BOTH a chart-component-ready data payload AND a rendered
+    HTML fragment from one call. The chart payload is shape-
+    compatible with Recharts/Apex/etc directly — no further
+    mapping needed downstream — so the dashboard's chart
+    component can consume `sparkline.data` unchanged. The
+    inline HTML sparkline is drawn in plain HTML divs with
+    inline styles (24px-tall scaled bars), so email previews
+    still get a visual signal when canvas-based charts can't
+    render. ASCII bar fallback (U+2581..U+2588) ships
+    alongside for plain-text consumers. Direction chips honour
+    risingTolerability as a STRONGER signal than the direction
+    chip — tolerability lead overrides RISING/STABLE/FALLING
+    chip with a "TOLERABILITY LEAD" red chip because that's
+    the actionable signal the prescriber should see first.
+    actionableOnly filter (default true) hides stable / falling
+    / insufficient rows from the email body but keeps them in
+    the sparkline payload so a separate dashboard consumer can
+    render every chart.
+  - `regimen-snapshot-archive-restore` is the round-trip
+    companion to regimen-snapshot-archive. SECURITY-FIRST
+    ordering: verifyRegimenSnapshot fires BEFORE any diff is
+    computed, and the five failure modes (malformed, bad-
+    version, signature-mismatch, payload-tampered,
+    secret-too-short) pass through verbatim so the restore UI
+    can map each to a specific user-facing message. Eight
+    RestoreItemAction values cover the full diff space; single-
+    field divergence collapses to a focused action while multi-
+    field divergence escalates to `collision` with the
+    field-name list so the UI can ask the patient to adjudicate
+    instead of silently picking a winner. The `currentOnly`
+    list surfaces medications added AFTER the snapshot was
+    taken; importantly hasChanges does NOT flip to true based
+    on currentOnly alone — those rows don't require a restore
+    action. Schedule comparison uses the same normalisation as
+    regimen-snapshot-archive.normaliseSchedule so the
+    comparison is apples-to-apples (times sorted, daysOfWeek
+    sorted, intervalHours / cronExpression null-normalised).
+    The plan is a PROPOSAL — this module never writes to a DB,
+    never mutates the current regimen.
+  - Third clean tick in a row (no fixup commits). Module-domain-
+    noun prefix discipline continues to hold: RestoreItemAction
+    (not Action), RefusalTrendChartPoint (not ChartPoint),
+    RefusalReasonSuggestion (not Suggestion), FollowupDigestHtml
+    (not DigestHtml), DoseCsvExportResult (not CsvExportResult)
+    — every export this tick used a module-prefixed name where
+    any generic name could have collided.
+
 
 - 2026-06-21 13:51 PDT — tick 12: 5 features shipped.
   Commits: 0cc677e medication-refusal-trend, fc3f82a followup-overdue-digest,
