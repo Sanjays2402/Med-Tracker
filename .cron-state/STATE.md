@@ -289,11 +289,11 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 198. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-coverage-report` — Standalone JSON coverage report (envelope count, BCC fan-out by address, primary-dropped count) for the cron's monitoring pipeline (tick 21 / 7bc88e4).
 199. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-i18n` — Localise the optional 'doses' label on the spine via the existing i18n bundle layer (Spanish "dosis", French "doses", etc) (tick 21 / a3cd655).
 200. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-print-only` — Print-only TOC (no other roster pages) for clinicians who want a roster index without re-printing all the cards; useful when binders are pulled for review (tick 21 / fcb1649).
-201. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-cli-summary` — CLI-line summary of the rotation suitable for a single console log entry: "Rotated 14 patients, 0 collisions, sequential reshuffle: 5 changes."
-202. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-snooze` — Allow per-channel quiet-hours snooze: "next 24h, quiet-hours window is suspended" for incident-response weekends. Companion to the basic quiet-hours module.
-203. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-suppress-self-cc` — Self-suppression policy: don't BCC an address that already appears as a primary recipient on ANOTHER envelope in the same batch (prevents the household admin getting two copies when they're both a primary recipient and a global BCC).
-204. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-color-coding` — Per-source colour-coded spine label (NPO-window red, prescriber-pause blue) for visual triage in colour-printing clinics; respects monochrome fallback.
-205. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-grouped-html` — HTML/CSS variant of the TOC with collapsible specialty sections (browser <details>/<summary>) for screen-first review workflows.
+201. [x] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-cli-summary` — CLI-line summary of the rotation suitable for a single console log entry: "Rotated 14 patients, 0 collisions, sequential reshuffle: 5 changes." (tick 22 / 41a5d93).
+202. [x] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-snooze` — Allow per-channel quiet-hours snooze: "next 24h, quiet-hours window is suspended" for incident-response weekends. Companion to the basic quiet-hours module (tick 22 / ff031fb).
+203. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-suppress-self-cc` — Self-suppression policy: don't BCC an address that already appears as a primary recipient on ANOTHER envelope in the same batch (prevents the household admin getting two copies when they're both a primary recipient and a global BCC) (tick 22 / 849da42).
+204. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-color-coding` — Per-source colour-coded spine label (NPO-window red, prescriber-pause blue) for visual triage in colour-printing clinics; respects monochrome fallback (tick 22 / 4072e06).
+205. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-grouped-html` — HTML/CSS variant of the TOC with collapsible specialty sections (browser <details>/<summary>) for screen-first review workflows (tick 22 / 7e57774).
 
 ### Tier 1O — fresh roadmap (refill after tick 20)
 
@@ -317,6 +317,172 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-22 23:54 PDT — tick 22: 5 features shipped.
+  Commits: 41a5d93 regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-cli-summary,
+  ff031fb dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-snooze,
+  849da42 followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-suppress-self-cc,
+  4072e06 refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-color-coding,
+  7e57774 prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-grouped-html.
+  Gate: 2792/2792 tests pass in `@med/utils` (125 new this tick:
+  24+23+17+33+28). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick (same
+  6 pre-existing files: adherence-risk, date, ics, schedule-resolver,
+  taper-plan, titration); zero new errors introduced by tick 22.
+  TWELFTH clean tick in a row (no fixup commits, no force-push,
+  no revert). No roadmap refill needed: 10 unstarted candidates
+  remain in the fresh Tier 1O (#206-#215). 105 unstarted total
+  across all tiers (older recycled candidates included).
+
+  Notes:
+  - Twelfth composition tick in a row. Every tick 22 module
+    composes on at least one tick 19/20/21 output (ninth-derivative
+    companions):
+    merge-anonymise-key-rotate-cli-summary on merge-anonymise-key-rotate (T19),
+    thread-batcher-quiet-hours-snooze on thread-batcher-quiet-hours (T19),
+    cron-batcher-html-mailer-bcc-suppress-self-cc on cron-batcher-html-mailer-bcc (T19),
+    binder-spine-color-coding on binder-spine (T19) + i18n-rollup
+    coverage struct (T14),
+    roster-toc-grouped-html on roster-toc (T19) + roster-toc-html (T20).
+    Composition rhythm now spans T11 -> T22, twelve consecutive
+    composition ticks. The pattern continues mechanically.
+  - `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-cli-summary`
+    is the FIRST fixed-shape grep-line CLI summary in the package.
+    Existing one-line summaries are sentence-form (free text); this
+    is a five-field `[tag] patients=N reshuffled=N collisions=N
+    verdict=V` shape parseable by a single regex. Verdicts
+    no-op / widen-hash / ship-safe / empty-cohort with precedence
+    empty > widen-hash > no-op > ship-safe. countReshuffled walks
+    the mappings (id OR name change counts; covers the sequential-
+    name reshuffle case where the id is stable but the alphabet
+    position shifted). countCollisions sums distinct collision-
+    group members beyond the first across BOTH old + new epochs
+    (defensive: trusts upstream collisionDetected flag, doesn't
+    re-detect). detectAnonymiseKeyRotateCliWarning returns the
+    most actionable warning string (widen-hash with collision count
+    singularised; no-op with non-empty cohort; empty-cohort).
+    summarizeAnonymiseKeyRotationBatchForCli rolls N cohorts into
+    one `[key-rotate-batch] cohorts=N patients_total=N
+    reshuffled_total=N collisions_total=N verdict=V` line for
+    multi-cohort cron ticks with widen-hash > ship-safe > no-op >
+    empty-cohort batch precedence.
+  - `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-snooze`
+    is the FIRST per-call snooze override for the quiet-hours
+    deferral. Incident-response weekends need the on-call to
+    receive the midnight unread badge; the existing quiet-hours
+    module always defers and there is no per-call escape hatch.
+    Two configuration shapes: snoozeUntil (hard instant) and
+    snoozeForMs (convenience: runAt + duration). When BOTH set,
+    snoozeUntil wins. When the underlying decision is defer-until
+    or suppress-completely AND runAt < snoozeUntil, override to
+    post-now with reason 'snooze-override' and tag the parent
+    fallback "(snooze override during {windowLabel} until
+    {snoozeUntil})" so the on-call understands when the override
+    expires. Does NOT touch post-now decisions (no double
+    override). isSnoozeActive reports whether the snooze is
+    configured AND not yet expired regardless of whether the
+    override actually fired. snoozeAwarePostingRecommendation
+    returns the one-shape posting decision matching the
+    quiet-hours module's postingRecommendation API.
+  - `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-suppress-self-cc`
+    is the FIRST cross-envelope self-CC suppression in the
+    package. Existing dropPrimaryFromBcc handles the own-
+    envelope case (envelope's own primary appearing on its own
+    BCC). It does NOT handle the cross-envelope case: when the
+    household admin gets a primary on their own envelope AND a
+    BCC on alice/bob/carol's envelopes, admin receives 4 copies.
+    Default 'suppress-when-primary-elsewhere' strips a BCC
+    address from every other envelope when the address appears
+    as a primary on any envelope. 'preserve-all' opts out for
+    the test/legacy compatibility case. preserveAddresses
+    overrides per-address when the audit trail is wanted
+    (a clinical coordinator who actually wants both copies).
+    Recomputes fanOutByAddress to reflect post-suppression
+    delivery counts so the SMTP relay pre-warm step sees the
+    accurate distribution. Counts suppressions per address.
+  - `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-color-coding`
+    is the FIRST color-coded spine variant. Base spine is B&W;
+    in a high-volume clinic with many binders, all spines look
+    identical from across the room which defeats visual triage.
+    Default 4mm color stripe at the top of the spine, color-keyed
+    to the dominant refusal source from the rollup coverage:
+    NPO-window red (#DC2626 / red-600, most urgent), prescriber-
+    pause blue (#2563EB / blue-600, intentional), out-of-supply
+    orange (#EA580C / orange-600, refill blocker), sleeping-window
+    purple (#7C3AED / purple-600, overnight), recent-pattern
+    yellow (#CA8A04 / yellow-600, chronic non-adherence), no-
+    dominant gray (#6B7280 / gray-500). Verbal tag (NPO / PAUSE
+    / SUPPLY / SLEEP / PATTERN) accompanies the stripe so the
+    signal degrades gracefully on monochrome printers and for
+    color-vision-different clinicians. monochromeFallback=true
+    opts out of the stripe entirely. stripePlacement supports
+    top / bottom / left / right (verbal tag rotates -90 / 90
+    for vertical placements). stripeThicknessMm clamped to
+    [1, 20]. palette is Partial so callers can override specific
+    entries without re-declaring the full record. pickDominantSource
+    ties-break by clinical priority order (npo > pause > supply
+    > sleep > pattern) so two tied sources never produce visual
+    ambiguity.
+  - `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-grouped-html`
+    is the FIRST screen-first companion to the TOC HTML using
+    native HTML <details>/<summary>. The flat TOC works for print
+    but is wrong for screen review: the patient portal's TOC
+    widget and the household admin's screen scroll want collapsible
+    specialty groups so an 80-prescriber roster doesn't dominate
+    the page. Native disclosure widgets work in every modern browser
+    with no JavaScript and degrade correctly on screen readers.
+    Default state 'open' (everything expanded); defaultGroupState
+    ='collapsed' switches to accordion behaviour (multiple groups
+    can be open simultaneously). Per-specialty collapsedSpecialties
+    + openSpecialties with openSpecialties winning on conflict.
+    Specialty matching is case-insensitive against the
+    title-cased + uppercased group label (matches the underlying
+    TOC's grouping). forceOpenInPrint=true (default) emits a
+    @media print stylesheet that forces all groups OPEN under
+    print so a screen-first reviewer who decides to print the
+    TOC doesn't end up with a collapsed paper copy. The print
+    CSS includes the `display: grid !important` override on
+    `details:not([open]) > .toc-group-body` to bypass the native
+    collapse during print. CSS resets the webkit details marker
+    so the summary chrome stays consistent across browsers.
+    tallyGroupedTocOpenState returns the per-group open/closed
+    breakdown for the patient portal's "X of Y specialties shown"
+    tally widget.
+  - Module-domain-noun prefix discipline continues:
+    AnonymiseKeyRotateCliSummary (not CliSummary),
+    DoseRoundtripThreadBatcherQuietHoursSnoozeResult (not
+    SnoozeResult), FollowupDigestHtmlMailerBccSuppressSelfCcResult
+    (not SuppressSelfCcResult), RefusalReasonSpineColorCoding
+    (not ColorCoding), EmergencyCardPdfTwoUpRosterTocGroupedHtmlResult
+    (not GroupedHtmlResult). Every tick 22 export uses a
+    module-prefixed name where any generic name (CliSummary,
+    SnoozeResult, SuppressSelfCcResult, ColorCoding,
+    GroupedHtmlResult) could have collided.
+  - 12 clean ticks in a row (no fixup commits, no force-push,
+    no revert). Every commit revertible in isolation; every
+    commit has its own test suite; every commit passes the
+    full @med/utils gate in isolation AND in batch.
+  - Hardware corner cases handled this tick: fixed-shape CLI
+    parseability (every verdict variant emits the same 5-field
+    line shape; verified by a regex test), batch verdict
+    precedence (widen-hash > ship-safe > no-op > empty-cohort,
+    matching per-cohort precedence), snooze configuration
+    precedence (snoozeUntil wins over snoozeForMs), snooze
+    no-op cases (decision was already post-now; runAt past
+    snoozeUntil; no snooze configured), cross-envelope vs
+    own-envelope BCC suppression (dropPrimaryFromBcc handles
+    own; this module handles cross; preserveAddresses overrides
+    cross only), fan-out recomputation post-suppression (so the
+    SMTP relay sees post-suppression numbers), color-stripe
+    placement geometry (top/bottom = horizontal; left/right =
+    vertical with verbal tag rotated to match), monochrome
+    fallback (no stripe but verbal tag in black), no-dominant
+    palette entry (separate from monochromeFallback - color
+    printer with empty rollup still gets a gray stripe),
+    @media print forcing groups open in TOC HTML (so screen-
+    first reviewer's print copy stays usable), case-insensitive
+    specialty matching against the title-cased label, footer
+    singularisation for 1 entry / 1 group / 1 page edge cases.
 
 - 2026-06-22 20:21 PDT — tick 21: 5 features shipped.
   Commits: cf964ff regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-html,
