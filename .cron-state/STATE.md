@@ -284,11 +284,11 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 193. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy` — Tier the BCC list by severity: actionable digests BCC the PCP + escalation contact; routine digests only BCC the household admin. Composes with the existing BCC policy (tick 20 / ef5e503).
 194. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch` — Multi-spine layout: N spine labels on a single 8.5x11 sticker sheet for clinics printing N binder spines at once (typical sticker-paper printers) (tick 20 / 3c0a7c7).
 195. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html` — HTML/CSS companion to the TOC page using @page CSS for browser print preview without a PDF library; matches the document-title / specialty / fallback-line / footer ordering (tick 20 / 7184475).
-196. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-html` — HTML render of the key-rotation mapping (per-patient table with old + new pseudonym columns) for the security audit trail.
-197. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-coverage-report` — Standalone coverage report (deferrals issued, suppressions issued, overrides triggered) parallel to summarizeQuietHoursDecision but as a structured JSON payload for the analytics pipeline.
-198. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-coverage-report` — Standalone JSON coverage report (envelope count, BCC fan-out by address, primary-dropped count) for the cron's monitoring pipeline.
-199. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-i18n` — Localise the optional 'doses' label on the spine via the existing i18n bundle layer (Spanish "dosis", French "doses", etc).
-200. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-print-only` — Print-only TOC (no other roster pages) for clinicians who want a roster index without re-printing all the cards; useful when binders are pulled for review.
+196. [x] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-html` — HTML render of the key-rotation mapping (per-patient table with old + new pseudonym columns) for the security audit trail (tick 21 / cf964ff).
+197. [x] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-coverage-report` — Standalone coverage report (deferrals issued, suppressions issued, overrides triggered) parallel to summarizeQuietHoursDecision but as a structured JSON payload for the analytics pipeline (tick 21 / 5d96521).
+198. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-coverage-report` — Standalone JSON coverage report (envelope count, BCC fan-out by address, primary-dropped count) for the cron's monitoring pipeline (tick 21 / 7bc88e4).
+199. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-i18n` — Localise the optional 'doses' label on the spine via the existing i18n bundle layer (Spanish "dosis", French "doses", etc) (tick 21 / a3cd655).
+200. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-print-only` — Print-only TOC (no other roster pages) for clinicians who want a roster index without re-printing all the cards; useful when binders are pulled for review (tick 21 / fcb1649).
 201. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-cli-summary` — CLI-line summary of the rotation suitable for a single console log entry: "Rotated 14 patients, 0 collisions, sequential reshuffle: 5 changes."
 202. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-snooze` — Allow per-channel quiet-hours snooze: "next 24h, quiet-hours window is suspended" for incident-response weekends. Companion to the basic quiet-hours module.
 203. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-suppress-self-cc` — Self-suppression policy: don't BCC an address that already appears as a primary recipient on ANOTHER envelope in the same batch (prevents the household admin getting two copies when they're both a primary recipient and a global BCC).
@@ -317,6 +317,160 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-22 20:21 PDT — tick 21: 5 features shipped.
+  Commits: cf964ff regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-html,
+  5d96521 dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-coverage-report,
+  7bc88e4 followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-coverage-report,
+  a3cd655 refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-i18n,
+  fcb1649 prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-print-only.
+  Gate: 2667/2667 tests pass in `@med/utils` (160 new this tick:
+  40+29+33+34+24). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick (same
+  6 pre-existing files: adherence-risk, date, ics, schedule-resolver,
+  taper-plan, titration); zero new errors introduced by tick 21.
+  ELEVENTH clean tick in a row (no fixup commits, no force-push,
+  no revert). No roadmap refill needed: 15 unstarted candidates
+  remain across Tier 1N (#201-#205) and Tier 1O (#206-#215).
+
+  Notes:
+  - Eleventh composition tick in a row. Every tick 21 module
+    composes on at least one tick 20 output (eighth-derivative
+    companions):
+    merge-anonymise-key-rotate-html on merge-anonymise-key-rotate
+    (T19) + html-render conventions (T13-T14),
+    thread-batcher-quiet-hours-coverage-report on
+    thread-batcher-quiet-hours (T19),
+    cron-batcher-html-mailer-bcc-coverage-report on
+    cron-batcher-html-mailer-bcc (T19),
+    binder-spine-i18n on binder-spine (T19) + the existing
+    i18n bundle pattern (refusal-reason-suggest-i18n, T14),
+    roster-toc-print-only on roster-toc (T19).
+    Composition rhythm now spans T11 -> T21, eleven consecutive
+    composition ticks. The pattern continues mechanically.
+  - `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-html`
+    is the FIRST HTML render of the rotation mapping in the
+    package. Use case: a clinic auditor reviewing the rotation
+    by eye needs a table view, not a JS struct. Defaults to
+    NON-PHI output (no original patient ids / names) so the
+    fragment is filable outside the patient chart per HIPAA
+    safe harbour. includeOriginalIds=true opt-in adds the
+    source columns for the PHI variant. Banner shows count +
+    NO-OP ROTATION + COLLISION DETECTED / NO COLLISIONS chips
+    so the auditor sees the verdict before scrolling. Per-row
+    no-op "unchanged" chip distinguishes rows where the
+    pseudonym didn't change from rows that actually rotated.
+    Three sort orders (old-pseudonym default, new-pseudonym,
+    patient-id which requires PHI). renderRegimenHistoryAnonymise
+    KeyRotateHtmlChangesOnly is the canonical "audit-binder ready"
+    preset (no-op rows hidden, non-PHI, lex-sorted, fragment).
+  - `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-coverage-report`
+    is the FIRST JSON coverage report for the quiet-hours
+    decision stream. Operations dashboards ingest one N-run
+    window per channel and answer "how often did we defer /
+    suppress / override / which window labels are configured?".
+    The basic module's one-line summary can't answer those.
+    Three categories of misconfiguration: channelIsAlwaysDeferring
+    (every run deferred, likely 24h window), channelIsAlways
+    Suppressing (every run suppressed, suppress-completely with
+    24h window), channelIsAlwaysPostingNow (no run ever deferred
+    or suppressed across 7+ runs - the window may be inactive).
+    detectQuietHoursMisconfiguration surfaces one of these as a
+    single string for the dashboard. Multi-window-labels check
+    fires FIRST because it's usually the underlying cause of
+    always-deferring / always-suppressing patterns.
+    deferralLatenciesMs (min/max/mean) reports the actual
+    deferral durations; negative latencies (deferUntil before
+    runAt; broken upstream config) drop out of the math but
+    the decision still counts in the deferral total.
+  - `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-coverage-report`
+    is the FIRST JSON coverage report for the BCC envelope
+    stream. The basic BCC module's coverage struct uses a Map
+    for fanOutByAddress; JSON serialisers drop Map keys
+    silently. Ops dashboards need an array shape they can
+    ingest without a custom reviver. fanOutByAddress translated
+    to {address, count}[] sorted DESC by count (ASC by address
+    for ties). declaredDestinations input (second arg) is the
+    ground truth for unusedBccAddresses; without it the unused
+    list is empty (can only know what's unused if we know what
+    was declared). topNFanoutAddresses for the "loudest
+    addresses" widget. detectFollowupDigestBccMisconfiguration
+    surfaces three conditions: zero-headers-with-declarations
+    (scope filters too narrow), unused addresses (per-caregiver
+    scope likely filtered them out), extreme fan-out skew
+    (>75% of headers on one address with 3+ distinct addresses).
+    JSON-roundtrip safe (verified in tests).
+  - `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-i18n`
+    is the FIRST chrome-string i18n bundle in the package
+    (the existing refusal-reason-suggest-i18n bundles cover
+    EXPLANATION strings, not chrome). The bundle pattern
+    deliberately mirrors the existing i18n layer:
+    { locale, strings: Partial<...> } with per-key English
+    fallback so contributor-submitted incomplete locales
+    don't blank the spine. Five built-in bundles ship out
+    of the box: en-US, es-419 (covers es-ES via region-strip),
+    fr-FR (covers fr-CA), de-DE, hi-IN (devanagari).
+    renderLocalisedRefusalReasonSpine wraps the base spine
+    renderer: drops the base's hard-coded includePanelSize
+    emission (English-only), then re-injects the localised
+    "<count> <unit>" label using the bundle's strings
+    before the closing </div></section>. Uses the base
+    spine's font metrics (cross-axis font sizing heuristic)
+    so the injected label is visually identical to what
+    the base would have emitted in English. pickBuiltInSpineBundle
+    + region-strip lookup so 'es-MX' picks up 'es-419'.
+    validateSpineI18nBundle returns missing keys for CI
+    checks of contributor submissions.
+  - `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-print-only`
+    is the FIRST standalone-TOC variant in the package
+    (the existing TOC modules always emit the combined
+    document or its HTML companion). Use case: clinician
+    auditing the binder index doesn't want to re-print
+    every card; clinician photocopying a roster lookup
+    for a colleague wants ONLY the index. Header strip
+    rewritten "Page 1 of N+1" -> "Page 1 of 1" for
+    standalone-document consistency. Footer block rewritten
+    "Document N pages total" -> "Index only (binder spans N
+    pages)" so the clinician knows they're holding the index,
+    not a partial copy. CRUCIALLY: per-entry pageNumber
+    values STAY pointing at where the cards live in the
+    underlying binder (no rewrite to 1) - the index is
+    still useful as a binder-lookup reference. Defensive
+    footer synthesis if upstream TOC ever stops emitting
+    a footer block. combinedDocumentPageCount preserved
+    on the result so UI banners can say "you are looking
+    at the index for an 8-page binder".
+  - Module-domain-noun prefix discipline continues:
+    RegimenHistoryAnonymiseKeyRotateHtmlOptions (not HtmlOptions),
+    DoseRoundtripQuietHoursCoverageReport (not CoverageReport),
+    FollowupDigestBccCoverageReport (not CoverageReport),
+    RefusalReasonSpineI18nBundle (not I18nBundle - distinct
+    from the existing RefusalReasonI18nBundle for explanation
+    strings), EmergencyCardPdfTwoUpRosterTocPrintOnlyResult
+    (not PrintOnlyResult). Every tick 21 export uses a
+    module-prefixed name where any generic name (HtmlOptions,
+    CoverageReport, I18nBundle, PrintOnlyResult) could have
+    collided.
+  - 11 clean ticks in a row (no fixup commits, no force-push,
+    no revert). Every commit revertible in isolation; every
+    commit has its own test suite; every commit passes the
+    full @med/utils gate in isolation AND in batch.
+  - Hardware corner cases handled this tick: PHI gating
+    (default includeOriginalIds=false; sortBy='patient-id'
+    requires includeOriginalIds=true and throws otherwise),
+    negative latency dropout (broken upstream config still
+    counts as a deferral but drops out of latency math),
+    JSON roundtrip safety (fanOutByAddress is array not Map;
+    verified in tests), per-key i18n fallback (partial
+    bundles never blank the output), region-strip locale
+    fallback ('es-XX' -> 'es' -> es-419; 'xx-YY' -> en-US),
+    standalone-document footer block rewrite (page count
+    references reflect single-page reality not combined-doc
+    reality), per-entry pageNumber preservation (still
+    points into the binder for the lookup use case),
+    defensive footer synthesis when upstream TOC has no
+    footer block, empty roster handling (TOC still renders
+    "No entries." or equivalent in every module).
 
 - 2026-06-22 17:07 PDT — tick 20: 5 features shipped.
   Commits: 00866f9 regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk,
