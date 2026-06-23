@@ -270,7 +270,7 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 182. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-archive` — Persistent archive of N day's worth of thread batches as a single rolling JSON blob suitable for CI artefact storage.
 183. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-retry-queue` — Wrap each envelope with retry metadata (attemptCount, lastErrorAt) so the mailer layer's queue can re-enqueue failed deliveries without losing context.
 184. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-i18n` — Localise the cover sheet's chrome text (hero subtitle, table labels, signature block prompts) by extending the existing i18n bundle layer.
-185. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html` — HTML/CSS companion to the roster TOC (browser print preview without a monospace font requirement) parallel to the existing PDF-block output.
+185. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html` — HTML/CSS companion to the roster TOC (browser print preview without a monospace font requirement) parallel to the existing PDF-block output. (tick 20 / 7184475)
 186. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-fhir` — Compose anonymise (#171) with the future fhir export (#156) for de-identified FHIR Bundle sharing.
 187. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-stats` — Per-day statistics rollup (mean diffs / mean parser skips / max diffs / consecutive clean days) appended as a final reply on the thread for trend visibility.
 188. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-attachments` — Attachment slot (optional FollowupDigest as PDF or ICS file) for caregivers who prefer downloadable formats alongside the inline body.
@@ -279,11 +279,11 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 1N — fresh roadmap (refill after tick 19)
 
-191. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk` — Rotate-secret in bulk across N HMAC secret epochs in one call (e.g. annual rotations over a decade) producing a per-epoch chain mapping; for clinics auditing a long secret-rotation history.
-192. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar` — Per-day-of-week quiet-hours override (e.g. weekends 24/7 quiet, weekdays 22:00-07:00); calendar-aware companion to the basic quiet-hours module.
-193. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy` — Tier the BCC list by severity: actionable digests BCC the PCP + escalation contact; routine digests only BCC the household admin. Composes with the existing BCC policy.
-194. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch` — Multi-spine layout: N spine labels on a single 8.5x11 sticker sheet for clinics printing N binder spines at once (typical sticker-paper printers).
-195. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html` — HTML/CSS companion to the TOC page using @page CSS for browser print preview without a PDF library; matches the document-title / specialty / fallback-line / footer ordering.
+191. [x] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk` — Rotate-secret in bulk across N HMAC secret epochs in one call (e.g. annual rotations over a decade) producing a per-epoch chain mapping; for clinics auditing a long secret-rotation history (tick 20 / 00866f9).
+192. [x] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar` — Per-day-of-week quiet-hours override (e.g. weekends 24/7 quiet, weekdays 22:00-07:00); calendar-aware companion to the basic quiet-hours module (tick 20 / 7184508).
+193. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy` — Tier the BCC list by severity: actionable digests BCC the PCP + escalation contact; routine digests only BCC the household admin. Composes with the existing BCC policy (tick 20 / ef5e503).
+194. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch` — Multi-spine layout: N spine labels on a single 8.5x11 sticker sheet for clinics printing N binder spines at once (typical sticker-paper printers) (tick 20 / 3c0a7c7).
+195. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html` — HTML/CSS companion to the TOC page using @page CSS for browser print preview without a PDF library; matches the document-title / specialty / fallback-line / footer ordering (tick 20 / 7184475).
 196. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-html` — HTML render of the key-rotation mapping (per-patient table with old + new pseudonym columns) for the security audit trail.
 197. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-coverage-report` — Standalone coverage report (deferrals issued, suppressions issued, overrides triggered) parallel to summarizeQuietHoursDecision but as a structured JSON payload for the analytics pipeline.
 198. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-coverage-report` — Standalone JSON coverage report (envelope count, BCC fan-out by address, primary-dropped count) for the cron's monitoring pipeline.
@@ -295,6 +295,19 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 204. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-color-coding` — Per-source colour-coded spine label (NPO-window red, prescriber-pause blue) for visual triage in colour-printing clinics; respects monochrome fallback.
 205. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-grouped-html` — HTML/CSS variant of the TOC with collapsible specialty sections (browser <details>/<summary>) for screen-first review workflows.
 
+### Tier 1O — fresh roadmap (refill after tick 20)
+
+206. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export` — CSV export of the bulk-rotation mapping (one row per patient, columns: originalPatientId, epoch_0_pseudonym, epoch_1_pseudonym, ..., epoch_N_pseudonym) for the analytics-partner audit hand-off.
+207. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html` — HTML render of the calendar overlay (per-day rule + window in a 7-day grid) for the on-call channel admin UI.
+208. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report` — Standalone JSON coverage report (tier counts, unused destinations, escalation-tier fan-out) parallel to summarizeBccTierPolicy for the analytics pipeline.
+209. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest` — CSV manifest of which spine labels are on which sheet for the QA workflow: a printer auditor confirms every patient on the roster appears on at least one sticker sheet before printing.
+210. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-collapsible` — HTML/CSS variant with browser <details>/<summary> collapsible specialty sections; for screen-first review workflows where the clinician scrolls the TOC inline.
+211. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-fhir` — FHIR Provenance Bundle JSON variant of the bulk rotation chain for HL7-aware audit consumers.
+212. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-icalendar` — ICalendar (.ics) export of the per-day quiet-hours configuration for clinicians to import into their phone calendar (visualises "the channel is quiet on Saturdays" alongside their personal calendar).
+213. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-html` — Admin HTML view of the tier-policy result (per-envelope tier + which addresses fired) for the household admin to audit who got what.
+214. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-a3` — A3 sheet preset (29.7x42.0cm) for larger sticker-paper stock used by clinics with industrial printers.
+215. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored` — Anchor-link variant of the TOC HTML so clicking a name in the TOC scrolls to the corresponding card in a single-page HTML render of the binder.
+
 
 
 
@@ -304,6 +317,140 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-22 17:07 PDT — tick 20: 5 features shipped.
+  Commits: 00866f9 regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk,
+  7184508 dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar,
+  ef5e503 followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy,
+  3c0a7c7 refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch,
+  7184475 prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html.
+  Gate: 2507/2507 tests pass in `@med/utils` (144 new this tick:
+  29+30+24+30+31). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick (same
+  6 pre-existing files: adherence-risk, date, ics, schedule-resolver,
+  taper-plan, titration); zero new errors introduced by tick 20.
+  TENTH clean tick in a row (no fixup commits, no force-push, no
+  revert). Refilled roadmap (Tier 1O) with 10 new candidates (#206-#215).
+
+  Notes:
+  - Tenth composition tick in a row. Every tick 20 module composes
+    on at least one tick 19 output (seventh-derivative companions):
+    merge-anonymise-key-rotate-bulk on merge-anonymise-key-rotate (T19),
+    thread-batcher-quiet-hours-calendar on thread-batcher-quiet-hours (T19),
+    cron-batcher-html-mailer-bcc-tier-policy on cron-batcher-html-mailer-bcc (T19),
+    html-print-cover-sheet-binder-spine-batch on html-print-cover-sheet-binder-spine (T19),
+    watermark-roster-toc-html on watermark-roster-toc (T19).
+    Composition rhythm now spans T11 -> T20, ten consecutive
+    composition ticks. The pattern continues mechanically.
+  - `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk`
+    is the FIRST bulk-rotation companion in the package. Use case:
+    a clinic that has been mailing the same analytics partner for
+    a decade accumulates a CHAIN of annual HMAC secret rotations.
+    The single-step key-rotate module connects epoch N -> epoch N+1
+    one transition at a time; bulk-rotation walks the entire chain
+    pairwise in PARALLEL (Promise.all over the per-transition
+    primitive) and stitches the results into per-patient pseudonym
+    chains across every epoch. Three lookup helpers cover the
+    typical audit questions: first-to-last (the most common "I have
+    ancient data; what's the current pseudonym?"), arbitrary-epoch-
+    to-epoch (bounds-checked, throws on inverted indices), and
+    without-original-ids (PHI-safe drop of source patient ids for
+    external analytics-partner hand-off). epochLabels (default
+    'epoch-0'..'epoch-N') are mirrored into every transition + result
+    for cron-log / audit-trail traceability.
+  - `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar`
+    is the FIRST calendar-aware quiet-hours module in the package
+    and sets the pattern for future per-day-of-week overlays. Three
+    override kinds: 'window' (basic quiet-hours window for that day),
+    'quiet-all-day' (entire day is quiet; 0-24 window synthesised),
+    'no-quiet-hours' (quiet hours OFF for that day; skip-flag).
+    Day-of-week resolution uses Intl.DateTimeFormat in the
+    defaultWindow's timezone, so Friday 23:30 UTC in a PT window
+    correctly evaluates as Friday PT (avoids the UTC-day vs local-
+    day mismatch that bit the first prototype). matchedDayOfWeek +
+    matchedRule on the decision provide cron-log audit visibility
+    ("today was sat -> override:all-day -> suppressed"). Convenience
+    builder buildWeekendsAllDayWeekdaysOvernightCalendar produces
+    the canonical "weekends quiet all day, weekdays 22:00-07:00 PT"
+    config that most clinical channels start with.
+  - `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy`
+    is the FIRST tier-aware BCC overlay in the package. Three
+    canonical tiers (routine, actionable, critical) chosen to match
+    typical clinical-records on-call severity buckets. Default
+    heuristic classifier inspects envelope.text + envelope.subject
+    for canonical phrases ("overdue" -> critical; "no follow-ups
+    requiring attention" -> routine; else actionable). Per-destination
+    eligibleTiers filter composes correctly with the basic BCC
+    module's per-caregiver scope (forCaregiverIds /
+    excludeCaregiverIds): a destination is kept only if BOTH its
+    tier filter AND its caregiver scope match. unusedDestinations
+    in coverage flags addresses that were declared but never matched
+    any envelope ("you set tier='critical' but had zero critical
+    digests" - common misconfiguration signal). filterEnvelopesByTier
+    convenience routes envelopes to per-severity mailer queues
+    (critical -> page on-call; routine -> low-priority queue).
+    buildPcpAdminEscalationTierDestinations produces the canonical
+    3-destination config in one call.
+  - `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch`
+    is the FIRST multi-spine sticker-sheet layout in the package.
+    Real sticker-paper printers don't print one sticker per page;
+    a clinic printing 47 binder spines at once after a Q3 review
+    wants all 47 on a small number of sticker sheets, not 47 print
+    jobs. Two canonical sheet presets (us-letter 21.59x27.94cm and
+    a4 21.0x29.7cm) plus 'custom' with explicit dimensions in cm.
+    Auto-computed columns + rows from sheet + spine + gap, OR
+    forceColumns / forceRows for fixed-stock sticker paper with a
+    specific NxM grid. Bounds-check throws with cm-precision error
+    when forced layouts don't fit. Pagination across multiple sheets
+    with page-break-before:always on each after the first (the
+    individual spines' own page-break-before is suppressed because
+    the sheet wrapper handles pagination). computeSpineBatchCapacity
+    gives a non-render preview ("your batch of 47 spines will need
+    2 sheets") for UI confirmations before commit.
+  - `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html`
+    is the FIRST HTML/CSS companion to the PDF TOC. Four htmlPageSize
+    presets (Letter landscape default + Letter portrait + A4 landscape
+    + A4 portrait) plus 'custom' with explicit inch dimensions.
+    Distinct from the underlying PDF's `pageSize` ('letter'|'a4')
+    because the @page CSS rule needs orientation explicit; renamed
+    to htmlPageSize to avoid the type collision. wrapHtmlDocument
+    knob (default true) toggles between full-document mode and
+    fragment mode for splicing into a host page. Sans-serif font
+    by default (system-ui stack) - one of the key differences from
+    the PDF module's monospace-friendly block output. Watermark
+    rendered as a fixed-position overlay matching the PDF's
+    watermark text + visual weight. HTML escaping on every user-
+    controlled string. Empty roster renders "No entries." instead
+    of crashing.
+  - Module-domain-noun prefix discipline continues:
+    RegimenHistoryAnonymiseKeyRotateBulkOptions (not BulkOptions),
+    DoseRoundtripThreadBatcherQuietHoursCalendarOptions (not CalendarOptions),
+    FollowupDigestHtmlMailerBccTierDestination (not TierDestination),
+    RefusalReasonI18nRollupHtmlPrintCoverSheetBinderSpineBatchEntry (not BatchEntry),
+    EmergencyCardPdfTwoUpRosterTocHtmlOptions (not TocHtmlOptions).
+    Every tick 20 export uses a module-prefixed name where any
+    generic name (BulkOptions, CalendarOptions, TierDestination,
+    BatchEntry, TocHtmlOptions) could have collided.
+  - 10 clean ticks in a row (no fixup commits, no force-push, no
+    revert). Every commit revertible in isolation; every commit has
+    its own test suite; every commit passes the full @med/utils gate
+    in isolation AND in batch.
+  - Hardware corner cases handled this tick: HMAC short-secret
+    rejection propagated through bulk-rotation chain validation,
+    Intl day-of-week timezone resolution (Friday 23:30 UTC in PT
+    is still Friday PT), Pdf vs HTML pageSize type collision
+    resolved via dedicated htmlPageSize property name, forced
+    grid bounds check with cm-precision error message, individual-
+    spine pageBreakBefore suppression when wrapped in a sheet
+    grid, tier classification on envelopes with missing text/
+    subject fields (defaults to actionable via the else-branch),
+    custom-classifier override for callers wanting precise
+    classification from the underlying digest data, unused-
+    destinations rollup for declared-but-never-matched BCC
+    addresses, empty-roster rendering ("No entries." text on
+    the HTML TOC; bulk-rotation handles empty patient lists
+    by returning 0 chains but still computing all N-1 empty
+    transitions).
 
 - 2026-06-22 13:56 PDT — tick 19: 5 features shipped.
   Commits: 0d5ae12 regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate,
