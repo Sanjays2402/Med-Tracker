@@ -315,11 +315,11 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 218. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-html` — HTML render of the coverage report (top fan-out tables, unused destinations list, dominant tier headline card) for the ops dashboard (tick 24 / a938449).
 219. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-pivot` — Pivot the CSV manifest so each row is a SHEET (not a spine), with columns: sheetNumber, plus 1..N columns for each position on that sheet listing the patient name. For printer-cassette workflows where the auditor verifies sheet-by-sheet rather than spine-by-spine (tick 24 / be242e0).
 220. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-back-to-top` — Add a "back to TOC" link on each card target (anchor on the TOC, anchor back to the TOC from each card) for long single-page renders (tick 24 / 87dbec7).
-221. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary` — Multi-epoch CLI-line summary parallel to the single-rotation cli-summary (tick 22 #201). Fixed-shape line, one verdict per epoch transition + an overall batch verdict.
-222. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable` — Print-friendly variant of the calendar HTML (no current-day highlight, no colour fills, monochrome) for binder filing.
-223. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html` — HTML render of the detect-warnings list with severity chips (red for "always critical", yellow for "always routine", grey for "unused destination") for the ops dashboard.
-224. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise` — Hash patient names in the manifest BEFORE export so a manifest shared with a third-party printer doesn't expose PHI.
-225. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input` — Add an `<input type="search">` to the TOC that hides non-matching rows via CSS-only :not() match (no JS); for in-portal browse workflows.
+221. [x] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary` — Multi-epoch CLI-line summary parallel to the single-rotation cli-summary (tick 22 #201). Fixed-shape line, one verdict per epoch transition + an overall batch verdict (tick 25 / 8bea315).
+222. [x] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable` — Print-friendly variant of the calendar HTML (no current-day highlight, no colour fills, monochrome) for binder filing (tick 25 / 5a990c9).
+223. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html` — HTML render of the detect-warnings list with severity chips (red for "always critical", yellow for "always routine", grey for "unused destination") for the ops dashboard (tick 25 / bb695ee).
+224. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise` — Hash patient names in the manifest BEFORE export so a manifest shared with a third-party printer doesn't expose PHI (tick 25 / 304a8d0).
+225. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input` — Add an `<input type="search">` to the TOC that hides non-matching rows via CSS-only :not() match (no JS); for in-portal browse workflows (tick 25 / 5705a7f).
 
 ### Tier 1Q — fresh roadmap (refill after tick 23)
 
@@ -334,6 +334,19 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 234. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-pivot-html` — HTML render of the pivot manifest (one table per sheet, monospaced positions, suitable for printer auditor review).
 235. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-back-to-top-keyboard-nav` — Keyboard-navigation helper: returns the per-card anchor ids ordered so the host page can wire arrow-key navigation between adjacent cards.
 
+### Tier 1R — fresh roadmap (refill after tick 24)
+
+236. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-json` — Structured JSON variant of the bulk CLI summary (lines parsed into typed entries: `[{ tag, fromEpoch, toEpoch, patients, reshuffled, collisions, verdict }]`) for analytics pipelines that prefer JSON over fixed-shape text.
+237. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-prometheus` — Prometheus-text-format exporter for the bulk CLI summary so the cron's grep pipeline can also expose `/metrics` for scraping (gauge per verdict tier, counter per transition).
+238. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n` — Localise the printable calendar's footer text + "Printed" prefix + per-day labels via a small bundle layer parallel to refusal-reason-suggest-i18n.
+239. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-multipage` — Multi-page variant emitting one calendar per timezone (when the on-call panel spans multiple regions) with form-feed page separators.
+240. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print` — Print-only variant of the warnings HTML (no colour chips, monochrome badge prefixes) for the household ops review packet.
+241. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-i18n` — Localise the severity chip labels + empty-state hint via the existing i18n bundle layer.
+242. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate` — Compose anonymise with key-rotate so a clinic switching HMAC secrets gets a stable old-pseudonym -> new-pseudonym mapping for the spine manifest (parallel to the regimen-history anonymise-key-rotate module).
+243. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-coverage-report` — Standalone coverage report (entries anonymised, collision count, hash truncation in use, name strategy applied, redacted-row count) for the audit trail.
+244. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav` — Keyboard-navigation helper for the search-input variant: returns the focusable element order (search input → first TOC row → next, etc) so the host page wires arrow-key navigation.
+245. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n` — Localise the search input placeholder + aria-label + empty-state hint via the existing i18n bundle layer (Spanish, Japanese, German).
+
 
 
 
@@ -343,6 +356,171 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-23 12:23 PDT — tick 25: 5 features shipped.
+  Commits: 8bea315 regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary,
+  5a990c9 dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable,
+  bb695ee followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html,
+  304a8d0 refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise,
+  5705a7f prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input.
+  Gate: 3270/3270 tests pass in `@med/utils` (139 new this tick:
+  23+30+24+32+30). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick (same
+  6 pre-existing files: adherence-risk, date, ics, schedule-resolver,
+  taper-plan, titration); zero new errors introduced by tick 25.
+  FIFTEENTH clean tick in a row (no fixup commits, no force-push,
+  no revert). Tier 1P fully closed out — all 10 of #216-#225
+  shipped across ticks 24-25. Tier 1R refilled with 10 fresh
+  derivative composition candidates (#236-#245), two per tick-25
+  module. 109 unstarted total across all tiers (older recycled
+  candidates still in the queue).
+
+  Notes:
+  - Fifteenth composition tick in a row. Every tick 25 module
+    composes on at least one tick 21/22/23/24 output (twelfth-
+    derivative companions):
+    bulk-cli-summary on key-rotate-bulk (T20) + cli-summary (T22),
+    quiet-hours-calendar-html-printable on calendar-html (T23),
+    coverage-report-warnings-html on coverage-report (T23),
+    spine-batch-csv-manifest-anonymise on spine-batch-csv-manifest
+    (T23) + anonymise pattern (T18),
+    roster-toc-html-anchored-search-input on roster-toc-html-
+    anchored (T23) + back-to-top (T24).
+    Composition rhythm now spans T11 -> T25, fifteen consecutive
+    composition ticks. The pattern continues mechanically.
+  - `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary`
+    is the FIRST multi-line CLI summary in the package. The
+    single-rotation cli-summary emits ONE fixed-shape line;
+    this module emits N transition lines (one per epoch
+    transition) plus a single batch verdict line. Transition
+    lines are tagged `[key-rotate epoch=<from>-><to>]` so a
+    stack of nightly log files can be grep-ed by epoch label
+    (e.g. `grep 'epoch=secret-2024' nightly.log`). Batch line
+    `[key-rotate-bulk] epochs=N transitions=N patients=N
+    noop_transitions=N collisions_total=N verdict=V`. Batch
+    verdict precedence (worst-wins): widen-hash > empty-cohort >
+    ship-safe > no-op. transitionTag + batchTag both override-
+    able for multi-cohort runs (e.g. `[cohort=cardiology]`).
+    suppressNoOpTransitions hides noisy unchanged-secret rows
+    while keeping structured summaries intact. detectAnonymise
+    KeyRotateBulkCliWarning surfaces the most actionable mis-
+    configuration: widen-hash, all-no-op, empty-cohort, single-
+    secret-chain. joinAnonymiseKeyRotateBulkCliSummary collapses
+    everything into a single console.log-friendly string with
+    the batch line always last (so tail -1 surfaces the verdict).
+  - `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable`
+    is the FIRST print-only HTML variant in the package paired
+    with an explicit @page CSS preset. Composes the dashboard
+    calendar so per-cell datum stays consistent, then post-
+    processes for paper: monochrome palette (white background
+    across every rule), current-day star stripped from labels
+    via deterministic transform, overlay CSS suppresses the
+    --current outline with !important, non-default rule labels
+    bolded by default (typographic accent left after colour
+    removal). @page size: 8.5in 11in (us-letter) or 210mm 297mm
+    (a4). printedAt emits "Printed YYYY-MM-DD" line using
+    Intl.DateTimeFormat in the right timezone. footerText
+    overridable; '' suppresses the element. wrapHtmlDocument
+    defaults TRUE (printable pages are standalone). extract
+    QuietHoursCalendarHtmlPrintableLines emits plain-text per-
+    day lines for log review without rendering HTML.
+  - `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html`
+    is the FIRST severity-tiered warning chip render in the
+    package. The base panel collapses every warning into one
+    red block; this module classifies warnings into three
+    severities:
+      always-critical    RED   — channel page-worthy on every envelope
+      always-tier        AMBER — channel is one-dimensional
+      unused-destination GREY  — cleanup, not action
+    Each chip carries the severity label + human label + (for
+    unused-destination only) the address split into a monospace
+    span so the on-call can copy/paste it without selecting
+    the surrounding label. Unknown warning strings fall into
+    'unused-destination' as graceful degradation. Empty state
+    renders as a single green "All checks passed" chip;
+    suppressEmptyState=true opts out for dashboards that hide
+    the panel when nothing is wrong. severityLabels override
+    for localised text. summarizeBccTierPolicyCoverageWarnings
+    Html one-line cron log. extractBccTierPolicyCoverageUnused
+    Destinations returns sorted addresses for cleanup tooling.
+  - `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise`
+    is the FIRST PHI-anonymising spine manifest in the package.
+    Hashes patient names BEFORE the CSV is built so a sticker-
+    paper print shop or label-printing pipeline (Avery / Brother)
+    gets the geometry it needs without PHI. Same CSV shape as
+    the base manifest; patientName replaced with the
+    pseudonymous hash. ASYNC — uses Web Crypto (subtle.sign)
+    with HMAC-SHA-256, same pipeline regimen-snapshot anonymise
+    already uses. Two name strategies: 'hashed' (default,
+    "spine-7a3f1b2c", deterministic) and 'redacted' (literal
+    "REDACTED" for jurisdictions that don't accept pseudonyms).
+    Configurable hashPrefix + hashHexLength (clamped [4, 64]).
+    hmacSecret enforced at >= 32 chars. Each distinct source
+    name hashed ONCE (N redundant subtle calls avoided when
+    a patient repeats on multiple spines). Collision detection
+    flags collisionDetected when two source names map to the
+    same pseudonym. dateLabel + panelLabel pass through
+    unchanged by default; preserveDateLabel=false /
+    preservePanelLabel=false rewrite non-null cells to
+    "REDACTED" for columns that themselves carry PHI. THREE
+    outputs: manifestCsv (third-party-safe), sheetSummaryCsv
+    (no PHI; pass-through), nameLookupCsv (IN-HOUSE only,
+    source-to-pseudonym mapping for label-print-error reversal).
+  - `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input`
+    is the FIRST search-input scaffolding in the package.
+    HONEST scope: pure CSS cannot read the input's value into a
+    selector so substring filtering by typed text is NOT
+    shipped. What IS shipped: `<input type="search">` at the
+    top of the TOC wrapper (first focusable), per-row
+    data-toc-name (lowercased displayName) + data-toc-specialty
+    (lowercased, "other" when null) for substring matching,
+    `<datalist>` with one option per prescriber for browser
+    autocomplete (zero JS needed), :placeholder-shown sibling
+    selector covering the empty-state baseline, and
+    :not(:placeholder-shown) sibling selector as the hook the
+    host page extends with a 5-line oninput handler. A host
+    page that wants typed filtering wires the oninput hook;
+    the data attributes are first-class for that. Graceful
+    degradation: when no host hook is wired, every row stays
+    visible AND the browser's built-in find (Cmd-F) highlights
+    matches via the data attributes. buildEmergencyCardSearch
+    InputAttributeFragments returns per-cardIndex HTML
+    attribute fragments ready to splice into the host's card
+    markup. Search input + datalist + body id all configurable
+    via per-id options so a host page embedding multiple TOCs
+    disambiguates via per-TOC prefixes.
+  - Module-domain-noun prefix discipline continues:
+    AnonymiseKeyRotateBulkCliSummary (not BulkCliSummary),
+    DoseRoundtripThreadBatcherQuietHoursCalendarHtmlPrintable
+    Result (not PrintableResult), BccTierPolicyCoverage
+    WarningsHtmlResult (not WarningsHtmlResult — the BccTier
+    Policy prefix is preserved), SpineBatchCsvManifestAnonymise
+    Result (not AnonymiseResult), EmergencyCardPdfTwoUpRoster
+    TocHtmlAnchoredSearchInputResult (not SearchInputResult).
+    Every tick 25 export uses a module-prefixed name where any
+    generic name could have collided.
+  - 15 clean ticks in a row (no fixup commits, no force-push,
+    no revert). Every commit revertible in isolation; every
+    commit has its own test suite; every commit passes the
+    full @med/utils gate in isolation AND in batch.
+  - Tier 1P fully closed out this tick (#221-#225 shipped);
+    Tier 1Q still has 10 carried-forward (#226-#235). Tier 1R
+    (10 fresh candidates, #236-#245) refilled with derivative
+    composition candidates extending each of the 5 modules
+    shipped this tick (json + prometheus for bulk-cli-summary,
+    i18n + multipage for printable, print + i18n for warnings-
+    html, key-rotate + coverage-report for anonymise, keyboard
+    -nav + i18n for search-input).
+  - Honest scope on search-input (#225): the prompt asked for a
+    "CSS-only :not() match" but true substring filtering by
+    arbitrary typed text is impossible in pure CSS (CSS cannot
+    read input values into selectors). The shipped module is
+    explicit about this in the docstring: it ships the
+    SCAFFOLDING (input + data attributes + datalist + empty-
+    state CSS baseline) and is honest that the host page wires
+    the actual filter logic via a 5-line oninput hook. Better
+    to ship an honest scaffold than a fake-CSS-only filter
+    that doesn't work.
 
 - 2026-06-23 07:37 PDT — tick 24: 5 features shipped.
   Commits: 2e13caf regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export-per-class,
