@@ -310,16 +310,29 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 1P — fresh roadmap (refill after tick 22)
 
-216. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export-per-class` — Group bulk-rotation chains by drug class then CSV export so a cardiology clinic can filter the chain to just the meds in its remit.
-217. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-per-cell-edit` — HTML overlay with per-cell `<a href="...">` admin-edit links so the channel admin can click a day to jump to the override editor.
-218. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-html` — HTML render of the coverage report (top fan-out tables, unused destinations list, dominant tier headline card) for the ops dashboard.
-219. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-pivot` — Pivot the CSV manifest so each row is a SHEET (not a spine), with columns: sheetNumber, plus 1..N columns for each position on that sheet listing the patient name. For printer-cassette workflows where the auditor verifies sheet-by-sheet rather than spine-by-spine.
-220. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-back-to-top` — Add a "back to TOC" link on each card target (anchor on the TOC, anchor back to the TOC from each card) for long single-page renders.
+216. [x] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export-per-class` — Group bulk-rotation chains by drug class then CSV export so a cardiology clinic can filter the chain to just the meds in its remit (tick 24 / 2e13caf).
+217. [x] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-per-cell-edit` — HTML overlay with per-cell `<a href="...">` admin-edit links so the channel admin can click a day to jump to the override editor (tick 24 / 8437a62).
+218. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-html` — HTML render of the coverage report (top fan-out tables, unused destinations list, dominant tier headline card) for the ops dashboard (tick 24 / a938449).
+219. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-pivot` — Pivot the CSV manifest so each row is a SHEET (not a spine), with columns: sheetNumber, plus 1..N columns for each position on that sheet listing the patient name. For printer-cassette workflows where the auditor verifies sheet-by-sheet rather than spine-by-spine (tick 24 / be242e0).
+220. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-back-to-top` — Add a "back to TOC" link on each card target (anchor on the TOC, anchor back to the TOC from each card) for long single-page renders (tick 24 / 87dbec7).
 221. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary` — Multi-epoch CLI-line summary parallel to the single-rotation cli-summary (tick 22 #201). Fixed-shape line, one verdict per epoch transition + an overall batch verdict.
 222. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable` — Print-friendly variant of the calendar HTML (no current-day highlight, no colour fills, monochrome) for binder filing.
 223. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html` — HTML render of the detect-warnings list with severity chips (red for "always critical", yellow for "always routine", grey for "unused destination") for the ops dashboard.
 224. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise` — Hash patient names in the manifest BEFORE export so a manifest shared with a third-party printer doesn't expose PHI.
 225. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input` — Add an `<input type="search">` to the TOC that hides non-matching rows via CSS-only :not() match (no JS); for in-portal browse workflows.
+
+### Tier 1Q — fresh roadmap (refill after tick 23)
+
+226. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export-per-class-html` — HTML render of the per-class CSV export manifest (one tile per class with patient count + transition count) for the cardiology-clinic dashboard.
+227. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-per-cell-edit-policy` — Per-cell editable POLICY (when a cell becomes editable: only by certain admin roles, only during a maintenance window) for the on-call channel admin overlay.
+228. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-html-print` — Print-only variant of the coverage report HTML (no interactive controls, paginated, monochrome) for the household ops review meeting.
+229. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-pivot-anonymise` — Compose pivot + anonymise: hash patient names in the pivot manifest before sharing with a third-party printer.
+230. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-back-to-top-i18n` — Localise the back-link label + aria-label via the existing i18n bundle layer (Spanish "Volver al índice", Japanese "戻る", etc.).
+231. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export-per-class-fhir` — FHIR Bundle JSON variant of the per-class CSV export for HL7-aware consumers (statin patients only, anti-platelet patients only, etc.).
+232. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-per-cell-edit-audit-log` — Log per-cell edit clicks (cell, timestamp, admin id) as an append-only audit trail for the on-call channel.
+233. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-html-comparison` — Side-by-side HTML view comparing two coverage reports (this week vs last week) so the on-call can see trend deltas at a glance.
+234. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-pivot-html` — HTML render of the pivot manifest (one table per sheet, monospaced positions, suitable for printer auditor review).
+235. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-back-to-top-keyboard-nav` — Keyboard-navigation helper: returns the per-card anchor ids ordered so the host page can wire arrow-key navigation between adjacent cards.
 
 
 
@@ -330,6 +343,170 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-23 07:37 PDT — tick 24: 5 features shipped.
+  Commits: 2e13caf regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export-per-class,
+  8437a62 dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-per-cell-edit,
+  a938449 followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-html,
+  be242e0 refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-pivot,
+  87dbec7 prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-back-to-top.
+  Gate: 3131/3131 tests pass in `@med/utils` (178 new this tick:
+  38+35+36+37+32). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick (same
+  6 pre-existing files: adherence-risk, date, ics, schedule-resolver,
+  taper-plan, titration); zero new errors introduced by tick 24.
+  FOURTEENTH clean tick in a row (no fixup commits, no force-push,
+  no revert). Tier 1P first half closed out (#216-#220 shipped);
+  remaining #221-#225 carried forward. Tier 1Q refilled with 10
+  fresh composition candidates (#226-#235). 114 unstarted total
+  across all tiers (older recycled candidates included).
+
+  Notes:
+  - Fourteenth composition tick in a row. Every tick 24 module
+    composes on at least one tick 20/21/22/23 output (eleventh-
+    derivative companions):
+    bulk-csv-export-per-class on bulk-csv-export (T23),
+    quiet-hours-calendar-html-per-cell-edit on quiet-hours-
+    calendar-html (T23),
+    bcc-tier-policy-coverage-report-html on bcc-tier-policy-
+    coverage-report (T23),
+    spine-batch-csv-manifest-pivot on spine-batch-csv-manifest (T23),
+    roster-toc-html-anchored-back-to-top on roster-toc-html-
+    anchored (T23).
+    Composition rhythm now spans T11 -> T24, fourteen consecutive
+    composition ticks. The pattern continues mechanically.
+  - `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export-per-class`
+    is the FIRST per-class CSV multiplexer in the package.
+    The bulk-csv-export emits ONE big sheet; the per-class
+    variant emits N small sheets, one per drug class, each
+    containing only the patients on that class. Cardiology
+    clinic auditing CAD patients gets statin.csv + beta-blocker
+    .csv + ace-inhibitor.csv as three separate sheets rather
+    than 47 columns of the master sheet. patientClasses is a
+    ReadonlyMap<patientId, ReadonlySet<DrugClassCode | string>>
+    so callers can extend the taxonomy with custom class strings
+    (trial arms, registry buckets, etc) without forking the
+    module. classesToEmit restricts the output to a subset (the
+    rest fall through to unclassified). includeUnclassified
+    defaults TRUE so no patient is silently dropped from an
+    audit hand-off. basenameTemplate + unclassifiedBasename
+    govern the file basenames. Manifest CSV columns: classCode,
+    basename, patientCount, transitionCount. The per-class
+    chains.csv reuses the underlying exportAnonymiseKeyRotateBulkCsv
+    byte-for-byte (each per-class row equals the same patient's
+    row in the master sheet — only fewer rows). Transition
+    patientCount on each per-class transition row equals the
+    FILTERED patient count (so a cardiology auditor sees how
+    many cardiology patients were in each rotation epoch, not
+    the master cohort number). listAnonymiseKeyRotateBulkCsvExportPerClassFiles
+    flattens chains + transitions + manifest into a
+    file-entry array for direct write-to-zip / write-to-tar
+    pipelines.
+  - `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-per-cell-edit`
+    is the FIRST clickable cell variant in the package. The
+    base calendar HTML is passive (every cell shows the
+    resolved rule but isn't interactive); the per-cell-edit
+    overlay wraps each cell in `<a href="...">` whose target
+    is built from a caller-supplied URL template with three
+    placeholders ({day}, {dayLabel}, {rule}, URI-encoded
+    before substitution). Channel admin clicks "Wed" in the
+    grid and lands on the override editor pre-scoped to
+    Wednesday. isCellEditable predicate selectively suppresses
+    the anchor on a cell (read-only days render as plain divs
+    — graceful degradation). buildAriaLabel default
+    "Edit quiet hours for ${dayLabel} (currently ${ruleLabel})"
+    keeps the overlay accessible. openInNewTab adds
+    target="_blank" rel="noopener" when the admin page wants
+    a separate tab. editLinks parallel array exposes the
+    resolved hrefs + aria-labels for hosts that need just the
+    URL shape (sitemap entries, link tests, custom markup).
+  - `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-html`
+    is the FIRST dashboard-ready HTML render of a coverage
+    report in the package. The base coverage report is JSON-
+    friendly (good for analytics pipelines, useless for the
+    ops dashboard). This module emits a section with: headline
+    card (envelope count + BCC fan-out + dominant tier status),
+    tier-distribution bars (one per tier, coloured by tier:
+    routine grey, actionable amber, critical red, width set
+    to the ratio), top fan-out table (sorted by count DESC,
+    monospaced address column, tabular-nums for the count),
+    warnings panel (red border + light-red background; the
+    on-call wants warnings to JUMP), escalation-only
+    addresses list. Empty states clean: 0 envelopes ->
+    "No dominant tier" + "No BCC fan-out" empty state.
+    topFanoutRowLimit defaults 10 (suppresses the table when
+    set to 0). suppressWarnings flag for admin overlays.
+    tierLabels override for localised tier names without
+    rewriting CSS. wrapHtmlDocument emits a standalone HTML
+    doc for browser print. HTML-escapes every address,
+    warning, and label against XSS.
+  - `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-pivot`
+    is the FIRST sheet-row pivot in the package. The base
+    manifest is one-row-per-SPINE (audit-friendly for the
+    spine-by-spine workflow); the pivot is one-row-per-SHEET
+    (audit-friendly for the printer-cassette-loader workflow
+    where the auditor verifies sheet 3 has these 12 patients
+    in row-major order). Position cells expand to one column
+    per slot (pos_1, pos_2, ..., pos_N where N = sheet
+    capacity), filled in row-major order. Empty positions
+    render as bare empty cells by default; configurable via
+    emptyPositionPlaceholder (e.g. "—"). positionColumnTemplate
+    overrides the header pattern. includeDateLabelInPosition
+    formats cells as 'patientName (dateLabel)'. All other
+    spine-batch options (sheetPreset, forceColumns, forceRows)
+    pass through to the underlying manifest so the geometry
+    math stays consistent. detectPartialSpineSheets returns
+    sheet numbers where spineCount < capacity ("you're
+    wasting sticker stock" warning). source manifest exposed
+    for callers that want both views.
+  - `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-back-to-top`
+    is the FIRST return-path TOC variant in the package.
+    The base anchored TOC supports one-way navigation (TOC
+    -> card); back-to-top adds the return-path (card -> TOC)
+    by injecting an `<a id="${tocTopAnchorId}" tabindex="-1">`
+    at the top of the .toc-wrapper section so card links can
+    target it. backLinkByCardIndex Map exposes pre-rendered
+    `<a href="#tocTopAnchorId">Back to TOC</a>` fragments per
+    cardIndex so the host page splices them into each card's
+    markup. tocTopAnchorId defaults `${tocPrefix}-top` (hosts
+    embedding multiple TOCs disambiguate via per-TOC prefixes).
+    backLinkLabel + backLinkClassName overrides for i18n +
+    custom styling. buildBackLinkAriaLabel default
+    "Return to table of contents from {displayName} card"
+    keeps screen-reader navigation crisp. tabindex=-1 on the
+    top anchor makes it a programmatic JUMP target (via href
+    fragment) without putting it in the natural tab sequence.
+    HTML-escapes every label, ariaLabel, and prescriber name
+    against XSS. buildEmergencyCardTocBackToTopLinks
+    convenience for callers with existing TOC entries that
+    only need the back-link fragments.
+  - Module-domain-noun prefix discipline continues:
+    AnonymiseKeyRotateBulkCsvExportPerClassResult (not
+    PerClassResult), DoseRoundtripQuietHoursCalendarHtmlPerCellEditResult
+    (not PerCellEditResult), BccTierPolicyCoverageReportHtmlResult
+    (not CoverageReportHtmlResult), SpineBatchCsvManifestPivotResult
+    (not PivotResult), EmergencyCardPdfTwoUpRosterTocHtmlAnchoredBackToTopResult
+    (not BackToTopResult). Every tick 24 export uses a module-
+    prefixed name where any generic name could have collided.
+  - 14 clean ticks in a row (no fixup commits, no force-push,
+    no revert). Every commit revertible in isolation; every
+    commit has its own test suite; every commit passes the
+    full @med/utils gate in isolation AND in batch.
+  - Tier 1P #216-#220 shipped this tick; #221-#225 carried
+    forward for the next tick. Tier 1Q (10 fresh candidates,
+    #226-#235) refilled with derivative composition candidates
+    extending each of the 5 modules shipped this tick.
+  - Hardware corner cases handled this tick: CSV escaping
+    for commas / quotes / newlines in patient names (RFC 4180
+    doubled-quote), BOM round-trip (opt-in for Excel on
+    Windows), URI-encoding in URL templates (rule values
+    contain colons), aria-label HTML-escaping against XSS,
+    keyboard-skippable anchor (tabindex=-1), empty-input
+    paths (header-only CSVs, "no fan-out" empty state, "no
+    dominant tier" headline), unicode patient names (LOWER-
+    only for canonical key, UPPER-cased for display label),
+    JSON-safe Map -> array conversion for the coverage report
+    (count DESC then address ASC).
 
 - 2026-06-23 03:43 PDT — tick 23: 5 features shipped.
   Commits: 1e04b8a regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export,
