@@ -149,3 +149,4 @@ export * from './regimen-snapshot-archive-history-rollup-csv-export-merge-anonym
 export * from './dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html';
 export * from './followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report';
 export * from './refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest';
+export * from './prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored';
