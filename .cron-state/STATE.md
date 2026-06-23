@@ -336,16 +336,29 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 
 ### Tier 1R — fresh roadmap (refill after tick 24)
 
-236. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-json` — Structured JSON variant of the bulk CLI summary (lines parsed into typed entries: `[{ tag, fromEpoch, toEpoch, patients, reshuffled, collisions, verdict }]`) for analytics pipelines that prefer JSON over fixed-shape text.
+236. [x] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-json` — Structured JSON variant of the bulk CLI summary (lines parsed into typed entries: `[{ tag, fromEpoch, toEpoch, patients, reshuffled, collisions, verdict }]`) for analytics pipelines that prefer JSON over fixed-shape text (tick 26 / 02f0dca).
 237. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-prometheus` — Prometheus-text-format exporter for the bulk CLI summary so the cron's grep pipeline can also expose `/metrics` for scraping (gauge per verdict tier, counter per transition).
-238. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n` — Localise the printable calendar's footer text + "Printed" prefix + per-day labels via a small bundle layer parallel to refusal-reason-suggest-i18n.
+238. [x] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n` — Localise the printable calendar's footer text + "Printed" prefix + per-day labels via a small bundle layer parallel to refusal-reason-suggest-i18n (tick 26 / d984376).
 239. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-multipage` — Multi-page variant emitting one calendar per timezone (when the on-call panel spans multiple regions) with form-feed page separators.
-240. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print` — Print-only variant of the warnings HTML (no colour chips, monochrome badge prefixes) for the household ops review packet.
+240. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print` — Print-only variant of the warnings HTML (no colour chips, monochrome badge prefixes) for the household ops review packet (tick 26 / 844d9d6).
 241. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-i18n` — Localise the severity chip labels + empty-state hint via the existing i18n bundle layer.
-242. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate` — Compose anonymise with key-rotate so a clinic switching HMAC secrets gets a stable old-pseudonym -> new-pseudonym mapping for the spine manifest (parallel to the regimen-history anonymise-key-rotate module).
+242. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate` — Compose anonymise with key-rotate so a clinic switching HMAC secrets gets a stable old-pseudonym -> new-pseudonym mapping for the spine manifest (parallel to the regimen-history anonymise-key-rotate module) (tick 26 / ffd5d1c).
 243. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-coverage-report` — Standalone coverage report (entries anonymised, collision count, hash truncation in use, name strategy applied, redacted-row count) for the audit trail.
-244. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav` — Keyboard-navigation helper for the search-input variant: returns the focusable element order (search input → first TOC row → next, etc) so the host page wires arrow-key navigation.
+244. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav` — Keyboard-navigation helper for the search-input variant: returns the focusable element order (search input → first TOC row → next, etc) so the host page wires arrow-key navigation (tick 26 / 51d7d65).
 245. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n` — Localise the search input placeholder + aria-label + empty-state hint via the existing i18n bundle layer (Spanish, Japanese, German).
+
+### Tier 1S — fresh roadmap (refill after tick 25)
+
+246. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-json-ndjson-tee` — Companion to the bulk-cli-summary-json NDJSON serialiser that tees the same stream into a per-cohort log file via a callback (`onLine(kind, line)`) so a multi-cohort cron tick can split its NDJSON across N log files without re-serialising.
+247. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-json-coverage-report` — Standalone coverage report (per-verdict counts, total cohorts combined, missing-transition count) extracted from a `AnonymiseKeyRotateBulkCliSummaryJson` for the dashboard analytics pipeline.
+248. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n-coverage-report` — Standalone coverage report companion (locales used, fallback events, missing-key list) parallel to detectQuietHoursCalendarPrintableI18nCoverage but rolled across N renders (e.g. multi-region nightly print runs).
+249. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n-multipage` — Multi-page variant of the i18n printable calendar emitting one printable page per locale with form-feed separators for international clinic chains.
+250. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print-binder-spine` — Add a vertical spine-label fragment (3.5x1.5 cm sticker layout) for the binder spine matching the printable warnings page so multi-binder filing systems can label each binder.
+251. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print-i18n` — Localise the badge prefixes (e.g. "[CRÍTICO]", "[ATENCIÓN]", "[INFO]") + footer text + "Printed" prefix via the existing i18n bundle layer.
+252. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate-cli-summary` — Fixed-shape CLI summary line for the spine manifest rotation parallel to the regimen-history anonymise-key-rotate cli-summary; "[spine-rotate] patients=N changed=N collisions=N verdict=V".
+253. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate-bulk` — Bulk variant: walk N HMAC secret epochs in a single call producing per-epoch transition CSVs + an overall chain mapping for clinics with multi-year secret-rotation histories.
+254. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav-aria-live` — Companion aria-live announcement helper: per-row text the host page reads aloud on focus ("Smith, Jane A., cardiology, page 3") so screen-reader users get verbal context as arrow keys navigate.
+255. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav-vim-bindings` — Add j/k bindings (mirror ArrowDown / ArrowUp) for keyboard-power-user clinicians; opt-in via flag; preserves arrow bindings unchanged.
 
 
 
@@ -356,6 +369,191 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-23 15:30 PDT — tick 26: 5 features shipped.
+  Commits: 02f0dca regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-json,
+  d984376 dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n,
+  844d9d6 followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print,
+  ffd5d1c refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate,
+  51d7d65 prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav.
+  Gate: 3428/3428 tests pass in `@med/utils` (158 new this tick:
+  25+32+36+34+31). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick (same
+  6 pre-existing files: adherence-risk, date, ics, schedule-resolver,
+  taper-plan, titration); zero new errors introduced by tick 26.
+  SIXTEENTH clean tick in a row (no fixup commits, no force-push,
+  no revert). Tier 1R half-closed (5 of #236-#245 shipped; #237,
+  #239, #241, #243, #245 carried forward). Tier 1S refilled with
+  10 fresh derivative composition candidates (#246-#255), two per
+  tick-26 module. 114 unstarted total across all tiers (older
+  recycled candidates still in the queue).
+
+  Notes:
+  - Sixteenth composition tick in a row. Every tick 26 module
+    composes on at least one tick 22/23/24/25 output (thirteenth-
+    derivative companions):
+    bulk-cli-summary-json on bulk-cli-summary (T25),
+    quiet-hours-calendar-html-printable-i18n on calendar-html-
+    printable (T25) + refusal-reason-suggest-i18n bundle pattern (T14),
+    coverage-report-warnings-html-print on coverage-report-warnings-
+    html (T25),
+    spine-batch-csv-manifest-anonymise-key-rotate on spine-batch-
+    csv-manifest-anonymise (T25) + regimen-history anonymise-key-
+    rotate (T19) pattern,
+    search-input-keyboard-nav on search-input (T25) + back-to-top
+    (T24) navigation patterns.
+    Composition rhythm now spans T11 -> T26, sixteen consecutive
+    composition ticks. The pattern continues mechanically.
+  - `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-json`
+    is the FIRST structured-JSON variant of a CLI summary in the
+    package. Parses the bulk cli-summary's leading-tag from each
+    transition line via a tight regex (^(\[[^\]]+\])) and produces
+    typed per-transition + batch entries shaped for direct
+    JSON.stringify. Defensive: malformed lines fall back to
+    '[key-rotate]' / '[key-rotate-bulk]' tags rather than crash.
+    Tag overrides: transitionTagOverride callback for per-cohort
+    relabelling, batchTagOverride string for the batch entry.
+    Helpers: joinAsNdjson (one JSON object per line: transitions
+    first then batch; analytics pipelines ingest NDJSON streams
+    directly), filterByVerdict (dashboard "show me every widen-
+    hash transition" view), combine (multi-cohort combiner with
+    worst-wins batch verdict precedence widen-hash > empty-
+    cohort > ship-safe > no-op matching the underlying bulk
+    semantics). Round-trip safety verified: every field is
+    JSON.stringify clean (no Map, no Date, no undefined);
+    integer fields stay numeric after JSON.parse so a time-
+    series DB ingest doesn't accidentally cast to string.
+  - `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n`
+    is the FIRST i18n bundle on a printable HTML render in the
+    package. Composes the base printable renderer so the
+    underlying cell datum stays English-typed (cells[].dayOfWeek
+    / cells[].rule are still the structured keys for downstream
+    consumers) — only the rendered chrome text changes. Bundle
+    shape: days (mon..sun), rules (default / override:window /
+    override:all-day / override:none — the four canonical labels
+    the base render uses), printedPrefix ("Printed" / "Imprimé"
+    / "Gedruckt" / "印刷"), defaultFooterText. All fields
+    optional; missing keys fall back to the English reference
+    table. Caller-supplied footerText override always wins
+    verbatim (no i18n at this layer — explicit copy is the
+    caller's own). Bold-non-default rule labels survive the
+    rewrite: the base render wraps non-default rules in
+    <strong>; the rewrite walks both bare and strong-wrapped
+    patterns. detectCoverage(bundle) standalone CI gate
+    helper (expectedKeys / providedKeys / missingKeys /
+    coverage ratio / isComplete). summarize uses localised
+    labels in the body + lowercases printed prefix
+    ("; impreso 2026-06-23"); fallback-key parenthetical
+    omitted on complete bundle.
+  - `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print`
+    is the FIRST print-only variant of a coverage warnings
+    panel in the package. Composes the base warnings HTML so
+    chip datum stays consistent, then swaps every visual cue
+    that depends on colour: palette swapped to monochrome via
+    !important overlay rules; severity differentiation moves
+    to BORDER WIDTH (3px critical, 2px tier, 1px unused-
+    destination) + BADGE PREFIX ("[CRITICAL]", "[CAUTION]",
+    "[INFO]") so the signal survives both monochrome printing
+    AND colour-vision differences; chips stack vertically (flex-
+    direction:column) for cleaner page breaks; address span
+    loses coloured background fill, gains hairline 1px grey
+    border, uses tabular-nums for printer-friendly digit
+    alignment. @page CSS sized to US Letter / A4. Optional
+    "Printed YYYY-MM-DD" stamp (timezone-aware). Optional
+    footer override; '' suppresses. suppressBadgePrefix opts
+    out for chrome-free renders; suppressPrintedAt for
+    stable hash-equal snapshots. extractLines per-chip plain-
+    text helper for log review without rendering HTML.
+  - `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate`
+    is the FIRST per-feature anonymise-key-rotate companion
+    in the package (parallel to the regimen-history module).
+    Runs exportSpineBatchCsvManifestAnonymise twice (once
+    per secret) and walks the lookup tables to produce a
+    rotation mapping. Three outputs: oldManifestCsv +
+    newManifestCsv (each third-party-safe) + rotationLookupCsv
+    (3-col: original + old + new pseudonym, IN-HOUSE only
+    PHI). FOURTH output rotationLookupCsvWithoutOriginalNames
+    (2-col: old + new pseudonym, safe to share with the
+    third-party printer so they can update their lookup
+    table without seeing source PHI). Both secrets enforced
+    at >= 32 chars. oldSecret === newSecret ACCEPTED (not an
+    error) but flagged noOpRotation=true. collisionDetected =
+    OR of both anonymise results. nameStrategy='redacted'
+    always produces noOpRotation=true. countChanges /
+    summarize / detectRedactedEntries helpers parallel the
+    existing anonymise + key-rotate idioms.
+  - `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav`
+    is the FIRST keyboard-navigation helper in the package.
+    Composes the search-input render and exposes
+    focusableOrder (flat array in tab order; index 0 always
+    search input, subsequent entries TOC rows with cardIndex
+    + displayName attached) + keyMap (per-element bindings
+    array of {key, targetId}). Default bindings: search
+    input row ArrowDown -> first row, Home -> first, End ->
+    last; per row ArrowDown -> next (omitted on last row to
+    allow browser tab-out), ArrowUp -> previous OR back to
+    search, Home / End -> first / last, Escape -> search.
+    Honest scope: ships the SCAFFOLDING (focusable order +
+    keyMap); the keydown handler itself is intentionally
+    NOT shipped. A host page wires it in 8 lines:
+      document.addEventListener('keydown', (e) => {
+        const fromId = document.activeElement?.id;
+        const target = json[fromId]?.[e.key];
+        if (target) document.getElementById(target)?.focus();
+      });
+    suppressHomeEndBindings / suppressEscapeBinding opt-outs
+    for host pages that bind those keys to their own
+    behaviour. resolveTarget(result, fromId, key) one-shot
+    helper (returns undefined when no binding matches,
+    letting the host fall through to default browser
+    behaviour). exportAsJson nested record shape for direct
+    JSON.stringify to the browser.
+  - Module-domain-noun prefix discipline continues:
+    AnonymiseKeyRotateBulkCliSummaryJson (not Json),
+    QuietHoursCalendarPrintableI18nResult (not I18nResult),
+    BccTierPolicyCoverageWarningsHtmlPrintResult (not
+    PrintResult), SpineBatchCsvManifestAnonymiseKeyRotate
+    Result (not KeyRotateResult), EmergencyCardSearchInput
+    KeyboardNavResult (not KeyboardNavResult — the
+    EmergencyCardSearchInput prefix is preserved). Every
+    tick 26 export uses a module-prefixed name where any
+    generic name could have collided.
+  - 16 clean ticks in a row (no fixup commits, no force-push,
+    no revert). Every commit revertible in isolation; every
+    commit has its own test suite; every commit passes the
+    full @med/utils gate in isolation AND in batch.
+  - Tier 1R half-closed (5 of #236-#245 shipped this tick;
+    #237 prometheus, #239 multipage, #241 i18n, #243
+    coverage-report, #245 i18n carried forward). Tier 1S
+    (10 fresh candidates, #246-#255) refilled with derivative
+    composition candidates extending each of the 5 modules
+    shipped this tick (ndjson-tee + coverage-report for bulk-
+    cli-summary-json, coverage-report + multipage for
+    printable-i18n, binder-spine + i18n for warnings-html-
+    print, cli-summary + bulk for spine-manifest-anonymise-
+    key-rotate, aria-live + vim-bindings for keyboard-nav).
+  - Hardware corner cases handled this tick: regex tag
+    extraction from the leading [...] of cli-summary lines
+    (defensive fallback to default tag on malformed lines),
+    NDJSON line-per-object stream format (one transition per
+    line, batch last so tail -1 surfaces the verdict), worst-
+    wins multi-cohort verdict precedence, two-pass HMAC
+    rotation (deduplicated subtle calls per distinct source
+    name), no-op rotation detection via every() (true on
+    empty input — graceful), in-house vs third-party CSV
+    separation (rotationLookupCsv contains PHI;
+    rotationLookupCsvWithoutOriginalNames safe to share),
+    monochrome severity differentiation via border width +
+    badge prefix (survives B&W printing AND colour-vision
+    differences), @page CSS for browser print dialog defaults,
+    timezone-aware printed-on date formatting (Intl.DateTime
+    Format), per-locale string table fallback to EN with
+    explicit missingKeys list, bold-non-default rule label
+    rewrite covering both bare + <strong>-wrapped patterns,
+    keyMap edge cases (empty TOC -> empty bindings list for
+    search input, single-row TOC -> ArrowDown omitted on
+    only row, no binding -> resolveTarget returns undefined
+    for default browser behaviour).
 
 - 2026-06-23 12:23 PDT — tick 25: 5 features shipped.
   Commits: 8bea315 regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary,
