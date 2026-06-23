@@ -132,3 +132,4 @@ export * from './regimen-snapshot-archive-history-rollup-csv-export-merge-anonym
 export * from './regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate';
 export * from './regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk';
 export * from './dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar';
+export * from './followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy';
