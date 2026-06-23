@@ -147,3 +147,4 @@ export * from './refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binde
 export * from './prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-grouped-html';
 export * from './regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export';
 export * from './dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html';
+export * from './followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report';
