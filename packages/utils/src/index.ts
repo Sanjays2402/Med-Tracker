@@ -145,3 +145,4 @@ export * from './dose-export-csv-import-roundtrip-validator-summary-text-slack-t
 export * from './followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-suppress-self-cc';
 export * from './refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-color-coding';
 export * from './prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-grouped-html';
+export * from './regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-csv-export';
