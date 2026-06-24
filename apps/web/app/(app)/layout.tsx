@@ -17,6 +17,7 @@ import { useTheme } from '../../lib/use-theme';
 import { PillMark } from '../../components/uikit';
 import { CommandPalette } from '../../components/CommandPalette';
 import { ToastProvider } from '../../components/Toast';
+import { KeyboardHelp } from '../../components/KeyboardHelp';
 
 const NAV = [
   { href: '/dashboard', label: 'Today at a glance', short: 'Glance', icon: Dashboard },
@@ -138,6 +139,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <CommandKHint />
 
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window === 'undefined') return;
+              const ev = new KeyboardEvent('keydown', { key: '?', bubbles: true });
+              window.dispatchEvent(ev);
+            }}
+            className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]"
+            aria-label="Keyboard shortcuts"
+            title="Keyboard shortcuts (?)"
+          >
+            <span className="tabular text-[13px] font-medium">?</span>
+          </button>
+
           <Link
             href="/notifications"
             className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]"
@@ -160,6 +175,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </main>
       </div>
       <CommandPalette />
+      <KeyboardHelp />
     </div>
     </ToastProvider>
   );
