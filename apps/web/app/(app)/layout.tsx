@@ -16,6 +16,7 @@ import {
 import { useTheme } from '../../lib/use-theme';
 import { PillMark } from '../../components/uikit';
 import { CommandPalette } from '../../components/CommandPalette';
+import { ToastProvider } from '../../components/Toast';
 
 const NAV = [
   { href: '/dashboard', label: 'Today at a glance', short: 'Glance', icon: Dashboard },
@@ -37,6 +38,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       window.matchMedia?.('(prefers-color-scheme: dark)').matches);
 
   return (
+    <ToastProvider>
     <div className="min-h-screen flex relative">
       {/* Sidebar */}
       <aside
@@ -159,6 +161,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
       <CommandPalette />
     </div>
+    </ToastProvider>
   );
 }
 

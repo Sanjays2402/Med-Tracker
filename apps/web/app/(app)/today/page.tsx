@@ -16,6 +16,7 @@ import {
 import { DayRail } from '../../../components/DayRail';
 import { listTodayDoses, logDose, undoDose } from '../../../lib/data';
 import type { DoseEvent } from '../../../lib/types';
+import { useToast } from '../../../components/Toast';
 
 export default function TodayPage() {
   const [doses, setDoses] = React.useState<DoseEvent[] | null>(null);
@@ -23,6 +24,7 @@ export default function TodayPage() {
   const [busy, setBusy] = React.useState<string | null>(null);
   const [pop, setPop] = React.useState<string | null>(null);
   const [now, setNow] = React.useState(() => Date.now());
+  const { toast } = useToast();
 
   React.useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30_000);
@@ -41,6 +43,7 @@ export default function TodayPage() {
 
   async function act(id: string, status: 'taken' | 'skipped') {
     setBusy(id);
+    const dose = (doses ?? []).find((d) => d.id === id);
     try {
       await logDose(id, status);
       setDoses((prev) =>
@@ -54,8 +57,23 @@ export default function TodayPage() {
         setPop(id);
         setTimeout(() => setPop(null), 1000);
       }
+      // Show a confirming toast with Undo. Dedup by dose id so spamming Take
+      // doesn't pile up identical toasts.
+      const name = dose ? `${dose.medicationName}${dose.strength ? ' ' + dose.strength : ''}` : 'Dose';
+      toast({
+        id: `dose-${id}`,
+        kind: status === 'taken' ? 'success' : 'info',
+        title: status === 'taken' ? `${name} taken` : `${name} skipped`,
+        description: status === 'taken'
+          ? new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+          : 'You can still log it later from history.',
+        action: { label: 'Undo', run: () => void undo(id) },
+        durationMs: 5000,
+      });
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not log that dose.');
+      const msg = e instanceof Error ? e.message : 'Could not log that dose.';
+      setError(msg);
+      toast({ kind: 'error', title: 'Could not log that dose', description: msg });
     } finally {
       setBusy(null);
     }
@@ -70,8 +88,11 @@ export default function TodayPage() {
           d.id === id ? { ...d, status: 'pending', takenAt: undefined } : d,
         ),
       );
+      toast({ id: `dose-${id}`, kind: 'info', title: 'Dose returned to pending', durationMs: 2800 });
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not undo that.');
+      const msg = e instanceof Error ? e.message : 'Could not undo that.';
+      setError(msg);
+      toast({ kind: 'error', title: 'Could not undo', description: msg });
     } finally {
       setBusy(null);
     }
