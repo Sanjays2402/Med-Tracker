@@ -15,6 +15,7 @@ import {
 } from '@med/icons';
 import { useTheme } from '../../lib/use-theme';
 import { PillMark } from '../../components/uikit';
+import { CommandPalette } from '../../components/CommandPalette';
 
 const NAV = [
   { href: '/dashboard', label: 'Today at a glance', short: 'Glance', icon: Dashboard },
@@ -133,6 +134,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
+          <CommandKHint />
+
           <Link
             href="/notifications"
             className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]"
@@ -154,7 +157,51 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
+      <CommandPalette />
     </div>
+  );
+}
+
+/**
+ * Subtle pill-shaped ⌘K hint that doubles as a click-to-open trigger.
+ * Renders only on viewports wide enough to show the keyboard shortcut.
+ */
+function CommandKHint() {
+  const [mac, setMac] = React.useState<boolean | null>(null);
+  React.useEffect(() => {
+    if (typeof navigator !== 'undefined') {
+      // userAgentData where available, else userAgent. Either way: deterministic local hint.
+      const ua = navigator.userAgent || '';
+      setMac(/Mac|iPhone|iPad/.test(ua));
+    }
+  }, []);
+  function openPalette() {
+    // CommandPalette listens for ⌘K. Dispatch the same key event to open it without prop drilling.
+    if (typeof window === 'undefined') return;
+    const ev = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true });
+    window.dispatchEvent(ev);
+  }
+  return (
+    <button
+      type="button"
+      onClick={openPalette}
+      className="hidden md:inline-flex items-center gap-2 h-9 pl-3 pr-2 rounded-full text-[12.5px] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)] transition-colors"
+      style={{ border: '1px solid var(--line)' }}
+      aria-label="Open command palette"
+      title="Open command palette"
+    >
+      <span>Search or jump…</span>
+      <kbd
+        className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-md tabular text-[10.5px]"
+        style={{
+          background: 'var(--bg-sunk)',
+          border: '1px solid var(--line)',
+          color: 'var(--ink-soft)',
+        }}
+      >
+        {mac === null ? '⌘K' : mac ? '⌘K' : 'Ctrl K'}
+      </kbd>
+    </button>
   );
 }
 
