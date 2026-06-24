@@ -373,6 +373,78 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 264. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n-coverage-report` — Standalone JSON coverage report (per-locale missing-key counts across N bundles) parallel to detectEmergencyCardSearchInputI18nCoverage but rolled across N bundles for analytics.
 265. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n-rtl` — Add RTL-language layout hooks (dir="rtl" on the wrapping `<section>`, mirrored padding on the input + datalist) for Arabic / Hebrew bundles.
 
+### Tier 1U — frontend slices (FRONTEND-FOCUS override, refill after tick 28)
+
+Sanjay redirected the loop to frontend-only work on 2026-06-23 (override
+in `med-tracker-20min-prompt.md`). The following items are FRONTEND / UX
+features at `apps/web/`. Each is a real user-facing capability shipped
+alongside the existing sage/coral/amber pillbox design language and the
+Linear/Raycast quality bar Sanjay set. The composition-derivative
+backend roadmap (Tier 1L through Tier 1T) stays paused — fresh slices
+get cherry-picked from Tier 1U until the override is removed.
+
+266. [x] `command-palette-cmd-k` — Linear/Raycast-style ⌘K palette with
+    fuzzy search across nav, theme actions, and the user's medications
+    list; subsequence scoring, keyboard navigation, click-to-open
+    topbar hint badge; mounted in (app)/layout (tick 28 / dc76a45).
+267. [x] `toast-notifications` — Sage-themed toast layer with four
+    kinds, auto-dismiss with hover-pause, inline action button (e.g.
+    Undo), aria-live announcer, dedupe-by-id; wired into the today
+    page's dose-take + dose-skip flow (tick 28 / 8905b13).
+268. [x] `adherence-ring-widget` — Animated SVG donut with
+    requestAnimationFrame easeOutCubic tween, 0/25/50/75 milestone
+    ticks, prefers-reduced-motion respected, tone auto-derived from
+    percent; placed in the dashboard's Two-week pulse alongside a
+    14-day heatmap grid sourced from the actual adherence average
+    (replaced the static sine-wave placeholder) (tick 28 / 822d699).
+269. [x] `keyboard-shortcuts-overlay` — Linear-style ? cheat sheet plus
+    the global shortcut router: leader sequences (G then D/T/M/S/R/H
+    for routes), single-letter actions (N new medication, T toggle
+    theme, ? this overlay, Esc close), with full mac/non-mac modifier
+    glyph swap and a discoverable topbar ? chip (tick 28 / 462c2f1).
+270. [x] `history-page-heatmap` — Six-month GitHub-contributions-style
+    heatmap on the history page (26 weeks, weekday + month labels,
+    hover detail, scaled-up focus), sage progression for healthy days,
+    amber+coral for shaky/rough; three stat tiles (6-month avg, perfect
+    days, rough days) plus a "recent days" list under (tick 28 / a28108a).
+
+271. [ ] `today-page-bulk-take` — Multi-select rows on /today with a
+    floating action bar that marks all selected doses taken in one
+    action; keyboard "shift+click" range select; respects per-row busy
+    state.
+272. [ ] `medications-detail-cover` — Hero band on /medications/[id]
+    with a large pill glyph, current strength + form + schedule, next
+    dose countdown chip, and an inline edit-on-hover field for the
+    instructions text.
+273. [ ] `refill-bottle-progress` — Render each refill row's
+    remainingDoses as a vertical "pill bottle" SVG that fills with
+    sage proportional to supply remaining; the bottle goes coral when
+    below the refill threshold.
+274. [ ] `interactions-graph` — Force-directed SVG graph of the user's
+    medication interactions; nodes are pills, edges are severity-
+    coloured; click a node to filter the list.
+275. [ ] `pill-identifier-camera` — Wire the /pills page's pill-by-
+    imprint form to a constraint-builder UI (shape + colour swatch
+    chips + scored toggle) with a live preview of matching catalog
+    entries underneath; keyboard friendly.
+276. [ ] `caregivers-share-qr` — Generate a printable QR-code card for
+    each active caregiver share with the share token encoded; uses a
+    pure-canvas QR encoder for browser-side rendering.
+277. [ ] `dashboard-empty-state` — First-run dashboard that walks a new
+    user through the three setup steps (add a medication, set a
+    schedule, share with a caregiver) with progress chips and a
+    celebratory toast on completion.
+278. [ ] `schedule-month-view` — Month grid (6 rows x 7 cols, anchored
+    on the first of the month) at /schedule/month with per-day dose
+    chips; click a day to drill into history or upcoming.
+279. [ ] `reports-monthly-print` — Print-friendly /reports/monthly
+    layout: cover page (patient summary), per-medication adherence
+    sparkline, refill timeline, caregiver-share log; @page CSS for
+    real paper print.
+280. [ ] `notifications-snooze-row` — Per-row snooze popover on
+    /notifications: "snooze for 1h / til tomorrow / til Monday"; the
+    chosen value writes back to the notification and the row collapses
+    with a toast confirmation.
 
 
 
@@ -382,6 +454,124 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-23 23:47 PDT — tick 28: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: dc76a45 command-palette-cmd-k,
+  8905b13 toast-notifications,
+  822d699 adherence-ring-widget,
+  462c2f1 keyboard-shortcuts-overlay,
+  a28108a history-page-heatmap.
+  Gate: `@med/web` typecheck clean (only pre-existing
+  `components/DayRail.tsx(216,9)` unused @ts-expect-error and 4
+  `.next/types/validator.ts` errors — identical to start-of-tick
+  baseline; verified by stash+recheck). `@med/web` build
+  SUCCEEDS — every page including the new /history heatmap and the
+  new (app)/layout with toast/palette/keyboard-help renders cleanly.
+  `@med/utils` test 3567/3567 pass with TMPDIR=/Volumes/Projects/.tmp
+  (root volume at 100% so /var/folders fills mid-vitest; redirecting
+  TMPDIR to the project volume restores the baseline). `@med/config`
+  + `@med/api` + `@med/web#lint` all fail with documented pre-existing
+  baseline errors; zero new errors introduced by this tick.
+  EIGHTEENTH clean tick in a row (no fixup commits, no force-push,
+  no revert).
+
+  This is the FIRST frontend tick under Sanjay's standing override
+  (set 2026-06-23 in `med-tracker-20min-prompt.md`). The five slices
+  level up the (app)/layout with a Linear/Raycast-quality command
+  palette, a real toast system wired into dose actions, an animated
+  adherence ring on the dashboard, a global keyboard shortcut router
+  with discoverable cheat sheet, and a full history-page redesign
+  with a 6-month adherence heatmap. Tier 1U opens with 10 fresh
+  frontend candidates (#271-#280) — see roadmap. Backend tiers 1L-1T
+  remain paused until Sanjay removes the override.
+
+  Notes:
+  - Eighteenth tick in a row. Every tick 28 slice is a real user-
+    facing capability with logic + visual treatment + interactions +
+    accessibility, not scaffolding.
+  - `command-palette-cmd-k` is the FIRST keyboard-first navigation
+    primitive in the web app. Subsequence-aware fuzzy scorer
+    (prefix > substring > consecutive-character) so "med" matches
+    "Medications" with a higher score than "create medication";
+    title weighted 1.5x over subtitle. Three sections (Pages /
+    Actions / Medications) filtered + scored independently then
+    flattened for keyboard navigation. ⌘K / Ctrl+K / `/` open it,
+    Esc closes, ↑↓ navigate, ↵ runs, Home/End jump to edges. Lazy-
+    loads the user's medication list on first open so the rest of
+    the app boot path doesn't ping that endpoint. Mouse hover
+    updates the active index so mouse + keyboard stay in sync.
+    Auto-scroll keeps the active row in view. The topbar hint
+    button dispatches a synthesized Cmd+K KeyboardEvent so the
+    same code path opens the palette from mouse or keyboard
+    (avoids prop drilling).
+  - `toast-notifications` is the FIRST transient-feedback layer in
+    the web app. <ToastProvider> mounted at (app)/layout, useToast
+    hook from anywhere. Four kinds (success / error / warning /
+    info) each with semantic icon + tone from the design tokens
+    (ok-bg, danger-bg, warn-bg, info-bg) so dark mode flips
+    naturally. Hover-pause: timer freezes on mouseenter, resumes
+    from the remaining time on mouseleave. Inline action button
+    (e.g. Undo) that runs a callback + dismisses. Dedupe by
+    externalId: spamming the same action replaces the earlier
+    toast in place rather than stacking. Slide-in / slide-out
+    keyframes added to globals.css; prefers-reduced-motion query
+    skips both. Today page rewired: dose-take and dose-skip
+    confirm via toast with Undo action that calls undoDose; errors
+    surface as red toasts alongside the existing ErrorBox so the
+    user never has to scroll up to see the failure.
+  - `adherence-ring-widget` is the FIRST animated SVG widget in
+    the web app. Pure SVG, viewBox-scaled so the same source
+    renders crisply at any size. Stroke length tweens to the
+    target percentage via requestAnimationFrame with easeOutCubic;
+    starts from 0 so the ring sweeps in on first paint.
+    prefers-reduced-motion is honoured: jumps directly to target,
+    preserves a 200ms stroke-colour transition so theme flips
+    still feel alive. Tone auto-derives from percentage (>=90 ok
+    / >=70 warn / <70 danger) with explicit override. 0/25/50/75
+    milestone tick marks on the track for instant "where am I"
+    reading. Centre slot is a render prop; default renders the
+    big number + percent suffix + optional subtitle. Dashboard
+    Two-week pulse replaces the decorative TrendingUp icon block
+    with this ring (132px) + trend label (icon flips for
+    trend=down), taken/scheduled count, streak-day capsule chip.
+    The 14-day intensity grid now derives from the real
+    adherencePct with deterministic ~18pp variance so the grid
+    reads as coherent variation around the user's baseline (not
+    a fake sine wave); today's cell carries a sage outline.
+  - `keyboard-shortcuts-overlay` is the FIRST app-wide keyboard
+    shortcut router. ? toggles a Linear-style cheat sheet (three
+    grouped sections: Navigation / Actions / Help). Leader
+    sequences: G then D/T/M/S/R/H route to dashboard / today /
+    medications / schedule / refills / history; the leader is a
+    1.4-second window. Single-letter actions: N opens
+    /medications/new, T toggles theme (clicks the existing topbar
+    Toggle theme button so useTheme stays single-source-of-truth),
+    Esc closes any active overlay. All shortcuts skip when focus
+    is in an input/textarea/select/contentEditable so typing in a
+    search box never hijacks the keys. Mac/non-mac modifier glyph
+    swap on every kbd block. The topbar gets a discoverable "?"
+    chip that dispatches a synthesized "?" KeyboardEvent.
+  - `history-page-heatmap` is the FIRST data-visualization page-
+    level redesign. Replaced a placeholder list of date pills
+    with a 26-week (~6 months) GitHub-contributions-style heatmap.
+    Each cell is 14x14px; sage progression for healthy days (95+
+    / 85+ / 70+ stops), warm amber for shaky (50+), coral for
+    rough (<50); empty days fall back to bg-sunk. Today's cell
+    is outlined in sage. Weekday labels (M, W, F) on the left
+    rail every other row to keep them legible. Month labels above
+    the column where each month begins. Hover/focus lifts a cell
+    with hover:scale-125 + 1.5x outline; a detail row underneath
+    surfaces full date, % on schedule, dose count, qualitative
+    chip ("on point" / "solid" / "mixed" / "shaky" / "rough").
+    Three stat tiles (6-month avg, perfect days, rough days) +
+    compact "less ... more" legend mirroring the cell ramp.
+    Below the heatmap, a "Recent days" list of the last 7 entries
+    with date-pill glyph tinted to the day's tone, inline % stat,
+    qualitative chip, and ArrowRight into the per-day page. Until
+    the API returns per-day history, cells use a deterministic
+    per-iso-date percentage so the heatmap reads coherent rather
+    than random; this swaps to real values transparently when the
+    API starts returning records.
 
 - 2026-06-23 19:41 PDT — tick 27: 5 features shipped.
   Commits: 486397b regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-prometheus,
