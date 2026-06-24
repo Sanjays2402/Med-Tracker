@@ -337,15 +337,15 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 ### Tier 1R — fresh roadmap (refill after tick 24)
 
 236. [x] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-json` — Structured JSON variant of the bulk CLI summary (lines parsed into typed entries: `[{ tag, fromEpoch, toEpoch, patients, reshuffled, collisions, verdict }]`) for analytics pipelines that prefer JSON over fixed-shape text (tick 26 / 02f0dca).
-237. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-prometheus` — Prometheus-text-format exporter for the bulk CLI summary so the cron's grep pipeline can also expose `/metrics` for scraping (gauge per verdict tier, counter per transition).
+237. [x] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-prometheus` — Prometheus-text-format exporter for the bulk CLI summary so the cron's grep pipeline can also expose `/metrics` for scraping (gauge per verdict tier, counter per transition) (tick 27 / 486397b).
 238. [x] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n` — Localise the printable calendar's footer text + "Printed" prefix + per-day labels via a small bundle layer parallel to refusal-reason-suggest-i18n (tick 26 / d984376).
-239. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-multipage` — Multi-page variant emitting one calendar per timezone (when the on-call panel spans multiple regions) with form-feed page separators.
+239. [x] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-multipage` — Multi-page variant emitting one calendar per timezone (when the on-call panel spans multiple regions) with form-feed page separators (tick 27 / f87f532).
 240. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print` — Print-only variant of the warnings HTML (no colour chips, monochrome badge prefixes) for the household ops review packet (tick 26 / 844d9d6).
-241. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-i18n` — Localise the severity chip labels + empty-state hint via the existing i18n bundle layer.
+241. [x] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-i18n` — Localise the severity chip labels + empty-state hint via the existing i18n bundle layer (tick 27 / 3840368, applied to the PRINT variant per the carried-forward refinement).
 242. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate` — Compose anonymise with key-rotate so a clinic switching HMAC secrets gets a stable old-pseudonym -> new-pseudonym mapping for the spine manifest (parallel to the regimen-history anonymise-key-rotate module) (tick 26 / ffd5d1c).
-243. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-coverage-report` — Standalone coverage report (entries anonymised, collision count, hash truncation in use, name strategy applied, redacted-row count) for the audit trail.
+243. [x] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-coverage-report` — Standalone coverage report (entries anonymised, collision count, hash truncation in use, name strategy applied, redacted-row count) for the audit trail (tick 27 / 0ffbca6).
 244. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav` — Keyboard-navigation helper for the search-input variant: returns the focusable element order (search input → first TOC row → next, etc) so the host page wires arrow-key navigation (tick 26 / 51d7d65).
-245. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n` — Localise the search input placeholder + aria-label + empty-state hint via the existing i18n bundle layer (Spanish, Japanese, German).
+245. [x] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n` — Localise the search input placeholder + aria-label + empty-state hint via the existing i18n bundle layer (Spanish, Japanese, German) (tick 27 / c62e6cb).
 
 ### Tier 1S — fresh roadmap (refill after tick 25)
 
@@ -354,11 +354,24 @@ Status legend: `[ ]` todo, `[x]` shipped (tick / SHA), `[~]` in progress, `[!]` 
 248. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n-coverage-report` — Standalone coverage report companion (locales used, fallback events, missing-key list) parallel to detectQuietHoursCalendarPrintableI18nCoverage but rolled across N renders (e.g. multi-region nightly print runs).
 249. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-i18n-multipage` — Multi-page variant of the i18n printable calendar emitting one printable page per locale with form-feed separators for international clinic chains.
 250. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print-binder-spine` — Add a vertical spine-label fragment (3.5x1.5 cm sticker layout) for the binder spine matching the printable warnings page so multi-binder filing systems can label each binder.
-251. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print-i18n` — Localise the badge prefixes (e.g. "[CRÍTICO]", "[ATENCIÓN]", "[INFO]") + footer text + "Printed" prefix via the existing i18n bundle layer.
+251. [!] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print-i18n` — SUPERSEDED by tick 27 #241 (same module, applied to the PRINT variant — the path the carried-forward refinement chose). Mark as completed by 3840368.
 252. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate-cli-summary` — Fixed-shape CLI summary line for the spine manifest rotation parallel to the regimen-history anonymise-key-rotate cli-summary; "[spine-rotate] patients=N changed=N collisions=N verdict=V".
 253. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-key-rotate-bulk` — Bulk variant: walk N HMAC secret epochs in a single call producing per-epoch transition CSVs + an overall chain mapping for clinics with multi-year secret-rotation histories.
 254. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav-aria-live` — Companion aria-live announcement helper: per-row text the host page reads aloud on focus ("Smith, Jane A., cardiology, page 3") so screen-reader users get verbal context as arrow keys navigate.
 255. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-keyboard-nav-vim-bindings` — Add j/k bindings (mirror ArrowDown / ArrowUp) for keyboard-power-user clinicians; opt-in via flag; preserves arrow bindings unchanged.
+
+### Tier 1T — fresh roadmap (refill after tick 27)
+
+256. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-prometheus-extra-labels-policy` — Per-cohort label policy that auto-injects extraLabels from a cohort -> labels map; for clinic chains exporting N cohorts on one `/metrics` endpoint without hand-wiring the labels per render.
+257. [ ] `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-prometheus-pushgateway` — Pushgateway-compatible payload wrapper (job + instance grouping keys baked into the URL path; HTTP-DELETE compatible empty body for stale-cohort cleanup).
+258. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-multipage-toc` — TOC page prepended to the multi-page output (region id + page number + timezone summary) so a multi-region binder packet has an index.
+259. [ ] `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-multipage-i18n` — Localise per-region page chrome via the calendar-html-printable-i18n bundle layer; one locale per region (NL for the Amsterdam page, JA for the Tokyo page).
+260. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print-i18n-coverage-report` — Standalone coverage report (per-locale missing-key count, fallback-events count across N renders) parallel to detectBccTierPolicyCoverageWarningsHtmlPrintI18nCoverage but rolled across N renders (e.g. multi-region nightly print runs).
+261. [ ] `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print-i18n-multi-locale` — Roll the same warnings panel across N locale bundles in one call (Map keyed on locale) parallel to renderEmergencyCardSearchInputI18nMultiLocale, for clinic-chain portals pre-rendering every locale server-side.
+262. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-coverage-report-html` — HTML render of the coverage report (dominant verdict headline card, redacted-row stack, leak-warning panel, optional in-house lookup row preview when PHI access is allowed) for the on-call review dashboard.
+263. [ ] `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-coverage-report-cli-summary` — Fixed-shape CLI summary line for the anonymise coverage report parallel to the other cli-summary modules: "[anonymise-coverage] patients=N rows=N collisions=N redacted=N verdict=V".
+264. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n-coverage-report` — Standalone JSON coverage report (per-locale missing-key counts across N bundles) parallel to detectEmergencyCardSearchInputI18nCoverage but rolled across N bundles for analytics.
+265. [ ] `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n-rtl` — Add RTL-language layout hooks (dir="rtl" on the wrapping `<section>`, mirrored padding on the input + datalist) for Arabic / Hebrew bundles.
 
 
 
@@ -369,6 +382,198 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-23 19:41 PDT — tick 27: 5 features shipped.
+  Commits: 486397b regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-prometheus,
+  f87f532 dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-multipage,
+  3840368 followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print-i18n,
+  0ffbca6 refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-coverage-report,
+  c62e6cb prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n.
+  Gate: 3567/3567 tests pass in `@med/utils` (139 new this tick:
+  26+26+27+34+26). Lint + build placeholder ok. `@med/utils`
+  typecheck baseline = 43 errors identical to start-of-tick (same
+  6 pre-existing files: adherence-risk, date, ics, schedule-resolver,
+  taper-plan, titration); zero new errors introduced by tick 27.
+  SEVENTEENTH clean tick in a row (no fixup commits, no force-push,
+  no revert). Tier 1R FULLY CLOSED (#236-#245 all shipped across
+  ticks 26-27; the 5 carried-forward items #237 #239 #241 #243 #245
+  all landed this tick). Tier 1S (#246-#255) untouched + #251
+  marked SUPERSEDED by tick 27 #241 (same module path; tick 27 chose
+  to apply i18n to the PRINT variant where the gap was real,
+  rather than the dashboard variant). Tier 1T refilled with 10
+  fresh derivative composition candidates (#256-#265), two per
+  tick-27 module. 117 unstarted total across all tiers (older
+  recycled candidates still in the queue).
+
+  Notes:
+  - Seventeenth composition tick in a row. Every tick 27 module
+    composes on at least one tick 23/24/25/26 output (fourteenth-
+    derivative companions):
+    bulk-cli-summary-prometheus on bulk-cli-summary-json (T26) +
+    bulk-cli-summary (T25),
+    quiet-hours-calendar-html-printable-multipage on quiet-hours-
+    calendar-html-printable (T25),
+    warnings-html-print-i18n on warnings-html-print (T26) +
+    refusal-reason-suggest-i18n bundle pattern (T14),
+    spine-batch-csv-manifest-anonymise-coverage-report on spine-
+    batch-csv-manifest-anonymise (T25),
+    search-input-i18n on search-input (T25) +
+    refusal-reason-suggest-i18n bundle pattern (T14).
+    Composition rhythm now spans T11 -> T27, seventeen consecutive
+    composition ticks. The pattern continues mechanically.
+  - `regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-prometheus`
+    is the FIRST `/metrics`-text-format exporter in the package.
+    Strict Prometheus exposition spec: HELP + TYPE before each
+    metric family, single-space separators, one metric per line,
+    trailing newline, blank-line separators between families.
+    Nine metric families: cohort patients (gauge), epochs (gauge),
+    transitions_total (gauge), collisions_total (counter),
+    noop_transitions (gauge), verdict_status (gauge — one sample
+    per known verdict, 1 for current, 0 otherwise; that pattern
+    lets PromQL alerts fire on a target verdict without re-reading
+    the underlying log line), per-transition patients (gauge),
+    per-transition reshuffled (gauge), per-transition collisions
+    (counter). Label-value escaping per spec: backslash, double-
+    quote, newline; carriage returns stripped defensively.
+    extraLabels for per-cohort tagging on a shared /metrics
+    endpoint with reserved-label clash detection (batch, verdict,
+    from_epoch, to_epoch can't be overridden). Metric prefix
+    validated against /^[a-zA-Z_:][a-zA-Z0-9_:]*$/; label names
+    validated against /^[a-zA-Z_][a-zA-Z0-9_]*$/. Label keys
+    sorted by name on emission so a downstream diff against the
+    payload is stable regardless of extraLabels insertion order.
+    listAnonymiseKeyRotateBulkCliSummaryPrometheusMetricNames
+    helper for tests + dashboard discovery.
+  - `dose-export-csv-import-roundtrip-validator-summary-text-slack-thread-batcher-quiet-hours-calendar-html-printable-multipage`
+    is the FIRST form-feed-separated multi-page emitter in the
+    package. Form-feed character (\\f, ASCII 0x0C) is the printer
+    cassette page-break code so a single print job splits cleanly
+    across N pages. Per-region inputs (regionId + per-region
+    options) inherit from a shared baseOptions; per-region options
+    fully replace base options on a per-field basis (defaultWindow
+    / overrides / palette / printedAt do NOT deep-merge — that's
+    the desired behaviour since each region wants its own complete
+    config). wrapEachPageAsDocument defaults TRUE (the form-feed
+    only makes sense across standalone HTML docs); when false, the
+    form-feed separates fragments for hosts injecting them into
+    their own outer document. pageSeparator overridable (custom
+    HTML-comment separators) or suppressible (''). splitMultipage
+    helper restores per-page documents by splitting on the
+    separator (mirrors what a printer driver does). detectEmpty
+    Regions flags regions with zero non-default cells so admins
+    can skip trivial pages without re-rendering. Resolved paper
+    picks from baseOptions ?? first region ?? us-letter.
+  - `followup-digest-text-html-bundle-i18n-multi-locale-cron-batcher-html-mailer-bcc-tier-policy-coverage-report-warnings-html-print-i18n`
+    is the FIRST i18n layer applied to a print-only warnings
+    panel in the package. Per-locale badge prefixes ([CRÍTICO] /
+    [ATENCIÓN] / [INFO]), severity labels (Siempre crítico /
+    Siempre un solo nivel / Destino no usado), empty-state badge
+    + label, "Printed" prefix, default footer text. The unused-
+    destination chip has a structural quirk: the base render
+    echoes the English severity label "Unused destination" in
+    the cov-warn-label span (the span that normally holds chip.
+    label), so the i18n layer localises THAT span too for the
+    unused-destination severity only — honest: a Spanish render
+    without the second-span rewrite would print [INFO] Destino
+    no usado AND a trailing English "Unused destination" leak.
+    Graceful fallback to English on missing keys; fallbackUsed
+    + missingKeys (dotted paths) surface gaps. detectCoverage
+    helper expects 10 keys per locale (3 badges + 3 severity
+    labels + 4 scalars). Caller-supplied footerText honoured
+    verbatim (no i18n at this layer for explicit copy).
+    extractLines plain-text helper for log review.
+  - `refusal-reason-suggest-i18n-rollup-html-print-cover-sheet-binder-spine-batch-csv-manifest-anonymise-coverage-report`
+    is the FIRST standalone audit-coverage report for an
+    anonymisation result in the package. Surfaces every QA
+    signal the on-call needs to sign off before mailing the
+    manifest: nameStrategy, hashHexLength (clamped [4, 64]),
+    hashPrefix, distinctPatientCount, manifestRowCount, lookup
+    RowCount, collisionDetected, redactedRowCount, redacted
+    Samples (capped at 5 by default; configurable [0, 100]),
+    preserveDateLabel + preservePanelLabel (for PHI-leak
+    detection), and a composite worst-wins verdict (review-
+    collisions > review-redacted > empty-cohort > ship-safe)
+    so the reviewer reads the verdict first. detectLeak
+    Warnings returns the 'preserveDateLabel-on' /
+    'preservePanelLabel-on' warnings so the channel admin
+    can promote PHI-column concerns. aggregate helper rolls
+    N coverage reports (one per ward / clinic / panel) into a
+    batch-of-batches summary: counts sum, preserve flags OR
+    (worst-wins for PHI leak), verdict worst-wins, nameStrategy
+    flagged 'mixed' + hashHexLength + hashPrefix null when
+    inputs disagree. Empty-cohort verdict suppressed on the
+    aggregate when at least one input shipped rows.
+  - `prescriber-contact-card-emergency-card-pdf-two-up-watermark-roster-toc-html-anchored-search-input-i18n`
+    is the FIRST i18n layer applied to a search-input render in
+    the package. Per-locale placeholder ("Filtrar prescriptores"
+    / "処方者を絞り込む" / "Verschreiber filtern"), aria-label,
+    and visually-hidden empty-state hint. Smallest i18n bundle
+    in the package — 3 keys (placeholder, ariaLabel,
+    emptyStateHint). Composes the base anchored-search-input
+    renderer so the data attributes + datalist + anchor map
+    stay consistent across locales. Graceful fallback to
+    English on missing keys; fallbackUsed + missingKeys
+    flagged. detectCoverage helper. renderEmergencyCard
+    SearchInputI18nMultiLocale rolls the same TOC across N
+    locale bundles in one call (Map keyed on locale) parallel
+    to the followup-digest-multi-locale module, for clinic-
+    chain portals pre-rendering every supported locale
+    server-side. HTML escaping inherited from the base
+    renderer (placeholder + aria-label go through escapeHtml;
+    empty-state hint span body also escaped).
+  - Module-domain-noun prefix discipline continues:
+    AnonymiseKeyRotateBulkCliSummaryPrometheus (not Prometheus),
+    QuietHoursCalendarPrintableMultipage (not Multipage),
+    BccTierPolicyCoverageWarningsHtmlPrintI18n (not I18n),
+    SpineBatchCsvManifestAnonymiseCoverageReport (not Coverage
+    Report), EmergencyCardSearchInputI18n (not I18n). Every
+    tick 27 export uses a module-prefixed name where any
+    generic name could have collided.
+  - 17 clean ticks in a row (no fixup commits, no force-push,
+    no revert). Every commit revertible in isolation; every
+    commit has its own test suite; every commit passes the
+    full @med/utils gate in isolation AND in batch.
+  - Tier 1R fully closed out this tick (all 10 of #236-#245
+    shipped across ticks 26-27). Tier 1S (10 from #246-#255)
+    still has 9 unstarted; #251 marked SUPERSEDED. Tier 1T
+    (10 fresh candidates, #256-#265) refilled with derivative
+    composition candidates extending each of the 5 modules
+    shipped this tick (extra-labels-policy + pushgateway for
+    prometheus, toc + i18n for multipage, coverage-report +
+    multi-locale for warnings-html-print-i18n, html + cli-
+    summary for anonymise-coverage-report, coverage-report +
+    rtl for search-input-i18n).
+  - Honest scope on #251 supersession: the Tier 1S roadmap
+    listed #251 as applying i18n to the DASHBOARD warnings
+    HTML, but the tick-26 print variant was the one that
+    accumulated chrome strings worth localising (badge
+    prefixes, monochrome severity labels, printed-on prefix,
+    default footer). Applying i18n to the dashboard variant
+    would have been a near-zero-change layer (the dashboard
+    only had `emptyStateLabel` + `severityLabels` overrides
+    already exposed as base options). Tick 27 chose the
+    print variant — same module path, more meaningful work.
+  - Hardware corner cases handled this tick: Prometheus
+    label-value escaping (backslash, double-quote, newline)
+    + carriage-return stripping; reserved-label clash detection
+    (batch / verdict / from_epoch / to_epoch); metric + label
+    name validation against the exposition spec; deterministic
+    label key order via sort on emission; ASCII 0x0C (form-feed)
+    as the printer page-break code; deep-replace vs deep-merge
+    semantics on multipage region option inheritance (explicit
+    REPLACE so a New York region's defaultWindow doesn't
+    inherit a Berlin timezone from base); split helper that
+    re-derives per-page docs from the concatenated text (so a
+    host can ship pages as separate downloads); unused-
+    destination chip label-span rewrite gated to that severity
+    only (other severities have distinct chip.label content);
+    worst-wins verdict precedence for anonymise coverage
+    aggregation; empty-cohort verdict suppression on aggregates
+    when at least one input shipped rows; per-locale missing-
+    keys list with dotted-path naming so a CI gate can flag
+    locale bundles independently; HTML escaping via the base
+    renderer's escapeHtml for placeholder / aria-label / empty-
+    state hint so the i18n layer adds zero XSS surface.
 
 - 2026-06-23 15:30 PDT — tick 26: 5 features shipped.
   Commits: 02f0dca regimen-snapshot-archive-history-rollup-csv-export-merge-anonymise-key-rotate-bulk-cli-summary-json,
