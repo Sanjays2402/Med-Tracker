@@ -16,6 +16,7 @@ import {
 } from '../../../components/uikit';
 import { DayRail } from '../../../components/DayRail';
 import { AdherenceRing } from '../../../components/AdherenceRing';
+import { AdherenceBreakdownPopover } from '../../../components/AdherenceBreakdownPopover';
 import { getAdherence, listTodayDoses, listRefills, logDose } from '../../../lib/data';
 import type { AdherenceSummary, DoseEvent, Refill } from '../../../lib/types';
 
@@ -266,12 +267,18 @@ export default function DashboardPage() {
         >
           <div className="sheet p-5">
             <div className="flex items-center gap-5 flex-wrap">
-              <AdherenceRing
-                percent={adherencePct}
-                size={132}
-                stroke={12}
-                subtitle={`${adherence?.windowDays ?? 30}d`}
-              />
+              <AdherenceBreakdownPopover
+                taken={adherence?.taken ?? 0}
+                scheduled={adherence?.scheduled ?? 0}
+                windowDays={adherence?.windowDays ?? 30}
+              >
+                <AdherenceRing
+                  percent={adherencePct}
+                  size={132}
+                  stroke={12}
+                  subtitle={`${adherence?.windowDays ?? 30}d`}
+                />
+              </AdherenceBreakdownPopover>
               <div className="flex-1 min-w-[160px] space-y-1.5">
                 <div className="flex items-center gap-2 text-[13px] text-[var(--ink)]">
                   <TrendingUp
@@ -298,6 +305,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
                 )}
+                <div className="text-[11px] text-[var(--ink-muted)] pt-0.5">Tap the ring for the full breakdown.</div>
               </div>
             </div>
 
