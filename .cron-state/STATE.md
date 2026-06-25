@@ -464,30 +464,37 @@ now live: lib + tests/, 66 tests as of tick 29).
 281. [ ] `today-undo-toast-stack` — When several doses are taken in
     quick succession, coalesce their Undo toasts into one stacked
     "N doses taken - Undo all" rather than N separate toasts.
-282. [ ] `medications-list-search-sort` — Add an inline search box +
-    sort control (name / soonest refill / lowest supply) to the
-    /medications list with a keyboard-focusable filter chip row.
-283. [ ] `adherence-ring-detail-popover` — Click the dashboard adherence
-    ring to open a popover breaking the window into taken / skipped /
-    missed counts with per-status capsules.
-284. [ ] `refills-timeline-strip` — Horizontal timeline on /refills
-    plotting each refill's refill-by date across the next 30 days so a
-    user sees clustering at a glance; today marker + overdue zone.
+282. [x] `medications-list-search-sort` — Inline search box (name/strength/
+    form) + Name / Lowest supply / Soonest refill sort control on the
+    /medications list, keyboard-focusable chip row, "/" focuses search;
+    runout sort surfaces a per-row estimate chip (tick 30 / 4e7ed85).
+    Logic in lib/medication-sort.ts, 16 tests.
+283. [x] `adherence-ring-detail-popover` — Click the dashboard adherence
+    ring to open a popover splitting the window into taken / skipped /
+    missed: stacked mini-bar + per-status icon rows; largest-remainder
+    rounding so percentages sum to 100 (tick 30 / 77b6f77). Logic in
+    lib/adherence-breakdown.ts, 12 tests.
+284. [x] `refills-timeline-strip` — Horizontal 30-day timeline on /refills
+    plotting each refill's refill-by date with today marker, shaded
+    overdue gutter, weekly ticks, greedy lane-stacking, tone ramp
+    (tick 30 / cb56e2c). Logic in lib/refill-timeline.ts, 12 tests.
 285. [ ] `schedule-day-drilldown` — Click a day in the month grid to
     open a side panel listing that day's doses by time (composes
     month-grid expansion with a per-day time sort).
 286. [ ] `command-palette-recent` — Remember the last few command-
     palette actions/medications in localStorage and surface them as a
     "Recent" section at the top when the query is empty.
-287. [ ] `notifications-filter-tabs` — Tab row on /notifications (All /
-    Reminders / Refills / System) with counts; filters the list client-
-    side and preserves the snooze + mark-read affordances.
+287. [x] `notifications-filter-tabs` — Tab row on /notifications (All /
+    Reminders / Refills / System) with unread-aware count badges; filters
+    client-side, caregiver folds into System, snooze + mark-read preserved
+    (tick 30 / 9009729). Logic in lib/notification-filter.ts, 12 tests.
 288. [ ] `medication-supply-sparkline` — Tiny inline sparkline on each
     medication card projecting supply burndown to the run-out date
     (pure SVG polyline from remainingDoses + daily dose count).
-289. [ ] `dose-history-week-strip` — Seven-pill week strip on the
+289. [x] `dose-history-week-strip` — Seven-pill week strip on the
     medication detail page showing each of the last 7 days' adherence
-    state for that med (taken / partial / missed / none).
+    state for that med (full / partial / missed / none) with today ring +
+    summary line (tick 30 / 281d5dd). Logic in lib/week-strip.ts, 12 tests.
 290. [ ] `caregivers-activity-feed` — Per-caregiver "last viewed" feed
     on the caregiver detail page with relative timestamps and a
     scope-badge row; empty state for never-viewed shares.
@@ -516,6 +523,66 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-25 06:28 PDT — tick 30: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 4e7ed85 medications-list-search-sort,
+  cb56e2c refills-timeline-strip,
+  77b6f77 adherence-ring-detail-popover,
+  281d5dd dose-history-week-strip,
+  9009729 notifications-filter-tabs.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.2s`; all 60
+  static pages generated incl. the 4 edited routes /dashboard, /medications,
+  /notifications, /refills + /medications/[id]). `@med/web` test 130/130 pass
+  across 10 suites (66 baseline + 64 new this tick) with TMPDIR=/Volumes/
+  Projects/.tmp. `@med/web` typecheck shows only the pre-existing baseline
+  (4 .next/types/validator.ts layout-config errors + the packages/utils
+  taper-plan/titration strict-undefined baseline) — ZERO new errors in any
+  apps/web file or new lib module (verified by grepping the tsc output).
+  `@med/web` lint fails with the documented pre-existing `next lint`
+  "Invalid project directory" tooling bug — not introduced by this tick.
+  TWENTIETH clean tick in a row (no fixup commits, no force-push, no revert).
+
+  Third frontend tick under Sanjay's standing override. Five Tier 1V slices,
+  each extracting its pure-logic core into a tested lib/*.ts module — the web
+  test harness grew from 66 -> 130 tests:
+  - lib/medication-sort.ts (16) — filter predicate + dose-per-day parser +
+    run-out estimate + null-safe comparators
+  - lib/refill-timeline.ts (12) — day-delta, clamped fractional positions,
+    greedy lane assignment, gridline ticks
+  - lib/adherence-breakdown.ts (12) — taken/skipped/missed split with
+    largest-remainder rounding (percentages sum to 100)
+  - lib/week-strip.ts (12) — per-day adherence collapse + week roll-up,
+    local-date keys (no UTC drift)
+  - lib/notification-filter.ts (12) — kind->tab bucketing + unread-aware
+    per-tab counts
+  Remaining frontend backlog: 5 Tier 1U stragglers (#274-#277, #279) + 10
+  Tier 1V items (#281, #285, #286, #288, #290-#295). Backend tiers 1L-1T
+  stay paused until Sanjay removes the override.
+
+  Notes:
+  - Twentieth tick in a row. Every tick 30 slice is a real user-facing
+    capability (logic + visual treatment + interactions + a11y), tested.
+  - `medications-list-search-sort` adds the list's first sort control: Name /
+    Lowest supply / Soonest refill chips + a search box that also takes a "/"
+    focus shortcut. The runout sort divides remainingDoses by parsed doses-per-
+    day and surfaces a "~Nd left" estimate chip per row.
+  - `refills-timeline-strip` is the refills page's first data-viz: a 30-day
+    horizontal strip with a today line, shaded overdue gutter, weekly ticks,
+    and lane-stacking so coincident refill dates don't overlap. Only renders
+    with 2+ plottable refills.
+  - `adherence-ring-detail-popover` makes the dashboard ring a click target;
+    the popover derives skipped/missed from taken-vs-scheduled (every not-taken
+    dose is missed, since the API doesn't yet expose a skipped split — honest
+    and conservative for a health app) and draws a stacked mini-bar.
+  - `dose-history-week-strip` adds a 7-pill week row to the med detail page,
+    loading 7 days of per-med history in a non-blocking effect that degrades
+    to empty days if history is unavailable.
+  - `notifications-filter-tabs` adds All/Reminders/Refills/System tabs with
+    unread-aware count badges; caregiver notifications fold into System so
+    every item lands under exactly one tab.
+  - LSP again flagged the stale-@types/react `Link cannot be used as a JSX
+    component / bigint` false positive on every edited .tsx; real tsc reports
+    those files clean. Do not chase it (see tick 29 session note).
 
 - 2026-06-25 00:30 PDT — tick 29: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: a864074 today-page-bulk-take,
