@@ -7,6 +7,7 @@ import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill } from '../../../compo
 import { listMedications } from '../../../lib/data';
 import type { Medication } from '../../../lib/types';
 import { filterMedications, sortMedications, estimatedDaysLeft, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
+import { SupplySparkline } from '../../../components/SupplySparkline';
 
 export default function MedicationsPage() {
   const [meds, setMeds] = React.useState<Medication[] | null>(null);
@@ -129,6 +130,7 @@ export default function MedicationsPage() {
                       <div className="text-sm font-medium truncate">{m.name} {m.strength && <span className="text-neutral-500 font-normal">{m.strength}</span>}</div>
                       <div className="text-xs text-neutral-500 dark:text-neutral-400 truncate">{m.schedule ?? 'No schedule'} {m.form ? `, ${m.form}` : ''}</div>
                     </div>
+                    <SupplySparkline med={m} className="hidden sm:block shrink-0" />
                     {sortBy === 'runout' && daysLeft !== null ? (
                       <Pill tone={daysLeft < 7 ? 'danger' : daysLeft < 14 ? 'warn' : 'neutral'}>
                         ~{daysLeft}d left
