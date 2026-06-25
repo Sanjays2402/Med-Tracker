@@ -408,25 +408,28 @@ get cherry-picked from Tier 1U until the override is removed.
     amber+coral for shaky/rough; three stat tiles (6-month avg, perfect
     days, rough days) plus a "recent days" list under (tick 28 / a28108a).
 
-271. [ ] `today-page-bulk-take` — Multi-select rows on /today with a
+271. [x] `today-page-bulk-take` — Multi-select rows on /today with a
     floating action bar that marks all selected doses taken in one
-    action; keyboard "shift+click" range select; respects per-row busy
-    state.
-272. [ ] `medications-detail-cover` — Hero band on /medications/[id]
-    with a large pill glyph, current strength + form + schedule, next
-    dose countdown chip, and an inline edit-on-hover field for the
-    instructions text.
-273. [ ] `refill-bottle-progress` — Render each refill row's
-    remainingDoses as a vertical "pill bottle" SVG that fills with
-    sage proportional to supply remaining; the bottle goes coral when
-    below the refill threshold.
+    action; shift+click range select; per-row busy state; selection
+    auto-prunes; bulk Undo toast (tick 29 / a864074). Logic in
+    lib/dose-selection.ts, 17 tests.
+272. [x] `medications-detail-cover` — Hero band on /medications/[id]
+    with a large pill glyph, strength + form + schedule capsules, live
+    next-dose countdown chip, and inline edit-on-hover instructions
+    (tick 29 / 9093e7a). Logic in lib/next-dose.ts, 14 tests.
+273. [x] `refill-bottle-progress` — Each refill row's remaining supply
+    rendered as a vertical "pill bottle" SVG that fills with sage
+    proportional to supply and turns coral below the refill threshold
+    (tick 29 / 4faa31b). Logic in lib/bottle-fill.ts, 11 tests.
 274. [ ] `interactions-graph` — Force-directed SVG graph of the user's
     medication interactions; nodes are pills, edges are severity-
     coloured; click a node to filter the list.
 275. [ ] `pill-identifier-camera` — Wire the /pills page's pill-by-
     imprint form to a constraint-builder UI (shape + colour swatch
     chips + scored toggle) with a live preview of matching catalog
-    entries underneath; keyboard friendly.
+    entries underneath; keyboard friendly. NOTE: the constraint builder
+    already exists on /pills as of an earlier tick; this slice is the
+    live-preview + keyboard polish layer only.
 276. [ ] `caregivers-share-qr` — Generate a printable QR-code card for
     each active caregiver share with the share token encoded; uses a
     pure-canvas QR encoder for browser-side rendering.
@@ -434,17 +437,76 @@ get cherry-picked from Tier 1U until the override is removed.
     user through the three setup steps (add a medication, set a
     schedule, share with a caregiver) with progress chips and a
     celebratory toast on completion.
-278. [ ] `schedule-month-view` — Month grid (6 rows x 7 cols, anchored
+278. [x] `schedule-month-view` — Month grid (6 rows x 7 cols, anchored
     on the first of the month) at /schedule/month with per-day dose
-    chips; click a day to drill into history or upcoming.
+    chips; prev/next month paging, Today snap, week<->month links
+    (tick 29 / 7ae21de). Logic in lib/month-grid.ts, 14 tests.
 279. [ ] `reports-monthly-print` — Print-friendly /reports/monthly
     layout: cover page (patient summary), per-medication adherence
     sparkline, refill timeline, caregiver-share log; @page CSS for
     real paper print.
-280. [ ] `notifications-snooze-row` — Per-row snooze popover on
-    /notifications: "snooze for 1h / til tomorrow / til Monday"; the
-    chosen value writes back to the notification and the row collapses
-    with a toast confirmation.
+280. [x] `notifications-snooze-row` — Per-row snooze popover on
+    /notifications: "1h / 3h / this evening / tomorrow / Monday"; the
+    chosen value writes back via snoozeNotification and the row
+    collapses with an Undo toast (tick 29 / 6afaca8). Logic in
+    lib/snooze.ts, 12 tests.
+
+### Tier 1V — frontend slices (FRONTEND-FOCUS override, refill after tick 29)
+
+Five Tier 1U items remain (#274 interactions-graph, #275 pill-identifier
+live-preview, #276 caregivers-share-qr, #277 dashboard-empty-state,
+#279 reports-monthly-print). Fresh candidates below keep the loop fed.
+Each is a real user-facing capability in apps/web matching the sage/coral/
+amber pillbox language and the Linear/Raycast bar. Prefer extracting any
+non-trivial logic into a tested lib/*.ts module (the web vitest harness is
+now live: lib + tests/, 66 tests as of tick 29).
+
+281. [ ] `today-undo-toast-stack` — When several doses are taken in
+    quick succession, coalesce their Undo toasts into one stacked
+    "N doses taken - Undo all" rather than N separate toasts.
+282. [ ] `medications-list-search-sort` — Add an inline search box +
+    sort control (name / soonest refill / lowest supply) to the
+    /medications list with a keyboard-focusable filter chip row.
+283. [ ] `adherence-ring-detail-popover` — Click the dashboard adherence
+    ring to open a popover breaking the window into taken / skipped /
+    missed counts with per-status capsules.
+284. [ ] `refills-timeline-strip` — Horizontal timeline on /refills
+    plotting each refill's refill-by date across the next 30 days so a
+    user sees clustering at a glance; today marker + overdue zone.
+285. [ ] `schedule-day-drilldown` — Click a day in the month grid to
+    open a side panel listing that day's doses by time (composes
+    month-grid expansion with a per-day time sort).
+286. [ ] `command-palette-recent` — Remember the last few command-
+    palette actions/medications in localStorage and surface them as a
+    "Recent" section at the top when the query is empty.
+287. [ ] `notifications-filter-tabs` — Tab row on /notifications (All /
+    Reminders / Refills / System) with counts; filters the list client-
+    side and preserves the snooze + mark-read affordances.
+288. [ ] `medication-supply-sparkline` — Tiny inline sparkline on each
+    medication card projecting supply burndown to the run-out date
+    (pure SVG polyline from remainingDoses + daily dose count).
+289. [ ] `dose-history-week-strip` — Seven-pill week strip on the
+    medication detail page showing each of the last 7 days' adherence
+    state for that med (taken / partial / missed / none).
+290. [ ] `caregivers-activity-feed` — Per-caregiver "last viewed" feed
+    on the caregiver detail page with relative timestamps and a
+    scope-badge row; empty state for never-viewed shares.
+291. [ ] `reports-adherence-bars` — Replace the reports page's flat
+    numbers with a per-medication horizontal bar chart (adherence %),
+    sorted worst-first, with a tone ramp (coral < 70 < amber < 90 sage).
+292. [ ] `settings-theme-preview` — Live theme preview swatches in
+    settings: render the sage/coral/amber tokens as a mini pillbox
+    card that updates as the user toggles light / dark / system.
+293. [ ] `today-progress-confetti` — When the last pending dose of the
+    day is taken, play a one-shot reduced-motion-aware sage burst over
+    the Today progress bar with a "Day complete" toast.
+294. [ ] `upcoming-grouped-by-day` — Group the /upcoming list under
+    relative day headers (Today / Tomorrow / Thu / ...) with a sticky
+    header per group and a per-day dose count.
+295. [ ] `medication-form-strength-stepper` — Replace the free-text
+    strength field in the medication form with a value + unit stepper
+    (mg / mL / IU / mcg) plus a free-text escape hatch; validates
+    against dispensable increments.
 
 
 
@@ -454,6 +516,57 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-25 00:30 PDT — tick 29: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: a864074 today-page-bulk-take,
+  9093e7a medications-detail-cover,
+  4faa31b refill-bottle-progress,
+  7ae21de schedule-month-view,
+  6afaca8 notifications-snooze-row.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 4.0s`, every
+  page incl. the new /schedule/month route prerenders cleanly). `@med/web`
+  typecheck shows only the pre-existing baseline (`components/DayRail.tsx`
+  (216,9) unused @ts-expect-error + 4 `.next/types/validator.ts` layout-
+  config errors) — identical to start-of-tick; zero new errors. `@med/web`
+  test 66/66 pass across 5 NEW suites with TMPDIR=/Volumes/Projects/.tmp.
+  `@med/web` lint fails with the documented pre-existing `next lint`
+  "Invalid project directory" tooling bug (proven identical via git stash) —
+  not introduced by this tick.
+  NINETEENTH clean tick in a row (no fixup commits, no force-push, no revert).
+
+  Second frontend tick under Sanjay's standing override. This tick stood up
+  the FIRST web-app test harness: each of the 5 slices extracts its pure-logic
+  core into a lib/*.ts module with co-located vitest tests under apps/web/
+  tests/ (the web package had zero test files before today). 66 tests now run
+  in the web package:
+  - lib/dose-selection.ts (17) — multi-select toggle/range/prune/summarize
+  - lib/next-dose.ts (14) — next-dose countdown selection + formatting
+  - lib/bottle-fill.ts (11) — refill bottle fill fraction + tone thresholds
+  - lib/month-grid.ts (14) — 6x7 calendar grid + recurrence dose counts
+  - lib/snooze.ts (12) — relative + named snooze wake-time math
+  Five Tier 1U items remain (#274-#277, #279); Tier 1V opens with 15 fresh
+  frontend candidates (#281-#295). Backend tiers 1L-1T remain paused until
+  Sanjay removes the override.
+
+  Notes:
+  - Nineteenth tick in a row. Every tick 29 slice is a real user-facing
+    capability (logic + visual treatment + interactions + a11y), tested.
+  - `today-page-bulk-take` adds the app's first multi-select surface:
+    shift+click range select against the ordered pending list, a sage
+    floating action bar with a live count, Promise.allSettled bulk take
+    that keeps rows pending on partial failure, and a one-shot bulk Undo.
+  - `medications-detail-cover` replaces the flat header with a gradient
+    hero (serif name, pill glyph, form/schedule/next-dose capsules) and
+    moves instructions into a hover-reveal inline textarea editor.
+  - `refill-bottle-progress` draws a real prescription-bottle SVG per row;
+    sage liquid level eases on change, coral below the refill threshold.
+  - `schedule-month-view` is the first calendar surface: 6x7 grid, spill-day
+    dimming, today ring, per-day chips + dose counts, month paging.
+  - `notifications-snooze-row` adds a per-row popover (outside-click/Esc
+    close, role=menu) that optimistically collapses the row + Undo toast.
+  - LSP flagged `Link cannot be used as a JSX component` on every edited
+    .tsx — a stale `@types/react@18.2.79` resolution in the LSP only; the
+    real `tsc` (@types/react 18.3) reports it clean. Verified per file.
 
 - 2026-06-23 23:47 PDT — tick 28: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: dc76a45 command-palette-cmd-k,
