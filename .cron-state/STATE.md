@@ -478,29 +478,34 @@ now live: lib + tests/, 66 tests as of tick 29).
     plotting each refill's refill-by date with today marker, shaded
     overdue gutter, weekly ticks, greedy lane-stacking, tone ramp
     (tick 30 / cb56e2c). Logic in lib/refill-timeline.ts, 12 tests.
-285. [ ] `schedule-day-drilldown` — Click a day in the month grid to
-    open a side panel listing that day's doses by time (composes
-    month-grid expansion with a per-day time sort).
-286. [ ] `command-palette-recent` — Remember the last few command-
+285. [x] `schedule-day-drilldown` — Click a day in the month grid to
+    open a side panel listing that day's doses by time, grouped
+    morning/afternoon/evening (tick 31 / 3065637). Logic in
+    lib/day-doses.ts, 18 tests.
+286. [x] `command-palette-recent` — Remember the last few command-
     palette actions/medications in localStorage and surface them as a
-    "Recent" section at the top when the query is empty.
+    "Recent" section at the top when the query is empty (tick 31 /
+    0fa6034). Logic in lib/command-recents.ts, 16 tests.
 287. [x] `notifications-filter-tabs` — Tab row on /notifications (All /
     Reminders / Refills / System) with unread-aware count badges; filters
     client-side, caregiver folds into System, snooze + mark-read preserved
     (tick 30 / 9009729). Logic in lib/notification-filter.ts, 12 tests.
-288. [ ] `medication-supply-sparkline` — Tiny inline sparkline on each
-    medication card projecting supply burndown to the run-out date
-    (pure SVG polyline from remainingDoses + daily dose count).
+288. [x] `medication-supply-sparkline` — Tiny inline supply-burndown
+    sparkline on each medications-list row projecting supply to the
+    run-out date (pure SVG polyline + area fill, tone-tinted, run-out
+    marker) (tick 31 / c28c1d7). Logic in lib/supply-sparkline.ts, 15 tests.
 289. [x] `dose-history-week-strip` — Seven-pill week strip on the
     medication detail page showing each of the last 7 days' adherence
     state for that med (full / partial / missed / none) with today ring +
     summary line (tick 30 / 281d5dd). Logic in lib/week-strip.ts, 12 tests.
-290. [ ] `caregivers-activity-feed` — Per-caregiver "last viewed" feed
-    on the caregiver detail page with relative timestamps and a
-    scope-badge row; empty state for never-viewed shares.
-291. [ ] `reports-adherence-bars` — Replace the reports page's flat
+290. [x] `caregivers-activity-feed` — Per-caregiver activity feed
+    (last-viewed / created / expiry) with relative timestamps and a
+    scope-badge row; never-viewed empty state; expiring-soon header
+    pill (tick 31 / a8af471). Logic in lib/caregiver-activity.ts, 20 tests.
+291. [x] `reports-adherence-bars` — Replace the reports page's flat
     numbers with a per-medication horizontal bar chart (adherence %),
-    sorted worst-first, with a tone ramp (coral < 70 < amber < 90 sage).
+    sorted worst-first, with a tone ramp (coral < 70 < amber < 90 sage)
+    (tick 31 / 930298c). Logic in lib/adherence-bars.ts, 17 tests.
 292. [ ] `settings-theme-preview` — Live theme preview swatches in
     settings: render the sage/coral/amber tokens as a mini pillbox
     card that updates as the user toggles light / dark / system.
@@ -515,6 +520,75 @@ now live: lib + tests/, 66 tests as of tick 29).
     (mg / mL / IU / mcg) plus a free-text escape hatch; validates
     against dispensable increments.
 
+### Tier 1W — frontend slices (FRONTEND-FOCUS override, refill after tick 31)
+
+Tick 31 closed five Tier 1U/1V items (#285, #286, #288, #290, #291). The
+remaining open backlog is now thin (5 Tier 1U stragglers #274-#277/#279 +
+5 Tier 1V items #281, #292-#295), so this tier refills the loop with fresh
+frontend-first candidates. Each is a real user-facing capability in apps/web
+matching the sage/coral/amber pillbox language and the Linear/Raycast bar.
+Prefer extracting any non-trivial logic into a tested lib/*.ts module (the web
+vitest harness is now 216 tests across 15 suites as of tick 31). Backend tiers
+1L-1T stay paused until Sanjay removes the override.
+
+296. [ ] `medications-list-density-toggle` — Comfortable / compact row
+    density toggle on the /medications list, persisted to localStorage;
+    compact hides the schedule subline + sparkline, comfortable keeps
+    them. Pure density-config model + a small persisted-pref hook.
+297. [ ] `reports-adherence-bars-window-picker` — 7d / 30d / 90d window
+    chips above the per-medication adherence bars; refetches
+    getMedicationAdherence(window) and re-tones. Pure window-option model.
+298. [ ] `schedule-day-drilldown-prev-next` — Prev/next day arrows inside
+    the day-drilldown panel (and left/right arrow keys) so a user can
+    walk days without closing the panel; composes day-doses with a
+    day-step helper (YYYY-MM-DD +/- 1, month/year rollover).
+299. [ ] `caregivers-activity-feed-sort` — Sort the caregivers LIST page
+    by most-recently-viewed / least-recently-viewed / never-viewed-first
+    using the caregiver-activity daysSinceViewed metric; a small
+    sort-comparator module with nulls-first/last handling.
+300. [ ] `command-palette-recent-clear` — A "Clear recent" affordance in
+    the palette's Recent section header (and a confirm-on-second-press
+    micro-interaction) that wipes the localStorage recents; pure
+    clear-state-machine + the existing recents store.
+301. [ ] `today-overdue-banner` — A sticky top banner on /today when one
+    or more doses are past their scheduled time and still pending
+    ("2 doses overdue - take or skip"), with a jump-to-first-overdue
+    action; pure overdue-partition model (scheduledAt < now & pending).
+302. [ ] `medication-detail-adherence-ring` — Reuse the AdherenceRing on
+    the medication detail page showing that single med's adherence over
+    30 days (per-med taken/scheduled from getMedicationAdherence); tone
+    auto-derived, with a taken/scheduled caption.
+303. [ ] `refills-status-filter-tabs` — All / Needed / Requested / Ready
+    tab row on /refills with per-tab count badges (parallel to the
+    notifications-filter-tabs pattern); pure status->tab bucketing model.
+304. [ ] `dashboard-next-dose-countdown` — A live "next dose in 1h 12m"
+    countdown card on the dashboard derived from the soonest pending
+    dose; reuses lib/next-dose.ts, adds a 1-minute tick + a humanised
+    duration formatter (pure).
+305. [ ] `schedule-week-today-column` — Highlight the current weekday
+    column on the /schedule/week grid with a sage spine + "Today" cap,
+    and scroll it into view on mount; pure current-weekday-index helper.
+306. [ ] `notifications-group-by-day` — Group the /notifications list
+    under relative day headers (Today / Yesterday / Mon ...) with a
+    per-group count; pure created-at -> day-bucket model parallel to
+    upcoming-grouped-by-day.
+307. [ ] `medications-bulk-archive` — Multi-select rows on /medications
+    with a floating action bar to archive several at once (parallel to
+    today-page-bulk-take's selection model); reuses lib/dose-selection
+    selection primitives generalised over ids.
+308. [ ] `reports-export-format-cards` — Replace the /reports/export
+    plain list with selectable format cards (CSV / JSON / ICS / PDF)
+    showing a one-line "what's inside" + file-size estimate; pure
+    format-descriptor model.
+309. [ ] `caregiver-share-scope-editor` — On the caregiver new/detail
+    page, a scope multi-select with grouped capabilities (view vs act)
+    and a plain-language summary line ("Can view medications and
+    request refills"); pure scope-grouping + summary model.
+310. [ ] `today-progress-segments` — Replace the Today progress bar with
+    a segmented pill row (one segment per scheduled dose, filled as
+    taken / hollow as pending / coral as missed); pure dose->segment
+    model with a summary caption.
+
 
 
 (Pulled forward only after Tier 1 momentum is established. Note: the
@@ -523,6 +597,69 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-25 11:46 PDT — tick 31: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: c28c1d7 medication-supply-sparkline,
+  930298c reports-adherence-bars,
+  3065637 schedule-day-drilldown,
+  a8af471 caregivers-activity-feed,
+  0fa6034 command-palette-recent.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.2s`; all 60
+  static pages generated incl. every edited route /medications, /reports,
+  /schedule/month + /caregivers/[id]). `@med/web` test 216/216 pass across
+  15 suites (130 baseline + 86 new this tick) with TMPDIR=/Volumes/Projects/
+  .tmp. `@med/web` typecheck shows only the pre-existing baseline (4 `.next/
+  types/validator.ts` layout-config errors + the packages/utils schedule-
+  resolver/taper-plan/titration strict-undefined baseline) — ZERO new errors
+  in any apps/web file or new lib/component module (verified by grepping the
+  tsc output for every touched/created path). `@med/web` lint fails with the
+  documented pre-existing `next lint` "Invalid project directory" tooling bug
+  — not introduced by this tick.
+  TWENTY-FIRST clean tick in a row (no fixup commits, no force-push, no revert).
+
+  Fourth frontend tick under Sanjay's standing override. Five slices spanning
+  five different surfaces, each extracting its pure-logic core into a tested
+  lib/*.ts module — the web test harness grew from 130 -> 216 tests:
+  - lib/supply-sparkline.ts (15) — burndown projection (supply on day d =
+    remaining - d*perDay, clamped), fixed-horizon x / per-med y, run-out day,
+    tone from refillThresholdDays, polyline + area-path strings
+  - lib/adherence-bars.ts (17) — per-med taken/scheduled -> sorted toned bars
+    (worst-first, empties last), pct clamp, tone ramp 70/90, weighted overall,
+    worst bar, flagged-below-70 count
+  - lib/day-doses.ts (18) — single-day dose expansion (weekday + date-range
+    match like the month grid), time sort + name tiebreak, part-of-day buckets,
+    grouping
+  - lib/caregiver-activity.ts (20) — relative-time phrasing (minute->year,
+    past/future, singular/plural), expired / expiring-soon windows, ordered
+    activity feed, scope labels, summary rollup
+  - lib/command-recents.ts (16) — recents push/dedupe/cap, parse-of-garbage
+    defence, serialize round-trip, reconcile against live items
+  Remaining frontend backlog: 5 Tier 1U stragglers (#274-#277, #279) + 5
+  Tier 1V items (#281, #292-#295) + the fresh Tier 1W below. Backend tiers
+  1L-1T stay paused until Sanjay removes the override.
+
+  Notes:
+  - Twenty-first tick in a row. Every tick 31 slice is a real user-facing
+    capability (logic + visual treatment + interactions + a11y), tested.
+  - `medication-supply-sparkline` adds the medications list's first per-row
+    data-viz: a fixed-horizon burndown so steeper lines = sooner run-out and
+    rows are visually comparable; a marker sits where the bottle hits empty.
+  - `reports-adherence-bars` turns the flat adherence number into a
+    per-medication bar chart sorted worst-first with a tone ramp; needed a new
+    deterministic getMedicationAdherence() in lib/data.ts (API-aware, stable
+    per-med hash fallback). role=meter bars, flagged-count header chip.
+  - `schedule-day-drilldown` makes month-grid day cells clickable, opening a
+    slide-in panel (new slideInRight keyframe + reduced-motion entry) listing
+    that day's doses grouped morning/afternoon/evening with 12h time chips.
+  - `caregivers-activity-feed` replaces the static two-row activity block with
+    a real feed carrying relative timestamps + toned dots, an expiring-soon
+    header pill, and readable scope labels.
+  - `command-palette-recent` adds a Recent section (empty-query only) backed by
+    localStorage, reconciled against live items so deleted meds drop out and
+    renames update; all storage access best-effort for private mode / SSR.
+  - LSP again flagged the stale-@types/react `Link cannot be used as a JSX
+    component / bigint` false positive on every edited .tsx; real tsc reports
+    those files clean. Do not chase it (see tick 29/30 session notes).
 
 - 2026-06-25 06:28 PDT — tick 30: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 4e7ed85 medications-list-search-sort,
