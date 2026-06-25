@@ -6,9 +6,11 @@ import { useParams } from 'next/navigation';
 import { Pill as PillIcon, Calendar, ChartBar, Bell, CalendarCheck, Clock, Check, Pencil, X as XIcon } from '@med/icons';
 import { Btn, Surface, Section, ErrorBox, SkeletonRow, Pill, StatTile, formatTime, formatDate } from '../../../../components/uikit';
 import { useRouter } from 'next/navigation';
-import { getMedication, listTodayDoses, listSchedules, listRefills, logDose, getAdherence, archiveMedication, updateMedication } from '../../../../lib/data';
+import { getMedication, listTodayDoses, listSchedules, listRefills, logDose, getAdherence, archiveMedication, updateMedication, listDosesForDate } from '../../../../lib/data';
 import type { Medication, DoseEvent, ScheduleEntry, Refill, AdherenceSummary } from '../../../../lib/types';
 import { computeNextDose } from '../../../../lib/next-dose';
+import { WeekStrip } from '../../../../components/WeekStrip';
+import { localKey, type WeekStripDoseInput } from '../../../../lib/week-strip';
 
 export default function MedicationDetail() {
   const params = useParams<{ id: string }>();
@@ -21,6 +23,7 @@ export default function MedicationDetail() {
   const [schedules, setSchedules] = React.useState<ScheduleEntry[]>([]);
   const [refills, setRefills] = React.useState<Refill[]>([]);
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
+  const [weekDoses, setWeekDoses] = React.useState<Record<string, WeekStripDoseInput[]>>({});
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [now, setNow] = React.useState(() => Date.now());
@@ -53,6 +56,35 @@ export default function MedicationDetail() {
     }
   }, [id]);
   React.useEffect(() => { void load(); }, [load]);
+
+  // Last 7 days of dose history for this med, keyed by local date, for the week strip.
+  React.useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    (async () => {
+      const today = Date.now();
+      const keys: string[] = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        keys.push(localKey(d));
+      }
+      try {
+        const lists = await Promise.all(keys.map((k) => listDosesForDate(k)));
+        if (cancelled) return;
+        const map: Record<string, WeekStripDoseInput[]> = {};
+        keys.forEach((k, i) => {
+          map[k] = (lists[i] ?? [])
+            .filter((dose) => dose.medicationId === id)
+            .map((dose) => ({ scheduledAt: dose.scheduledAt, status: dose.status }));
+        });
+        setWeekDoses(map);
+      } catch {
+        // Non-fatal: the strip simply renders empty days if history can't load.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [id]);
 
   async function quickTake(doseId: string) {
     try {
@@ -289,6 +321,10 @@ export default function MedicationDetail() {
         <StatTile label="On hand" value={med.remainingDoses ?? 'n/a'} hint="doses remaining" accent={(med.remainingDoses ?? 0) < 10 ? 'danger' : (med.remainingDoses ?? 0) < 20 ? 'warn' : 'ok'} />
         <StatTile label="Refill in" value={`${med.refillThresholdDays ? med.refillThresholdDays + 'd' : 'n/a'}`} hint="threshold" />
       </div>
+
+      <Section title="This week">
+        <WeekStrip dosesByDay={weekDoses} />
+      </Section>
 
       <Section title="Doses today">
         <Surface>
