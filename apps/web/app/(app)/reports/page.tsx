@@ -4,16 +4,28 @@ import * as React from 'react';
 import Link from 'next/link';
 import { ChartBar, ChartLine, FileArrowDown } from '@med/icons';
 import { Surface, ErrorBox, SkeletonRow, Section } from '../../../components/uikit';
-import { getAdherence } from '../../../lib/data';
+import { getAdherence, getMedicationAdherence, type MedAdherenceRow } from '../../../lib/data';
 import type { AdherenceSummary } from '../../../lib/types';
+import { buildAdherenceBars, type AdherenceTone } from '../../../lib/adherence-bars';
+
+const BAR_TONE_FILL: Record<AdherenceTone, string> = {
+  ok: 'var(--ok)',
+  warn: 'var(--warn)',
+  danger: 'var(--danger)',
+};
 
 export default function ReportsPage() {
   const [summary, setSummary] = React.useState<AdherenceSummary | null>(null);
+  const [perMed, setPerMed] = React.useState<MedAdherenceRow[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
   const load = React.useCallback(async () => {
     setError(null);
-    try { setSummary(await getAdherence()); }
+    try {
+      const [s, m] = await Promise.all([getAdherence(), getMedicationAdherence(30)]);
+      setSummary(s);
+      setPerMed(m);
+    }
     catch (e) { setError(e instanceof Error ? e.message : 'Could not load adherence.'); }
   }, []);
   React.useEffect(() => { void load(); }, [load]);
@@ -21,6 +33,7 @@ export default function ReportsPage() {
   if (error && !summary) return <ErrorBox message={error} onRetry={load} />;
 
   const pct = summary ? Math.round((summary.taken / Math.max(summary.scheduled, 1)) * 100) : null;
+  const barData = perMed ? buildAdherenceBars(perMed) : null;
 
   return (
     <div className="space-y-6">
@@ -40,6 +53,73 @@ export default function ReportsPage() {
           <Stat label="Trend" value={trendLabel(summary.trend)} sub="Vs previous window" />
         </div>
       )}
+
+      <Section
+        title="By medication"
+        action={
+          barData && barData.flaggedCount > 0 ? (
+            <span className="text-[12px] text-[var(--danger)]">
+              {barData.flaggedCount} below {70}%
+            </span>
+          ) : barData && barData.bars.length > 0 ? (
+            <span className="text-[12px] text-[var(--ink-muted)]">last 30 days</span>
+          ) : undefined
+        }
+      >
+        {perMed === null ? (
+          <Surface><SkeletonRow /><SkeletonRow /><SkeletonRow /></Surface>
+        ) : barData && barData.bars.length > 0 ? (
+          <Surface>
+            <ul className="p-2 sm:p-3 space-y-2.5">
+              {barData.bars.map((b) => (
+                <li key={b.medicationId} className="flex items-center gap-3">
+                  <Link
+                    href={`/medications/${b.medicationId}`}
+                    className="w-28 sm:w-36 shrink-0 text-[13px] font-medium truncate hover:underline"
+                    title={b.medicationName}
+                  >
+                    {b.medicationName}
+                  </Link>
+                  <div
+                    className="flex-1 h-5 rounded-full overflow-hidden"
+                    style={{ background: 'var(--bg-sunk)' }}
+                    role="meter"
+                    aria-valuenow={b.empty ? undefined : b.pct}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label={`${b.medicationName} adherence`}
+                  >
+                    {!b.empty && (
+                      <div
+                        className="h-full rounded-full transition-[width] duration-500 ease-out"
+                        style={{ width: `${b.width}%`, background: BAR_TONE_FILL[b.tone] }}
+                      />
+                    )}
+                  </div>
+                  <span
+                    className="w-12 shrink-0 text-right text-[12.5px] tabular"
+                    style={{ color: b.empty ? 'var(--ink-muted)' : BAR_TONE_FILL[b.tone] }}
+                  >
+                    {b.empty ? '—' : `${b.pct}%`}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="px-4 pb-3 pt-1 flex flex-wrap items-center gap-4 text-[11.5px] text-[var(--ink-muted)]">
+              <LegendDot color="var(--danger)" label="Below 70%" />
+              <LegendDot color="var(--warn)" label="70-89%" />
+              <LegendDot color="var(--ok)" label="90%+" />
+              <span className="ml-auto">Worst adherence first.</span>
+            </div>
+          </Surface>
+        ) : (
+          <Surface>
+            <div className="p-6 text-center text-[13px] text-[var(--ink-muted)]">
+              No per-medication adherence yet. Log a few doses and this fills in.
+            </div>
+          </Surface>
+        )}
+      </Section>
 
       <Section title="Browse reports">
         <Surface>
@@ -87,4 +167,13 @@ function trendLabel(t: 'up' | 'down' | 'flat'): string {
   if (t === 'up') return 'Improving';
   if (t === 'down') return 'Declining';
   return 'Steady';
+}
+
+function LegendDot({ color, label }: { color: string; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: color }} />
+      {label}
+    </span>
+  );
 }
