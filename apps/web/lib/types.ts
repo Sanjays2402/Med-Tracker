@@ -75,6 +75,8 @@ export interface NotificationItem {
   createdAt: string;
   read?: boolean;
   href?: string;
+  /** ISO time this notification is snoozed until; absent when not snoozed. */
+  snoozedUntil?: string | null;
 }
 
 export interface CaregiverShare {

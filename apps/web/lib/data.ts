@@ -297,6 +297,17 @@ export async function markAllNotificationsRead(): Promise<void> {
   localNotifications = localNotifications.map(n => ({ ...n, read: true }));
 }
 
+export async function snoozeNotification(id: string, until: string): Promise<void> {
+  try {
+    await api.post(`/notifications/${id}`, { snoozedUntil: until });
+  } catch (e) {
+    if (e instanceof ApiError && e.status >= 500) throw e;
+  }
+  localNotifications = localNotifications.map(n =>
+    n.id === id ? { ...n, snoozedUntil: until, read: true } : n,
+  );
+}
+
 // ---- Refills subgroups ----
 
 export async function listRefillsNeeded(): Promise<Refill[]> {
