@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Pill as PillIcon, Bell } from '@med/icons';
+import { Pill as PillIcon, Bell, Check, X as XIcon } from '@med/icons';
 import {
   Btn,
   Section,
@@ -17,6 +17,14 @@ import { DayRail } from '../../../components/DayRail';
 import { listTodayDoses, logDose, undoDose } from '../../../lib/data';
 import type { DoseEvent } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
+import {
+  selectablePendingIds,
+  toggleSelection,
+  rangeSelect,
+  selectAllPending,
+  pruneSelection,
+  summarizeSelection,
+} from '../../../lib/dose-selection';
 
 export default function TodayPage() {
   const [doses, setDoses] = React.useState<DoseEvent[] | null>(null);
@@ -25,6 +33,13 @@ export default function TodayPage() {
   const [pop, setPop] = React.useState<string | null>(null);
   const [now, setNow] = React.useState(() => Date.now());
   const { toast } = useToast();
+
+  // Bulk-select state. `selected` holds dose ids; `anchor` is the last row the
+  // user toggled, used as the pivot for shift+click range selection.
+  const [selecting, setSelecting] = React.useState(false);
+  const [selected, setSelected] = React.useState<ReadonlySet<string>>(() => new Set());
+  const [anchor, setAnchor] = React.useState<string | null>(null);
+  const [bulkBusy, setBulkBusy] = React.useState(false);
 
   React.useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30_000);
@@ -40,6 +55,41 @@ export default function TodayPage() {
     }
   }, []);
   React.useEffect(() => { void load(); }, [load]);
+
+  // Whenever the dose list changes, prune any selection that's no longer pending.
+  React.useEffect(() => {
+    if (!doses) return;
+    setSelected((prev) => pruneSelection(prev, doses));
+  }, [doses]);
+
+  const sel = summarizeSelection(selected, doses ?? []);
+
+  function exitSelecting() {
+    setSelecting(false);
+    setSelected(new Set());
+    setAnchor(null);
+  }
+
+  function onRowToggle(id: string, shiftKey: boolean) {
+    if (!doses) return;
+    setSelecting(true);
+    if (shiftKey && anchor) {
+      setSelected((prev) => rangeSelect(selectablePendingIds(doses), anchor, id, prev));
+    } else {
+      setSelected((prev) => toggleSelection(prev, id));
+    }
+    setAnchor(id);
+  }
+
+  function toggleSelectAll() {
+    if (!doses) return;
+    setSelecting(true);
+    if (sel.allSelected) {
+      setSelected(new Set());
+    } else {
+      setSelected(selectAllPending(doses));
+    }
+  }
 
   async function act(id: string, status: 'taken' | 'skipped') {
     setBusy(id);
@@ -98,6 +148,58 @@ export default function TodayPage() {
     }
   }
 
+  // Mark every selected dose taken in one action, then offer a single bulk Undo.
+  async function takeSelected() {
+    if (!doses) return;
+    const ids = [...selected].filter((id) =>
+      (doses ?? []).some((d) => d.id === id && d.status === 'pending'),
+    );
+    if (ids.length === 0) return;
+    setBulkBusy(true);
+    const results = await Promise.allSettled(ids.map((id) => logDose(id, 'taken')));
+    const ok: string[] = [];
+    let failed = 0;
+    results.forEach((r, i) => {
+      const id = ids[i]!;
+      if (r.status === 'fulfilled') ok.push(id);
+      else failed++;
+    });
+    if (ok.length > 0) {
+      const stamp = new Date().toISOString();
+      setDoses((prev) =>
+        (prev ?? []).map((d) => (ok.includes(d.id) ? { ...d, status: 'taken', takenAt: stamp } : d)),
+      );
+    }
+    setBulkBusy(false);
+    exitSelecting();
+    if (ok.length > 0) {
+      toast({
+        id: 'bulk-take',
+        kind: failed > 0 ? 'warning' : 'success',
+        title: `${ok.length} dose${ok.length === 1 ? '' : 's'} marked taken`,
+        description:
+          failed > 0
+            ? `${failed} couldn't be logged. They're still pending.`
+            : new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+        action: { label: 'Undo all', run: () => void undoMany(ok) },
+        durationMs: 6000,
+      });
+    } else {
+      toast({ kind: 'error', title: 'Could not mark those doses taken' });
+    }
+  }
+
+  async function undoMany(ids: string[]) {
+    const results = await Promise.allSettled(ids.map((id) => undoDose(id)));
+    const ok = ids.filter((_, i) => results[i]?.status === 'fulfilled');
+    if (ok.length > 0) {
+      setDoses((prev) =>
+        (prev ?? []).map((d) => (ok.includes(d.id) ? { ...d, status: 'pending', takenAt: undefined } : d)),
+      );
+    }
+    toast({ id: 'bulk-take', kind: 'info', title: `${ok.length} dose${ok.length === 1 ? '' : 's'} returned to pending`, durationMs: 2800 });
+  }
+
   if (error && !doses) return <ErrorBox message={error} onRetry={load} />;
 
   const groups: Record<string, DoseEvent[]> = { Morning: [], Afternoon: [], Evening: [], Night: [] };
@@ -112,7 +214,7 @@ export default function TodayPage() {
   const pct = total ? Math.round((taken / total) * 100) : 0;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 pb-24">
       <header className="space-y-2">
         <div className="eyebrow">
           {new Date().toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}
@@ -148,6 +250,31 @@ export default function TodayPage() {
         <DayRail doses={doses} onTake={(id) => void act(id, 'taken')} />
       )}
 
+      {/* Select toolbar — appears once there's at least one pending dose. */}
+      {sel.selectableCount > 0 && (
+        <div className="flex items-center justify-between gap-3 -mb-4">
+          <div className="text-[12.5px] text-[var(--ink-muted)]">
+            {selecting && !sel.isEmpty
+              ? `${sel.count} selected`
+              : `${sel.selectableCount} pending dose${sel.selectableCount === 1 ? '' : 's'}`}
+          </div>
+          <div className="flex items-center gap-2">
+            {selecting ? (
+              <>
+                <Btn size="sm" variant="ghost" onClick={toggleSelectAll}>
+                  {sel.allSelected ? 'Clear all' : 'Select all'}
+                </Btn>
+                <Btn size="sm" variant="ghost" onClick={exitSelecting}>Done</Btn>
+              </>
+            ) : (
+              <Btn size="sm" variant="secondary" onClick={() => setSelecting(true)}>
+                Select
+              </Btn>
+            )}
+          </div>
+        </div>
+      )}
+
       {doses === null ? (
         <div className="sheet">
           <SkeletonRow />
@@ -178,13 +305,26 @@ export default function TodayPage() {
                       const t = +new Date(d.scheduledAt);
                       const isOverdue = d.status === 'pending' && t < now - 15 * 60_000;
                       const isNext = d.status === 'pending' && !isOverdue;
+                      const isSelectable = d.status === 'pending';
+                      const isChecked = selected.has(d.id);
                       return (
                         <li
                           key={d.id}
                           className="flex items-center gap-4 px-5 py-4 border-b border-[var(--line-soft)] last:border-0 anim-in"
-                          style={{ animationDelay: `${i * 30}ms` }}
+                          style={{
+                            animationDelay: `${i * 30}ms`,
+                            background: isChecked ? 'var(--accent-soft)' : undefined,
+                          }}
                         >
-                          <DoseGlyph status={d.status} overdue={isOverdue} />
+                          {selecting && isSelectable ? (
+                            <SelectCheckbox
+                              checked={isChecked}
+                              label={`Select ${d.medicationName}`}
+                              onToggle={(shiftKey) => onRowToggle(d.id, shiftKey)}
+                            />
+                          ) : (
+                            <DoseGlyph status={d.status} overdue={isOverdue} />
+                          )}
                           <div className="flex-1 min-w-0">
                             <div className="text-[14.5px] font-medium truncate text-[var(--ink)]">
                               <Link
@@ -213,7 +353,7 @@ export default function TodayPage() {
                             </div>
                           </div>
 
-                          {d.status === 'pending' ? (
+                          {selecting ? null : d.status === 'pending' ? (
                             <div className="flex gap-2">
                               <Btn
                                 size="sm"
@@ -260,7 +400,72 @@ export default function TodayPage() {
       )}
 
       {error && doses && <ErrorBox message={error} onRetry={() => setError(null)} />}
+
+      {/* Floating bulk action bar */}
+      {selecting && !sel.isEmpty && (
+        <div className="fixed bottom-6 inset-x-4 sm:inset-x-0 z-[1000] flex justify-center anim-toast-in pointer-events-none">
+          <div
+            className="pointer-events-auto sheet flex items-center gap-3 pl-4 pr-2 py-2"
+            style={{ boxShadow: '0 16px 36px -12px rgba(0,0,0,0.28), 0 4px 10px -4px rgba(0,0,0,0.1)' }}
+          >
+            <span
+              className="inline-flex items-center justify-center min-w-7 h-7 px-2 rounded-full text-[12.5px] font-semibold tabular"
+              style={{ background: 'var(--accent-soft)', color: 'var(--accent-ink)' }}
+            >
+              {sel.count}
+            </span>
+            <span className="text-[13px] text-[var(--ink-soft)]">
+              selected
+            </span>
+            <button
+              type="button"
+              onClick={exitSelecting}
+              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)] transition-colors"
+              aria-label="Cancel selection"
+            >
+              <XIcon size={14} />
+            </button>
+            <Btn size="md" variant="primary" disabled={bulkBusy} onClick={takeSelected}>
+              {bulkBusy ? (
+                'Marking…'
+              ) : (
+                <span className="inline-flex items-center gap-1.5">
+                  <Check size={14} /> Mark {sel.count} taken
+                </span>
+              )}
+            </Btn>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+function SelectCheckbox({
+  checked,
+  label,
+  onToggle,
+}: {
+  checked: boolean;
+  label: string;
+  onToggle: (shiftKey: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={(e) => onToggle(e.shiftKey)}
+      className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-colors"
+      style={{
+        background: checked ? 'var(--accent)' : 'var(--bg-sunk)',
+        color: checked ? 'var(--bg-elev)' : 'var(--ink-muted)',
+        border: `1px solid ${checked ? 'var(--accent)' : 'var(--line)'}`,
+      }}
+    >
+      {checked ? <Check size={18} /> : <span className="w-4 h-4 rounded-md border border-current opacity-60" />}
+    </button>
   );
 }
 
