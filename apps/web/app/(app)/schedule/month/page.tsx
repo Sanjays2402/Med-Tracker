@@ -14,10 +14,13 @@ import {
   WEEKDAY_LABELS,
   type RecurrenceLike,
 } from '../../../../lib/month-grid';
+import { DayDrilldownPanel } from '../../../../components/DayDrilldownPanel';
+import type { DayScheduleLike } from '../../../../lib/day-doses';
 
 export default function ScheduleMonthPage() {
   const [schedules, setSchedules] = React.useState<ScheduleEntry[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [selectedDay, setSelectedDay] = React.useState<string | null>(null);
 
   const today = React.useMemo(() => new Date(), []);
   const [view, setView] = React.useState(() => ({ year: today.getFullYear(), month: today.getMonth() }));
@@ -39,6 +42,17 @@ export default function ScheduleMonthPage() {
     ...(s.startDate ? { startDate: s.startDate } : {}),
   }));
   const counts = doseCountsForGrid(grid, recurrences);
+
+  // Named recurrences for the day-drilldown panel (carry medication names + notes).
+  const namedRecurrences: DayScheduleLike[] = (schedules ?? []).map((s) => ({
+    medicationId: s.medicationId,
+    medicationName: s.medicationName,
+    times: s.times,
+    ...(s.daysOfWeek ? { daysOfWeek: s.daysOfWeek } : {}),
+    ...(s.endDate ? { endDate: s.endDate } : {}),
+    ...(s.startDate ? { startDate: s.startDate } : {}),
+    ...(s.notes ? { notes: s.notes } : {}),
+  }));
 
   // Per-day medication names (for the chips), built the same way as the counts.
   const namesByDay: Record<string, string[]> = {};
@@ -121,10 +135,21 @@ export default function ScheduleMonthPage() {
             {grid.cells.map((cell) => {
               const names = namesByDay[cell.key] ?? [];
               const count = counts[cell.key] ?? 0;
+              const clickable = count > 0;
               return (
-                <div
+                <button
                   key={cell.key}
-                  className="min-h-[78px] sm:min-h-[96px] rounded-[var(--radius-capsule)] p-1.5 flex flex-col transition-colors"
+                  type="button"
+                  onClick={clickable ? () => setSelectedDay(cell.key) : undefined}
+                  aria-label={
+                    clickable
+                      ? `${cell.day}, ${count} dose${count === 1 ? '' : 's'} - open day detail`
+                      : `${cell.day}, no doses`
+                  }
+                  disabled={!clickable}
+                  className={`min-h-[78px] sm:min-h-[96px] rounded-[var(--radius-capsule)] p-1.5 flex flex-col text-left transition-colors ${
+                    clickable ? 'hover:border-[var(--accent)] cursor-pointer' : 'cursor-default'
+                  } ${selectedDay === cell.key ? 'ring-2 ring-[var(--accent)] ring-offset-1 ring-offset-[var(--bg-elev)]' : ''}`}
                   style={{
                     background: cell.inMonth ? 'var(--bg)' : 'transparent',
                     border: `1px solid ${cell.isToday ? 'var(--accent)' : 'var(--line-soft)'}`,
@@ -166,14 +191,11 @@ export default function ScheduleMonthPage() {
                   </div>
 
                   {count > 0 && (
-                    <Link
-                      href={cell.key < todayKey(today) ? `/medications` : '/today'}
-                      className="mt-1 text-[10px] text-[var(--ink-muted)] hover:text-[var(--ink)] pl-1.5 hidden sm:block"
-                    >
-                      {cell.key < todayKey(today) ? 'history →' : cell.key === todayKey(today) ? 'today →' : 'upcoming →'}
-                    </Link>
+                    <span className="mt-1 text-[10px] text-[var(--ink-muted)] pl-1.5 hidden sm:block">
+                      view day →
+                    </span>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
@@ -188,12 +210,18 @@ export default function ScheduleMonthPage() {
               <span className="inline-block w-3 h-3 rounded-full" style={{ background: 'var(--accent-soft)' }} />
               Scheduled dose
             </span>
-            <span className="ml-auto">Number on each day is the total dose count.</span>
+            <span className="ml-auto">Tap any day with doses to see the full schedule.</span>
           </div>
         </Surface>
       )}
 
       {error && schedules && <ErrorBox message={error} onRetry={load} />}
+
+      <DayDrilldownPanel
+        dayKey={selectedDay}
+        recurrences={namedRecurrences}
+        onClose={() => setSelectedDay(null)}
+      />
     </div>
   );
 }
@@ -202,11 +230,4 @@ function inRange(dayKey: string, startISO?: string, endISO?: string): boolean {
   if (startISO && dayKey < startISO.slice(0, 10)) return false;
   if (endISO && dayKey > endISO.slice(0, 10)) return false;
   return true;
-}
-
-function todayKey(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
 }

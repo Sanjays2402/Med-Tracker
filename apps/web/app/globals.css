@@ -287,6 +287,13 @@ body::before {
 .anim-toast-in { animation: toastIn 220ms cubic-bezier(.22,1.2,.36,1) both; }
 .anim-toast-out { animation: toastOut 160ms ease-in both; }
 
+/* Side panel slide-in from the right edge */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.anim-in-right { animation: slideInRight 240ms cubic-bezier(.22,1,.36,1) both; }
+
 /* Subtle haptic-like button press */
 button, [role="button"] { transition: transform 120ms ease, background-color 160ms ease, color 160ms ease, border-color 160ms ease; }
 button:active:not(:disabled), [role="button"]:active { transform: scale(0.97); }
@@ -306,6 +313,6 @@ button:active:not(:disabled), [role="button"]:active { transform: scale(0.97); }
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .anim-pop, .anim-overdue, .anim-in, .check-sweep path,
-  .anim-toast-in, .anim-toast-out { animation: none !important; }
+  .anim-toast-in, .anim-toast-out, .anim-in-right { animation: none !important; }
   button:active:not(:disabled), [role="button"]:active { transform: none; }
 }
