@@ -2,19 +2,29 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ChartBar, Pill as PillIcon } from '@med/icons';
+import { ChartBar } from '@med/icons';
 import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill, Section, formatDate } from '../../../components/uikit';
-import { listRefills, requestRefill } from '../../../lib/data';
-import type { Refill } from '../../../lib/types';
+import { PillBottle } from '../../../components/PillBottle';
+import { listRefills, requestRefill, listMedications } from '../../../lib/data';
+import type { Refill, Medication } from '../../../lib/types';
 
 export default function RefillsPage() {
   const [refills, setRefills] = React.useState<Refill[] | null>(null);
+  const [thresholds, setThresholds] = React.useState<Record<string, number>>({});
   const [error, setError] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState<string | null>(null);
 
   const load = React.useCallback(async () => {
     setError(null);
-    try { setRefills(await listRefills()); }
+    try {
+      const [rs, meds] = await Promise.all([listRefills(), listMedications()]);
+      setRefills(rs);
+      const map: Record<string, number> = {};
+      for (const m of meds) {
+        if (typeof m.refillThresholdDays === 'number') map[m.id] = m.refillThresholdDays;
+      }
+      setThresholds(map);
+    }
     catch (e) { setError(e instanceof Error ? e.message : 'Could not load refills.'); }
   }, []);
   React.useEffect(() => { void load(); }, [load]);
@@ -58,11 +68,11 @@ export default function RefillsPage() {
         />
       ) : (
         <div className="space-y-6">
-          <RefillGroup title="Needed" tone="warn" items={groups.needed} busy={busy} onRequest={onRequest} emptyText="Nothing to reorder." />
-          <RefillGroup title="Requested" tone="info" items={groups.requested} emptyText="No refills in progress." />
-          <RefillGroup title="Ready for pickup" tone="ok" items={groups.ready} emptyText="No refills ready." />
+          <RefillGroup title="Needed" tone="warn" items={groups.needed} thresholds={thresholds} busy={busy} onRequest={onRequest} emptyText="Nothing to reorder." />
+          <RefillGroup title="Requested" tone="info" items={groups.requested} thresholds={thresholds} emptyText="No refills in progress." />
+          <RefillGroup title="Ready for pickup" tone="ok" items={groups.ready} thresholds={thresholds} emptyText="No refills ready." />
           {groups.picked_up.length > 0 && (
-            <RefillGroup title="Recently picked up" tone="neutral" items={groups.picked_up} emptyText="" />
+            <RefillGroup title="Recently picked up" tone="neutral" items={groups.picked_up} thresholds={thresholds} emptyText="" />
           )}
         </div>
       )}
@@ -72,11 +82,16 @@ export default function RefillsPage() {
   );
 }
 
+function daysUntil(iso: string): number {
+  return Math.ceil((+new Date(iso) - Date.now()) / 86400000);
+}
+
 function RefillGroup({
   title,
   tone,
   items,
   emptyText,
+  thresholds,
   busy,
   onRequest,
 }: {
@@ -84,6 +99,7 @@ function RefillGroup({
   tone: 'warn' | 'info' | 'ok' | 'neutral';
   items: Refill[];
   emptyText: string;
+  thresholds: Record<string, number>;
   busy?: string | null;
   onRequest?: (id: string) => void;
 }) {
@@ -91,19 +107,28 @@ function RefillGroup({
     <Section title={`${title} (${items.length})`}>
       <Surface>
         {items.length === 0 ? (
-          <div className="p-4 text-sm text-neutral-500 dark:text-neutral-400">{emptyText || 'None.'}</div>
+          <div className="p-4 text-[13px] text-[var(--ink-muted)]">{emptyText || 'None.'}</div>
         ) : (
           <ul>
             {items.map(r => {
-              const days = Math.ceil((+new Date(r.refillBy) - Date.now()) / 86400000);
+              const days = daysUntil(r.refillBy);
+              // Days of supply still on hand ~ days until the refill-by date,
+              // capped at the original daysSupply. Capacity is daysSupply; the
+              // low-water mark is the medication's refill threshold (fallback 20%).
+              const capacity = r.daysSupply ?? Math.max(days, 1);
+              const remaining = Math.max(0, Math.min(days, capacity));
+              const lowAt = thresholds[r.medicationId];
               return (
-                <li key={r.id} className="flex items-center gap-3 p-3 border-b border-neutral-100 dark:border-neutral-900 last:border-0">
-                  <div className="w-9 h-9 rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
-                    <PillIcon size={18} />
-                  </div>
+                <li key={r.id} className="flex items-center gap-4 px-5 py-4 border-b border-[var(--line-soft)] last:border-0">
+                  <PillBottle
+                    remaining={remaining}
+                    capacity={capacity}
+                    {...(lowAt !== undefined ? { lowAt } : {})}
+                    width={30}
+                  />
                   <div className="flex-1 min-w-0">
-                    <Link href={`/medications/${r.medicationId}`} className="text-sm font-medium hover:underline truncate block">{r.medicationName}</Link>
-                    <div className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
+                    <Link href={`/medications/${r.medicationId}`} className="text-[14.5px] font-medium hover:underline truncate block text-[var(--ink)]">{r.medicationName}</Link>
+                    <div className="text-[12.5px] text-[var(--ink-muted)] truncate mt-0.5">
                       {r.daysSupply} day supply{r.pharmacy ? `, ${r.pharmacy}` : ''} · by {formatDate(r.refillBy)}
                     </div>
                   </div>
