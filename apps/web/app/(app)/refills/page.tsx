@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ChartBar } from '@med/icons';
 import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill, Section, formatDate } from '../../../components/uikit';
 import { PillBottle } from '../../../components/PillBottle';
+import { RefillTimeline } from '../../../components/RefillTimeline';
 import { listRefills, requestRefill, listMedications } from '../../../lib/data';
 import type { Refill, Medication } from '../../../lib/types';
 
@@ -68,6 +69,10 @@ export default function RefillsPage() {
         />
       ) : (
         <div className="space-y-6">
+          {(() => {
+            const plot = refills.filter(r => r.status !== 'picked_up');
+            return plot.length >= 2 ? <RefillTimeline refills={plot} windowDays={30} /> : null;
+          })()}
           <RefillGroup title="Needed" tone="warn" items={groups.needed} thresholds={thresholds} busy={busy} onRequest={onRequest} emptyText="Nothing to reorder." />
           <RefillGroup title="Requested" tone="info" items={groups.requested} thresholds={thresholds} emptyText="No refills in progress." />
           <RefillGroup title="Ready for pickup" tone="ok" items={groups.ready} thresholds={thresholds} emptyText="No refills ready." />
