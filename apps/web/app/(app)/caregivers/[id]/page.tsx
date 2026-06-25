@@ -3,10 +3,26 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Users, Eye, Clock, Trash } from '@med/icons';
+import { ArrowLeft, Users, Eye, Clock, Trash, CalendarPlus } from '@med/icons';
 import { Surface, Btn, ErrorBox, SkeletonRow, Pill, Section, formatDate } from '../../../../components/uikit';
 import { getCaregiver, revokeCaregiver } from '../../../../lib/data';
 import type { CaregiverShare } from '../../../../lib/types';
+import { summarizeActivity, scopeLabel, type ActivityEvent } from '../../../../lib/caregiver-activity';
+
+const EVENT_ICON: Record<ActivityEvent['kind'], React.ComponentType<{ size?: number }>> = {
+  viewed: Eye,
+  'never-viewed': Eye,
+  created: CalendarPlus,
+  expires: Clock,
+  expired: Clock,
+};
+
+const EVENT_DOT: Record<NonNullable<ActivityEvent['tone']>, string> = {
+  neutral: 'var(--ink-muted)',
+  ok: 'var(--ok)',
+  warn: 'var(--warn)',
+  danger: 'var(--danger)',
+};
 
 export default function CaregiverDetailPage() {
   const router = useRouter();
@@ -55,6 +71,7 @@ export default function CaregiverDetailPage() {
 
   const expired = item.expiresAt && +new Date(item.expiresAt) < Date.now();
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/share/${item.id}` : `/share/${item.id}`;
+  const activity = summarizeActivity(item);
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -70,39 +87,69 @@ export default function CaregiverDetailPage() {
             Created {formatDate(item.createdAt)}
           </p>
         </div>
-        {expired ? <Pill tone="danger">Expired</Pill> : <Pill tone="ok">Active</Pill>}
+        {expired ? <Pill tone="danger">Expired</Pill> : activity.expiringSoon ? <Pill tone="warn">Expiring soon</Pill> : <Pill tone="ok">Active</Pill>}
       </header>
 
       <Section title="Permissions">
         <Surface>
           <div className="p-4 flex flex-wrap gap-2">
             {item.scopes.map(s => (
-              <span key={s} className="text-xs px-2 py-1 rounded-md bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300">
-                {s}
+              <span key={s} className="text-xs px-2.5 py-1 rounded-full bg-[var(--accent-soft)] text-[var(--accent-ink)] font-medium">
+                {scopeLabel(s)}
               </span>
             ))}
           </div>
         </Surface>
       </Section>
 
-      <Section title="Activity">
+      <Section
+        title="Activity"
+        action={
+          <span className="text-[12px] text-[var(--ink-muted)]">
+            {activity.viewed
+              ? activity.daysSinceViewed === 0
+                ? 'Viewed today'
+                : `Last seen ${activity.events.find(e => e.kind === 'viewed')?.relative ?? ''}`
+              : 'Not opened yet'}
+          </span>
+        }
+      >
         <Surface>
           <ul>
-            <li className="flex items-center gap-3 p-3 border-b border-neutral-100 dark:border-neutral-900">
-              <Eye size={16} className="text-neutral-400" />
-              <span className="text-sm flex-1">Last viewed</span>
-              <span className="text-sm text-neutral-500 dark:text-neutral-400">
-                {item.lastViewedAt ? formatDate(item.lastViewedAt) : 'Never'}
-              </span>
-            </li>
-            <li className="flex items-center gap-3 p-3">
-              <Clock size={16} className="text-neutral-400" />
-              <span className="text-sm flex-1">Expires</span>
-              <span className="text-sm text-neutral-500 dark:text-neutral-400">
-                {item.expiresAt ? formatDate(item.expiresAt) : 'No expiry'}
-              </span>
-            </li>
+            {activity.events.map((e, i) => {
+              const Icon = EVENT_ICON[e.kind];
+              return (
+                <li
+                  key={e.kind}
+                  className={`flex items-center gap-3 p-3 ${i < activity.events.length - 1 ? 'border-b border-neutral-100 dark:border-neutral-900' : ''}`}
+                >
+                  <span
+                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                    style={{ background: 'var(--bg-sunk)', color: EVENT_DOT[e.tone] }}
+                  >
+                    <Icon size={15} />
+                  </span>
+                  <span className="text-sm flex-1 min-w-0">
+                    <span className="block font-medium">{e.label}</span>
+                    {e.at && <span className="block text-[12px] text-[var(--ink-muted)]">{formatDate(e.at)}</span>}
+                  </span>
+                  <span
+                    className="text-[12.5px] tabular shrink-0"
+                    style={{ color: e.tone === 'neutral' ? 'var(--ink-muted)' : EVENT_DOT[e.tone] }}
+                  >
+                    {e.relative}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
+          {!activity.viewed && (
+            <div className="px-3 pb-3 pt-1">
+              <p className="text-[12px] text-[var(--ink-muted)]">
+                {item.label} hasn&apos;t opened this share yet. They can view it any time using the link below.
+              </p>
+            </div>
+          )}
         </Surface>
       </Section>
 
