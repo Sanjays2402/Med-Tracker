@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Calendar, Pill as PillIcon } from '@med/icons';
+import { Calendar, Pill as PillIcon, GridFour } from '@med/icons';
 import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill, Section, formatDate } from '../../../components/uikit';
 import { listSchedules } from '../../../lib/data';
 import type { ScheduleEntry } from '../../../lib/types';
@@ -47,7 +47,12 @@ export default function SchedulePage() {
     <div className="space-y-6">
       <header>
         <div className="eyebrow">the week ahead</div>
-        <h1 className="display text-[36px] leading-none tracking-tight mt-1">Schedule</h1>
+        <div className="flex items-end justify-between gap-3">
+          <h1 className="display text-[36px] leading-none tracking-tight mt-1">Schedule</h1>
+          <Link href="/schedule/month" className="inline-flex items-center gap-1.5 text-[13px] text-[var(--ink-muted)] hover:text-[var(--ink)] capsule">
+            <GridFour size={13} /> Month view
+          </Link>
+        </div>
         <p className="text-[13px] text-[var(--ink-muted)] mt-2">The next seven days, in one view.</p>
       </header>
 

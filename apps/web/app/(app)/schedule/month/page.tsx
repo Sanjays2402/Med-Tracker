@@ -2,32 +2,25 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Clock } from '@med/icons';
-import { Surface, Empty, ErrorBox, SkeletonRow } from '../../../../components/uikit';
+import { Calendar, CaretLeft, CaretRight, List } from '@med/icons';
+import { Surface, Empty, ErrorBox, SkeletonRow, Btn } from '../../../../components/uikit';
 import { listSchedules } from '../../../../lib/data';
 import type { ScheduleEntry } from '../../../../lib/types';
-
-const WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-function startOfMonth(d: Date): Date {
-  const x = new Date(d.getFullYear(), d.getMonth(), 1);
-  return x;
-}
-
-function buildGrid(monthStart: Date): Date[] {
-  const start = new Date(monthStart);
-  start.setDate(start.getDate() - start.getDay());
-  return Array.from({ length: 42 }).map((_, i) => {
-    const d = new Date(start);
-    d.setDate(d.getDate() + i);
-    return d;
-  });
-}
+import {
+  buildMonthGrid,
+  doseCountsForGrid,
+  prevMonth,
+  nextMonth,
+  WEEKDAY_LABELS,
+  type RecurrenceLike,
+} from '../../../../lib/month-grid';
 
 export default function ScheduleMonthPage() {
   const [schedules, setSchedules] = React.useState<ScheduleEntry[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [monthStart, setMonthStart] = React.useState(() => startOfMonth(new Date()));
+
+  const today = React.useMemo(() => new Date(), []);
+  const [view, setView] = React.useState(() => ({ year: today.getFullYear(), month: today.getMonth() }));
 
   const load = React.useCallback(async () => {
     setError(null);
@@ -36,97 +29,184 @@ export default function ScheduleMonthPage() {
   }, []);
   React.useEffect(() => { void load(); }, [load]);
 
-  const grid = React.useMemo(() => buildGrid(monthStart), [monthStart]);
-
-  function dosesOn(d: Date): number {
-    if (!schedules) return 0;
-    const dow = d.getDay();
-    let count = 0;
-    for (const s of schedules) {
-      if (s.daysOfWeek && !s.daysOfWeek.includes(dow)) continue;
-      if (s.endDate && +d > +new Date(s.endDate)) continue;
-      if (s.startDate && +d < +new Date(s.startDate)) continue;
-      count += s.times.length;
-    }
-    return count;
-  }
-
   if (error && !schedules) return <ErrorBox message={error} onRetry={load} />;
 
-  const monthLabel = monthStart.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  const grid = buildMonthGrid(view.year, view.month, today);
+  const recurrences: RecurrenceLike[] = (schedules ?? []).map((s) => ({
+    times: s.times,
+    ...(s.daysOfWeek ? { daysOfWeek: s.daysOfWeek } : {}),
+    ...(s.endDate ? { endDate: s.endDate } : {}),
+    ...(s.startDate ? { startDate: s.startDate } : {}),
+  }));
+  const counts = doseCountsForGrid(grid, recurrences);
+
+  // Per-day medication names (for the chips), built the same way as the counts.
+  const namesByDay: Record<string, string[]> = {};
+  for (const cell of grid.cells) {
+    const names: string[] = [];
+    for (const s of schedules ?? []) {
+      const active =
+        (!s.daysOfWeek || s.daysOfWeek.length === 0 || s.daysOfWeek.includes(cell.weekday)) &&
+        inRange(cell.key, s.startDate, s.endDate);
+      if (active) names.push(s.medicationName);
+    }
+    if (names.length) namesByDay[cell.key] = names;
+  }
+
+  const monthTotal = Object.values(counts).reduce((a, b) => a + b, 0);
+  const isCurrentMonth = view.year === today.getFullYear() && view.month === today.getMonth();
 
   return (
     <div className="space-y-6">
-      <Link href="/schedule" className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100">
-        <ArrowLeft size={14} />
-        Schedule
-      </Link>
-
-      <header className="flex items-center justify-between gap-3 flex-wrap">
+      <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{monthLabel}</h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">Monthly view of dose density.</p>
+          <div className="eyebrow">month at a glance</div>
+          <h1 className="display text-[36px] leading-none tracking-tight mt-1">{grid.label}</h1>
+          <p className="text-[13px] text-[var(--ink-muted)] mt-2">
+            {schedules === null ? 'Loading your doses…' : `${monthTotal} dose${monthTotal === 1 ? '' : 's'} scheduled this month.`}
+          </p>
         </div>
-        <div className="flex items-center gap-1">
-          <button onClick={() => setMonthStart(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
-            className="px-2.5 h-8 rounded-md text-sm border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900">
-            Previous
-          </button>
-          <button onClick={() => setMonthStart(startOfMonth(new Date()))}
-            className="px-2.5 h-8 rounded-md text-sm border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900">
-            Today
-          </button>
-          <button onClick={() => setMonthStart(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
-            className="px-2.5 h-8 rounded-md text-sm border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900">
-            Next
-          </button>
+        <div className="flex items-center gap-2">
+          <Link href="/schedule" className="inline-flex items-center gap-1.5 text-[13px] text-[var(--ink-muted)] hover:text-[var(--ink)] capsule">
+            <List size={13} /> Week view
+          </Link>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setView((v) => prevMonth(v.year, v.month))}
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]"
+              style={{ border: '1px solid var(--line)' }}
+              aria-label="Previous month"
+            >
+              <CaretLeft size={15} />
+            </button>
+            {!isCurrentMonth && (
+              <Btn size="sm" variant="secondary" onClick={() => setView({ year: today.getFullYear(), month: today.getMonth() })}>
+                Today
+              </Btn>
+            )}
+            <button
+              type="button"
+              onClick={() => setView((v) => nextMonth(v.year, v.month))}
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]"
+              style={{ border: '1px solid var(--line)' }}
+              aria-label="Next month"
+            >
+              <CaretRight size={15} />
+            </button>
+          </div>
         </div>
       </header>
 
       {schedules === null ? (
-        <Surface><SkeletonRow /><SkeletonRow /></Surface>
+        <Surface><SkeletonRow /><SkeletonRow /><SkeletonRow /></Surface>
       ) : schedules.length === 0 ? (
         <Empty
-          icon={<Clock size={32} weight="duotone" />}
-          title="No schedules yet"
-          description="Add a medication to populate the calendar."
+          icon={<Calendar size={32} />}
+          title="A blank month"
+          description="Add a medication and set its dosing times. The calendar fills itself in."
+          action={<Link href="/medications/new"><Btn variant="primary" size="sm">Add medication</Btn></Link>}
         />
       ) : (
-        <Surface>
-          <div className="grid grid-cols-7 text-[11px] uppercase tracking-wide text-neutral-500 dark:text-neutral-400 border-b border-neutral-100 dark:border-neutral-900">
-            {WEEK.map(d => (
-              <div key={d} className="p-2 text-center">{d}</div>
+        <Surface className="p-3 sm:p-4">
+          {/* Weekday header */}
+          <div className="grid grid-cols-7 gap-1.5 mb-1.5">
+            {WEEKDAY_LABELS.map((d) => (
+              <div key={d} className="eyebrow text-center py-1">{d}</div>
             ))}
           </div>
-          <div className="grid grid-cols-7">
-            {grid.map((d, i) => {
-              const inMonth = d.getMonth() === monthStart.getMonth();
-              const isToday = d.toDateString() === new Date().toDateString();
-              const count = dosesOn(d);
-              const ymd = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+          {/* 6 x 7 grid */}
+          <div className="grid grid-cols-7 gap-1.5">
+            {grid.cells.map((cell) => {
+              const names = namesByDay[cell.key] ?? [];
+              const count = counts[cell.key] ?? 0;
               return (
-                <Link
-                  key={i}
-                  href={`/history/${ymd}`}
-                  className={`aspect-square border-r border-b border-neutral-100 dark:border-neutral-900 p-1.5 sm:p-2 flex flex-col gap-1 hover:bg-neutral-50 dark:hover:bg-neutral-900/40 ${
-                    !inMonth ? 'text-neutral-300 dark:text-neutral-700' : ''
-                  } ${isToday ? 'bg-brand-500/5' : ''}`}
+                <div
+                  key={cell.key}
+                  className="min-h-[78px] sm:min-h-[96px] rounded-[var(--radius-capsule)] p-1.5 flex flex-col transition-colors"
+                  style={{
+                    background: cell.inMonth ? 'var(--bg)' : 'transparent',
+                    border: `1px solid ${cell.isToday ? 'var(--accent)' : 'var(--line-soft)'}`,
+                    opacity: cell.inMonth ? 1 : 0.45,
+                  }}
                 >
-                  <span className={`text-xs ${isToday ? 'font-semibold text-brand-700 dark:text-brand-300' : ''}`}>{d.getDate()}</span>
-                  {count > 0 && inMonth && (
-                    <div className="flex flex-wrap gap-0.5 mt-auto">
-                      {Array.from({ length: Math.min(count, 6) }).map((_, di) => (
-                        <span key={di} className="w-1.5 h-1.5 rounded-full bg-brand-500/70" />
-                      ))}
-                      {count > 6 && <span className="text-[10px] text-neutral-500 ml-0.5">+{count - 6}</span>}
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-[12px] tabular ${
+                        cell.isToday ? 'font-semibold' : ''
+                      }`}
+                      style={
+                        cell.isToday
+                          ? { background: 'var(--accent)', color: 'var(--bg-elev)' }
+                          : { color: cell.inMonth ? 'var(--ink-soft)' : 'var(--ink-muted)' }
+                      }
+                    >
+                      {cell.day}
+                    </span>
+                    {count > 0 && (
+                      <span className="text-[10.5px] tabular text-[var(--ink-muted)]">{count}</span>
+                    )}
+                  </div>
+
+                  <div className="mt-1 space-y-1 flex-1 overflow-hidden">
+                    {names.slice(0, 3).map((name, i) => (
+                      <div
+                        key={`${cell.key}-${i}`}
+                        className="text-[10.5px] leading-tight px-1.5 py-0.5 rounded-full truncate"
+                        style={{ background: 'var(--accent-soft)', color: 'var(--accent-ink)' }}
+                        title={name}
+                      >
+                        {name}
+                      </div>
+                    ))}
+                    {names.length > 3 && (
+                      <div className="text-[10px] text-[var(--ink-muted)] pl-1.5">+{names.length - 3} more</div>
+                    )}
+                  </div>
+
+                  {count > 0 && (
+                    <Link
+                      href={cell.key < todayKey(today) ? `/medications` : '/today'}
+                      className="mt-1 text-[10px] text-[var(--ink-muted)] hover:text-[var(--ink)] pl-1.5 hidden sm:block"
+                    >
+                      {cell.key < todayKey(today) ? 'history →' : cell.key === todayKey(today) ? 'today →' : 'upcoming →'}
+                    </Link>
                   )}
-                </Link>
+                </div>
               );
             })}
           </div>
+
+          {/* Legend */}
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-[11.5px] text-[var(--ink-muted)] px-1">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: 'var(--accent)' }} />
+              Today
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="inline-block w-3 h-3 rounded-full" style={{ background: 'var(--accent-soft)' }} />
+              Scheduled dose
+            </span>
+            <span className="ml-auto">Number on each day is the total dose count.</span>
+          </div>
         </Surface>
       )}
+
+      {error && schedules && <ErrorBox message={error} onRetry={load} />}
     </div>
   );
+}
+
+function inRange(dayKey: string, startISO?: string, endISO?: string): boolean {
+  if (startISO && dayKey < startISO.slice(0, 10)) return false;
+  if (endISO && dayKey > endISO.slice(0, 10)) return false;
+  return true;
+}
+
+function todayKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }

@@ -229,6 +229,7 @@ function pageTitle(path: string): string {
   if (path.startsWith('/today')) return 'Today';
   if (path.startsWith('/medications/new')) return 'Add a medication';
   if (path.startsWith('/medications')) return 'Medications';
+  if (path.startsWith('/schedule/month')) return 'Month';
   if (path.startsWith('/schedule')) return 'Schedule';
   if (path.startsWith('/refills')) return 'Refills';
   if (path.startsWith('/pills')) return 'Identify a pill';
