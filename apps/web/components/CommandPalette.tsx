@@ -17,6 +17,13 @@ import {
 import { listMedications } from '../lib/data';
 import type { Medication } from '../lib/types';
 import { useTheme } from '../lib/use-theme';
+import {
+  pushRecent,
+  parseRecents,
+  serializeRecents,
+  RECENTS_KEY,
+  type RecentEntry,
+} from '../lib/command-recents';
 
 /**
  * CommandPalette — Linear/Raycast-style ⌘K palette.
@@ -88,6 +95,7 @@ export function CommandPalette() {
   const [query, setQuery] = React.useState('');
   const [activeIdx, setActiveIdx] = React.useState(0);
   const [meds, setMeds] = React.useState<Medication[]>([]);
+  const [recents, setRecents] = React.useState<RecentEntry[]>([]);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const listRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -99,6 +107,17 @@ export function CommandPalette() {
       setMedsLoaded(true);
     }
   }, [open, medsLoaded]);
+
+  // Load recents from localStorage each time the palette opens (so a run in a
+  // previous open shows up on the next open).
+  React.useEffect(() => {
+    if (!open) return;
+    try {
+      setRecents(parseRecents(window.localStorage.getItem(RECENTS_KEY)));
+    } catch {
+      setRecents([]);
+    }
+  }, [open]);
 
   // Keybinds: ⌘K / Ctrl+K / `/` to open. Esc to close.
   React.useEffect(() => {
@@ -161,12 +180,30 @@ export function CommandPalette() {
       icon: PillIcon,
     }));
 
-    return [
+    // Index every runnable item by id so recents can resolve to a live item
+    // (and pick up renamed medications / removed entries).
+    const byId = new Map<string, Item>();
+    for (const it of [...pageItems, ...actions, ...medItems]) byId.set(it.id, it);
+
+    const out: Section[] = [];
+
+    // Recent section: only on an empty query, only entries that still resolve.
+    if (!query.trim() && recents.length > 0) {
+      const recentItems: Item[] = [];
+      for (const r of recents) {
+        const live = byId.get(r.id);
+        if (live) recentItems.push(live);
+      }
+      if (recentItems.length > 0) out.push({ label: 'Recent', items: recentItems });
+    }
+
+    out.push(
       { label: 'Pages',       items: rank(pageItems) },
       { label: 'Actions',     items: rank(actions) },
       { label: 'Medications', items: rank(medItems) },
-    ].filter((s) => s.items.length > 0);
-  }, [query, actions, meds]);
+    );
+    return out.filter((s) => s.items.length > 0);
+  }, [query, actions, meds, recents]);
 
   // Flatten for keyboard nav
   const flat = React.useMemo(() => sections.flatMap((s) => s.items), [sections]);
@@ -177,6 +214,18 @@ export function CommandPalette() {
   }, [flat.length, activeIdx]);
 
   function runItem(item: Item) {
+    // Record this run as a recent (newest-first, deduped, capped).
+    try {
+      const entry: RecentEntry = { id: item.id, title: item.title, at: Date.now() };
+      if (item.subtitle) entry.subtitle = item.subtitle;
+      if (item.kind === 'link') entry.href = item.href;
+      const next = pushRecent(parseRecents(window.localStorage.getItem(RECENTS_KEY)), entry);
+      window.localStorage.setItem(RECENTS_KEY, serializeRecents(next));
+      setRecents(next);
+    } catch {
+      /* localStorage unavailable (private mode / SSR) - recents are best-effort */
+    }
+
     if (item.kind === 'link') {
       router.push(item.href);
     } else {
