@@ -8,12 +8,14 @@ import { listNotifications, markNotificationRead, markAllNotificationsRead, snoo
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
+import { NOTIFICATION_TABS, filterByTab, countByTab, type NotificationTab } from '../../../lib/notification-filter';
 
 export default function NotificationsPage() {
   const [items, setItems] = React.useState<NotificationItem[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [snoozedRows, setSnoozedRows] = React.useState<Set<string>>(() => new Set());
+  const [activeTab, setActiveTab] = React.useState<NotificationTab>('all');
   const { toast } = useToast();
 
   const load = React.useCallback(async () => {
@@ -73,7 +75,9 @@ export default function NotificationsPage() {
 
   if (error && !items) return <ErrorBox message={error} onRetry={load} />;
 
-  const visible = (items ?? []).filter(n => !snoozedRows.has(n.id));
+  const notSnoozed = (items ?? []).filter(n => !snoozedRows.has(n.id));
+  const counts = countByTab(notSnoozed);
+  const visible = filterByTab(notSnoozed, activeTab);
   const snoozedCount = snoozedRows.size;
 
   return (
@@ -93,13 +97,58 @@ export default function NotificationsPage() {
         )}
       </header>
 
+      {/* Filter tabs */}
+      {items !== null && notSnoozed.length > 0 && (
+        <div className="flex items-center gap-1 overflow-x-auto" role="tablist" aria-label="Filter notifications">
+          {NOTIFICATION_TABS.map(t => {
+            const c = counts[t.tab];
+            const active = activeTab === t.tab;
+            return (
+              <button
+                key={t.tab}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setActiveTab(t.tab)}
+                className={`inline-flex items-center gap-2 h-8 px-3 rounded-full text-[12.5px] font-medium border whitespace-nowrap transition-colors ${
+                  active
+                    ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                    : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+                }`}
+              >
+                {t.label}
+                {c.total > 0 && (
+                  <span
+                    className={`tabular text-[10.5px] min-w-[16px] h-4 px-1 inline-flex items-center justify-center rounded-full ${
+                      c.unread > 0
+                        ? 'bg-[var(--accent)] text-[var(--bg-elev)]'
+                        : active ? 'bg-[var(--bg-elev)] text-[var(--ink-muted)]' : 'bg-[var(--bg-sunk)] text-[var(--ink-muted)]'
+                    }`}
+                  >
+                    {c.unread > 0 ? c.unread : c.total}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {items === null ? (
         <Surface><SkeletonRow /><SkeletonRow /><SkeletonRow /></Surface>
       ) : visible.length === 0 ? (
         <Empty
           icon={<Bell size={32} weight="duotone" />}
-          title={snoozedCount > 0 ? 'Nothing for now' : 'No notifications yet'}
-          description={snoozedCount > 0 ? 'Snoozed reminders will resurface at their scheduled time.' : 'Reminders and refill alerts appear here.'}
+          title={
+            notSnoozed.length > 0
+              ? 'Nothing in this tab'
+              : snoozedCount > 0 ? 'Nothing for now' : 'No notifications yet'
+          }
+          description={
+            notSnoozed.length > 0
+              ? 'Try another filter to see the rest of your inbox.'
+              : snoozedCount > 0 ? 'Snoozed reminders will resurface at their scheduled time.' : 'Reminders and refill alerts appear here.'
+          }
         />
       ) : (
         <Surface>
