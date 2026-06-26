@@ -8,18 +8,33 @@ import { PillBottle } from '../../../components/PillBottle';
 import { RefillTimeline } from '../../../components/RefillTimeline';
 import { listRefills, requestRefill, listMedications } from '../../../lib/data';
 import type { Refill, Medication } from '../../../lib/types';
+import {
+  REFILL_TABS,
+  filterByTab,
+  countByTab,
+  defaultTab,
+  type RefillTab,
+} from '../../../lib/refill-filter';
 
 export default function RefillsPage() {
   const [refills, setRefills] = React.useState<Refill[] | null>(null);
   const [thresholds, setThresholds] = React.useState<Record<string, number>>({});
   const [error, setError] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState<string | null>(null);
+  const [activeTab, setActiveTab] = React.useState<RefillTab>('all');
+  const [tabPinned, setTabPinned] = React.useState(false);
 
   const load = React.useCallback(async () => {
     setError(null);
     try {
       const [rs, meds] = await Promise.all([listRefills(), listMedications()]);
       setRefills(rs);
+      // Land on the most actionable non-empty tab on first load, but never
+      // override a tab the user has explicitly chosen.
+      setTabPinned((pinned) => {
+        if (!pinned) setActiveTab(defaultTab(rs));
+        return pinned;
+      });
       const map: Record<string, number> = {};
       for (const m of meds) {
         if (typeof m.refillThresholdDays === 'number') map[m.id] = m.refillThresholdDays;
@@ -29,6 +44,11 @@ export default function RefillsPage() {
     catch (e) { setError(e instanceof Error ? e.message : 'Could not load refills.'); }
   }, []);
   React.useEffect(() => { void load(); }, [load]);
+
+  function pickTab(tab: RefillTab) {
+    setTabPinned(true);
+    setActiveTab(tab);
+  }
 
   async function onRequest(id: string) {
     setBusy(id);
@@ -44,11 +64,14 @@ export default function RefillsPage() {
 
   if (error && !refills) return <ErrorBox message={error} onRetry={load} />;
 
+  const all = refills ?? [];
+  const counts = countByTab(all);
+  const visible = filterByTab(all, activeTab);
   const groups = {
-    needed: (refills ?? []).filter(r => r.status === 'needed'),
-    requested: (refills ?? []).filter(r => r.status === 'requested'),
-    ready: (refills ?? []).filter(r => r.status === 'ready'),
-    picked_up: (refills ?? []).filter(r => r.status === 'picked_up'),
+    needed: visible.filter(r => r.status === 'needed'),
+    requested: visible.filter(r => r.status === 'requested'),
+    ready: visible.filter(r => r.status === 'ready'),
+    picked_up: visible.filter(r => r.status === 'picked_up'),
   };
 
   return (
@@ -69,15 +92,66 @@ export default function RefillsPage() {
         />
       ) : (
         <div className="space-y-6">
-          {(() => {
-            const plot = refills.filter(r => r.status !== 'picked_up');
+          {/* Status filter tabs */}
+          <div className="flex items-center gap-1 overflow-x-auto" role="tablist" aria-label="Filter refills by status">
+            {REFILL_TABS.map(t => {
+              const count = counts[t.tab];
+              const active = activeTab === t.tab;
+              return (
+                <button
+                  key={t.tab}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => pickTab(t.tab)}
+                  className={`inline-flex items-center gap-2 h-8 px-3 rounded-full text-[12.5px] font-medium border whitespace-nowrap transition-colors ${
+                    active
+                      ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                      : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+                  }`}
+                >
+                  {t.label}
+                  {count > 0 && (
+                    <span
+                      className={`tabular text-[10.5px] min-w-[16px] h-4 px-1 inline-flex items-center justify-center rounded-full ${
+                        active ? 'bg-[var(--bg-elev)] text-[var(--ink-muted)]' : 'bg-[var(--bg-sunk)] text-[var(--ink-muted)]'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Timeline overview — only on the All tab where every status is in view. */}
+          {activeTab === 'all' && (() => {
+            const plot = visible.filter(r => r.status !== 'picked_up');
             return plot.length >= 2 ? <RefillTimeline refills={plot} windowDays={30} /> : null;
           })()}
-          <RefillGroup title="Needed" tone="warn" items={groups.needed} thresholds={thresholds} busy={busy} onRequest={onRequest} emptyText="Nothing to reorder." />
-          <RefillGroup title="Requested" tone="info" items={groups.requested} thresholds={thresholds} emptyText="No refills in progress." />
-          <RefillGroup title="Ready for pickup" tone="ok" items={groups.ready} thresholds={thresholds} emptyText="No refills ready." />
-          {groups.picked_up.length > 0 && (
-            <RefillGroup title="Recently picked up" tone="neutral" items={groups.picked_up} thresholds={thresholds} emptyText="" />
+
+          {visible.length === 0 ? (
+            <Empty
+              icon={<ChartBar size={28} />}
+              title="Nothing in this view"
+              description="Switch tabs to see refills in another status."
+            />
+          ) : (
+            <>
+              {(activeTab === 'all' || activeTab === 'needed') && (
+                <RefillGroup title="Needed" tone="warn" items={groups.needed} thresholds={thresholds} busy={busy} onRequest={onRequest} emptyText="Nothing to reorder." />
+              )}
+              {(activeTab === 'all' || activeTab === 'requested') && (
+                <RefillGroup title="Requested" tone="info" items={groups.requested} thresholds={thresholds} emptyText="No refills in progress." />
+              )}
+              {(activeTab === 'all' || activeTab === 'ready') && (
+                <RefillGroup title="Ready for pickup" tone="ok" items={groups.ready} thresholds={thresholds} emptyText="No refills ready." />
+              )}
+              {(activeTab === 'all' || activeTab === 'ready') && groups.picked_up.length > 0 && (
+                <RefillGroup title="Recently picked up" tone="neutral" items={groups.picked_up} thresholds={thresholds} emptyText="" />
+              )}
+            </>
           )}
         </div>
       )}
