@@ -17,6 +17,12 @@ import {
   type Density,
 } from '../../../lib/density-pref';
 import { summarizeRunout, type RunoutBandMeta } from '../../../lib/runout-group';
+import {
+  RUNOUT_GROUP_STORAGE_KEY,
+  DEFAULT_RUNOUT_GROUP,
+  parseRunoutGroup,
+  serializeRunoutGroup,
+} from '../../../lib/runout-group-pref';
 
 export default function MedicationsPage() {
   const [meds, setMeds] = React.useState<Medication[] | null>(null);
@@ -24,7 +30,7 @@ export default function MedicationsPage() {
   const [query, setQuery] = React.useState('');
   const [sortBy, setSortBy] = React.useState<MedSortKey>('name');
   const [density, setDensity] = React.useState<Density>(DEFAULT_DENSITY);
-  const [grouped, setGrouped] = React.useState(false);
+  const [grouped, setGrouped] = React.useState(DEFAULT_RUNOUT_GROUP);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
   const load = React.useCallback(async () => {
@@ -40,10 +46,25 @@ export default function MedicationsPage() {
     catch { /* localStorage unavailable - keep the default */ }
   }, []);
 
+  // Restore the persisted "group by run-out" choice on mount.
+  React.useEffect(() => {
+    try { setGrouped(parseRunoutGroup(window.localStorage.getItem(RUNOUT_GROUP_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - keep the default */ }
+  }, []);
+
   const chooseDensity = React.useCallback((next: Density) => {
     setDensity(next);
     try { window.localStorage.setItem(DENSITY_STORAGE_KEY, JSON.stringify(next)); }
     catch { /* best-effort persistence */ }
+  }, []);
+
+  const toggleGrouped = React.useCallback(() => {
+    setGrouped((prev) => {
+      const next = !prev;
+      try { window.localStorage.setItem(RUNOUT_GROUP_STORAGE_KEY, serializeRunoutGroup(next)); }
+      catch { /* best-effort persistence */ }
+      return next;
+    });
   }, []);
 
   // "/" focuses the search box (without typing the slash) when not already typing.
@@ -146,7 +167,7 @@ export default function MedicationsPage() {
         </div>
         <button
           type="button"
-          onClick={() => setGrouped(g => !g)}
+          onClick={toggleGrouped}
           aria-pressed={grouped}
           title="Group by run-out urgency"
           className={`h-9 px-3 rounded-full text-[12px] font-medium border transition-colors shrink-0 ${
