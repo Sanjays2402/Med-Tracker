@@ -33,6 +33,7 @@ import {
   CLEAR_ARM_TIMEOUT_MS,
   type ClearState,
 } from '../lib/recents-clear';
+import { shouldShowCount, countLabel } from '../lib/section-count';
 
 /**
  * CommandPalette — Linear/Raycast-style ⌘K palette.
@@ -381,7 +382,18 @@ export function CommandPalette() {
             sections.map((section) => (
               <div key={section.label} className="py-1">
                 <div className="px-5 pt-3 pb-1 flex items-center justify-between gap-2">
-                  <span className="eyebrow">{section.label}</span>
+                  <span className="eyebrow inline-flex items-center gap-1.5">
+                    {section.label}
+                    {shouldShowCount(section.label, query, section.items.length) && (
+                      <span
+                        className="normal-case tracking-normal tabular text-[10.5px] px-1.5 py-0.5 rounded-full"
+                        style={{ background: 'var(--bg-sunk)', color: 'var(--ink-muted)' }}
+                        aria-hidden
+                      >
+                        {countLabel(section.items.length)}
+                      </span>
+                    )}
+                  </span>
                   {section.label === 'Recent' && (
                     <button
                       type="button"
