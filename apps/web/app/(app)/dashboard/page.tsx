@@ -17,6 +17,7 @@ import {
 import { DayRail } from '../../../components/DayRail';
 import { AdherenceRing } from '../../../components/AdherenceRing';
 import { AdherenceBreakdownPopover } from '../../../components/AdherenceBreakdownPopover';
+import { NextDoseCountdown } from '../../../components/NextDoseCountdown';
 import { getAdherence, listTodayDoses, listRefills, logDose } from '../../../lib/data';
 import type { AdherenceSummary, DoseEvent, Refill } from '../../../lib/types';
 
@@ -93,6 +94,24 @@ export default function DashboardPage() {
         <div className="sheet p-6 h-44 animate-pulse" />
       ) : (
         <DayRail doses={doses ?? []} onTake={quickTake} />
+      )}
+
+      {/* Live next-dose countdown */}
+      {loading && !doses ? (
+        <div className="sheet p-5 h-[88px] animate-pulse" />
+      ) : (
+        <NextDoseCountdown
+          doses={(doses ?? []).map((d) => ({
+            id: d.id,
+            scheduledAt: d.scheduledAt,
+            status: d.status,
+            medicationName: d.medicationName,
+            ...(d.strength ? { strength: d.strength } : {}),
+            medicationId: d.medicationId,
+          }))}
+          onTake={quickTake}
+          takingId={justTaken}
+        />
       )}
 
       {/* Stat capsules */}
