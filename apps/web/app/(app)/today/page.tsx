@@ -30,6 +30,7 @@ import {
   overdueHeadline,
   formatLateness,
 } from '../../../lib/overdue';
+import { DoseSegments } from '../../../components/DoseSegments';
 
 export default function TodayPage() {
   const [doses, setDoses] = React.useState<DoseEvent[] | null>(null);
@@ -250,20 +251,24 @@ export default function TodayPage() {
           </div>
         </div>
         <div className="mt-3">
-          <div
-            className="h-2 rounded-full overflow-hidden"
-            style={{ background: 'var(--bg-sunk)' }}
-            aria-label={`${pct}% complete`}
-          >
+          {doses && doses.length > 0 ? (
+            <DoseSegments doses={doses} />
+          ) : (
             <div
-              className="h-full transition-all"
-              style={{
-                width: `${pct}%`,
-                background: 'var(--accent)',
-                borderRadius: '9999px',
-              }}
-            />
-          </div>
+              className="h-2.5 rounded-full overflow-hidden"
+              style={{ background: 'var(--bg-sunk)' }}
+              aria-label={`${pct}% complete`}
+            >
+              <div
+                className="h-full transition-all"
+                style={{
+                  width: `${pct}%`,
+                  background: 'var(--accent)',
+                  borderRadius: '9999px',
+                }}
+              />
+            </div>
+          )}
         </div>
       </header>
 
