@@ -3,16 +3,15 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Users } from '@med/icons';
+import { ArrowLeft, Users, Eye, Check } from '@med/icons';
 import { Surface, Btn, ErrorBox, Section } from '../../../../components/uikit';
 import { createCaregiver } from '../../../../lib/data';
-
-const SCOPES = [
-  { id: 'view-meds', label: 'View medications', desc: 'See current medications and dosages.' },
-  { id: 'view-adherence', label: 'View adherence', desc: 'See how often doses are taken or missed.' },
-  { id: 'view-refills', label: 'View refills', desc: 'See refill status and pharmacy info.' },
-  { id: 'request-refill', label: 'Request refills', desc: 'Submit refill requests on your behalf.' },
-];
+import {
+  groupedScopes,
+  toggleScope as toggleScopeId,
+  validateScopes,
+  summarizeScopes,
+} from '../../../../lib/scope-model';
 
 const TTL_OPTIONS = [
   { value: 7, label: '7 days' },
@@ -30,15 +29,19 @@ export default function NewCaregiverPage() {
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
+  const groups = groupedScopes();
+  const validation = validateScopes(scopes);
+  const summary = summarizeScopes(scopes);
+
   function toggleScope(id: string) {
-    setScopes(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id]);
+    setScopes((s) => toggleScopeId(s, id));
   }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     if (!label.trim()) { setError('Please enter a label for this share.'); return; }
-    if (scopes.length === 0) { setError('Pick at least one permission.'); return; }
+    if (!validation.valid) { setError(validation.message ?? 'Pick at least one permission.'); return; }
     setSubmitting(true);
     try {
       const created = await createCaregiver({
@@ -95,29 +98,66 @@ export default function NewCaregiverPage() {
         </Section>
 
         <Section title="Permissions">
-          <Surface>
-            <ul>
-              {SCOPES.map(s => {
-                const checked = scopes.includes(s.id);
-                return (
-                  <li key={s.id} className="border-b border-neutral-100 dark:border-neutral-900 last:border-0">
-                    <label className="flex items-start gap-3 p-3 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-900/40">
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => toggleScope(s.id)}
-                        className="mt-0.5 h-4 w-4 rounded border-neutral-300 dark:border-neutral-700"
-                      />
-                      <div className="min-w-0">
-                        <div className="text-sm font-medium">{s.label}</div>
-                        <div className="text-xs text-neutral-500 dark:text-neutral-400">{s.desc}</div>
-                      </div>
-                    </label>
-                  </li>
-                );
-              })}
-            </ul>
-          </Surface>
+          <div className="space-y-3">
+            {groups.map((g) => (
+              <Surface key={g.group}>
+                <div className="px-4 pt-3 pb-1 flex items-center gap-2">
+                  <span className="eyebrow">{g.label}</span>
+                  {g.group === 'view' && <Eye size={13} className="text-[var(--ink-muted)]" />}
+                </div>
+                <ul>
+                  {g.scopes.map((s) => {
+                    const checked = scopes.includes(s.id);
+                    return (
+                      <li key={s.id} className="border-b border-[var(--line-soft)] last:border-0">
+                        <label className="flex items-start gap-3 px-4 py-3 cursor-pointer hover:bg-[var(--bg-sunk)] transition-colors">
+                          <span
+                            className="mt-0.5 inline-flex items-center justify-center w-5 h-5 rounded-md shrink-0 transition-colors"
+                            style={{
+                              background: checked ? 'var(--accent)' : 'transparent',
+                              border: `1.5px solid ${checked ? 'var(--accent)' : 'var(--line)'}`,
+                              color: 'var(--bg-elev)',
+                            }}
+                          >
+                            {checked && <Check size={13} />}
+                          </span>
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => toggleScope(s.id)}
+                            className="sr-only"
+                          />
+                          <span className="min-w-0">
+                            <span className="block text-[14px] font-medium">{s.label}</span>
+                            <span className="block text-[12.5px] text-[var(--ink-muted)]">{s.desc}</span>
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </Surface>
+            ))}
+
+            {/* Live plain-language summary of the current selection. */}
+            <div
+              className="sheet px-4 py-3"
+              style={{
+                background: validation.actWithoutView ? 'var(--warn-bg)' : 'var(--accent-soft)',
+                borderColor: 'transparent',
+              }}
+            >
+              <div className="eyebrow mb-1" style={{ color: validation.actWithoutView ? 'var(--warn)' : 'var(--accent-ink)' }}>
+                {validation.actWithoutView ? 'check this' : 'this share'}
+              </div>
+              <p className="text-[13.5px]" style={{ color: validation.actWithoutView ? 'var(--warn)' : 'var(--accent-ink)' }}>
+                {summary}
+              </p>
+              {validation.actWithoutView && validation.message && (
+                <p className="text-[12px] mt-1" style={{ color: 'var(--warn)' }}>{validation.message}</p>
+              )}
+            </div>
+          </div>
         </Section>
 
         <Section title="Expiry">
