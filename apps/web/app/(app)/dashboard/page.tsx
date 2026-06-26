@@ -20,6 +20,7 @@ import { AdherenceBreakdownPopover } from '../../../components/AdherenceBreakdow
 import { NextDoseCountdown } from '../../../components/NextDoseCountdown';
 import { getAdherence, listTodayDoses, listRefills, logDose } from '../../../lib/data';
 import type { AdherenceSummary, DoseEvent, Refill } from '../../../lib/types';
+import { trendFromCounts } from '../../../lib/adherence-trend';
 
 export default function DashboardPage() {
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
@@ -57,6 +58,21 @@ export default function DashboardPage() {
     adherence && adherence.scheduled
       ? Math.round((adherence.taken / adherence.scheduled) * 100)
       : 0;
+
+  // This-window vs prior-window trend. Prefer a real percentage-point delta
+  // from the prior-window counts when the summary carries them; null when there
+  // is no honest prior baseline (the UI then falls back to the trend enum).
+  const trend =
+    adherence && adherence.priorScheduled != null && adherence.priorTaken != null
+      ? trendFromCounts(
+          adherence.taken,
+          adherence.scheduled,
+          adherence.priorTaken,
+          adherence.priorScheduled,
+        )
+      : null;
+  // Arrow direction: the computed delta when available, else the summary enum.
+  const trendDir: 'up' | 'down' | 'flat' = trend?.direction ?? adherence?.trend ?? 'flat';
 
   async function quickTake(id: string) {
     try {
@@ -304,19 +320,41 @@ export default function DashboardPage() {
                     size={16}
                     style={{
                       color:
-                        adherence?.trend === 'down'
+                        trendDir === 'down'
                           ? 'var(--danger)'
-                          : adherence?.trend === 'flat'
+                          : trendDir === 'flat'
                           ? 'var(--ink-muted)'
                           : 'var(--ok)',
-                      transform: adherence?.trend === 'down' ? 'scaleY(-1)' : undefined,
+                      transform: trendDir === 'down' ? 'scaleY(-1)' : undefined,
                     }}
                   />
-                  Trending {adherence?.trend === 'up' ? 'up' : adherence?.trend === 'down' ? 'down' : 'flat'}
+                  Trending {trendDir}
+                  {trend && trend.direction !== 'flat' && (
+                    <span
+                      className="capsule tabular text-[11px]"
+                      style={{
+                        background:
+                          trend.tone === 'ok'
+                            ? 'var(--ok-soft, color-mix(in srgb, var(--ok) 14%, transparent))'
+                            : 'color-mix(in srgb, var(--danger) 14%, transparent)',
+                        color: trend.tone === 'ok' ? 'var(--ok)' : 'var(--danger)',
+                      }}
+                      title={`This ${adherence?.windowDays ?? 30}d vs the prior ${adherence?.windowDays ?? 30}d`}
+                    >
+                      {trend.label}
+                    </span>
+                  )}
                 </div>
                 <div className="text-[12px] text-[var(--ink-muted)]">
                   {adherence ? `${adherence.taken} of ${adherence.scheduled} doses` : 'No data yet'}
                 </div>
+                {trend && (
+                  <div className="text-[11px] text-[var(--ink-muted)]">
+                    {trend.direction === 'flat'
+                      ? `Holding steady vs the prior ${adherence?.windowDays ?? 30} days`
+                      : `${trend.magnitude}pp ${trend.direction === 'up' ? 'higher' : 'lower'} than the prior ${adherence?.windowDays ?? 30} days`}
+                  </div>
+                )}
                 {adherence && (
                   <div className="text-[12px] text-[var(--ink-muted)]">
                     <span className="capsule capsule-ok mr-1">

@@ -48,6 +48,11 @@ export interface AdherenceSummary {
   scheduled: number;
   streakDays: number;
   trend: 'up' | 'down' | 'flat';
+  /** Prior-window doses taken, for a this-vs-prior delta. Optional: absent on
+   *  API responses that don't carry a comparison window. */
+  priorTaken?: number;
+  /** Prior-window doses scheduled; pairs with priorTaken. */
+  priorScheduled?: number;
 }
 
 export interface Drug {

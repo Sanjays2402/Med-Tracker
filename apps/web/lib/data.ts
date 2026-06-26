@@ -219,12 +219,18 @@ export async function getAdherence(): Promise<AdherenceSummary> {
   const scheduled = localDoses.length;
   const taken30 = 156;
   const scheduled30 = 168;
+  // Prior 30-day window for the this-vs-prior trend delta. 148/170 ~ 87%, so
+  // the current ~93% reads as a real +6pp rise (matching trend: 'up').
+  const priorTaken30 = 148;
+  const priorScheduled30 = 170;
   return {
     windowDays: 30,
     taken: taken30 + taken,
     scheduled: scheduled30 + scheduled,
     streakDays: 12,
     trend: 'up',
+    priorTaken: priorTaken30,
+    priorScheduled: priorScheduled30,
   };
 }
 
