@@ -8,12 +8,21 @@ import { listMedications } from '../../../lib/data';
 import type { Medication } from '../../../lib/types';
 import { filterMedications, sortMedications, estimatedDaysLeft, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
 import { SupplySparkline } from '../../../components/SupplySparkline';
+import {
+  DENSITY_OPTIONS,
+  DENSITY_STORAGE_KEY,
+  DEFAULT_DENSITY,
+  parseDensity,
+  densityConfig,
+  type Density,
+} from '../../../lib/density-pref';
 
 export default function MedicationsPage() {
   const [meds, setMeds] = React.useState<Medication[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [query, setQuery] = React.useState('');
   const [sortBy, setSortBy] = React.useState<MedSortKey>('name');
+  const [density, setDensity] = React.useState<Density>(DEFAULT_DENSITY);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
   const load = React.useCallback(async () => {
@@ -22,6 +31,18 @@ export default function MedicationsPage() {
     catch (e) { setError(e instanceof Error ? e.message : 'Could not load medications.'); }
   }, []);
   React.useEffect(() => { void load(); }, [load]);
+
+  // Restore the persisted density on mount.
+  React.useEffect(() => {
+    try { setDensity(parseDensity(window.localStorage.getItem(DENSITY_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - keep the default */ }
+  }, []);
+
+  const chooseDensity = React.useCallback((next: Density) => {
+    setDensity(next);
+    try { window.localStorage.setItem(DENSITY_STORAGE_KEY, JSON.stringify(next)); }
+    catch { /* best-effort persistence */ }
+  }, []);
 
   // "/" focuses the search box (without typing the slash) when not already typing.
   React.useEffect(() => {
@@ -40,6 +61,7 @@ export default function MedicationsPage() {
   if (error && !meds) return <ErrorBox message={error} onRetry={load} />;
 
   const visible = meds ? sortMedications(filterMedications(meds, query), sortBy) : [];
+  const cfg = densityConfig(density);
 
   return (
     <div className="space-y-6">
@@ -97,6 +119,28 @@ export default function MedicationsPage() {
             </button>
           ))}
         </div>
+        <div
+          className="flex items-center rounded-full border border-[var(--line)] p-0.5 shrink-0"
+          role="group"
+          aria-label="Row density"
+        >
+          {DENSITY_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => chooseDensity(opt.value)}
+              aria-pressed={density === opt.value}
+              title={`${opt.label} rows`}
+              className={`h-8 px-3 rounded-full text-[11.5px] font-medium transition-colors ${
+                density === opt.value
+                  ? 'bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                  : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {meds === null ? (
@@ -121,16 +165,21 @@ export default function MedicationsPage() {
                 <li key={m.id}>
                   <Link
                     href={`/medications/${m.id}`}
-                    className="flex items-center gap-3 p-3 border-b border-neutral-100 dark:border-neutral-900 last:border-0 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors"
+                    className={`flex items-center gap-3 ${cfg.rowPadding} border-b border-neutral-100 dark:border-neutral-900 last:border-0 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors`}
                   >
-                    <div className="w-9 h-9 rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center">
-                      <PillIcon size={18} />
+                    <div
+                      className="rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0"
+                      style={{ width: cfg.iconSize + 18, height: cfg.iconSize + 18 }}
+                    >
+                      <PillIcon size={cfg.iconSize} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium truncate">{m.name} {m.strength && <span className="text-neutral-500 font-normal">{m.strength}</span>}</div>
-                      <div className="text-xs text-neutral-500 dark:text-neutral-400 truncate">{m.schedule ?? 'No schedule'} {m.form ? `, ${m.form}` : ''}</div>
+                      <div className={`${cfg.nameClass} font-medium truncate`}>{m.name} {m.strength && <span className="text-neutral-500 font-normal">{m.strength}</span>}</div>
+                      {cfg.showSubline && (
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400 truncate">{m.schedule ?? 'No schedule'} {m.form ? `, ${m.form}` : ''}</div>
+                      )}
                     </div>
-                    <SupplySparkline med={m} className="hidden sm:block shrink-0" />
+                    {cfg.showSparkline && <SupplySparkline med={m} className="hidden sm:block shrink-0" />}
                     {sortBy === 'runout' && daysLeft !== null ? (
                       <Pill tone={daysLeft < 7 ? 'danger' : daysLeft < 14 ? 'warn' : 'neutral'}>
                         ~{daysLeft}d left
