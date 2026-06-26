@@ -24,6 +24,15 @@ import {
   RECENTS_KEY,
   type RecentEntry,
 } from '../lib/command-recents';
+import {
+  pressClear,
+  disarmClear,
+  clearLabel,
+  clearAriaLabel,
+  clearedRecents,
+  CLEAR_ARM_TIMEOUT_MS,
+  type ClearState,
+} from '../lib/recents-clear';
 
 /**
  * CommandPalette — Linear/Raycast-style ⌘K palette.
@@ -96,6 +105,8 @@ export function CommandPalette() {
   const [activeIdx, setActiveIdx] = React.useState(0);
   const [meds, setMeds] = React.useState<Medication[]>([]);
   const [recents, setRecents] = React.useState<RecentEntry[]>([]);
+  const [clearState, setClearState] = React.useState<ClearState>('idle');
+  const clearTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const listRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -140,11 +151,48 @@ export function CommandPalette() {
     if (!open) {
       setQuery('');
       setActiveIdx(0);
+      setClearState('idle');
+      if (clearTimer.current) { clearTimeout(clearTimer.current); clearTimer.current = null; }
     } else {
       // Focus input on open. RAF to wait for portal mount.
       requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [open]);
+
+  // Disarm the Clear control whenever the user starts typing (the Recent
+  // section hides on a non-empty query, so an armed control would be stranded).
+  React.useEffect(() => {
+    if (query.trim() && clearState !== 'idle') {
+      setClearState('idle');
+      if (clearTimer.current) { clearTimeout(clearTimer.current); clearTimer.current = null; }
+    }
+  }, [query, clearState]);
+
+  // Tidy the arm timer on unmount.
+  React.useEffect(() => () => {
+    if (clearTimer.current) clearTimeout(clearTimer.current);
+  }, []);
+
+  /**
+   * Clear-recent affordance: first press arms (confirm), second press within
+   * the window wipes the store. A timeout auto-disarms so the control never
+   * stays hot.
+   */
+  function onClearRecents() {
+    const { next, confirmed } = pressClear(clearState);
+    if (clearTimer.current) { clearTimeout(clearTimer.current); clearTimer.current = null; }
+    if (confirmed) {
+      const empty = clearedRecents();
+      setRecents(empty);
+      try { window.localStorage.setItem(RECENTS_KEY, serializeRecents(empty)); }
+      catch { /* best-effort */ }
+      setClearState(disarmClear());
+      setActiveIdx(0);
+    } else {
+      setClearState(next);
+      clearTimer.current = setTimeout(() => setClearState(disarmClear()), CLEAR_ARM_TIMEOUT_MS);
+    }
+  }
 
   // Build action list (depends on theme setter, recreated each render is fine — cheap)
   const actions: Array<Extract<Item, { kind: 'action' }>> = React.useMemo(
@@ -332,7 +380,29 @@ export function CommandPalette() {
           ) : (
             sections.map((section) => (
               <div key={section.label} className="py-1">
-                <div className="px-5 pt-3 pb-1 eyebrow">{section.label}</div>
+                <div className="px-5 pt-3 pb-1 flex items-center justify-between gap-2">
+                  <span className="eyebrow">{section.label}</span>
+                  {section.label === 'Recent' && (
+                    <button
+                      type="button"
+                      onClick={onClearRecents}
+                      onBlur={() => {
+                        if (clearState !== 'idle') {
+                          setClearState('idle');
+                          if (clearTimer.current) { clearTimeout(clearTimer.current); clearTimer.current = null; }
+                        }
+                      }}
+                      aria-label={clearAriaLabel(clearState)}
+                      className="text-[11px] font-medium tracking-tight transition-colors rounded-full px-2 py-0.5"
+                      style={{
+                        color: clearState === 'armed' ? 'var(--danger)' : 'var(--ink-muted)',
+                        background: clearState === 'armed' ? 'var(--danger-bg)' : 'transparent',
+                      }}
+                    >
+                      {clearLabel(clearState)}
+                    </button>
+                  )}
+                </div>
                 <ul>
                   {section.items.map((it) => {
                     runningIdx++;
