@@ -671,9 +671,10 @@ tick 35). Backend tiers 1L-1T stay paused until Sanjay removes the override.
     to the /reports/weekly page: a 7/30/90d window control that re-spans the
     day-by-day list (weekly currently hardcodes lastNDays(7)); reuse
     WindowPicker + windowDays. Pure span already covered by adherence-window.
-322. [ ] `medications-runout-group-persist` — Persist the new "Group by
+322. [x] `medications-runout-group-persist` — Persist the "Group by
     run-out" toggle to localStorage (parallel to density-pref) so the choice
-    survives a reload; pure parse/normalize guard + storage key.
+    survives a reload; pure parse/normalize guard + storage key (tick 36 /
+    52fbfe7). Logic in lib/runout-group-pref.ts, 11 tests.
 323. [ ] `caregivers-expiry-pill` — Show an "Expires in Nd" amber pill on
     /caregivers rows that are expiring soon (composing isExpiringSoon +
     relativeTime); pure soon-window classifier already in caregiver-activity.
@@ -683,21 +684,24 @@ tick 35). Backend tiers 1L-1T stay paused until Sanjay removes the override.
 325. [ ] `today-overdue-count-badge` — A small count badge on the /today
     overdue banner's jump action ("jump to first of 3"); pure overdue-count
     label composing lib/overdue's partition.
-326. [ ] `refills-runout-sort` — Add a "Soonest run-out" sort to /refills
+326. [x] `refills-runout-sort` — Add a "Soonest run-out" sort to /refills
     parallel to the medications list, ordering needed refills by days-until;
-    pure days-until comparator with nulls-last.
-327. [ ] `schedule-month-density-dots` — Replace the "+N more" text on busy
+    pure days-until comparator with nulls-last (tick 36 / 394c1f9). Logic in
+    lib/refill-sort.ts, 12 tests.
+327. [x] `schedule-month-density-dots` — Replace the "+N more" text on busy
     month cells with a row of up-to-N dose dots (tone by count) so a glance
-    reads density without numbers; pure dot-count model over namesByDay.
+    reads density without numbers; pure dot-count model over the cell dose
+    count (tick 36 / cd55c2d). Logic in lib/month-density.ts, 10 tests.
 328. [ ] `notifications-unread-only-toggle` — An "Unread only" toggle on
     /notifications that filters to unread across the active tab; pure
     predicate composing with the existing tab filter.
 329. [ ] `medication-detail-supply-bar` — A horizontal supply-remaining bar
     on the medication detail hero (sage fill proportional to estimated days,
     coral under threshold); reuse estimatedDaysLeft, pure width/tone model.
-330. [ ] `dashboard-adherence-trend-arrow` — A small up/down/flat trend
+330. [x] `dashboard-adherence-trend-arrow` — A small up/down/flat trend
     arrow + delta chip next to the dashboard adherence ring (this window vs
-    prior); pure trend-from-two-percentages classifier.
+    prior); pure trend-from-two-percentages classifier (tick 36 / 35b12aa).
+    Logic in lib/adherence-trend.ts, 12 tests.
 331. [ ] `caregivers-scope-chips` — Render each caregiver row's scopes as
     friendly chips (View meds / Request refills) instead of a comma string,
     using scopeLabel; pure already-shipped scopeLabel, thin render.
@@ -710,9 +714,56 @@ tick 35). Backend tiers 1L-1T stay paused until Sanjay removes the override.
 334. [ ] `refills-pharmacy-filter` — A pharmacy filter chip row on /refills
     (one chip per distinct pharmacy + "All") that narrows the list; pure
     distinct-pharmacy extractor + predicate.
-335. [ ] `history-streak-callout` — A "current streak: N days" callout on
+335. [x] `history-streak-callout` — A "current streak: N days" callout on
     the /history page derived from the heatmap day states; pure
-    trailing-perfect-day counter over the day grid.
+    trailing-perfect-day counter over the day grid (tick 36 / 08e0dd2). Logic
+    in lib/history-streak.ts, 13 tests.
+
+### Tier 1Z — frontend slices (FRONTEND-FOCUS override, refill after tick 36)
+
+Tick 36 closed five Tier 1Y items (#322, #326, #327, #330, #335). Open
+frontend backlog now: #312, #316, #318, #319, #320 (Tier 1X) plus #321,
+#323, #324, #325, #328, #329, #331, #332, #333, #334 (Tier 1Y) and the older
+heavier stragglers (#274-#277/#279, #281, #292-#295, #307). This tier refills
+with fresh small-to-medium frontend-first candidates so the loop always has
+clean 5-slice batches. Each is a real user-facing capability in apps/web
+matching the sage/coral/amber pillbox language and the Linear/Raycast bar.
+Prefer extracting non-trivial logic into a tested lib/*.ts module (web vitest
+harness is 561 tests across 39 suites as of tick 36). Backend tiers 1L-1T stay
+paused until Sanjay removes the override.
+
+336. [ ] `refills-runout-sort-persist` — Persist the new /refills sort choice
+    to localStorage (parallel to runout-group-pref) so Default / Soonest
+    run-out survives a reload; pure parse/normalize guard + storage key.
+337. [ ] `medications-runout-group-headline` — Surface summarizeRunout's
+    urgentCount as a small "N need attention" headline above the grouped
+    /medications list when grouping is on; pure already-shipped summary, thin
+    render.
+338. [ ] `dashboard-trend-sparkline-real` — Replace the dashboard's
+    deterministic 14-day wobble grid with a real per-day series once the
+    summary carries one; until then, derive the grid from priorTaken/Taken so
+    it stops inventing variance. Pure series-from-counts model.
+339. [ ] `history-streak-best-banner` — When the current streak ties the
+    all-time longest, add a celebratory ring/confetti accent to the streak
+    callout; pure isBest flag already shipped, thin visual layer.
+340. [ ] `schedule-month-load-legend` — Add a small "busy day" legend entry
+    to the month view explaining the density-dot tone ramp (light -> heavy);
+    pure LOAD_TONE_VAR-driven legend row.
+341. [ ] `refills-sort-soonest-headline` — Show summarizeRefillSort's
+    soonestDays as a "next out in Nd" chip beside the sort control when the
+    runout sort is active; pure already-shipped summary field.
+342. [ ] `medications-density-global` — Promote the density pref to a shared
+    hook so /refills and /notifications lists honour the same Comfortable/
+    Compact choice; one persisted key, three consumers (re-list from #312).
+343. [ ] `caregivers-expiry-pill` — Show an "Expires in Nd" amber pill on
+    /caregivers rows that are expiring soon (composing isExpiringSoon +
+    relativeTime); pure soon-window classifier (re-list from #323).
+344. [ ] `today-group-by-part-of-day-counts` — Add per-section dose counts to
+    the existing Morning/Afternoon/Evening/Night headers on /today; pure
+    count-by-bucket over the already-grouped doses.
+345. [ ] `dashboard-streak-ring-accent` — Tint the dashboard streak capsule
+    by streak length (sage past 7d, amber 1-6d, neutral 0); pure
+    streak-tone classifier shared with the history callout.
 
 (Pulled forward only after Tier 1 momentum is established. Note: the
 `@med/ui` test suite is currently red on baseline — fix the React JSX
@@ -720,6 +771,48 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-26 13:02 PDT — tick 36: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 52fbfe7 medications-runout-group-persist,
+  394c1f9 refills-runout-sort,
+  35b12aa dashboard-adherence-trend-arrow,
+  08e0dd2 history-streak-callout,
+  cd55c2d schedule-month-density-dots.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.2s`; all 60
+  static pages generated incl. every edited route /medications, /refills,
+  /dashboard, /history, /schedule/month). `@med/web` test 561/561 pass across
+  39 suites (503 baseline + 58 new this tick) with TMPDIR=/Volumes/Projects/.tmp.
+  `@med/web` typecheck: verified ZERO new errors — the 5 new lib modules +
+  5 test files appear 0 times in tsc output, and every error on the 5 edited
+  pages is the documented TS2786 `Link` bigint baseline (grepped: no non-TS2786
+  page errors). `@med/web` lint remains the documented pre-existing `next lint`
+  "Invalid project directory" tooling bug.
+  TWENTY-SIXTH clean tick in a row (no fixup commits, no force-push, no revert).
+
+  Ninth frontend tick under Sanjay's standing override. Five slices spanning
+  five surfaces (medications, refills, dashboard, history, schedule month), each
+  extracting its pure-logic core into a tested lib/*.ts module — the web test
+  harness grew from 503 -> 561 tests:
+  - lib/runout-group-pref.ts (11) — RUNOUT_GROUP_STORAGE_KEY + normalize/parse/
+    serialize guards; the /medications "Group by run-out" toggle now persists
+    across reloads (restore on mount, write on toggle), parallel to density-pref.
+  - lib/refill-sort.ts (12) — REFILL_SORTS, refillDaysUntil (injectable now),
+    sortRefills (overdue-first, nulls-last, name tiebreak), summarizeRefillSort;
+    /refills gains a Default / Soonest run-out control applied within each
+    status group.
+  - lib/adherence-trend.ts (12) — classifyAdherenceTrend (flat dead-band),
+    adherencePercent, trendFromCounts (null when no prior baseline); the
+    dashboard pulse trend line now carries a real "+6pp" delta vs the prior
+    window. AdherenceSummary gained optional priorTaken/priorScheduled; the
+    deterministic seed supplies 148/170 so +6pp is honest, not invented.
+  - lib/history-streak.ts (13) — currentStreak / longestStreak /
+    summarizeStreak over the heatmap day series; /history gains an "N-day
+    streak" callout with a personal-best chip, start date, and best-ever length.
+  - lib/month-density.ts (10) — dayLoad buckets, densityDots (cap + overflow,
+    clamps junk), LOAD_TONE_VAR; the /schedule/month "+N more" footer is now a
+    tone-ramped dose-density dot row.
+  Refilled the roadmap with Tier 1Z (#336-#345, 10 fresh frontend candidates).
+
 
 - 2026-06-26 07:17 PDT — tick 35: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 165d295 reports-window-picker-shared,
