@@ -512,9 +512,11 @@ now live: lib + tests/, 66 tests as of tick 29).
 293. [ ] `today-progress-confetti` — When the last pending dose of the
     day is taken, play a one-shot reduced-motion-aware sage burst over
     the Today progress bar with a "Day complete" toast.
-294. [ ] `upcoming-grouped-by-day` — Group the /upcoming list under
-    relative day headers (Today / Tomorrow / Thu / ...) with a sticky
-    header per group and a per-day dose count.
+294. [x] `upcoming-grouped-by-day` — /upcoming upgraded from today-only to a
+    7-day forward projection grouped under relative day headers (Today /
+    Tomorrow / weekday / short date) with sticky per-group header + dose
+    count; today drops passed times, per-dose time-until chip (tick 33 /
+    bf25325). Logic in lib/upcoming-doses.ts, 16 tests.
 295. [ ] `medication-form-strength-stepper` — Replace the free-text
     strength field in the medication form with a value + unit stepper
     (mg / mL / IU / mcg) plus a free-text escape hatch; validates
@@ -555,10 +557,12 @@ vitest harness is now 216 tests across 15 suites as of tick 31). Backend tiers
     ("2 doses overdue - take or skip"), with a jump-to-first-overdue
     action; pure overdue-partition model (scheduledAt < now & pending)
     (tick 32 / 0b94e6f). Logic in lib/overdue.ts, 19 tests.
-302. [ ] `medication-detail-adherence-ring` — Reuse the AdherenceRing on
+302. [x] `medication-detail-adherence-ring` — Reuse the AdherenceRing on
     the medication detail page showing that single med's adherence over
-    30 days (per-med taken/scheduled from getMedicationAdherence); tone
-    auto-derived, with a taken/scheduled caption.
+    30 days (real per-med taken/scheduled from getMedicationAdherence,
+    replacing the scaled 7d guess); tone auto-derived, taken/scheduled
+    caption, honest no-data state (tick 33 / 2557903). Logic in
+    lib/med-adherence.ts, 15 tests.
 303. [x] `refills-status-filter-tabs` — All / Needed / Requested / Ready
     tab row on /refills with per-tab count badges (parallel to the
     notifications-filter-tabs pattern); pure status->tab bucketing model
@@ -581,18 +585,21 @@ vitest harness is now 216 tests across 15 suites as of tick 31). Backend tiers
     with a floating action bar to archive several at once (parallel to
     today-page-bulk-take's selection model); reuses lib/dose-selection
     selection primitives generalised over ids.
-308. [ ] `reports-export-format-cards` — Replace the /reports/export
+308. [x] `reports-export-format-cards` — Replace the /reports/export
     plain list with selectable format cards (CSV / JSON / ICS / PDF)
-    showing a one-line "what's inside" + file-size estimate; pure
-    format-descriptor model.
-309. [ ] `caregiver-share-scope-editor` — On the caregiver new/detail
-    page, a scope multi-select with grouped capabilities (view vs act)
-    and a plain-language summary line ("Can view medications and
-    request refills"); pure scope-grouping + summary model.
-310. [ ] `today-progress-segments` — Replace the Today progress bar with
-    a segmented pill row (one segment per scheduled dose, filled as
-    taken / hollow as pending / coral as missed); pure dose->segment
-    model with a summary caption.
+    showing a what's-inside line + live file-size estimate from real
+    record counts; sticky download bar driven by the selected card
+    (tick 33 / 6e104fa). Logic in lib/export-formats.ts, 18 tests.
+309. [x] `caregiver-share-scope-editor` — On the caregiver new page, a
+    scope editor with grouped capabilities (Can see vs Can do), custom
+    sage check controls, and a live plain-language summary ("Can view
+    medications and request refills") with an act-without-view warning
+    (tick 33 / 119428a). Logic in lib/scope-model.ts, 21 tests.
+310. [x] `today-progress-segments` — Replace the Today progress bar with
+    a segmented pill row (one segment per scheduled dose, sage filled
+    taken / hollow pending / amber skipped / coral missed); each segment
+    scrolls its dose row into view; caption rolls the counts (tick 33 /
+    6821016). Logic in lib/dose-segments.ts, 16 tests.
 
 
 
@@ -602,6 +609,68 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-25 21:30 PDT — tick 33: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 6821016 today-progress-segments,
+  2557903 medication-detail-adherence-ring,
+  6e104fa reports-export-format-cards,
+  bf25325 upcoming-grouped-by-day,
+  119428a caregiver-share-scope-editor.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.3s`; all 60
+  static pages generated incl. every edited route /today, /medications/[id],
+  /reports/export, /upcoming, /caregivers/new). `@med/web` test 377/377 pass
+  across 25 suites (291 baseline + 86 new this tick) with TMPDIR=/Volumes/
+  Projects/.tmp. `@med/web` typecheck: verified ZERO new errors in any touched
+  apps/web file — grepped the full tsc output and every apps/web error is the
+  documented pre-existing baseline (Link bigint JSX in 5 pages + .next/types
+  validator + DayRail unused @ts-expect-error + packages/icons implicit-any +
+  packages/ui react-not-found placeholder). `@med/web` lint fails with the
+  documented pre-existing `next lint` "Invalid project directory" tooling bug.
+  TWENTY-THIRD clean tick in a row (no fixup commits, no force-push, no revert).
+
+  Sixth frontend tick under Sanjay's standing override. Five slices spanning
+  five different surfaces, each extracting its pure-logic core into a tested
+  lib/*.ts module — the web test harness grew from 291 -> 377 tests:
+  - lib/dose-segments.ts (16) — time-sorted one-segment-per-dose model with
+    status->tone/fill mapping, count rollup, clockLabel + minutesOfDay, caption
+    builder (all-taken / mixed / remaining-first phrasing)
+  - lib/med-adherence.ts (15) — single-med ring view: pct/tone sharing the
+    reports ramp, findMedRow, honest hasData=false when nothing scheduled,
+    taken clamped to scheduled, window-label pluralisation
+  - lib/export-formats.ts (18) — format descriptors + per-format size heuristic
+    (doses-weighted vs all-weighted) + humanised byte formatter + card builder
+  - lib/upcoming-doses.ts (16) — 7-day forward projection composing dosesForDay,
+    today-past-time drop, relative day labels, next-dose pick, formatUntil
+  - lib/scope-model.ts (21) — view/act scope grouping, toggle/normalize,
+    validateScopes (act-without-view warning), plain-language summarizeScopes
+  Remaining frontend backlog: 15 open items across Tier 1U/1V/1W (above the
+  refill threshold, so no roadmap refill this tick). Backend tiers 1L-1T stay
+  paused until Sanjay removes the override.
+
+  Notes:
+  - Twenty-third tick in a row. Every tick 33 slice is a real user-facing
+    capability (logic + visual treatment + interactions + a11y), tested.
+  - `today-progress-segments` swaps the single flat bar for a clickable
+    segmented pill row (one per dose, tone+fill by status); segments scroll
+    their dose row into view (reduced-motion aware) and pulse it. Empty/loading
+    keeps the old bar so there's no layout jump before doses load.
+  - `medication-detail-adherence-ring` retires the old "scale the overall
+    window to a 7d slice" estimate in favour of the real per-med 30d row,
+    rendered as the dashboard AdherenceRing with an on-track/slipping/
+    needs-attention chip and a true "no data yet" state.
+  - `reports-export-format-cards` turns the flat export list into a 2-up card
+    grid; each card carries a live size estimate from the real record counts
+    (today's doses x 90d + meds + schedules), and selection drives a sticky
+    download bar.
+  - `upcoming-grouped-by-day` is the biggest jump: /upcoming went from a
+    today-only pending list to a true 7-day forward projection (composing the
+    month view's dosesForDay expander) grouped under sticky relative-day
+    headers, today's already-passed times dropped, real Take still wired for
+    today's rows by matching back to the DoseEvent.
+  - `caregiver-share-scope-editor` groups the permission checkboxes into
+    Can-see / Can-do sections with custom sage controls and a live
+    plain-language summary that warns when request-refills is granted with no
+    view permission.
 
 - 2026-06-25 16:51 PDT — tick 32: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 0b94e6f today-overdue-banner,
