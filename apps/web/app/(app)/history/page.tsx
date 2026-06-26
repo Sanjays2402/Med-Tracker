@@ -2,8 +2,9 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { CalendarCheck, ArrowRight, ChartBar } from '@med/icons';
+import { CalendarCheck, ArrowRight, ChartBar, Flame } from '@med/icons';
 import { Surface, Empty, Pill } from '../../../components/uikit';
+import { summarizeStreak } from '../../../lib/history-streak';
 
 const WEEKDAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const WEEKDAY_LONG = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -18,6 +19,13 @@ interface Day {
 
 function fmtISODate(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** Short "Mon 16" style label for a YYYY-MM-DD streak-start key (local). */
+function formatStreakStart(iso: string): string {
+  const [y, m, d] = iso.split('-').map(Number);
+  if (!y || !m || !d) return iso;
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
 function hash(s: string): number {
@@ -66,7 +74,6 @@ function buildDays(weeks: number, today: Date): Day[] {
 
 function intensityToTone(pct: number): { bg: string; ring?: string; label: string } {
   if (pct === 0) return { bg: 'var(--bg-sunk)', label: 'no data' };
-  if (pct >= 95) return { bg: 'color-mix(in srgb, var(--accent) 90%, transparent)', label: 'on point' };
   if (pct >= 85) return { bg: 'color-mix(in srgb, var(--accent) 65%, var(--bg-sunk))', label: 'solid' };
   if (pct >= 70) return { bg: 'color-mix(in srgb, var(--accent) 40%, var(--bg-sunk))', label: 'mixed' };
   if (pct >= 50) return { bg: 'color-mix(in srgb, var(--warn) 35%, var(--bg-sunk))', label: 'shaky' };
@@ -106,6 +113,9 @@ export default function HistoryPage() {
     : 0;
   const perfectDays = days.filter((d) => !d.isFuture && d.pct >= 95).length;
   const roughDays = days.filter((d) => !d.isFuture && d.pct > 0 && d.pct < 50).length;
+
+  // Trailing on-track streak from the same day series the heatmap renders.
+  const streak = summarizeStreak(days);
 
   const hovered = hoverIdx !== null ? days[hoverIdx] : null;
 
@@ -235,6 +245,40 @@ export default function HistoryPage() {
               )}
             </div>
           </Surface>
+
+          {/* Current streak callout */}
+          {streak.current > 0 && (
+            <div
+              className="sheet flex items-center gap-4 px-5 py-4 anim-in"
+              style={{
+                background: 'color-mix(in srgb, var(--accent) 7%, var(--bg-elev))',
+                border: '1px solid color-mix(in srgb, var(--accent) 22%, transparent)',
+              }}
+            >
+              <span
+                className="inline-flex items-center justify-center w-11 h-11 rounded-full shrink-0"
+                style={{ background: 'color-mix(in srgb, var(--accent) 16%, transparent)', color: 'var(--accent)' }}
+                aria-hidden
+              >
+                <Flame size={22} />
+              </span>
+              <div className="flex-1 min-w-0">
+                <div className="text-[15px] font-semibold text-[var(--ink)] leading-tight">
+                  {streak.current}-day streak
+                  {streak.isBest && streak.current >= 3 && (
+                    <span className="capsule capsule-ok ml-2 align-middle text-[11px]">personal best</span>
+                  )}
+                </div>
+                <div className="text-[12.5px] text-[var(--ink-muted)] mt-0.5">
+                  {streak.current === 1
+                    ? 'On track today. Keep it going tomorrow.'
+                    : `On track ${streak.current} days running`}
+                  {streak.startIso ? ` · since ${formatStreakStart(streak.startIso)}` : ''}
+                  {streak.longest > streak.current ? ` · best ${streak.longest} days` : ''}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Recent days as a list */}
           <section className="space-y-3">
