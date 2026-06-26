@@ -16,6 +16,7 @@ import {
 } from '../../../../lib/month-grid';
 import { DayDrilldownPanel } from '../../../../components/DayDrilldownPanel';
 import type { DayScheduleLike } from '../../../../lib/day-doses';
+import { densityDots, LOAD_TONE_VAR } from '../../../../lib/month-density';
 
 export default function ScheduleMonthPage() {
   const [schedules, setSchedules] = React.useState<ScheduleEntry[] | null>(null);
@@ -185,16 +186,38 @@ export default function ScheduleMonthPage() {
                         {name}
                       </div>
                     ))}
-                    {names.length > 3 && (
-                      <div className="text-[10px] text-[var(--ink-muted)] pl-1.5">+{names.length - 3} more</div>
-                    )}
                   </div>
 
-                  {count > 0 && (
-                    <span className="mt-1 text-[10px] text-[var(--ink-muted)] pl-1.5 hidden sm:block">
-                      view day →
-                    </span>
-                  )}
+                  {count > 0 && (() => {
+                    // Dose-density dots: one dot per scheduled dose (up to a cap),
+                    // tone-ramped by the day's load, with a trailing "+N" overflow.
+                    // Reads "how busy is this day" at a glance without a number.
+                    const d = densityDots(count);
+                    return (
+                      <div
+                        className="mt-1 flex items-center gap-[3px] pl-1.5"
+                        title={`${count} dose${count === 1 ? '' : 's'} scheduled`}
+                      >
+                        {Array.from({ length: d.dots }).map((_, i) => (
+                          <span
+                            key={i}
+                            className="inline-block w-1.5 h-1.5 rounded-full"
+                            style={{ background: LOAD_TONE_VAR[d.load] }}
+                            aria-hidden
+                          />
+                        ))}
+                        {d.overflow && (
+                          <span
+                            className="text-[9.5px] tabular leading-none"
+                            style={{ color: LOAD_TONE_VAR[d.load] }}
+                            aria-hidden
+                          >
+                            +{d.overflowCount}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </button>
               );
             })}
