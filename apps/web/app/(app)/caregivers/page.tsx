@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Users, Plus, Eye, Clock } from '@med/icons';
+import { Users, Plus, Eye, Clock, MagnifyingGlass } from '@med/icons';
 import { Surface, Empty, ErrorBox, SkeletonRow, Pill, formatDate } from '../../../components/uikit';
 import { listCaregivers } from '../../../lib/data';
 import type { CaregiverShare } from '../../../lib/types';
@@ -11,11 +11,14 @@ import {
   CAREGIVER_SORTS,
   type CaregiverSortKey,
 } from '../../../lib/caregiver-sort';
+import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [sortBy, setSortBy] = React.useState<CaregiverSortKey>('recent');
+  const [query, setQuery] = React.useState('');
+  const searchRef = React.useRef<HTMLInputElement | null>(null);
 
   const load = React.useCallback(async () => {
     setError(null);
@@ -24,9 +27,26 @@ export default function CaregiversPage() {
   }, []);
   React.useEffect(() => { void load(); }, [load]);
 
+  // "/" focuses the search box (without typing the slash) when not already typing.
+  React.useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== '/' || e.metaKey || e.ctrlKey) return;
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || t?.isContentEditable) return;
+      e.preventDefault();
+      searchRef.current?.focus();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   if (error && !items) return <ErrorBox message={error} onRetry={load} />;
 
-  const sorted = items ? summarizeCaregiverSort(items, sortBy) : null;
+  // Filter first, then sort the survivors. The sort summary's never-opened count
+  // reflects the filtered view so the header stays honest.
+  const filtered = items ? summarizeCaregiverFilter(items, query) : null;
+  const sorted = filtered ? summarizeCaregiverSort(filtered.shares, sortBy) : null;
 
   return (
     <div className="space-y-6">
@@ -46,30 +66,61 @@ export default function CaregiversPage() {
         </Link>
       </header>
 
-      {sorted && items && items.length > 1 && (
+      {items && items.length > 0 && (
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1" role="group" aria-label="Sort caregivers">
-            {CAREGIVER_SORTS.map(opt => (
+          <Surface className="flex-1 min-w-[200px] flex items-center gap-2 px-3 py-1.5">
+            <MagnifyingGlass size={16} className="text-[var(--ink-muted)] shrink-0" />
+            <input
+              ref={searchRef}
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search by name or access"
+              aria-label="Search caregivers"
+              className="w-full bg-transparent text-sm outline-none placeholder:text-[var(--ink-muted)]"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            {query ? (
               <button
-                key={opt.key}
                 type="button"
-                onClick={() => setSortBy(opt.key)}
-                aria-pressed={sortBy === opt.key}
-                className={`h-8 px-3 rounded-full text-[12px] font-medium border transition-colors ${
-                  sortBy === opt.key
-                    ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
-                    : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
-                }`}
+                onClick={() => { setQuery(''); searchRef.current?.focus(); }}
+                className="text-[11px] text-[var(--ink-muted)] hover:text-[var(--ink)] shrink-0"
+                aria-label="Clear search"
               >
-                {opt.label}
+                clear
               </button>
-            ))}
-          </div>
-          {sorted.neverViewedCount > 0 && (
+            ) : (
+              <kbd className="capsule tabular text-[10px] shrink-0" aria-hidden>/</kbd>
+            )}
+          </Surface>
+          {items.length > 1 && (
+            <div className="flex items-center gap-1 shrink-0" role="group" aria-label="Sort caregivers">
+              {CAREGIVER_SORTS.map(opt => (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => setSortBy(opt.key)}
+                  aria-pressed={sortBy === opt.key}
+                  className={`h-8 px-3 rounded-full text-[12px] font-medium border transition-colors ${
+                    sortBy === opt.key
+                      ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                      : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+          {filtered?.filtering ? (
+            <span className="ml-auto text-[12px] text-[var(--ink-muted)]">
+              {filtered.matchCount} of {filtered.total}
+            </span>
+          ) : sorted && sorted.neverViewedCount > 0 ? (
             <span className="ml-auto text-[12px] text-[var(--ink-muted)]">
               {sorted.neverViewedCount} never opened
             </span>
-          )}
+          ) : null}
         </div>
       )}
 
@@ -84,6 +135,17 @@ export default function CaregiversPage() {
             <Link href="/caregivers/new" className="text-sm text-brand-600 hover:underline">
               Create your first share
             </Link>
+          }
+        />
+      ) : sorted && sorted.shares.length === 0 ? (
+        <Empty
+          icon={<MagnifyingGlass size={32} weight="duotone" />}
+          title="Nothing matches"
+          description={`No caregivers match "${query}".`}
+          action={
+            <button type="button" onClick={() => { setQuery(''); searchRef.current?.focus(); }} className="text-sm text-brand-600 hover:underline">
+              Clear search
+            </button>
           }
         />
       ) : (
