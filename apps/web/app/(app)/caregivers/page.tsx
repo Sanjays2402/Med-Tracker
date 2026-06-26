@@ -6,10 +6,16 @@ import { Users, Plus, Eye, Clock } from '@med/icons';
 import { Surface, Empty, ErrorBox, SkeletonRow, Pill, formatDate } from '../../../components/uikit';
 import { listCaregivers } from '../../../lib/data';
 import type { CaregiverShare } from '../../../lib/types';
+import {
+  summarizeCaregiverSort,
+  CAREGIVER_SORTS,
+  type CaregiverSortKey,
+} from '../../../lib/caregiver-sort';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [sortBy, setSortBy] = React.useState<CaregiverSortKey>('recent');
 
   const load = React.useCallback(async () => {
     setError(null);
@@ -19,6 +25,8 @@ export default function CaregiversPage() {
   React.useEffect(() => { void load(); }, [load]);
 
   if (error && !items) return <ErrorBox message={error} onRetry={load} />;
+
+  const sorted = items ? summarizeCaregiverSort(items, sortBy) : null;
 
   return (
     <div className="space-y-6">
@@ -38,6 +46,33 @@ export default function CaregiversPage() {
         </Link>
       </header>
 
+      {sorted && items && items.length > 1 && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1" role="group" aria-label="Sort caregivers">
+            {CAREGIVER_SORTS.map(opt => (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => setSortBy(opt.key)}
+                aria-pressed={sortBy === opt.key}
+                className={`h-8 px-3 rounded-full text-[12px] font-medium border transition-colors ${
+                  sortBy === opt.key
+                    ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                    : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          {sorted.neverViewedCount > 0 && (
+            <span className="ml-auto text-[12px] text-[var(--ink-muted)]">
+              {sorted.neverViewedCount} never opened
+            </span>
+          )}
+        </div>
+      )}
+
       {items === null ? (
         <Surface><SkeletonRow /><SkeletonRow /></Surface>
       ) : items.length === 0 ? (
@@ -54,7 +89,7 @@ export default function CaregiversPage() {
       ) : (
         <Surface>
           <ul>
-            {items.map(c => {
+            {(sorted?.shares ?? items).map(c => {
               const expired = c.expiresAt && +new Date(c.expiresAt) < Date.now();
               return (
                 <li key={c.id} className="border-b border-neutral-100 dark:border-neutral-900 last:border-0">
