@@ -16,6 +16,7 @@ import {
   densityConfig,
   type Density,
 } from '../../../lib/density-pref';
+import { summarizeRunout, type RunoutBandMeta } from '../../../lib/runout-group';
 
 export default function MedicationsPage() {
   const [meds, setMeds] = React.useState<Medication[] | null>(null);
@@ -23,6 +24,7 @@ export default function MedicationsPage() {
   const [query, setQuery] = React.useState('');
   const [sortBy, setSortBy] = React.useState<MedSortKey>('name');
   const [density, setDensity] = React.useState<Density>(DEFAULT_DENSITY);
+  const [grouped, setGrouped] = React.useState(false);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
   const load = React.useCallback(async () => {
@@ -62,6 +64,7 @@ export default function MedicationsPage() {
 
   const visible = meds ? sortMedications(filterMedications(meds, query), sortBy) : [];
   const cfg = densityConfig(density);
+  const runout = grouped ? summarizeRunout(visible) : null;
 
   return (
     <div className="space-y-6">
@@ -141,6 +144,19 @@ export default function MedicationsPage() {
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          onClick={() => setGrouped(g => !g)}
+          aria-pressed={grouped}
+          title="Group by run-out urgency"
+          className={`h-9 px-3 rounded-full text-[12px] font-medium border transition-colors shrink-0 ${
+            grouped
+              ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+              : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+          }`}
+        >
+          Group by run-out
+        </button>
       </div>
 
       {meds === null ? (
@@ -156,46 +172,97 @@ export default function MedicationsPage() {
         ) : (
           <Empty title="Nothing matches" description={`No medications match "${query}".`} />
         )
+      ) : grouped ? (
+        <div className="space-y-5">
+          {runout!.groups.map(group => (
+            <section key={group.meta.band} className="space-y-2">
+              <div className="sticky top-2 z-10 flex items-center gap-2 px-1">
+                <span className="eyebrow inline-flex items-center gap-1.5">
+                  <span
+                    className="inline-block w-2 h-2 rounded-full"
+                    style={{ background: BAND_DOT[group.meta.tone] }}
+                  />
+                  {group.meta.label}
+                </span>
+                <span className="text-[11px] tabular text-[var(--ink-muted)]">{group.meds.length}</span>
+                <span className="text-[11px] text-[var(--ink-muted)] hidden sm:inline normal-case">· {group.meta.hint}</span>
+                <span className="flex-1 h-px" style={{ background: 'var(--line-soft)' }} />
+              </div>
+              <Surface>
+                <ul>
+                  {group.meds.map(m => (
+                    <MedRow key={m.id} med={m} cfg={cfg} forceRunout />
+                  ))}
+                </ul>
+              </Surface>
+            </section>
+          ))}
+        </div>
       ) : (
         <Surface>
           <ul>
-            {visible.map(m => {
-              const daysLeft = estimatedDaysLeft(m);
-              return (
-                <li key={m.id}>
-                  <Link
-                    href={`/medications/${m.id}`}
-                    className={`flex items-center gap-3 ${cfg.rowPadding} border-b border-neutral-100 dark:border-neutral-900 last:border-0 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors`}
-                  >
-                    <div
-                      className="rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0"
-                      style={{ width: cfg.iconSize + 18, height: cfg.iconSize + 18 }}
-                    >
-                      <PillIcon size={cfg.iconSize} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className={`${cfg.nameClass} font-medium truncate`}>{m.name} {m.strength && <span className="text-neutral-500 font-normal">{m.strength}</span>}</div>
-                      {cfg.showSubline && (
-                        <div className="text-xs text-neutral-500 dark:text-neutral-400 truncate">{m.schedule ?? 'No schedule'} {m.form ? `, ${m.form}` : ''}</div>
-                      )}
-                    </div>
-                    {cfg.showSparkline && <SupplySparkline med={m} className="hidden sm:block shrink-0" />}
-                    {sortBy === 'runout' && daysLeft !== null ? (
-                      <Pill tone={daysLeft < 7 ? 'danger' : daysLeft < 14 ? 'warn' : 'neutral'}>
-                        ~{daysLeft}d left
-                      </Pill>
-                    ) : typeof m.remainingDoses === 'number' && (
-                      <Pill tone={m.remainingDoses < 10 ? 'danger' : m.remainingDoses < 20 ? 'warn' : 'neutral'}>
-                        {m.remainingDoses} left
-                      </Pill>
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
+            {visible.map(m => (
+              <MedRow key={m.id} med={m} cfg={cfg} forceRunout={sortBy === 'runout'} />
+            ))}
           </ul>
         </Surface>
       )}
     </div>
+  );
+}
+
+const BAND_DOT: Record<RunoutBandMeta['tone'], string> = {
+  danger: 'var(--danger)',
+  warn: 'var(--warn)',
+  info: 'var(--accent)',
+  ok: 'var(--ok)',
+  neutral: 'var(--ink-muted)',
+};
+
+/**
+ * One medication row. Shared by the flat list and the run-out grouped view.
+ * `forceRunout` shows the "~Nd left" estimate chip (used when sorting by /
+ * grouping by run-out); otherwise the row falls back to the raw doses-left chip.
+ */
+function MedRow({
+  med: m,
+  cfg,
+  forceRunout,
+}: {
+  med: Medication;
+  cfg: ReturnType<typeof densityConfig>;
+  forceRunout: boolean;
+}) {
+  const daysLeft = estimatedDaysLeft(m);
+  return (
+    <li>
+      <Link
+        href={`/medications/${m.id}`}
+        className={`flex items-center gap-3 ${cfg.rowPadding} border-b border-neutral-100 dark:border-neutral-900 last:border-0 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors`}
+      >
+        <div
+          className="rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0"
+          style={{ width: cfg.iconSize + 18, height: cfg.iconSize + 18 }}
+        >
+          <PillIcon size={cfg.iconSize} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className={`${cfg.nameClass} font-medium truncate`}>{m.name} {m.strength && <span className="text-neutral-500 font-normal">{m.strength}</span>}</div>
+          {cfg.showSubline && (
+            <div className="text-xs text-neutral-500 dark:text-neutral-400 truncate">{m.schedule ?? 'No schedule'} {m.form ? `, ${m.form}` : ''}</div>
+          )}
+        </div>
+        {cfg.showSparkline && <SupplySparkline med={m} className="hidden sm:block shrink-0" />}
+        {forceRunout && daysLeft !== null ? (
+          <Pill tone={daysLeft < 7 ? 'danger' : daysLeft < 14 ? 'warn' : 'neutral'}>
+            ~{daysLeft}d left
+          </Pill>
+        ) : typeof m.remainingDoses === 'number' && (
+          <Pill tone={m.remainingDoses < 10 ? 'danger' : m.remainingDoses < 20 ? 'warn' : 'neutral'}>
+            {m.remainingDoses} left
+          </Pill>
+        )}
+      </Link>
+    </li>
   );
 }
