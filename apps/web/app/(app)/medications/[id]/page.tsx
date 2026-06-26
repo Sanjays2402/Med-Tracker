@@ -6,11 +6,13 @@ import { useParams } from 'next/navigation';
 import { Pill as PillIcon, Calendar, ChartBar, Bell, CalendarCheck, Clock, Check, Pencil, X as XIcon } from '@med/icons';
 import { Btn, Surface, Section, ErrorBox, SkeletonRow, Pill, StatTile, formatTime, formatDate } from '../../../../components/uikit';
 import { useRouter } from 'next/navigation';
-import { getMedication, listTodayDoses, listSchedules, listRefills, logDose, getAdherence, archiveMedication, updateMedication, listDosesForDate } from '../../../../lib/data';
+import { getMedication, listTodayDoses, listSchedules, listRefills, logDose, getAdherence, getMedicationAdherence, archiveMedication, updateMedication, listDosesForDate, type MedAdherenceRow } from '../../../../lib/data';
 import type { Medication, DoseEvent, ScheduleEntry, Refill, AdherenceSummary } from '../../../../lib/types';
 import { computeNextDose } from '../../../../lib/next-dose';
 import { WeekStrip } from '../../../../components/WeekStrip';
 import { localKey, type WeekStripDoseInput } from '../../../../lib/week-strip';
+import { AdherenceRing } from '../../../../components/AdherenceRing';
+import { buildMedAdherence, findMedRow } from '../../../../lib/med-adherence';
 
 export default function MedicationDetail() {
   const params = useParams<{ id: string }>();
@@ -23,6 +25,7 @@ export default function MedicationDetail() {
   const [schedules, setSchedules] = React.useState<ScheduleEntry[]>([]);
   const [refills, setRefills] = React.useState<Refill[]>([]);
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
+  const [medAdherence, setMedAdherence] = React.useState<MedAdherenceRow[] | null>(null);
   const [weekDoses, setWeekDoses] = React.useState<Record<string, WeekStripDoseInput[]>>({});
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -43,12 +46,13 @@ export default function MedicationDetail() {
     setLoading(true);
     setError(null);
     try {
-      const [m, d, s, r, a] = await Promise.all([getMedication(id), listTodayDoses(), listSchedules(), listRefills(), getAdherence()]);
+      const [m, d, s, r, a, ma] = await Promise.all([getMedication(id), listTodayDoses(), listSchedules(), listRefills(), getAdherence(), getMedicationAdherence(30)]);
       setMed(m);
       setDoses(d.filter(x => x.medicationId === id));
       setSchedules(s.filter(x => x.medicationId === id));
       setRefills(r.filter(x => x.medicationId === id));
       setAdherence(a);
+      setMedAdherence(ma);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not load medication.');
     } finally {
@@ -136,14 +140,11 @@ export default function MedicationDetail() {
     );
   }
 
-  // Per-med 7d view: scale the user's overall adherence window to a 7d slice for this med.
-  // When the API exposes per-medication adherence we will switch to that endpoint.
-  const window = adherence?.windowDays ?? 30;
-  const scale = Math.min(1, 7 / window);
-  const sched7d = Math.max(0, Math.round((adherence?.scheduled ?? 0) * scale / Math.max(1, ((adherence?.scheduled ?? 0) > 0 ? 1 : 1))));
-  const taken7d = Math.round((adherence?.taken ?? 0) * scale);
-  const sched7dEst = Math.round((adherence?.scheduled ?? 0) * scale);
-  const adherencePct = sched7dEst > 0 ? Math.min(100, Math.round((taken7d / sched7dEst) * 100)) : 0;
+  // Per-medication adherence over the 30d window, from the real per-med endpoint.
+  // buildMedAdherence reports hasData=false honestly when this med has no
+  // scheduled doses, so the ring section can show "no data yet" instead of 0%.
+  const medAdView = buildMedAdherence(findMedRow(medAdherence, id ?? ''), 30);
+  const adherencePct = medAdView.pct;
 
   const nextDose = computeNextDose(doses, now);
   const nextChip =
@@ -317,10 +318,64 @@ export default function MedicationDetail() {
       </header>
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-        <StatTile label="Adherence 7d" value={sched7dEst > 0 ? `${adherencePct}%` : 'n/a'} hint={sched7dEst > 0 ? `${taken7d} of ${sched7dEst} doses` : 'no data yet'} accent={adherencePct >= 90 ? 'ok' : adherencePct >= 70 ? 'warn' : 'danger'} />
+        <StatTile label="Adherence 30d" value={medAdView.hasData ? `${adherencePct}%` : 'n/a'} hint={medAdView.hasData ? medAdView.caption : 'no data yet'} accent={medAdView.tone} />
         <StatTile label="On hand" value={med.remainingDoses ?? 'n/a'} hint="doses remaining" accent={(med.remainingDoses ?? 0) < 10 ? 'danger' : (med.remainingDoses ?? 0) < 20 ? 'warn' : 'ok'} />
         <StatTile label="Refill in" value={`${med.refillThresholdDays ? med.refillThresholdDays + 'd' : 'n/a'}`} hint="threshold" />
       </div>
+
+      <Section title="Adherence">
+        <Surface>
+          <div className="p-5 sm:p-6 flex items-center gap-6 flex-wrap">
+            <AdherenceRing
+              percent={medAdView.hasData ? adherencePct : 0}
+              tone={medAdView.hasData ? medAdView.tone : 'accent'}
+              size={132}
+              stroke={12}
+              label={medAdView.hasData ? `${med.name} adherence: ${adherencePct}%` : `${med.name}: no adherence data yet`}
+            >
+              {medAdView.hasData ? (
+                <>
+                  <div className="display text-[30px] leading-none tabular text-[var(--ink)]">
+                    {adherencePct}
+                    <span className="text-[var(--ink-muted)] text-[16px] align-top ml-0.5">%</span>
+                  </div>
+                  <div className="eyebrow mt-1.5">{medAdView.windowDays}d</div>
+                </>
+              ) : (
+                <div className="text-[12px] text-[var(--ink-muted)] px-3 text-center leading-snug">No doses yet</div>
+              )}
+            </AdherenceRing>
+            <div className="flex-1 min-w-[180px] space-y-2">
+              {medAdView.hasData ? (
+                <>
+                  <div className="text-[14px] text-[var(--ink)]">
+                    <span className="tabular font-medium">{medAdView.taken}</span>
+                    <span className="text-[var(--ink-muted)]"> of </span>
+                    <span className="tabular font-medium">{medAdView.scheduled}</span>
+                    <span className="text-[var(--ink-muted)]"> doses taken</span>
+                  </div>
+                  <div className="text-[12.5px] text-[var(--ink-muted)]">Over the {medAdView.windowLabel}.</div>
+                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                    <span className={`capsule capsule-${medAdView.tone === 'ok' ? 'ok' : medAdView.tone === 'warn' ? 'warn' : 'danger'}`}>
+                      {medAdView.tone === 'ok' ? 'On track' : medAdView.tone === 'warn' ? 'Slipping' : 'Needs attention'}
+                    </span>
+                    <Link href={`/medications/${id}/history`} className="capsule hover:text-[var(--ink)]">
+                      View history
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-[14px] text-[var(--ink)]">No adherence data yet</div>
+                  <div className="text-[12.5px] text-[var(--ink-muted)]">
+                    Log a few doses and this ring fills in over the {medAdView.windowLabel}.
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </Surface>
+      </Section>
 
       <Section title="This week">
         <WeekStrip dosesByDay={weekDoses} />
