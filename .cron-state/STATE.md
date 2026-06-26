@@ -615,30 +615,36 @@ Linear/Raycast bar. Prefer extracting non-trivial logic into a tested
 lib/*.ts module (web vitest harness is 446 tests across 30 suites as of
 tick 34). Backend tiers 1L-1T stay paused until Sanjay removes the override.
 
-311. [ ] `reports-window-picker-shared` — Lift the 7/30/90d window picker
-    (lib/adherence-window) into the /reports/adherence + /reports/weekly
-    pages so every adherence surface shares one window control + caption.
+311. [x] `reports-window-picker-shared` — Lift the 7/30/90d window picker
+    into a shared WindowPicker component used by /reports + /reports/adherence;
+    one control, aria-pressed, Left/Right cycling (tick 35 / 165d295). Logic
+    in lib/adherence-window (+WINDOW_KEYS, isWindowKey, windowKeyForDays,
+    cycleWindow), tests 7 -> 15.
 312. [ ] `medications-density-global` — Promote the density pref to a
     shared hook so /refills and /notifications lists honour the same
     Comfortable/Compact choice; one persisted key, three consumers.
-313. [ ] `caregivers-search-filter` — Inline search box on /caregivers
-    (label / scope) with a "/" focus shortcut, composing with the new
-    sort control; pure filter predicate + match-count summary.
-314. [ ] `command-palette-section-counts` — Show a per-section result
-    count chip ("Medications · 12") in the palette section headers when a
-    query is active; pure count-by-section model.
-315. [ ] `schedule-day-drilldown-empty-jump` — When stepping into an empty
+313. [x] `caregivers-search-filter` — Inline search box on /caregivers
+    (label / scope, matching raw token + friendly label) with a "/" focus
+    shortcut, composing with the new sort control; pure filter predicate +
+    match-count summary (tick 35 / ee93839). Logic in lib/caregiver-filter.ts,
+    11 tests.
+314. [x] `command-palette-section-counts` — Show a per-section result
+    count chip ("Medications 12") in the palette section headers when a
+    query is active; never on Recent; pure count-by-section model (tick 35 /
+    435ee30). Logic in lib/section-count.ts, 13 tests.
+315. [x] `schedule-day-drilldown-empty-jump` — When stepping into an empty
     day in the drilldown, offer a "jump to next day with doses" affordance
-    that scans forward up to 14 days; pure next-nonempty-day finder over
-    the recurrence set.
+    that scans forward up to 14 days; bounded next-nonempty-day finder over
+    the recurrence set (tick 35 / 7c93ff8). Logic in lib/day-jump.ts, 12 tests.
 316. [ ] `reports-adherence-window-trend-delta` — Under the per-med bars,
     show a small "vs previous window" delta chip per medication (this 30d
     vs the prior 30d) using two getMedicationAdherence calls; pure
     delta-tone model.
-317. [ ] `medications-list-runout-group` — Optional "group by run-out
-    urgency" toggle on /medications (Overdue / This week / This month /
-    Healthy) bucketing rows under sticky group headers; pure bucketer over
-    estimatedDaysLeft.
+317. [x] `medications-list-runout-group` — Optional "group by run-out
+    urgency" toggle on /medications (Out of supply / This week / This month /
+    Healthy / No supply data) bucketing rows under sticky group headers;
+    pure bucketer over estimatedDaysLeft (tick 35 / 6f1aa33). Logic in
+    lib/runout-group.ts, 13 tests.
 318. [ ] `notifications-density-and-group-prefs` — Persist the
     /notifications group-by-day collapse state per day-bucket so a user's
     expanded/collapsed choices survive a reload; pure collapse-set model.
@@ -649,12 +655,114 @@ tick 34). Backend tiers 1L-1T stay paused until Sanjay removes the override.
     pages, actions, and your medications" hint block when the palette
     opens with no recents and an empty query; pure hint-visibility model.
 
+### Tier 1Y — frontend slices (FRONTEND-FOCUS override, refill after tick 35)
+
+Tick 35 closed five Tier 1X items (#311, #313, #314, #315, #317). Open
+frontend backlog now: #312, #316, #318, #319, #320 (Tier 1X) plus the
+older stragglers (#274-#277/#279 heavier items, #281, #292-#295, #307).
+This tier refills with fresh small-to-medium frontend-first candidates so
+the loop always has clean 5-slice batches. Each is a real user-facing
+capability in apps/web matching the sage/coral/amber pillbox language and
+the Linear/Raycast bar. Prefer extracting non-trivial logic into a tested
+lib/*.ts module (web vitest harness is 503 tests across 34 suites as of
+tick 35). Backend tiers 1L-1T stay paused until Sanjay removes the override.
+
+321. [ ] `reports-window-picker-weekly` — Extend reports-window-picker-shared
+    to the /reports/weekly page: a 7/30/90d window control that re-spans the
+    day-by-day list (weekly currently hardcodes lastNDays(7)); reuse
+    WindowPicker + windowDays. Pure span already covered by adherence-window.
+322. [ ] `medications-runout-group-persist` — Persist the new "Group by
+    run-out" toggle to localStorage (parallel to density-pref) so the choice
+    survives a reload; pure parse/normalize guard + storage key.
+323. [ ] `caregivers-expiry-pill` — Show an "Expires in Nd" amber pill on
+    /caregivers rows that are expiring soon (composing isExpiringSoon +
+    relativeTime); pure soon-window classifier already in caregiver-activity.
+324. [ ] `command-palette-result-total` — An aria-live "N results" summary
+    line under the palette input while querying (uses section-count's
+    totalResultCount + resultsSummary already shipped); screen-reader polish.
+325. [ ] `today-overdue-count-badge` — A small count badge on the /today
+    overdue banner's jump action ("jump to first of 3"); pure overdue-count
+    label composing lib/overdue's partition.
+326. [ ] `refills-runout-sort` — Add a "Soonest run-out" sort to /refills
+    parallel to the medications list, ordering needed refills by days-until;
+    pure days-until comparator with nulls-last.
+327. [ ] `schedule-month-density-dots` — Replace the "+N more" text on busy
+    month cells with a row of up-to-N dose dots (tone by count) so a glance
+    reads density without numbers; pure dot-count model over namesByDay.
+328. [ ] `notifications-unread-only-toggle` — An "Unread only" toggle on
+    /notifications that filters to unread across the active tab; pure
+    predicate composing with the existing tab filter.
+329. [ ] `medication-detail-supply-bar` — A horizontal supply-remaining bar
+    on the medication detail hero (sage fill proportional to estimated days,
+    coral under threshold); reuse estimatedDaysLeft, pure width/tone model.
+330. [ ] `dashboard-adherence-trend-arrow` — A small up/down/flat trend
+    arrow + delta chip next to the dashboard adherence ring (this window vs
+    prior); pure trend-from-two-percentages classifier.
+331. [ ] `caregivers-scope-chips` — Render each caregiver row's scopes as
+    friendly chips (View meds / Request refills) instead of a comma string,
+    using scopeLabel; pure already-shipped scopeLabel, thin render.
+332. [ ] `command-palette-keyboard-hint-row` — Contextual footer hints that
+    swap with state (show "Tab to cycle sections" only when multiple sections
+    are present); pure hint-set selector.
+333. [ ] `today-group-by-part-of-day` — Group the /today dose list under
+    Morning / Afternoon / Evening headers (reuse day-doses partOfDay), with
+    per-group counts; pure bucketer over scheduled times.
+334. [ ] `refills-pharmacy-filter` — A pharmacy filter chip row on /refills
+    (one chip per distinct pharmacy + "All") that narrows the list; pure
+    distinct-pharmacy extractor + predicate.
+335. [ ] `history-streak-callout` — A "current streak: N days" callout on
+    the /history page derived from the heatmap day states; pure
+    trailing-perfect-day counter over the day grid.
+
 (Pulled forward only after Tier 1 momentum is established. Note: the
 `@med/ui` test suite is currently red on baseline — fix the React JSX
 runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-26 07:17 PDT — tick 35: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 165d295 reports-window-picker-shared,
+  ee93839 caregivers-search-filter,
+  435ee30 command-palette-section-counts,
+  7c93ff8 schedule-day-drilldown-empty-jump,
+  6f1aa33 medications-list-runout-group.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.3s`; all 60
+  static pages generated incl. every edited route /reports, /reports/adherence,
+  /caregivers, /medications, plus the new WindowPicker component + edited
+  CommandPalette + DayDrilldownPanel). `@med/web` test 503/503 pass across 34
+  suites (446 baseline + 57 new this tick) with TMPDIR=/Volumes/Projects/.tmp.
+  `@med/web` typecheck: verified ZERO new errors in any touched apps/web file —
+  the 5 new lib modules (adherence-window additions, caregiver-filter,
+  section-count, day-jump, runout-group) appear 0 times in tsc output; every
+  error is the documented baseline (Link bigint JSX in the edited pages/
+  components + packages/utils + packages/ui placeholders). `@med/web` lint
+  remains the documented pre-existing `next lint` tooling bug.
+  TWENTY-FIFTH clean tick in a row (no fixup commits, no force-push, no revert).
+
+  Eighth frontend tick under Sanjay's standing override. Five slices spanning
+  five surfaces (reports, caregivers, command palette, schedule drilldown,
+  medications), each extracting its pure-logic core into a tested lib/*.ts
+  module — the web test harness grew from 446 -> 503 tests:
+  - lib/adherence-window.ts (+4 helpers, tests 7 -> 15) — WINDOW_KEYS,
+    isWindowKey, windowKeyForDays, cycleWindow (wraparound) powering the new
+    shared WindowPicker component; /reports + /reports/adherence now share one
+    7/30/90d control with Left/Right keyboard cycling.
+  - lib/caregiver-filter.ts (11) — matchesCaregiver (label OR scope, matching
+    both raw token and friendly scopeLabel), filterCaregivers,
+    summarizeCaregiverFilter; the /caregivers search box composes filter->sort.
+  - lib/section-count.ts (13) — shouldShowCount (only while querying, never on
+    Recent), countLabel, totalResultCount, resultsSummary; palette section
+    headers gain a result-count chip.
+  - lib/day-jump.ts (12) — findNextDayWithDoses / nextDayWithDoses (bounded
+    14-day scan, reuses dosesForDay), jumpLabel; the day-drilldown empty state
+    offers a "jump to the next dosed day" button.
+  - lib/runout-group.ts (13) — runoutBand, groupByRunout (empties dropped,
+    in-band ascending-days sort), summarizeRunout; the /medications list gains
+    a "Group by run-out" toggle with sticky urgency-band headers. Row markup
+    extracted into a shared MedRow used by flat + grouped views.
+  Refilled the roadmap with Tier 1Y (#321-#335, 15 fresh frontend candidates).
+
 
 - 2026-06-26 01:58 PDT — tick 34: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 4dac865 schedule-day-drilldown-prev-next,
