@@ -7,6 +7,14 @@ import { Surface, ErrorBox, SkeletonRow, Section } from '../../../components/uik
 import { getAdherence, getMedicationAdherence, type MedAdherenceRow } from '../../../lib/data';
 import type { AdherenceSummary } from '../../../lib/types';
 import { buildAdherenceBars, type AdherenceTone } from '../../../lib/adherence-bars';
+import {
+  ADHERENCE_WINDOWS,
+  DEFAULT_ADHERENCE_WINDOW,
+  windowDays,
+  windowCaption,
+  windowEmptyCopy,
+  type AdherenceWindowKey,
+} from '../../../lib/adherence-window';
 
 const BAR_TONE_FILL: Record<AdherenceTone, string> = {
   ok: 'var(--ok)',
@@ -18,17 +26,27 @@ export default function ReportsPage() {
   const [summary, setSummary] = React.useState<AdherenceSummary | null>(null);
   const [perMed, setPerMed] = React.useState<MedAdherenceRow[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [windowKey, setWindowKey] = React.useState<AdherenceWindowKey>(DEFAULT_ADHERENCE_WINDOW);
 
   const load = React.useCallback(async () => {
     setError(null);
     try {
-      const [s, m] = await Promise.all([getAdherence(), getMedicationAdherence(30)]);
+      const s = await getAdherence();
       setSummary(s);
-      setPerMed(m);
     }
     catch (e) { setError(e instanceof Error ? e.message : 'Could not load adherence.'); }
   }, []);
   React.useEffect(() => { void load(); }, [load]);
+
+  // Per-medication bars refetch whenever the window changes.
+  React.useEffect(() => {
+    let alive = true;
+    setPerMed(null);
+    getMedicationAdherence(windowDays(windowKey))
+      .then((m) => { if (alive) setPerMed(m); })
+      .catch((e) => { if (alive) setError(e instanceof Error ? e.message : 'Could not load adherence.'); });
+    return () => { alive = false; };
+  }, [windowKey]);
 
   if (error && !summary) return <ErrorBox message={error} onRetry={load} />;
 
@@ -57,15 +75,30 @@ export default function ReportsPage() {
       <Section
         title="By medication"
         action={
-          barData && barData.flaggedCount > 0 ? (
-            <span className="text-[12px] text-[var(--danger)]">
-              {barData.flaggedCount} below {70}%
-            </span>
-          ) : barData && barData.bars.length > 0 ? (
-            <span className="text-[12px] text-[var(--ink-muted)]">last 30 days</span>
-          ) : undefined
+          <div className="flex items-center gap-1" role="group" aria-label="Adherence window">
+            {ADHERENCE_WINDOWS.map((opt) => (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => setWindowKey(opt.key)}
+                aria-pressed={windowKey === opt.key}
+                className={`h-7 px-2.5 rounded-full text-[11.5px] font-medium border transition-colors ${
+                  windowKey === opt.key
+                    ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                    : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+                }`}
+              >
+                {opt.short}
+              </button>
+            ))}
+          </div>
         }
       >
+        {barData && barData.flaggedCount > 0 && (
+          <p className="text-[12px] text-[var(--danger)] -mt-1">
+            {barData.flaggedCount} below 70% over the {windowCaption(windowKey)}
+          </p>
+        )}
         {perMed === null ? (
           <Surface><SkeletonRow /><SkeletonRow /><SkeletonRow /></Surface>
         ) : barData && barData.bars.length > 0 ? (
@@ -109,13 +142,13 @@ export default function ReportsPage() {
               <LegendDot color="var(--danger)" label="Below 70%" />
               <LegendDot color="var(--warn)" label="70-89%" />
               <LegendDot color="var(--ok)" label="90%+" />
-              <span className="ml-auto">Worst adherence first.</span>
+              <span className="ml-auto">Worst adherence first · {windowCaption(windowKey)}.</span>
             </div>
           </Surface>
         ) : (
           <Surface>
             <div className="p-6 text-center text-[13px] text-[var(--ink-muted)]">
-              No per-medication adherence yet. Log a few doses and this fills in.
+              {windowEmptyCopy(windowKey)}
             </div>
           </Surface>
         )}
