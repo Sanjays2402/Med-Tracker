@@ -8,13 +8,13 @@ import { getAdherence, getMedicationAdherence, type MedAdherenceRow } from '../.
 import type { AdherenceSummary } from '../../../lib/types';
 import { buildAdherenceBars, type AdherenceTone } from '../../../lib/adherence-bars';
 import {
-  ADHERENCE_WINDOWS,
   DEFAULT_ADHERENCE_WINDOW,
   windowDays,
   windowCaption,
   windowEmptyCopy,
   type AdherenceWindowKey,
 } from '../../../lib/adherence-window';
+import { WindowPicker } from '../../../components/WindowPicker';
 
 const BAR_TONE_FILL: Record<AdherenceTone, string> = {
   ok: 'var(--ok)',
@@ -75,23 +75,7 @@ export default function ReportsPage() {
       <Section
         title="By medication"
         action={
-          <div className="flex items-center gap-1" role="group" aria-label="Adherence window">
-            {ADHERENCE_WINDOWS.map((opt) => (
-              <button
-                key={opt.key}
-                type="button"
-                onClick={() => setWindowKey(opt.key)}
-                aria-pressed={windowKey === opt.key}
-                className={`h-7 px-2.5 rounded-full text-[11.5px] font-medium border transition-colors ${
-                  windowKey === opt.key
-                    ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
-                    : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
-                }`}
-              >
-                {opt.short}
-              </button>
-            ))}
-          </div>
+          <WindowPicker value={windowKey} onChange={setWindowKey} size="sm" />
         }
       >
         {barData && barData.flaggedCount > 0 && (

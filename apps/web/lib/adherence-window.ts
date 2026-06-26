@@ -31,6 +31,9 @@ export const ADHERENCE_WINDOWS: AdherenceWindowOption[] = [
 
 export const DEFAULT_ADHERENCE_WINDOW: AdherenceWindowKey = '30d';
 
+/** The window keys in display order — handy for keyboard cycling. */
+export const WINDOW_KEYS: AdherenceWindowKey[] = ADHERENCE_WINDOWS.map((o) => o.key);
+
 const BY_KEY: Record<AdherenceWindowKey, AdherenceWindowOption> = {
   '7d': ADHERENCE_WINDOWS[0]!,
   '30d': ADHERENCE_WINDOWS[1]!,
@@ -43,9 +46,36 @@ export function resolveWindow(key: string | null | undefined): AdherenceWindowOp
   return BY_KEY[DEFAULT_ADHERENCE_WINDOW];
 }
 
+/** Type guard: is this string one of the known window keys? */
+export function isWindowKey(value: unknown): value is AdherenceWindowKey {
+  return typeof value === 'string' && value in BY_KEY;
+}
+
 /** Days for a window key (the value passed to getMedicationAdherence). */
 export function windowDays(key: string | null | undefined): number {
   return resolveWindow(key).days;
+}
+
+/**
+ * Map a numeric day count back to its window key. Used when migrating a page
+ * that stored a raw `7 | 30 | 90` to the shared key model. An exact match wins;
+ * anything else falls back to the default so a stray value never throws.
+ */
+export function windowKeyForDays(days: number | null | undefined): AdherenceWindowKey {
+  const hit = ADHERENCE_WINDOWS.find((o) => o.days === days);
+  return hit ? hit.key : DEFAULT_ADHERENCE_WINDOW;
+}
+
+/**
+ * Cycle to the next/previous window key, wrapping at the ends. `dir` of +1 goes
+ * 7d -> 30d -> 90d -> 7d; -1 reverses. Lets the picker support Left/Right keys
+ * without the caller hand-rolling index math.
+ */
+export function cycleWindow(key: string | null | undefined, dir: 1 | -1): AdherenceWindowKey {
+  const cur = resolveWindow(key).key;
+  const i = WINDOW_KEYS.indexOf(cur);
+  const next = (i + dir + WINDOW_KEYS.length) % WINDOW_KEYS.length;
+  return WINDOW_KEYS[next]!;
 }
 
 /** Human caption such as "last 30 days" for the section subhead. */

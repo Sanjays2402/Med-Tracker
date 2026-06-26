@@ -1,9 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import {
   ADHERENCE_WINDOWS,
+  WINDOW_KEYS,
   DEFAULT_ADHERENCE_WINDOW,
   resolveWindow,
+  isWindowKey,
   windowDays,
+  windowKeyForDays,
+  cycleWindow,
   windowCaption,
   windowEmptyCopy,
   type AdherenceWindowKey,
@@ -37,6 +41,56 @@ describe('windowDays', () => {
     expect(windowDays('30d')).toBe(30);
     expect(windowDays('90d')).toBe(90);
     expect(windowDays('garbage')).toBe(30);
+  });
+});
+
+describe('WINDOW_KEYS', () => {
+  it('lists the keys in display order', () => {
+    expect(WINDOW_KEYS).toEqual<AdherenceWindowKey[]>(['7d', '30d', '90d']);
+  });
+});
+
+describe('isWindowKey', () => {
+  it('accepts the known keys only', () => {
+    expect(isWindowKey('7d')).toBe(true);
+    expect(isWindowKey('30d')).toBe(true);
+    expect(isWindowKey('90d')).toBe(true);
+  });
+  it('rejects junk, numbers, null', () => {
+    expect(isWindowKey('1d')).toBe(false);
+    expect(isWindowKey(30)).toBe(false);
+    expect(isWindowKey(null)).toBe(false);
+    expect(isWindowKey(undefined)).toBe(false);
+  });
+});
+
+describe('windowKeyForDays', () => {
+  it('maps an exact day count back to its key', () => {
+    expect(windowKeyForDays(7)).toBe('7d');
+    expect(windowKeyForDays(30)).toBe('30d');
+    expect(windowKeyForDays(90)).toBe('90d');
+  });
+  it('falls back to the default for an unknown count', () => {
+    expect(windowKeyForDays(14)).toBe('30d');
+    expect(windowKeyForDays(null)).toBe('30d');
+    expect(windowKeyForDays(undefined)).toBe('30d');
+  });
+});
+
+describe('cycleWindow', () => {
+  it('cycles forward with wraparound', () => {
+    expect(cycleWindow('7d', 1)).toBe('30d');
+    expect(cycleWindow('30d', 1)).toBe('90d');
+    expect(cycleWindow('90d', 1)).toBe('7d');
+  });
+  it('cycles backward with wraparound', () => {
+    expect(cycleWindow('7d', -1)).toBe('90d');
+    expect(cycleWindow('90d', -1)).toBe('30d');
+    expect(cycleWindow('30d', -1)).toBe('7d');
+  });
+  it('treats junk input as the default before stepping', () => {
+    expect(cycleWindow('nope', 1)).toBe('90d'); // default 30d -> +1 -> 90d
+    expect(cycleWindow(null, -1)).toBe('7d'); // default 30d -> -1 -> 7d
   });
 });
 

@@ -6,6 +6,13 @@ import { ArrowLeft, ChartBar } from '@med/icons';
 import { Surface, ErrorBox, SkeletonRow, Section } from '../../../../components/uikit';
 import { getAdherence, listMedications, listDosesForDate } from '../../../../lib/data';
 import type { AdherenceSummary, Medication, DoseEvent } from '../../../../lib/types';
+import {
+  DEFAULT_ADHERENCE_WINDOW,
+  windowDays as daysForWindow,
+  windowCaption,
+  type AdherenceWindowKey,
+} from '../../../../lib/adherence-window';
+import { WindowPicker } from '../../../../components/WindowPicker';
 
 interface PerMed { medication: Medication; taken: number; scheduled: number; }
 
@@ -24,7 +31,8 @@ export default function ReportsAdherencePage() {
   const [summary, setSummary] = React.useState<AdherenceSummary | null>(null);
   const [perMed, setPerMed] = React.useState<PerMed[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [windowDays, setWindowDays] = React.useState(30);
+  const [windowKey, setWindowKey] = React.useState<AdherenceWindowKey>(DEFAULT_ADHERENCE_WINDOW);
+  const windowDays = daysForWindow(windowKey);
 
   const load = React.useCallback(async () => {
     setError(null);
@@ -73,17 +81,9 @@ export default function ReportsAdherencePage() {
             Per-medication MPR-style breakdown over the chosen window.
           </p>
         </div>
-        <div className="flex items-center gap-1">
-          {[7, 30, 90].map(n => (
-            <button key={n} onClick={() => setWindowDays(n)}
-              className={`px-2.5 h-8 rounded-md text-sm border transition-colors ${
-                windowDays === n
-                  ? 'border-brand-500 bg-brand-500/10 text-brand-700 dark:text-brand-300'
-                  : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900'
-              }`}>
-              {n}d
-            </button>
-          ))}
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-neutral-500 dark:text-neutral-400 hidden sm:inline">{windowCaption(windowKey)}</span>
+          <WindowPicker value={windowKey} onChange={setWindowKey} size="md" />
         </div>
       </header>
 
