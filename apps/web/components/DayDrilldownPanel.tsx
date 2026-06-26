@@ -11,7 +11,8 @@ import {
   type DayScheduleLike,
   type DayDose,
 } from '../lib/day-doses';
-import { dayStepView } from '../lib/day-step';
+import { dayStepView, relativeDayLabel } from '../lib/day-step';
+import { nextDayWithDoses, jumpLabel } from '../lib/day-jump';
 
 /**
  * DayDrilldownPanel — a slide-in side panel listing one day's doses by time.
@@ -98,6 +99,15 @@ export function DayDrilldownPanel({
   const summary = dosesForDay(dayKey, recurrences);
   const groups = groupByPartOfDay(summary.doses);
 
+  // When the day is empty and stepping is enabled, offer a jump to the next day
+  // that actually has doses (scan forward up to the default 14-day horizon).
+  const jump =
+    onStep && summary.total === 0 ? nextDayWithDoses(dayKey, recurrences) : null;
+  const jumpText =
+    jump && jump.dayKey
+      ? jumpLabel(jump, (k) => relativeDayLabel(k, today ?? dayKey))
+      : null;
+
   return (
     <div className="fixed inset-0 z-[900] flex justify-end" role="dialog" aria-modal="true" aria-label={`Doses on ${formatDayHeading(dayKey)}`}>
       {/* Backdrop */}
@@ -172,8 +182,22 @@ export function DayDrilldownPanel({
 
         <div className="px-5 py-4 space-y-5">
           {summary.total === 0 ? (
-            <div className="text-center py-10 text-[13px] text-[var(--ink-muted)]">
-              A rest day. Nothing is scheduled.
+            <div className="text-center py-10 space-y-4">
+              <p className="text-[13px] text-[var(--ink-muted)]">A rest day. Nothing is scheduled.</p>
+              {jump && jump.dayKey && jumpText && (
+                <button
+                  type="button"
+                  onClick={() => onStep?.(jump.dayKey!)}
+                  className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12.5px] font-medium transition-colors"
+                  style={{ background: 'var(--accent-soft)', color: 'var(--accent-ink)' }}
+                >
+                  <CaretRight size={14} />
+                  {jumpText}
+                  <span className="tabular text-[11px] opacity-70">
+                    · {jump.doseCount} dose{jump.doseCount === 1 ? '' : 's'}
+                  </span>
+                </button>
+              )}
             </div>
           ) : (
             groups.map((group) => {
