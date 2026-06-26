@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Pill as PillIcon, Bell, Check, X as XIcon } from '@med/icons';
+import { Pill as PillIcon, Bell, Check, X as XIcon, Warning, ArrowDown } from '@med/icons';
 import {
   Btn,
   Section,
@@ -25,6 +25,11 @@ import {
   pruneSelection,
   summarizeSelection,
 } from '../../../lib/dose-selection';
+import {
+  partitionOverdue,
+  overdueHeadline,
+  formatLateness,
+} from '../../../lib/overdue';
 
 export default function TodayPage() {
   const [doses, setDoses] = React.useState<DoseEvent[] | null>(null);
@@ -213,6 +218,22 @@ export default function TodayPage() {
   const taken = (doses ?? []).filter((d) => d.status === 'taken').length;
   const pct = total ? Math.round((taken / total) * 100) : 0;
 
+  // Overdue partition drives the sticky banner. Recomputed as `now` ticks.
+  const overdueModel = partitionOverdue(doses ?? [], now);
+
+  function jumpToFirstOverdue() {
+    const id = overdueModel.firstOverdueId;
+    if (!id) return;
+    const el = document.getElementById(`dose-row-${id}`);
+    if (!el) return;
+    const reduce =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    el.classList.add('anim-pop');
+    window.setTimeout(() => el.classList.remove('anim-pop'), 700);
+  }
+
   return (
     <div className="space-y-10 pb-24">
       <header className="space-y-2">
@@ -245,6 +266,47 @@ export default function TodayPage() {
           </div>
         </div>
       </header>
+
+      {/* Sticky overdue banner — appears when 1+ pending doses slipped past
+          their scheduled time. Jumps focus to the dose that's been waiting
+          longest. */}
+      {overdueModel.count > 0 && (
+        <div
+          className="sticky top-3 z-[600] anim-in"
+          role="status"
+          aria-live="polite"
+        >
+          <div
+            className="sheet flex items-center gap-3 px-4 py-3"
+            style={{
+              background: 'var(--danger-bg)',
+              border: '1px solid color-mix(in srgb, var(--danger) 28%, transparent)',
+              boxShadow: '0 10px 26px -14px color-mix(in srgb, var(--danger) 60%, transparent)',
+            }}
+          >
+            <span
+              className="inline-flex items-center justify-center w-8 h-8 rounded-full shrink-0 anim-overdue"
+              style={{ background: 'color-mix(in srgb, var(--danger) 16%, transparent)', color: 'var(--danger)' }}
+              aria-hidden
+            >
+              <Warning size={17} />
+            </span>
+            <div className="flex-1 min-w-0">
+              <div className="text-[13.5px] font-semibold text-[var(--danger)] leading-tight">
+                {overdueHeadline(overdueModel.count)}
+              </div>
+              <div className="text-[12px] text-[var(--ink-soft)] mt-0.5">
+                Oldest is {formatLateness(overdueModel.worstMinutesLate)} past due. Take or skip to clear it.
+              </div>
+            </div>
+            <Btn size="sm" variant="primary" onClick={jumpToFirstOverdue}>
+              <span className="inline-flex items-center gap-1.5">
+                <ArrowDown size={13} /> Jump to first
+              </span>
+            </Btn>
+          </div>
+        </div>
+      )}
 
       {doses && doses.length > 0 && (
         <DayRail doses={doses} onTake={(id) => void act(id, 'taken')} />
@@ -310,6 +372,7 @@ export default function TodayPage() {
                       return (
                         <li
                           key={d.id}
+                          id={`dose-row-${d.id}`}
                           className="flex items-center gap-4 px-5 py-4 border-b border-[var(--line-soft)] last:border-0 anim-in"
                           style={{
                             animationDelay: `${i * 30}ms`,
