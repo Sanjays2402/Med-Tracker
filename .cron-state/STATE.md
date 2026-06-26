@@ -533,25 +533,26 @@ Prefer extracting any non-trivial logic into a tested lib/*.ts module (the web
 vitest harness is now 216 tests across 15 suites as of tick 31). Backend tiers
 1L-1T stay paused until Sanjay removes the override.
 
-296. [ ] `medications-list-density-toggle` — Comfortable / compact row
+296. [x] `medications-list-density-toggle` — Comfortable / compact row
     density toggle on the /medications list, persisted to localStorage;
     compact hides the schedule subline + sparkline, comfortable keeps
-    them. Pure density-config model + a small persisted-pref hook.
-297. [ ] `reports-adherence-bars-window-picker` — 7d / 30d / 90d window
+    them (tick 34 / 48dbeb5). Logic in lib/density-pref.ts, 14 tests.
+297. [x] `reports-adherence-bars-window-picker` — 7d / 30d / 90d window
     chips above the per-medication adherence bars; refetches
-    getMedicationAdherence(window) and re-tones. Pure window-option model.
-298. [ ] `schedule-day-drilldown-prev-next` — Prev/next day arrows inside
+    getMedicationAdherence(window) and re-tones (tick 34 / 65442a1).
+    Logic in lib/adherence-window.ts, 7 tests.
+298. [x] `schedule-day-drilldown-prev-next` — Prev/next day arrows inside
     the day-drilldown panel (and left/right arrow keys) so a user can
-    walk days without closing the panel; composes day-doses with a
-    day-step helper (YYYY-MM-DD +/- 1, month/year rollover).
-299. [ ] `caregivers-activity-feed-sort` — Sort the caregivers LIST page
+    walk days without closing the panel (tick 34 / 4dac865). Logic in
+    lib/day-step.ts, 24 tests.
+299. [x] `caregivers-activity-feed-sort` — Sort the caregivers LIST page
     by most-recently-viewed / least-recently-viewed / never-viewed-first
-    using the caregiver-activity daysSinceViewed metric; a small
-    sort-comparator module with nulls-first/last handling.
-300. [ ] `command-palette-recent-clear` — A "Clear recent" affordance in
-    the palette's Recent section header (and a confirm-on-second-press
-    micro-interaction) that wipes the localStorage recents; pure
-    clear-state-machine + the existing recents store.
+    using the lastViewedAt recency metric (tick 34 / d87d944). Logic in
+    lib/caregiver-sort.ts, 14 tests.
+300. [x] `command-palette-recent-clear` — A "Clear recent" affordance in
+    the palette's Recent section header (confirm-on-second-press
+    micro-interaction) that wipes the localStorage recents (tick 34 /
+    902e7c6). Logic in lib/recents-clear.ts, 10 tests.
 301. [x] `today-overdue-banner` — A sticky top banner on /today when one
     or more doses are past their scheduled time and still pending
     ("2 doses overdue - take or skip"), with a jump-to-first-overdue
@@ -601,7 +602,52 @@ vitest harness is now 216 tests across 15 suites as of tick 31). Backend tiers
     scrolls its dose row into view; caption rolls the counts (tick 33 /
     6821016). Logic in lib/dose-segments.ts, 16 tests.
 
+### Tier 1X — frontend slices (FRONTEND-FOCUS override, refill after tick 34)
 
+Tick 34 closed five Tier 1W items (#296-#300). Ten open frontend items
+remain across Tier 1U/1V/1W (#274-#277/#279 stragglers + #281, #292-#295,
+#307). The list is thinning and several remaining items are heavier
+(force-directed graph, QR card, print layout), so this tier refills with
+fresh small-to-medium frontend-first candidates so the loop always has
+clean 5-slice batches to pick from. Each is a real user-facing capability
+in apps/web matching the sage/coral/amber pillbox language and the
+Linear/Raycast bar. Prefer extracting non-trivial logic into a tested
+lib/*.ts module (web vitest harness is 446 tests across 30 suites as of
+tick 34). Backend tiers 1L-1T stay paused until Sanjay removes the override.
+
+311. [ ] `reports-window-picker-shared` — Lift the 7/30/90d window picker
+    (lib/adherence-window) into the /reports/adherence + /reports/weekly
+    pages so every adherence surface shares one window control + caption.
+312. [ ] `medications-density-global` — Promote the density pref to a
+    shared hook so /refills and /notifications lists honour the same
+    Comfortable/Compact choice; one persisted key, three consumers.
+313. [ ] `caregivers-search-filter` — Inline search box on /caregivers
+    (label / scope) with a "/" focus shortcut, composing with the new
+    sort control; pure filter predicate + match-count summary.
+314. [ ] `command-palette-section-counts` — Show a per-section result
+    count chip ("Medications · 12") in the palette section headers when a
+    query is active; pure count-by-section model.
+315. [ ] `schedule-day-drilldown-empty-jump` — When stepping into an empty
+    day in the drilldown, offer a "jump to next day with doses" affordance
+    that scans forward up to 14 days; pure next-nonempty-day finder over
+    the recurrence set.
+316. [ ] `reports-adherence-window-trend-delta` — Under the per-med bars,
+    show a small "vs previous window" delta chip per medication (this 30d
+    vs the prior 30d) using two getMedicationAdherence calls; pure
+    delta-tone model.
+317. [ ] `medications-list-runout-group` — Optional "group by run-out
+    urgency" toggle on /medications (Overdue / This week / This month /
+    Healthy) bucketing rows under sticky group headers; pure bucketer over
+    estimatedDaysLeft.
+318. [ ] `notifications-density-and-group-prefs` — Persist the
+    /notifications group-by-day collapse state per day-bucket so a user's
+    expanded/collapsed choices survive a reload; pure collapse-set model.
+319. [ ] `caregivers-expiry-sort` — Add "Expiring soonest" to the
+    caregiver sort control (composing isExpiringSoon), so a user can
+    triage shares about to lapse; extend lib/caregiver-sort.
+320. [ ] `command-palette-empty-hint` — A friendly "Type to search across
+    pages, actions, and your medications" hint block when the palette
+    opens with no recents and an empty query; pure hint-visibility model.
 
 (Pulled forward only after Tier 1 momentum is established. Note: the
 `@med/ui` test suite is currently red on baseline — fix the React JSX
@@ -609,6 +655,71 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-26 01:58 PDT — tick 34: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 4dac865 schedule-day-drilldown-prev-next,
+  d87d944 caregivers-activity-feed-sort,
+  65442a1 reports-adherence-bars-window-picker,
+  48dbeb5 medications-list-density-toggle,
+  902e7c6 command-palette-recent-clear.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.3s`; all 60
+  static pages generated incl. every edited route /schedule/month,
+  /caregivers, /reports, /medications, plus the CommandPalette + DayDrilldownPanel
+  components). `@med/web` test 446/446 pass across 30 suites (377 baseline + 69
+  new this tick) with TMPDIR=/Volumes/Projects/.tmp. `@med/web` typecheck:
+  verified ZERO new errors in any touched apps/web file — the 5 new lib modules
+  appear 0 times in tsc output; every error is the documented baseline
+  (Link bigint JSX in the edited pages/components + .next/types validator +
+  DayRail unused @ts-expect-error + packages/icons implicit-any + packages/ui
+  react-not-found placeholder). `@med/web` lint fails with the documented
+  pre-existing `next lint` "Invalid project directory" tooling bug.
+  TWENTY-FOURTH clean tick in a row (no fixup commits, no force-push, no revert).
+
+  Seventh frontend tick under Sanjay's standing override. Five slices spanning
+  five different surfaces, each extracting its pure-logic core into a tested
+  lib/*.ts module — the web test harness grew from 377 -> 446 tests:
+  - lib/day-step.ts (24) — YYYY-MM-DD day arithmetic: stepDay with full
+    month/year/leap rollover, nextDay/prevDay, daysBetween, isSameDay,
+    relativeDayLabel, dayStepView bundle. Powers the day-drilldown stepper.
+  - lib/caregiver-sort.ts (14) — recency comparators (recent / stale /
+    never-first) keyed on lastViewedAt vs an injectable now, label tiebreak,
+    summarizeCaregiverSort with viewed/never counts.
+  - lib/adherence-window.ts (7) — 7/30/90d window-option model: resolveWindow
+    with junk-key fallback, windowDays for the data call, windowCaption,
+    window-tuned empty copy.
+  - lib/density-pref.ts (14) — comfortable/compact layout config + normalize/
+    parse guards (bare + JSON-quoted), toggleDensity, otherDensityLabel.
+  - lib/recents-clear.ts (10) — confirm-on-second-press state machine
+    (pressClear idle->armed->confirmed), disarm, labels, clearedRecents,
+    canClearRecents, arm timeout.
+  Roadmap: refilled with Tier 1X (#311-#320, ten fresh frontend candidates) so
+  the loop stays well-fed even though the open backlog (10 items) was above the
+  refill threshold — the remaining stragglers skew heavier (graph/QR/print) so
+  fresh small-to-medium slices keep clean 5-batches available.
+
+  Notes:
+  - Twenty-fourth tick in a row. Every tick 34 slice is a real user-facing
+    capability (logic + visual treatment + interactions + a11y), tested.
+  - `schedule-day-drilldown-prev-next` adds prev/next arrows + Left/Right key
+    handling to the day-drilldown panel (arrows ignored while typing) and a
+    relative "Today / Tomorrow / Yesterday / In N days" chip; the month page
+    wires onStep to advance the selected day. The panel's onStep + today props
+    are optional, so existing callers are unaffected.
+  - `caregivers-activity-feed-sort` is the first sort control on the
+    /caregivers LIST (the activity feed itself already lived on the detail
+    page) — Recently viewed / Least recent / Never viewed-first, with a
+    "N never opened" header tally, chip row only when 2+ shares.
+  - `reports-adherence-bars-window-picker` swaps the static "last 30 days"
+    label for a 7/30/90d chip group; selecting a window refetches per-med
+    adherence (alive-guarded) and re-tones, caption + flagged line + empty
+    copy all follow.
+  - `medications-list-density-toggle` adds a persisted Comfortable/Compact
+    segmented control; compact hides the schedule subline + supply sparkline
+    and tightens padding/icon.
+  - `command-palette-recent-clear` adds a confirm-on-second-press "Clear"
+    control to the Recent section header — arms on first press, wipes the
+    localStorage recents on the second within 3s, disarms on close / typing /
+    blur / timeout / unmount.
 
 - 2026-06-25 21:30 PDT — tick 33: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 6821016 today-progress-segments,
