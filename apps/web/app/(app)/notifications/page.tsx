@@ -9,6 +9,7 @@ import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
 import { NOTIFICATION_TABS, filterByTab, countByTab, type NotificationTab } from '../../../lib/notification-filter';
+import { groupByDay } from '../../../lib/day-group';
 
 export default function NotificationsPage() {
   const [items, setItems] = React.useState<NotificationItem[] | null>(null);
@@ -78,6 +79,7 @@ export default function NotificationsPage() {
   const notSnoozed = (items ?? []).filter(n => !snoozedRows.has(n.id));
   const counts = countByTab(notSnoozed);
   const visible = filterByTab(notSnoozed, activeTab);
+  const dayGroups = groupByDay(visible, (n) => n.createdAt);
   const snoozedCount = snoozedRows.size;
 
   return (
@@ -151,18 +153,33 @@ export default function NotificationsPage() {
           }
         />
       ) : (
-        <Surface>
-          <ul>
-            {visible.map(n => (
-              <NotificationRow
-                key={n.id}
-                item={n}
-                onRead={() => onMarkOne(n.id)}
-                onSnooze={(choice) => onSnooze(n, choice)}
-              />
-            ))}
-          </ul>
-        </Surface>
+        <div className="space-y-5">
+          {dayGroups.map((group) => (
+            <section key={group.key} className="space-y-2">
+              <div
+                className="sticky top-2 z-10 flex items-center gap-2 px-1"
+              >
+                <span className="eyebrow">{group.label}</span>
+                <span className="text-[11px] tabular text-[var(--ink-muted)]">
+                  {group.items.length}
+                </span>
+                <span className="flex-1 h-px" style={{ background: 'var(--line-soft)' }} />
+              </div>
+              <Surface>
+                <ul>
+                  {group.items.map(n => (
+                    <NotificationRow
+                      key={n.id}
+                      item={n}
+                      onRead={() => onMarkOne(n.id)}
+                      onSnooze={(choice) => onSnooze(n, choice)}
+                    />
+                  ))}
+                </ul>
+              </Surface>
+            </section>
+          ))}
+        </div>
       )}
 
       {error && items && <ErrorBox message={error} onRetry={load} />}
