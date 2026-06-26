@@ -550,28 +550,33 @@ vitest harness is now 216 tests across 15 suites as of tick 31). Backend tiers
     the palette's Recent section header (and a confirm-on-second-press
     micro-interaction) that wipes the localStorage recents; pure
     clear-state-machine + the existing recents store.
-301. [ ] `today-overdue-banner` — A sticky top banner on /today when one
+301. [x] `today-overdue-banner` — A sticky top banner on /today when one
     or more doses are past their scheduled time and still pending
     ("2 doses overdue - take or skip"), with a jump-to-first-overdue
-    action; pure overdue-partition model (scheduledAt < now & pending).
+    action; pure overdue-partition model (scheduledAt < now & pending)
+    (tick 32 / 0b94e6f). Logic in lib/overdue.ts, 19 tests.
 302. [ ] `medication-detail-adherence-ring` — Reuse the AdherenceRing on
     the medication detail page showing that single med's adherence over
     30 days (per-med taken/scheduled from getMedicationAdherence); tone
     auto-derived, with a taken/scheduled caption.
-303. [ ] `refills-status-filter-tabs` — All / Needed / Requested / Ready
+303. [x] `refills-status-filter-tabs` — All / Needed / Requested / Ready
     tab row on /refills with per-tab count badges (parallel to the
-    notifications-filter-tabs pattern); pure status->tab bucketing model.
-304. [ ] `dashboard-next-dose-countdown` — A live "next dose in 1h 12m"
+    notifications-filter-tabs pattern); pure status->tab bucketing model
+    (tick 32 / d8a04dd). Logic in lib/refill-filter.ts, 14 tests.
+304. [x] `dashboard-next-dose-countdown` — A live "next dose in 1h 12m"
     countdown card on the dashboard derived from the soonest pending
     dose; reuses lib/next-dose.ts, adds a 1-minute tick + a humanised
-    duration formatter (pure).
-305. [ ] `schedule-week-today-column` — Highlight the current weekday
+    duration formatter (pure) (tick 32 / 060b5df). Logic in
+    lib/countdown.ts, 17 tests.
+305. [x] `schedule-week-today-column` — Highlight the current weekday
     column on the /schedule/week grid with a sage spine + "Today" cap,
-    and scroll it into view on mount; pure current-weekday-index helper.
-306. [ ] `notifications-group-by-day` — Group the /notifications list
+    and scroll it into view on mount; pure current-weekday-index helper
+    (tick 32 / 82aa05d). Logic in lib/week-days.ts, 9 tests.
+306. [x] `notifications-group-by-day` — Group the /notifications list
     under relative day headers (Today / Yesterday / Mon ...) with a
     per-group count; pure created-at -> day-bucket model parallel to
-    upcoming-grouped-by-day.
+    upcoming-grouped-by-day (tick 32 / e8a8f58). Logic in
+    lib/day-group.ts, 16 tests.
 307. [ ] `medications-bulk-archive` — Multi-select rows on /medications
     with a floating action bar to archive several at once (parallel to
     today-page-bulk-take's selection model); reuses lib/dose-selection
@@ -597,6 +602,72 @@ runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
 ## Tick log
+
+- 2026-06-25 16:51 PDT — tick 32: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 0b94e6f today-overdue-banner,
+  060b5df dashboard-next-dose-countdown,
+  d8a04dd refills-status-filter-tabs,
+  e8a8f58 notifications-group-by-day,
+  82aa05d schedule-week-today-column.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.3s`; all 60
+  static pages generated incl. every edited route /today, /dashboard,
+  /refills, /notifications, /schedule/week). `@med/web` test 291/291 pass
+  across 20 suites (216 baseline + 75 new this tick) with TMPDIR=/Volumes/
+  Projects/.tmp. `@med/web` typecheck shows only the pre-existing baseline
+  (components/DayRail.tsx(216,9) unused @ts-expect-error + 4 .next/types/
+  validator.ts layout-config errors + the packages/utils schedule-resolver/
+  taper-plan/titration strict-undefined baseline) — ZERO new errors in any
+  apps/web file or new lib/component module (verified by grepping the tsc
+  output for every touched/created path; grep returned no matches). `@med/web`
+  lint fails with the documented pre-existing `next lint` "Invalid project
+  directory" tooling bug — not introduced by this tick.
+  TWENTY-SECOND clean tick in a row (no fixup commits, no force-push, no revert).
+
+  Fifth frontend tick under Sanjay's standing override. Five slices spanning
+  five different surfaces, each extracting its pure-logic core into a tested
+  lib/*.ts module — the web test harness grew from 216 -> 291 tests:
+  - lib/overdue.ts (19) — overdue partition (pending + past a 15min grace),
+    earliest-first ordering, minutesLate, worst-late, headline + lateness
+    formatting
+  - lib/countdown.ts (17) — composes lib/next-dose; duration split into
+    h/m, long humanised phrasing with until/since/bare directions, clock label
+  - lib/refill-filter.ts (14) — status->tab bucketing (picked_up folds into
+    Ready), per-tab counts, most-actionable default-tab selection
+  - lib/day-group.ts (16) — local-day keying (no UTC drift), whole-day delta,
+    relative labels (Today/Yesterday/Tomorrow/weekday/short-date), generic
+    groupByDay preserving incoming order, newest-day-first
+  - lib/week-days.ts (9) — startOfWeek, same-local-day, 7-cell week model with
+    today-column index + containsToday guard
+  Remaining frontend backlog: 20 open items across Tier 1U/1V/1W (266-310
+  range) — above the refill threshold, so no roadmap refill this tick. Backend
+  tiers 1L-1T stay paused until Sanjay removes the override.
+
+  Notes:
+  - Twenty-second tick in a row. Every tick 32 slice is a real user-facing
+    capability (logic + visual treatment + interactions + a11y), tested.
+  - `today-overdue-banner` adds the today page's first proactive alert: a
+    sticky danger-toned banner (role=status, aria-live) that surfaces only
+    when 1+ pending doses slipped past the 15-min grace. "Jump to first"
+    smooth-scrolls (reduced-motion aware) to the longest-waiting dose via a
+    new per-row id and pulses it.
+  - `dashboard-next-dose-countdown` is a live card between the day rail and
+    the stat capsules; self-ticking once a minute, tone-shifting accent ->
+    amber -> coral with "Nh Nm late" on overdue and a calm "all caught up"
+    end state, plus a quick Take wired to the existing dose-take flow.
+  - `refills-status-filter-tabs` adds All/Needed/Requested/Ready tabs with
+    count badges; lands on the most actionable non-empty tab on load but
+    respects an explicit pick; the 30-day timeline shows only on All.
+  - `notifications-group-by-day` breaks the flat inbox into day sections with
+    sticky relative-day headers (Today/Yesterday/weekday/short date) + a
+    per-group count, layered on top of the existing filter tabs + snooze.
+  - `schedule-week-today-column` lights the current weekday column with a
+    sage spine + accent header + "Today" cap and scrolls it into view on
+    mount (only when the week contains today); also refreshed the column
+    chrome to the sage/coral token palette. Replaced the page's ad-hoc
+    startOfWeek + manual day array with the tested week model.
+  - LSP again flagged the stale-@types/react `Link cannot be used as a JSX
+    component / bigint` false positive on every edited .tsx; real tsc reports
+    those files clean. Do not chase it (see tick 29/30/31 session notes).
 
 - 2026-06-25 11:46 PDT — tick 31: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: c28c1d7 medication-supply-sparkline,
