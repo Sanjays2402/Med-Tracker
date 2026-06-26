@@ -221,6 +221,7 @@ export default function ScheduleMonthPage() {
         dayKey={selectedDay}
         recurrences={namedRecurrences}
         onClose={() => setSelectedDay(null)}
+        onStep={(next) => setSelectedDay(next)}
       />
     </div>
   );

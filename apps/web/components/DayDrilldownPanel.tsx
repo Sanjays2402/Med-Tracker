@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { X, Pill as PillIcon, Sun, CloudMoon, Moon } from '@med/icons';
+import { X, Pill as PillIcon, Sun, CloudMoon, Moon, CaretLeft, CaretRight } from '@med/icons';
 import { Pill } from './uikit';
 import {
   dosesForDay,
@@ -11,6 +11,7 @@ import {
   type DayScheduleLike,
   type DayDose,
 } from '../lib/day-doses';
+import { dayStepView } from '../lib/day-step';
 
 /**
  * DayDrilldownPanel — a slide-in side panel listing one day's doses by time.
@@ -19,6 +20,11 @@ import {
  * lib/day-doses.ts. Opens when `dayKey` is set, closes on backdrop click / Esc
  * / the close button. Doses are grouped into Morning / Afternoon / Evening,
  * each row a time + medication chip linking to that medication.
+ *
+ * When `onStep` is provided the header grows prev/next day arrows and the panel
+ * binds Left/Right arrow keys, so a user can walk days without closing it. The
+ * neighbour keys + a relative "Today / Tomorrow / Yesterday" subhead come from
+ * the pure lib/day-step model.
  */
 
 const PART_ICON: Record<DayDose['partOfDay'], React.ComponentType<{ size?: number }>> = {
@@ -48,23 +54,44 @@ export function DayDrilldownPanel({
   dayKey,
   recurrences,
   onClose,
+  onStep,
+  today,
 }: {
   dayKey: string | null;
   recurrences: readonly DayScheduleLike[];
   onClose: () => void;
+  /** When provided, the panel can walk to an adjacent day (arrows + keys). */
+  onStep?: (nextDayKey: string) => void;
+  /** Local YYYY-MM-DD "today" for the relative subhead; defaults to now. */
+  today?: string;
 }) {
-  // Close on Escape.
+  const step = dayKey ? dayStepView(dayKey, today) : null;
+
+  // Close on Escape; Left/Right walk days when stepping is enabled.
   React.useEffect(() => {
     if (!dayKey) return;
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
+        return;
+      }
+      if (!onStep || !step) return;
+      // Don't hijack arrows while focus is in a field.
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || t?.isContentEditable) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        onStep(step.prevKey);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        onStep(step.nextKey);
       }
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [dayKey, onClose]);
+  }, [dayKey, onClose, onStep, step]);
 
   if (!dayKey) return null;
 
@@ -88,7 +115,20 @@ export function DayDrilldownPanel({
       >
         <header className="sticky top-0 z-10 flex items-start justify-between gap-3 px-5 py-4 border-b" style={{ borderColor: 'var(--line-soft)', background: 'var(--bg-elev)' }}>
           <div className="min-w-0">
-            <div className="eyebrow">day detail</div>
+            <div className="flex items-center gap-2 eyebrow">
+              <span>day detail</span>
+              {step && (
+                <span
+                  className="normal-case tracking-normal text-[10.5px] px-1.5 py-0.5 rounded-full"
+                  style={{
+                    background: step.isToday ? 'var(--accent-soft)' : 'var(--bg-sunk)',
+                    color: step.isToday ? 'var(--accent-ink)' : 'var(--ink-muted)',
+                  }}
+                >
+                  {step.relativeLabel}
+                </span>
+              )}
+            </div>
             <h2 className="display text-[20px] leading-tight mt-0.5 truncate">{formatDayHeading(dayKey)}</h2>
             <p className="text-[12.5px] text-[var(--ink-muted)] mt-1">
               {summary.total === 0
@@ -96,14 +136,38 @@ export function DayDrilldownPanel({
                 : `${summary.total} dose${summary.total === 1 ? '' : 's'} · ${summary.medicationCount} medication${summary.medicationCount === 1 ? '' : 's'}`}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close day detail"
-            className="inline-flex items-center justify-center w-8 h-8 rounded-full text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)] shrink-0"
-          >
-            <X size={16} />
-          </button>
+          <div className="flex items-center gap-1 shrink-0">
+            {onStep && step && (
+              <div className="flex items-center gap-0.5" role="group" aria-label="Step day">
+                <button
+                  type="button"
+                  onClick={() => onStep(step.prevKey)}
+                  aria-label="Previous day"
+                  title="Previous day (←)"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]"
+                >
+                  <CaretLeft size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onStep(step.nextKey)}
+                  aria-label="Next day"
+                  title="Next day (→)"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]"
+                >
+                  <CaretRight size={15} />
+                </button>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close day detail"
+              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)] shrink-0"
+            >
+              <X size={16} />
+            </button>
+          </div>
         </header>
 
         <div className="px-5 py-4 space-y-5">
