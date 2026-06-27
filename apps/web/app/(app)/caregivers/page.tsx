@@ -15,6 +15,7 @@ import {
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
+import { expiryBar } from '../../../lib/expiry-bar';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
@@ -72,6 +73,10 @@ export default function CaregiversPage() {
   // reflects how many shares need renewing, regardless of the active search.
   const expirySummary = items ? summarizeExpiry(items) : null;
   const expiringText = expirySummary ? expiringHeadline(expirySummary) : null;
+  // Stacked active / soon / expired bar under the header so a glance reads the
+  // health of the whole share list, not just the soon count. Only shown when
+  // there is something at risk (a soon or expired share) and >1 share exists.
+  const bar = expirySummary && items && items.length > 1 ? expiryBar(expirySummary) : null;
 
   return (
     <div className="space-y-6">
@@ -176,6 +181,55 @@ export default function CaregiversPage() {
             )}
           </p>
         )}
+        </div>
+      )}
+
+      {/* Stacked active / soon / expired bar — a glance read of how healthy the
+          whole share list is. Only rendered when something is actually at risk
+          so a tidy all-active list stays uncluttered. */}
+      {bar && bar.hasRisk && (
+        <div className="space-y-1.5">
+          <div
+            className="flex h-2 rounded-full overflow-hidden"
+            style={{ background: 'var(--bg-sunk)' }}
+            role="img"
+            aria-label={`Share access: ${bar.segments.map((s) => s.label).join(', ')}`}
+          >
+            {bar.segments.map((seg) => (
+              <div
+                key={seg.kind}
+                style={{
+                  width: `${seg.pct}%`,
+                  minWidth: seg.count > 0 ? '4px' : undefined,
+                  background:
+                    seg.tone === 'ok'
+                      ? 'var(--ok)'
+                      : seg.tone === 'warn'
+                      ? 'var(--warn)'
+                      : 'var(--danger)',
+                }}
+                title={seg.label}
+              />
+            ))}
+          </div>
+          <div className="flex items-center gap-3 flex-wrap text-[11px] text-[var(--ink-muted)]">
+            {bar.segments.map((seg) => (
+              <span key={seg.kind} className="inline-flex items-center gap-1.5">
+                <span
+                  className="inline-block w-2 h-2 rounded-full"
+                  style={{
+                    background:
+                      seg.tone === 'ok'
+                        ? 'var(--ok)'
+                        : seg.tone === 'warn'
+                        ? 'var(--warn)'
+                        : 'var(--danger)',
+                  }}
+                />
+                {seg.label}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
