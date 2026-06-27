@@ -21,6 +21,7 @@ import { NextDoseCountdown } from '../../../components/NextDoseCountdown';
 import { getAdherence, listTodayDoses, listRefills, logDose } from '../../../lib/data';
 import type { AdherenceSummary, DoseEvent, Refill } from '../../../lib/types';
 import { trendFromCounts } from '../../../lib/adherence-trend';
+import { trendSeriesMeta } from '../../../lib/trend-series';
 
 export default function DashboardPage() {
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
@@ -73,6 +74,16 @@ export default function DashboardPage() {
       : null;
   // Arrow direction: the computed delta when available, else the summary enum.
   const trendDir: 'up' | 'down' | 'flat' = trend?.direction ?? adherence?.trend ?? 'flat';
+
+  // Honest 14-day strip: older cells carry the prior-window average, newer cells
+  // the current-window average (a real step when a baseline exists; otherwise a
+  // flat strip). No invented per-day variance.
+  const strip = trendSeriesMeta({
+    taken: adherence?.taken ?? 0,
+    scheduled: adherence?.scheduled ?? 0,
+    priorTaken: adherence?.priorTaken,
+    priorScheduled: adherence?.priorScheduled,
+  });
 
   async function quickTake(id: string) {
     try {
@@ -367,27 +378,35 @@ export default function DashboardPage() {
             </div>
 
             <div className="mt-5">
-              <div className="eyebrow mb-2">last 14 days</div>
+              <div className="eyebrow mb-2 flex items-center justify-between">
+                <span>last 14 days</span>
+                {strip.hasStep && (
+                  <span className="normal-case tracking-normal text-[10.5px] text-[var(--ink-muted)]">
+                    prior {strip.priorPct}% → now {strip.currentPct}%
+                  </span>
+                )}
+              </div>
               <div className="grid grid-cols-7 gap-1.5">
-                {Array.from({ length: 14 }).map((_, i) => {
-                  // Deterministic pseudo-data sourced from the user's average % so the
-                  // grid feels coherent with the ring even before the API returns the
-                  // real per-day numbers. Variance ~ 18pp from the mean.
-                  const seed = (i * 9301 + 49297) % 233280;
-                  const wobble = (seed / 233280 - 0.5) * 36;
-                  const dayPct = Math.max(0, Math.min(100, adherencePct + wobble));
-                  const intensity = dayPct / 100;
-                  const isToday = i === 13;
+                {strip.cells.map((cell, i) => {
+                  // Honest fill: each cell carries its window's true average, not
+                  // an invented daily number. The single step (when a prior
+                  // baseline exists) mirrors the trend arrow above.
+                  const intensity = cell.pct / 100;
                   return (
                     <div
                       key={i}
                       className="h-9 rounded-full relative"
                       style={{
                         background: `color-mix(in srgb, var(--accent) ${10 + intensity * 70}%, var(--bg-sunk))`,
-                        outline: isToday ? '1.5px solid var(--accent)' : undefined,
-                        outlineOffset: isToday ? '1.5px' : undefined,
+                        outline: cell.isToday ? '1.5px solid var(--accent)' : undefined,
+                        outlineOffset: cell.isToday ? '1.5px' : undefined,
+                        opacity: cell.segment === 'prior' ? 0.82 : 1,
                       }}
-                      title={`Day ${i + 1}: ${Math.round(dayPct)}%`}
+                      title={
+                        cell.isToday
+                          ? `Today · current window avg ${cell.pct}%`
+                          : `${cell.segment === 'prior' ? 'Prior' : 'Current'} window avg · ${cell.pct}%`
+                      }
                     />
                   );
                 })}
@@ -396,6 +415,11 @@ export default function DashboardPage() {
                 <span>two weeks ago</span>
                 <span>today</span>
               </div>
+              {!strip.hasStep && adherence && (
+                <div className="mt-2 text-[10.5px] text-[var(--ink-muted)]">
+                  Showing your {adherence.windowDays}-day average. Per-day detail appears as more history lands.
+                </div>
+              )}
             </div>
           </div>
         </Section>
