@@ -23,12 +23,18 @@ import {
   parseRunoutGroup,
   serializeRunoutGroup,
 } from '../../../lib/runout-group-pref';
+import {
+  MED_SORT_STORAGE_KEY,
+  DEFAULT_MED_SORT,
+  parseMedSort,
+  serializeMedSort,
+} from '../../../lib/med-sort-pref';
 
 export default function MedicationsPage() {
   const [meds, setMeds] = React.useState<Medication[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [query, setQuery] = React.useState('');
-  const [sortBy, setSortBy] = React.useState<MedSortKey>('name');
+  const [sortBy, setSortBy] = React.useState<MedSortKey>(DEFAULT_MED_SORT);
   const [density, setDensity] = React.useState<Density>(DEFAULT_DENSITY);
   const [grouped, setGrouped] = React.useState(DEFAULT_RUNOUT_GROUP);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
@@ -50,6 +56,18 @@ export default function MedicationsPage() {
   React.useEffect(() => {
     try { setGrouped(parseRunoutGroup(window.localStorage.getItem(RUNOUT_GROUP_STORAGE_KEY))); }
     catch { /* localStorage unavailable - keep the default */ }
+  }, []);
+
+  // Restore the persisted sort choice on mount.
+  React.useEffect(() => {
+    try { setSortBy(parseMedSort(window.localStorage.getItem(MED_SORT_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - keep the default */ }
+  }, []);
+
+  const chooseSort = React.useCallback((next: MedSortKey) => {
+    setSortBy(next);
+    try { window.localStorage.setItem(MED_SORT_STORAGE_KEY, serializeMedSort(next)); }
+    catch { /* best-effort persistence */ }
   }, []);
 
   const chooseDensity = React.useCallback((next: Density) => {
@@ -131,7 +149,7 @@ export default function MedicationsPage() {
             <button
               key={opt.key}
               type="button"
-              onClick={() => setSortBy(opt.key)}
+              onClick={() => chooseSort(opt.key)}
               aria-pressed={sortBy === opt.key}
               className={`h-9 px-3 rounded-full text-[12px] font-medium border transition-colors ${
                 sortBy === opt.key
