@@ -30,6 +30,7 @@ import {
   serializeMedSort,
 } from '../../../lib/med-sort-pref';
 import { medSortCaption, medSortMatchClause } from '../../../lib/med-sort-caption';
+import { cycleMedSort } from '../../../lib/sort-cycle';
 
 export default function MedicationsPage() {
   const [meds, setMeds] = React.useState<Medication[] | null>(null);
@@ -100,6 +101,23 @@ export default function MedicationsPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // "s" cycles the sort key (Name -> Lowest supply -> Soonest refill -> Name),
+  // parallel to the reports window picker's keyboard cycling. Skipped while a
+  // text field is focused or a modifier is held (so it never fights the browser
+  // or the global g-then-s "go to schedule" leader, which carries no bare "s").
+  React.useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key.toLowerCase() !== 's' || e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || t?.isContentEditable) return;
+      e.preventDefault();
+      chooseSort(cycleMedSort(sortBy));
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [sortBy, chooseSort]);
+
   if (error && !meds) return <ErrorBox message={error} onRetry={load} />;
 
   const visible = meds ? sortMedications(filterMedications(meds, query), sortBy) : [];
@@ -161,6 +179,13 @@ export default function MedicationsPage() {
               {opt.label}
             </button>
           ))}
+          <kbd
+            className="capsule tabular text-[10px] shrink-0 hidden sm:inline-flex"
+            title="Press s to cycle the sort"
+            aria-hidden
+          >
+            s
+          </kbd>
         </div>
         <div
           className="flex items-center rounded-full border border-[var(--line)] p-0.5 shrink-0"
