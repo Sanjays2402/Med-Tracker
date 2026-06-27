@@ -30,7 +30,8 @@ import {
   overdueHeadline,
   formatLateness,
 } from '../../../lib/overdue';
-import { groupByPartOfDay, sectionCountLabel } from '../../../lib/part-of-day';
+import { groupByPartOfDay, sectionCountLabel, type PartOfDayCounts } from '../../../lib/part-of-day';
+import { sectionProgress, sectionProgressLabel } from '../../../lib/section-progress';
 import { DoseSegments } from '../../../components/DoseSegments';
 
 export default function TodayPage() {
@@ -374,6 +375,7 @@ export default function TodayPage() {
                 )
               }
             >
+              <SectionProgressBar counts={counts} />
               <div className="sheet">
                 <ul>
                   {items
@@ -514,6 +516,39 @@ export default function TodayPage() {
             </Btn>
           </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+function SectionProgressBar({ counts }: { counts: PartOfDayCounts }) {
+  const p = sectionProgress(counts);
+  if (!p.visible) return null;
+  const fillColor = p.tone === 'ok' ? 'var(--ok)' : 'var(--accent)';
+  const takenPctW = `${(p.takenFraction * 100).toFixed(2)}%`;
+  const skippedPctW = `${(p.skippedFraction * 100).toFixed(2)}%`;
+  return (
+    <div
+      className="h-1.5 rounded-full overflow-hidden flex -mt-1"
+      style={{ background: 'var(--bg-sunk)' }}
+      role="progressbar"
+      aria-valuenow={p.takenPct}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={sectionProgressLabel(counts) ?? undefined}
+    >
+      <div
+        className="h-full transition-[width] duration-500"
+        style={{ width: takenPctW, background: fillColor, borderRadius: '9999px' }}
+      />
+      {p.skippedFraction > 0 && (
+        <div
+          className="h-full transition-[width] duration-500"
+          style={{
+            width: skippedPctW,
+            background: 'color-mix(in srgb, var(--warn) 55%, transparent)',
+          }}
+        />
       )}
     </div>
   );
