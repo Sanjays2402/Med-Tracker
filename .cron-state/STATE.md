@@ -894,25 +894,27 @@ Linear/Raycast bar. Prefer extracting non-trivial logic into a tested lib/*.ts
 module (web vitest harness is 732 tests across 50 suites as of tick 39).
 Backend tiers 1L-1T stay paused until Sanjay removes the override.
 
-366. [ ] `dashboard-milestone-progress-bar` — Under the streak milestone chip,
+366. [x] `dashboard-milestone-progress-bar` — Under the streak milestone chip,
     a thin progress bar showing how far the streak is between the last reached
     milestone and the next (composes lib/streak-milestone's highest + next);
-    pure fraction-of-the-way model.
-367. [ ] `refills-runout-chip-tooltip` — Give the always-on /refills run-out
-    chip a tooltip naming the exact medication that runs out soonest (the chip
-    today only shows the day count); pure soonest-refill selector returning the
-    name alongside the days.
-368. [ ] `caregivers-sort-active-caption` — Mirror the medications sort caption
+    pure fraction-of-the-way model (tick 40 / 2b54e23). Logic in
+    lib/milestone-progress.ts, 11 tests.
+367. [x] `refills-runout-chip-tooltip` — Give the always-on /refills run-out
+    chip a tooltip naming the exact medication that runs out soonest (tick 40 /
+    b715a47). Extended lib/refill-sort (soonestRefill + soonestRunoutTooltip),
+    tests 27 -> 34.
+368. [x] `caregivers-sort-active-caption` — Mirror the medications sort caption
     on /caregivers: a small "Sorted by expiring soonest" line under the
-    controls reflecting the active CaregiverSortKey; pure label-from-key.
+    controls reflecting the active CaregiverSortKey + a match-count clause
+    (tick 40 / 30199a9). Logic in lib/caregiver-sort-caption.ts, 8 tests.
 369. [ ] `today-now-section-scroll` — On first load, gently scroll the /today
     section that contains the current hour into view (reuses isCurrentPartOfDay)
     so the user lands on the block in play; pure target-section selector +
     reduced-motion-aware scroll.
-370. [ ] `medications-sort-cycle-key` — A keyboard shortcut on /medications
+370. [x] `medications-sort-cycle-key` — A keyboard shortcut on /medications
     ("s" cycles Name -> Lowest supply -> Soonest refill) parallel to the
-    window-picker Left/Right cycling; pure next-key-in-ring helper over
-    MED_SORTS.
+    window-picker Left/Right cycling (tick 40 / 257493c). Logic in
+    lib/sort-cycle.ts (generic cycleKey + cycleMedSort), 10 tests.
 371. [ ] `dashboard-streak-milestone-toast` — When the loaded streak exactly
     equals a milestone (reachedMilestone), fire a one-shot celebratory toast
     ("A month on schedule!") via the existing Toast layer; pure milestone-to-
@@ -923,15 +925,105 @@ Backend tiers 1L-1T stay paused until Sanjay removes the override.
 373. [ ] `caregivers-expiry-summary-bar` — A thin stacked bar under the
     caregivers header showing the active / expiring-soon / expired split
     (composes summarizeExpiry counts) with a tone ramp; pure segment-width model.
-374. [ ] `today-part-of-day-progress-roll` — Roll the four section progress
+374. [x] `today-part-of-day-progress-roll` — Roll the four section progress
     bars into a single day-spanning summary line under the Today header ("2 of 3
-    morning, all afternoon taken"); pure per-section roll-up over the groups.
+    morning, all afternoon taken"); pure per-section roll-up over the groups
+    (tick 40 / 3d0cab3). Logic in lib/day-progress-roll.ts, 7 tests.
 375. [ ] `medications-runout-caption-urgent` — When run-out grouping is on, add
     the urgent-count to the sort caption ("Grouped by run-out urgency - 2 need
     attention") composing summarizeRunout's urgentCount; pure already-shipped
     summary, thin render.
 
+### Tier 2D — frontend slices (FRONTEND-FOCUS override, refill after tick 40)
+
+Tick 40 closed five Tier 2C items (#366, #367, #368, #370, #374). Five Tier 2C
+stragglers remain (#369 today-now-section-scroll, #371 dashboard-streak-
+milestone-toast, #372 refills-empty-tab-soonest, #373 caregivers-expiry-summary-
+bar, #375 medications-runout-caption-urgent) plus the older heavier ones
+(#274-#277/#279 interactions-graph / pill-identifier / caregivers-share-qr /
+dashboard-empty-state / reports-monthly-print, #281, #292-#295, #307, #312,
+#316, #318-#321). This tier refills with fresh small-to-medium frontend-first
+candidates so the loop always has clean 5-slice batches. Each is a real
+user-facing capability in apps/web matching the sage/coral/amber pillbox
+language and the Linear/Raycast bar. Prefer extracting non-trivial logic into a
+tested lib/*.ts module (web vitest harness is 775 tests across 54 suites as of
+tick 40). Backend tiers 1L-1T stay paused until Sanjay removes the override.
+
+376. [ ] `dashboard-milestone-progress-aria-live` — Announce milestone-bar
+    crossings ("60% of the way to two weeks") via an aria-live region when the
+    streak advances; composes lib/milestone-progress' milestoneProgressLabel.
+377. [ ] `refills-soonest-chip-link` — Make the always-on /refills run-out chip
+    a link that scrolls/filters to the soonest-out medication's row (composes
+    soonestRefill's medicationId); pure target-id selector + smooth scroll.
+378. [ ] `caregivers-sort-cycle-key` — Adopt lib/sort-cycle's cycleKey on
+    /caregivers so "s" cycles the caregiver sort (Recently viewed -> Least
+    recent -> Never viewed -> Expiring soonest), parallel to the medications "s".
+379. [ ] `today-roll-section-anchor` — Make each phrase in the day-progress-roll
+    line a click target that scrolls to its section (Morning/Afternoon/Evening/
+    Night); pure label-to-section-id map + reduced-motion-aware scroll.
+380. [ ] `medications-runout-caption-urgent` — (carry of #375) When run-out
+    grouping is on, add the urgent-count to the sort caption ("Grouped by run-out
+    urgency - 2 need attention") composing summarizeRunout's urgentCount.
+381. [ ] `dashboard-refill-chip-soonest` — Surface the soonest run-out chip
+    (lib/refill-sort activeRunoutChip) on the dashboard Refills section header so
+    the at-a-glance view names what's about to go dry, matching /refills.
+382. [ ] `today-progress-roll-percent` — Add an overall day-percent prefix to
+    the day-progress-roll line ("65% done - 1 of 2 morning ...") composing the
+    roll's taken/total; pure percent formatter, thin render.
+383. [ ] `caregivers-expiry-summary-bar` — (carry of #373) A thin stacked bar
+    under the caregivers header showing active / expiring-soon / expired split
+    (composes summarizeExpiry counts) with a tone ramp; pure segment-width model.
+384. [ ] `medications-sort-cycle-aria-live` — Announce the new sort ("Sorted by
+    lowest supply first") via an aria-live region when "s" cycles the sort;
+    composes lib/med-sort-caption's medSortCaption.
+385. [ ] `refills-timeline-today-label` — Add a "today" tick label to the
+    /refills 30-day timeline strip's today marker so the axis is self-explaining;
+    pure label-at-marker, no fabricated data.
+
 ## Tick log
+
+- 2026-06-27 04:27 PDT — tick 40: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 2b54e23 dashboard-milestone-progress-bar,
+  b715a47 refills-runout-chip-tooltip,
+  30199a9 caregivers-sort-active-caption,
+  257493c medications-sort-cycle-key,
+  3d0cab3 today-part-of-day-progress-roll.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.1s`; all 60
+  static pages generated incl. every edited route /dashboard, /refills,
+  /caregivers, /medications, /today). `@med/web` test 775/775 pass across 54
+  suites (+43 new: milestone-progress 11, refill-sort +7, caregiver-sort-caption
+  8, sort-cycle 10, day-progress-roll 7). Typecheck: pre-existing baseline error
+  count (980, the app-wide React-18 Link/ReactNode drift) is UNCHANGED — tsc
+  prints exactly 980 and a checkout of origin/main (pre-my-commits) also prints
+  exactly 980, so this batch added ZERO new errors; grep-confirmed no error
+  traces to any of the 5 new lib modules, 5 new test files, or 5 edited pages.
+  Lint: Next 16 removed `next lint`, the web app ships no ESLint config, and the
+  turbo `lint` task is empty `{}` — nothing to run (documented baseline, same as
+  ticks 38/39). Clean tree verified BEFORE the gate (git status --short empty),
+  per tick 39's lesson. Push landed clean, origin/main 0/0 ahead-behind.
+  THIRTIETH clean tick in a row (no fixup commits, no force-push, no revert).
+  Twelfth frontend tick under Sanjay's standing override. Five slices spanning
+  five surfaces (dashboard, refills, caregivers, medications, today), each
+  extracting its pure-logic core into a tested lib/*.ts module — web harness
+  732 -> 775 tests:
+  - lib/milestone-progress.ts (11) — fraction-of-the-way model bracketing the
+    streak between the last reached milestone and the next; composes streak-
+    milestone so the new dashboard progress bar and the existing chip never
+    disagree about which rungs bracket the streak. Null below the first rung and
+    at/over the top rung; resets to ~0 the day a milestone lands.
+  - lib/refill-sort.ts (+7) — soonestRefill (the first-to-run-out selector) +
+    soonestRunoutTooltip (per-horizon sentence, generic-subject fallback); the
+    always-on /refills run-out chip gains a tooltip naming the exact medication.
+  - lib/caregiver-sort-caption.ts (8) — per-CaregiverSortKey "Sorted by ..."
+    phrasing + a match-count clause identical to med-sort-caption; a caption
+    line under the /caregivers controls makes the active ordering legible.
+  - lib/sort-cycle.ts (10) — generic cycleKey (next-in-ring, wrap, unknown ->
+    first/last) + cycleMedSort over MED_SORT_KEYS; "s" on /medications cycles the
+    sort, guarded against text fields and the global g-then-s leader.
+  - lib/day-progress-roll.ts (7) — rolls the four part-of-day section progress
+    states into one day-spanning summary line under the Today header; composes
+    groupByPartOfDay + sectionProgress, null on an empty day, all-taken collapse.
+  Roadmap: Tier 2C drained to its stragglers; refilled with Tier 2D (#376-385).
 
 - 2026-06-27 00:49 PDT — tick 39: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: bc675ff dashboard-streak-milestone-chip,
