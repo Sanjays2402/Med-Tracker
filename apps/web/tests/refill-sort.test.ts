@@ -7,6 +7,7 @@ import {
   formatSoonestRunout,
   soonestRunoutTone,
   activeRunoutChip,
+  emptyTabSoonestHint,
   soonestRefill,
   soonestRunoutTooltip,
   type RefillSortKey,
@@ -215,5 +216,43 @@ describe('soonestRunoutTooltip', () => {
   it('is null for an unknown horizon', () => {
     expect(soonestRunoutTooltip('Amoxicillin', null)).toBeNull();
     expect(soonestRunoutTooltip('Amoxicillin', Number.NaN)).toBeNull();
+  });
+});
+
+describe('emptyTabSoonestHint', () => {
+  const pickedUp = refill({ id: 'p', medicationName: 'Sertraline', refillBy: daysFromNow(0), status: 'picked_up' });
+
+  it('names the soonest run-out across all tabs and points at All', () => {
+    const hint = emptyTabSoonestHint([overdue, soon, later], NOW);
+    expect(hint).not.toBeNull();
+    // Overdue is the soonest among the active set.
+    expect(hint!.chip.medicationName).toBe('Atorvastatin');
+    expect(hint!.message).toBe('Atorvastatin is overdue for a refill — see the All tab.');
+  });
+
+  it('phrases a future soonest run-out', () => {
+    const hint = emptyTabSoonestHint([soon, later], NOW);
+    expect(hint!.chip.medicationName).toBe('Amoxicillin');
+    expect(hint!.message).toBe('Amoxicillin runs out tomorrow — see the All tab.');
+  });
+
+  it('ignores picked-up refills (a completed pickup is not a pending run-out)', () => {
+    // Picked-up is the nearest date but should be excluded; soon wins.
+    const hint = emptyTabSoonestHint([pickedUp, soon], NOW);
+    expect(hint!.chip.medicationName).toBe('Amoxicillin');
+  });
+
+  it('is null when only picked-up or unparseable refills remain', () => {
+    expect(emptyTabSoonestHint([pickedUp], NOW)).toBeNull();
+    expect(emptyTabSoonestHint([bad], NOW)).toBeNull();
+    expect(emptyTabSoonestHint([], NOW)).toBeNull();
+  });
+
+  it('reuses the same soonest as the always-on chip', () => {
+    const all = [later, overdue, soon];
+    const hint = emptyTabSoonestHint(all, NOW);
+    const chip = activeRunoutChip(all, NOW);
+    expect(hint!.chip.medicationName).toBe(chip!.medicationName);
+    expect(hint!.chip.days).toBe(chip!.days);
   });
 });

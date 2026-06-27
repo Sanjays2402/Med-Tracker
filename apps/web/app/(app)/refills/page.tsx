@@ -19,6 +19,7 @@ import {
   REFILL_SORTS,
   sortRefills,
   activeRunoutChip,
+  emptyTabSoonestHint,
   type RefillSortKey,
 } from '../../../lib/refill-sort';
 import {
@@ -104,6 +105,11 @@ export default function RefillsPage() {
   // surfaced as an always-on chip beside the sort control regardless of the
   // active tab or sort, so the user always sees what's about to go dry.
   const runoutChip = activeRunoutChip(visible.filter(r => r.status !== 'picked_up'));
+
+  // When the active status tab is empty but other tabs still hold refills, name
+  // the soonest run-out across ALL tabs so the empty view doesn't read as "all
+  // clear" when something is actually about to run out elsewhere.
+  const emptyHint = activeTab !== 'all' ? emptyTabSoonestHint(all) : null;
 
   return (
     <div className="space-y-6">
@@ -192,7 +198,14 @@ export default function RefillsPage() {
             <Empty
               icon={<ChartBar size={28} />}
               title="Nothing in this view"
-              description="Switch tabs to see refills in another status."
+              description={emptyHint ? emptyHint.message : 'Switch tabs to see refills in another status.'}
+              action={
+                emptyHint ? (
+                  <Btn size="sm" variant="primary" onClick={() => pickTab('all')}>
+                    View all refills
+                  </Btn>
+                ) : undefined
+              }
             />
           ) : (
             <>

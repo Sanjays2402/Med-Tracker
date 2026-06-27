@@ -195,3 +195,32 @@ export function activeRunoutChip(
     tooltip,
   };
 }
+
+export interface EmptyTabHint {
+  /** The cross-tab soonest-run-out chip (computed over every non-picked-up refill). */
+  chip: ActiveRunoutChip;
+  /** Render-ready sentence pointing at the All tab, e.g.
+   *  "Amoxicillin runs out in 3d — see the All tab." */
+  message: string;
+}
+
+/**
+ * Hint for an EMPTY status tab: when the tab a user is looking at has no
+ * refills but others do, name the soonest run-out across all tabs and point
+ * them back to the All tab so they don't think nothing is pending anywhere.
+ *
+ * Pass the WHOLE refill list (all statuses). Returns null when no refill has a
+ * parseable run-out date among the still-active ones (everything but picked-up)
+ * — nothing honest to surface. The soonest is computed via the same runout
+ * ordering as the list + the always-on chip, so they never disagree. The All
+ * tab always shows every status, so it's the safe place to send the user
+ * regardless of which tab actually holds the soonest refill.
+ */
+export function emptyTabSoonestHint(
+  all: readonly Refill[],
+  now: number = Date.now(),
+): EmptyTabHint | null {
+  const chip = activeRunoutChip(all.filter((r) => r.status !== 'picked_up'), now);
+  if (!chip) return null;
+  return { chip, message: `${chip.tooltip} — see the All tab.` };
+}
