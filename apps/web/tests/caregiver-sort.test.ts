@@ -33,11 +33,12 @@ function ids(list: CaregiverShare[]): string[] {
 }
 
 describe('CAREGIVER_SORTS', () => {
-  it('exposes three sort options', () => {
+  it('exposes four sort options', () => {
     expect(CAREGIVER_SORTS.map((o) => o.key)).toEqual<CaregiverSortKey[]>([
       'recent',
       'stale',
       'never-first',
+      'expiry',
     ]);
   });
 });
@@ -104,6 +105,42 @@ describe('sortCaregivers', () => {
   });
   it('handles an empty list', () => {
     expect(sortCaregivers([], 'recent', NOW)).toEqual([]);
+  });
+});
+
+describe('sortCaregivers — expiry', () => {
+  // Expiry panel: expired 2 days ago, expires today, expires in 10 days, none.
+  const expired = share({ id: 'e_past', label: 'Expired', expiresAt: '2026-06-23T12:00:00Z' });
+  const todayExp = share({ id: 'e_today', label: 'Today', expiresAt: '2026-06-25T18:00:00Z' });
+  const soon = share({ id: 'e_soon', label: 'Soon', expiresAt: '2026-07-05T12:00:00Z' });
+  const noExp = share({ id: 'e_none', label: 'NoExpiry', expiresAt: null });
+  const expiryPanel = [soon, noExp, expired, todayExp];
+
+  it('orders soonest expiry first, no-expiry last', () => {
+    expect(ids(sortCaregivers(expiryPanel, 'expiry', NOW))).toEqual([
+      'e_past', // already expired (most negative)
+      'e_today', // expires today
+      'e_soon', // expires in 10 days
+      'e_none', // no expiry sinks to the bottom
+    ]);
+  });
+
+  it('breaks ties on equal expiry by label A-Z', () => {
+    const z = share({ id: 'z', label: 'Zoe', expiresAt: '2026-07-01T12:00:00Z' });
+    const a = share({ id: 'a', label: 'Abe', expiresAt: '2026-07-01T12:00:00Z' });
+    expect(ids(sortCaregivers([z, a], 'expiry', NOW))).toEqual(['a', 'z']);
+  });
+
+  it('orders two no-expiry shares by label only', () => {
+    const z = share({ id: 'z', label: 'Zoe' });
+    const a = share({ id: 'a', label: 'Abe' });
+    expect(ids(sortCaregivers([z, a], 'expiry', NOW))).toEqual(['a', 'z']);
+  });
+
+  it('does not mutate the input array', () => {
+    const copy = [...expiryPanel];
+    sortCaregivers(expiryPanel, 'expiry', NOW);
+    expect(expiryPanel).toEqual(copy);
   });
 });
 

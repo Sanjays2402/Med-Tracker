@@ -2,19 +2,22 @@
  * caregiver-sort — pure sort model for the /caregivers list page.
  *
  * The caregivers list gets a sort control: most-recently-viewed first,
- * least-recently-viewed first, or never-viewed-first (the shares a user most
- * likely wants to chase down). This module owns the comparators so the page
- * stays a thin render and the ordering stays unit-tested.
+ * least-recently-viewed first, never-viewed-first (the shares a user most likely
+ * wants to chase down), or expiring-soonest (shares about to lapse, so a user
+ * can renew them before access is lost). This module owns the comparators so the
+ * page stays a thin render and the ordering stays unit-tested.
  *
  * "Recency" is derived from the share's lastViewedAt vs an injectable `now`
- * (reusing the caregiver-activity daysSinceViewed notion), so the comparators
- * are deterministic. A never-viewed share has no recency; where it sorts
- * depends on the chosen key, never on chance.
+ * (reusing the caregiver-activity daysSinceViewed notion), and "expiry" from
+ * daysUntilExpiry (caregiver-expiry), so the comparators are deterministic. A
+ * never-viewed / no-expiry share has no recency / expiry; where it sorts depends
+ * on the chosen key, never on chance.
  */
 
 import type { CaregiverShare } from './types';
+import { daysUntilExpiry } from './caregiver-expiry';
 
-export type CaregiverSortKey = 'recent' | 'stale' | 'never-first';
+export type CaregiverSortKey = 'recent' | 'stale' | 'never-first' | 'expiry';
 
 export interface CaregiverSortOption {
   key: CaregiverSortKey;
@@ -25,6 +28,7 @@ export const CAREGIVER_SORTS: CaregiverSortOption[] = [
   { key: 'recent', label: 'Recently viewed' },
   { key: 'stale', label: 'Least recent' },
   { key: 'never-first', label: 'Never viewed' },
+  { key: 'expiry', label: 'Expiring soonest' },
 ];
 
 /** Epoch ms a share was last viewed, or null when never viewed / unparseable. */
@@ -99,6 +103,18 @@ export function sortCaregivers(
         if (ta == null) return -1; // never-viewed first
         if (tb == null) return 1;
         return tb - ta || byLabel(a, b); // then newest-viewed
+      });
+      break;
+    case 'expiry':
+      out.sort((a, b) => {
+        // Soonest expiry first: already-expired (negative days) float to the
+        // top, then nearest-future, then shares with no expiry, then label A-Z.
+        const da = daysUntilExpiry(a, now);
+        const db = daysUntilExpiry(b, now);
+        if (da == null && db == null) return byLabel(a, b);
+        if (da == null) return 1; // no-expiry shares sink to the bottom
+        if (db == null) return -1;
+        return da - db || byLabel(a, b);
       });
       break;
   }
