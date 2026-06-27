@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { dayProgressRoll } from '../lib/day-progress-roll';
+import { dayProgressRoll, dayPercentPrefix } from '../lib/day-progress-roll';
 import { groupByPartOfDay, type PartOfDayDose } from '../lib/part-of-day';
 
 // Build a dose at a given local hour with a status.
@@ -68,5 +68,57 @@ describe('dayProgressRoll', () => {
     const afternoon = roll!.parts.find((p) => p.label === 'Afternoon')!;
     expect(morning).toMatchObject({ total: 2, taken: 2, complete: true });
     expect(afternoon).toMatchObject({ total: 1, taken: 0, complete: false });
+  });
+
+  it('reports whole-percent of the day taken', () => {
+    // 3 of 5 taken -> 60%.
+    const roll = dayProgressRoll(
+      groupByPartOfDay([
+        dose(8, 'taken'),
+        dose(9, 'pending'),
+        dose(13, 'taken'),
+        dose(14, 'taken'),
+        dose(19, 'pending'),
+      ]),
+    );
+    expect(roll!.percent).toBe(60);
+  });
+
+  it('rounds the percent to whole numbers', () => {
+    // 1 of 3 taken -> 33%.
+    const roll = dayProgressRoll(
+      groupByPartOfDay([dose(8, 'taken'), dose(9, 'pending'), dose(13, 'pending')]),
+    );
+    expect(roll!.percent).toBe(33);
+  });
+
+  it('reports 100 percent for a fully-taken day', () => {
+    const roll = dayProgressRoll(groupByPartOfDay([dose(8, 'taken'), dose(13, 'taken')]));
+    expect(roll!.percent).toBe(100);
+  });
+});
+
+describe('dayPercentPrefix', () => {
+  it('prefixes the percent while the day is in progress', () => {
+    expect(dayPercentPrefix({ percent: 60, allComplete: false })).toBe('60% done · ');
+    expect(dayPercentPrefix({ percent: 0, allComplete: false })).toBe('0% done · ');
+  });
+
+  it('is empty for a fully-complete day (the All-taken line stands alone)', () => {
+    expect(dayPercentPrefix({ percent: 100, allComplete: true })).toBe('');
+  });
+
+  it('clamps out-of-range percents into 0..100', () => {
+    expect(dayPercentPrefix({ percent: 140, allComplete: false })).toBe('100% done · ');
+    expect(dayPercentPrefix({ percent: -5, allComplete: false })).toBe('0% done · ');
+  });
+
+  it('composes onto the live roll output', () => {
+    const roll = dayProgressRoll(
+      groupByPartOfDay([dose(8, 'taken'), dose(9, 'pending'), dose(13, 'pending')]),
+    );
+    expect(dayPercentPrefix(roll!) + roll!.summary).toBe(
+      '33% done · 1 of 2 morning, afternoon not started',
+    );
   });
 });

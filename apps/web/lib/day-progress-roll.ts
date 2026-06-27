@@ -43,6 +43,8 @@ export interface DayProgressRoll {
   total: number;
   /** Total taken across the day. */
   taken: number;
+  /** Whole-percent of the day's scheduled doses that are taken (0..100). */
+  percent: number;
   /** Every scheduled dose for the day is taken. */
   allComplete: boolean;
   /** The full joined summary line. */
@@ -87,9 +89,24 @@ export function dayProgressRoll<T extends PartOfDayDose>(
   if (parts.length === 0 || total === 0) return null;
 
   const allComplete = taken === total;
+  const percent = Math.round((taken / total) * 100);
   const summary = allComplete
     ? `All ${total} dose${total === 1 ? '' : 's'} taken`
     : parts.map((p) => p.phrase).join(', ');
 
-  return { parts, total, taken, allComplete, summary };
+  return { parts, total, taken, percent, allComplete, summary };
+}
+
+/**
+ * A compact overall-progress prefix for the roll line, e.g. "65% done · ". The
+ * page prepends it to the per-section summary so the top of the day leads with
+ * a single number ("65% done · 1 of 2 morning, evening not started"). Returns an
+ * empty string when the day is fully complete (the "All N doses taken" line is
+ * already its own celebratory phrase and needs no percent) so the caller can
+ * prepend unconditionally.
+ */
+export function dayPercentPrefix(roll: Pick<DayProgressRoll, 'percent' | 'allComplete'>): string {
+  if (roll.allComplete) return '';
+  const pct = Math.max(0, Math.min(100, Math.round(roll.percent)));
+  return `${pct}% done · `;
 }

@@ -33,7 +33,7 @@ import {
 import { groupByPartOfDay, sectionCountLabel, type PartOfDayCounts } from '../../../lib/part-of-day';
 import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
 import { sectionProgress, sectionProgressLabel } from '../../../lib/section-progress';
-import { dayProgressRoll } from '../../../lib/day-progress-roll';
+import { dayProgressRoll, dayPercentPrefix } from '../../../lib/day-progress-roll';
 import { DoseSegments } from '../../../components/DoseSegments';
 
 export default function TodayPage() {
@@ -282,7 +282,10 @@ export default function TodayPage() {
                 <CheckBurst size={12} /> {roll.summary}
               </span>
             ) : (
-              roll.summary
+              <>
+                <span className="tabular font-medium text-[var(--ink-soft)]">{dayPercentPrefix(roll)}</span>
+                {roll.summary}
+              </>
             )}
           </p>
         )}
