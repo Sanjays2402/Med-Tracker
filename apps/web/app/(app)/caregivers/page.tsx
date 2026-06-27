@@ -12,6 +12,7 @@ import {
   type CaregiverSortKey,
 } from '../../../lib/caregiver-sort';
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
+import { expiryPill, expiryTooltip } from '../../../lib/caregiver-expiry';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
@@ -152,7 +153,7 @@ export default function CaregiversPage() {
         <Surface>
           <ul>
             {(sorted?.shares ?? items).map(c => {
-              const expired = c.expiresAt && +new Date(c.expiresAt) < Date.now();
+              const expiry = expiryPill(c);
               return (
                 <li key={c.id} className="border-b border-neutral-100 dark:border-neutral-900 last:border-0">
                   <Link href={`/caregivers/${c.id}`} className="flex items-center gap-3 p-3 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors">
@@ -179,7 +180,18 @@ export default function CaregiversPage() {
                         {c.expiresAt ? `Expires ${formatDate(c.expiresAt)}` : 'No expiry'}
                       </div>
                     </div>
-                    {expired ? <Pill tone="danger">Expired</Pill> : <Pill tone="ok">Active</Pill>}
+                    {/* Soon-to-expire shares get an amber day-count pill so the
+                        list flags shares that need renewing before they lapse.
+                        Expired -> danger, otherwise the plain Active pill. */}
+                    {expiry.status === 'soon' && expiry.label ? (
+                      <span title={expiryTooltip(c) ?? undefined} className="shrink-0">
+                        <Pill tone="warn">{expiry.label}</Pill>
+                      </span>
+                    ) : expiry.status === 'expired' ? (
+                      <Pill tone="danger">Expired</Pill>
+                    ) : (
+                      <Pill tone="ok">Active</Pill>
+                    )}
                   </Link>
                 </li>
               );
