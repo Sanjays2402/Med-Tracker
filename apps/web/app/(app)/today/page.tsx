@@ -31,6 +31,7 @@ import {
   formatLateness,
 } from '../../../lib/overdue';
 import { groupByPartOfDay, sectionCountLabel, type PartOfDayCounts } from '../../../lib/part-of-day';
+import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
 import { sectionProgress, sectionProgressLabel } from '../../../lib/section-progress';
 import { DoseSegments } from '../../../components/DoseSegments';
 
@@ -365,14 +366,24 @@ export default function TodayPage() {
               title={label}
               display
               action={
-                sectionCountLabel(counts) && (
-                  <span
-                    className={`capsule tabular text-[11px] ${counts.done ? 'capsule-ok' : ''}`}
-                    title={`${counts.taken} taken, ${counts.pending} pending of ${counts.total}`}
-                  >
-                    {sectionCountLabel(counts)}
-                  </span>
-                )
+                <div className="flex items-center gap-1.5">
+                  {isCurrentPartOfDay(label, new Date(now).getHours()) && (
+                    <span
+                      className="capsule capsule-accent text-[10.5px] anim-in"
+                      title={`Happening ${nowCapLabel(label)}`}
+                    >
+                      now
+                    </span>
+                  )}
+                  {sectionCountLabel(counts) && (
+                    <span
+                      className={`capsule tabular text-[11px] ${counts.done ? 'capsule-ok' : ''}`}
+                      title={`${counts.taken} taken, ${counts.pending} pending of ${counts.total}`}
+                    >
+                      {sectionCountLabel(counts)}
+                    </span>
+                  )}
+                </div>
               }
             >
               <SectionProgressBar counts={counts} />
