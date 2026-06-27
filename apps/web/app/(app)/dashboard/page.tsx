@@ -27,6 +27,9 @@ import { streakAccent, streakToneVar, daysToStrong } from '../../../lib/streak-t
 import { streakMilestoneChip } from '../../../lib/streak-milestone';
 import { milestoneProgress, milestoneProgressLabel } from '../../../lib/milestone-progress';
 import { activeRunoutChip } from '../../../lib/refill-sort';
+import { groupByPartOfDay } from '../../../lib/part-of-day';
+import { dayProgressRoll, dayPercentChip } from '../../../lib/day-progress-roll';
+import { progressToneVar } from '../../../lib/progress-tone';
 
 export default function DashboardPage() {
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
@@ -64,6 +67,12 @@ export default function DashboardPage() {
   const takenToday = (doses ?? []).filter((d) => d.status === 'taken').length;
   const totalToday = (doses ?? []).length;
   const todayPct = totalToday ? Math.round((takenToday / totalToday) * 100) : 0;
+  // Same day-progress roll the /today page leads with, surfaced as a small toned
+  // chip on the Up-next header so the home view reads "65% done" too. Null when
+  // nothing is scheduled today.
+  const todayChip = dayPercentChip(
+    doses && doses.length > 0 ? dayProgressRoll(groupByPartOfDay(doses)) : null,
+  );
   const adherencePct =
     adherence && adherence.scheduled
       ? Math.round((adherence.taken / adherence.scheduled) * 100)
@@ -198,12 +207,26 @@ export default function DashboardPage() {
         title="Up next"
         display
         action={
-          <Link
-            href="/today"
-            className="text-[12px] text-[var(--ink-muted)] hover:text-[var(--ink)] capsule"
-          >
-            See all doses
-          </Link>
+          <div className="flex items-center gap-2">
+            {todayChip && (
+              <span
+                className="capsule tabular text-[11px]"
+                style={{
+                  background: `color-mix(in srgb, ${progressToneVar(todayChip.percent)} 14%, transparent)`,
+                  color: progressToneVar(todayChip.percent),
+                }}
+                title={`${takenToday} of ${totalToday} doses taken today`}
+              >
+                {todayChip.label}
+              </span>
+            )}
+            <Link
+              href="/today"
+              className="text-[12px] text-[var(--ink-muted)] hover:text-[var(--ink)] capsule"
+            >
+              See all doses
+            </Link>
+          </div>
         }
       >
         <div className="sheet">

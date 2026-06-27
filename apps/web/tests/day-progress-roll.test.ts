@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { dayProgressRoll, dayPercentPrefix } from '../lib/day-progress-roll';
+import { dayProgressRoll, dayPercentPrefix, dayPercentChip } from '../lib/day-progress-roll';
 import { groupByPartOfDay, type PartOfDayDose } from '../lib/part-of-day';
 
 // Build a dose at a given local hour with a status.
@@ -120,5 +120,39 @@ describe('dayPercentPrefix', () => {
     expect(dayPercentPrefix(roll!) + roll!.summary).toBe(
       '33% done · 1 of 2 morning, afternoon not started',
     );
+  });
+});
+
+describe('dayPercentChip', () => {
+  it('is null for an empty / missing day', () => {
+    expect(dayPercentChip(null)).toBeNull();
+    expect(dayPercentChip(dayProgressRoll(groupByPartOfDay([])))).toBeNull();
+  });
+
+  it('reads the percent and tones it by progress', () => {
+    // 1 of 3 -> 33% -> danger (barely started).
+    const low = dayProgressRoll(
+      groupByPartOfDay([dose(8, 'taken'), dose(9, 'pending'), dose(13, 'pending')]),
+    );
+    expect(dayPercentChip(low)).toEqual({ percent: 33, label: '33% done', tone: 'danger' });
+
+    // 2 of 3 -> 67% -> ok (nearly there).
+    const high = dayProgressRoll(
+      groupByPartOfDay([dose(8, 'taken'), dose(9, 'taken'), dose(13, 'pending')]),
+    );
+    expect(dayPercentChip(high)).toEqual({ percent: 67, label: '67% done', tone: 'ok' });
+  });
+
+  it('reads "All done" with an ok tone for a finished day', () => {
+    const roll = dayProgressRoll(groupByPartOfDay([dose(8, 'taken'), dose(13, 'taken')]));
+    expect(dayPercentChip(roll)).toEqual({ percent: 100, label: 'All done', tone: 'ok' });
+  });
+
+  it('tones a half-done day amber', () => {
+    // 2 of 4 -> 50% -> warn.
+    const roll = dayProgressRoll(
+      groupByPartOfDay([dose(8, 'taken'), dose(9, 'taken'), dose(13, 'pending'), dose(14, 'pending')]),
+    );
+    expect(dayPercentChip(roll)).toMatchObject({ percent: 50, tone: 'warn' });
   });
 });

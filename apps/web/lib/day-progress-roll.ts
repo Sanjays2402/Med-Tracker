@@ -15,6 +15,7 @@
 
 import type { PartOfDayGroup, PartOfDayDose, PartOfDay } from './part-of-day';
 import { sectionProgress } from './section-progress';
+import { progressTone, type ProgressTone } from './progress-tone';
 
 /** Lower-case section word for the inline phrase ("morning"). */
 const SECTION_WORD: Record<PartOfDay, string> = {
@@ -109,4 +110,33 @@ export function dayPercentPrefix(roll: Pick<DayProgressRoll, 'percent' | 'allCom
   if (roll.allComplete) return '';
   const pct = Math.max(0, Math.min(100, Math.round(roll.percent)));
   return `${pct}% done · `;
+}
+
+export interface DayPercentChip {
+  /** Whole-percent of the day's doses taken (0..100). */
+  percent: number;
+  /** Render-ready chip label, e.g. "65% done" or "All done". */
+  label: string;
+  /** Tone the chip maps to a colour: the day's progress health. */
+  tone: ProgressTone;
+}
+
+/**
+ * A compact chip model for a dashboard-style "today" summary, parallel to the
+ * /today roll's percent prefix but standing alone (no per-section sentence).
+ * The dashboard's Up-next header shows it so the home view leads with the same
+ * "N% done" the day page does.
+ *
+ * Tone comes from progressTone so the chip reads its own health (coral barely
+ * started, amber underway, sage nearly there). A fully complete day reads
+ * "All done" with an ok tone. Returns null for an empty day (no doses to
+ * summarise) so the caller can omit the chip entirely.
+ */
+export function dayPercentChip(
+  roll: Pick<DayProgressRoll, 'percent' | 'allComplete' | 'total'> | null,
+): DayPercentChip | null {
+  if (!roll || roll.total <= 0) return null;
+  if (roll.allComplete) return { percent: 100, label: 'All done', tone: 'ok' };
+  const percent = Math.max(0, Math.min(100, Math.round(roll.percent)));
+  return { percent, label: `${percent}% done`, tone: progressTone(percent) };
 }
