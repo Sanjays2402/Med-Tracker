@@ -919,9 +919,11 @@ Backend tiers 1L-1T stay paused until Sanjay removes the override.
     equals a milestone (reachedMilestone), fire a one-shot celebratory toast
     ("A month on schedule!") via the existing Toast layer; pure milestone-to-
     message mapping, dedupe by milestone day.
-372. [ ] `refills-empty-tab-soonest` — (carry of #347) When a status tab is
+372. [x] `refills-empty-tab-soonest` — (carry of #347) When a status tab is
     empty but other tabs have items, show the soonest run-out across all tabs as
-    a gentle "next out in Nd on the All tab" hint; composes activeRunoutChip.
+    a gentle "next out in Nd on the All tab" hint; composes activeRunoutChip
+    (tick 41 / ac40c52). Added emptyTabSoonestHint to lib/refill-sort, tests
+    34 -> 39. (Also closes #347 refills-empty-tab-soonest from Tier 2A.)
 373. [ ] `caregivers-expiry-summary-bar` — A thin stacked bar under the
     caregivers header showing the active / expiring-soon / expired split
     (composes summarizeExpiry counts) with a tone ramp; pure segment-width model.
@@ -955,32 +957,135 @@ tick 40). Backend tiers 1L-1T stay paused until Sanjay removes the override.
 377. [ ] `refills-soonest-chip-link` — Make the always-on /refills run-out chip
     a link that scrolls/filters to the soonest-out medication's row (composes
     soonestRefill's medicationId); pure target-id selector + smooth scroll.
-378. [ ] `caregivers-sort-cycle-key` — Adopt lib/sort-cycle's cycleKey on
+378. [x] `caregivers-sort-cycle-key` — Adopt lib/sort-cycle's cycleKey on
     /caregivers so "s" cycles the caregiver sort (Recently viewed -> Least
-    recent -> Never viewed -> Expiring soonest), parallel to the medications "s".
+    recent -> Never viewed -> Expiring soonest), parallel to the medications "s"
+    (tick 41 / 0dce42c). Added CAREGIVER_SORT_KEYS + cycleCaregiverSort to
+    lib/caregiver-sort, tests 18 -> 23.
 379. [ ] `today-roll-section-anchor` — Make each phrase in the day-progress-roll
     line a click target that scrolls to its section (Morning/Afternoon/Evening/
     Night); pure label-to-section-id map + reduced-motion-aware scroll.
-380. [ ] `medications-runout-caption-urgent` — (carry of #375) When run-out
+380. [x] `medications-runout-caption-urgent` — (carry of #375) When run-out
     grouping is on, add the urgent-count to the sort caption ("Grouped by run-out
-    urgency - 2 need attention") composing summarizeRunout's urgentCount.
-381. [ ] `dashboard-refill-chip-soonest` — Surface the soonest run-out chip
+    urgency - 2 need attention") composing summarizeRunout's urgentCount
+    (tick 41 / 7d18deb). Added runoutUrgentClause to lib/med-sort-caption,
+    tests 10 -> 16.
+381. [x] `dashboard-refill-chip-soonest` — Surface the soonest run-out chip
     (lib/refill-sort activeRunoutChip) on the dashboard Refills section header so
-    the at-a-glance view names what's about to go dry, matching /refills.
-382. [ ] `today-progress-roll-percent` — Add an overall day-percent prefix to
+    the at-a-glance view names what's about to go dry, matching /refills
+    (tick 41 / ac788d2). Reused activeRunoutChip (no new logic), single-file wiring.
+382. [x] `today-progress-roll-percent` — Add an overall day-percent prefix to
     the day-progress-roll line ("65% done - 1 of 2 morning ...") composing the
-    roll's taken/total; pure percent formatter, thin render.
+    roll's taken/total; pure percent formatter, thin render (tick 41 / f227b87).
+    Added `percent` field + dayPercentPrefix to lib/day-progress-roll, tests 7 -> 14.
 383. [ ] `caregivers-expiry-summary-bar` — (carry of #373) A thin stacked bar
     under the caregivers header showing active / expiring-soon / expired split
     (composes summarizeExpiry counts) with a tone ramp; pure segment-width model.
 384. [ ] `medications-sort-cycle-aria-live` — Announce the new sort ("Sorted by
     lowest supply first") via an aria-live region when "s" cycles the sort;
     composes lib/med-sort-caption's medSortCaption.
-385. [ ] `refills-timeline-today-label` — Add a "today" tick label to the
+385. [!] `refills-timeline-today-label` — Add a "today" tick label to the
     /refills 30-day timeline strip's today marker so the axis is self-explaining;
-    pure label-at-marker, no fabricated data.
+    pure label-at-marker, no fabricated data. SUPERSEDED: RefillTimeline already
+    renders a "today" label on the day-0 tick (components/RefillTimeline.tsx
+    line ~72). Skip as already-shipped.
+
+### Tier 2E — frontend slices (FRONTEND-FOCUS override, refill after tick 41)
+
+Tick 41 closed five items (#378, #380, #381, #382 from Tier 2D + #372 from
+Tier 2C, which also retires #347 from Tier 2A). Tier 2D open: #376
+dashboard-milestone-progress-aria-live, #377 refills-soonest-chip-link, #379
+today-roll-section-anchor, #383 caregivers-expiry-summary-bar, #384
+medications-sort-cycle-aria-live (#385 superseded). Plus #371 (Tier 2C) and the
+older heavier ones (#274-#277/#279 interactions-graph / pill-identifier /
+caregivers-share-qr / dashboard-empty-state / reports-monthly-print, #281,
+#292-#295, #307, #312, #316, #318-#321). This tier refills with fresh
+small-to-medium frontend-first candidates so the loop always has clean 5-slice
+batches. Each is a real user-facing capability in apps/web matching the
+sage/coral/amber pillbox language and the Linear/Raycast bar. Prefer extracting
+non-trivial logic into a tested lib/*.ts module (web vitest harness is 798 tests
+across 54 suites as of tick 41). Backend tiers 1L-1T stay paused until Sanjay
+removes the override.
+
+386. [ ] `caregivers-sort-cycle-aria-live` — Announce the new caregiver sort
+    ("Sorted by expiring soonest") via an aria-live region when "s" cycles the
+    sort, parallel to #384 for medications; composes caregiverSortCaption.
+387. [ ] `dashboard-today-percent-chip` — Surface the same overall day-percent
+    (from the today roll's percent) as a small chip on the dashboard Up-next
+    header so the home view leads with "65% done" too; pure reuse of
+    dayPercentPrefix's underlying percent over today's doses.
+388. [ ] `refills-empty-tab-soonest-tone` — Tone the empty-tab hint chip/icon by
+    urgency (danger when the soonest is overdue or <=3d, warn otherwise) reusing
+    soonestRunoutTone, so the "see the All tab" nudge reads its severity.
+389. [ ] `medications-runout-caption-aria-live` — Wrap the grouped run-out
+    caption's urgent clause in an aria-live polite region so a screen reader
+    hears "2 need attention" when grouping is toggled on; thin a11y layer over
+    runoutUrgentClause.
+390. [ ] `today-roll-percent-tone` — Tint the day-percent prefix by progress
+    (coral under ~34%, amber 34-66%, sage 67%+) so the lead number reads its
+    own health; pure percent-to-tone classifier shared with the ring.
+391. [ ] `caregivers-expiry-summary-bar` — (carry of #383) A thin stacked bar
+    under the caregivers header showing active / expiring-soon / expired split
+    (composes summarizeExpiry counts) with a tone ramp; pure segment-width model.
+392. [ ] `refills-soonest-chip-link` — (carry of #377) Make the always-on
+    /refills run-out chip a link that scrolls to the soonest-out medication's
+    row (composes soonestRefill's medicationId); pure target-id selector.
+393. [ ] `today-roll-section-anchor` — (carry of #379) Make each phrase in the
+    day-progress-roll line a click target that scrolls to its section; pure
+    label-to-section-id map + reduced-motion-aware scroll.
+394. [ ] `dashboard-milestone-progress-aria-live` — (carry of #376) Announce
+    milestone-bar crossings ("60% of the way to two weeks") via an aria-live
+    region when the streak advances; composes milestoneProgressLabel.
+395. [ ] `medications-sort-cycle-aria-live` — (carry of #384) Announce the new
+    sort ("Sorted by lowest supply first") via an aria-live region when "s"
+    cycles the sort; composes medSortCaption.
 
 ## Tick log
+
+- 2026-06-27 08:55 PDT — tick 41: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 0dce42c caregivers-sort-cycle-key,
+  7d18deb medications-runout-caption-urgent,
+  ac788d2 dashboard-refill-chip-soonest,
+  f227b87 today-progress-roll-percent,
+  ac40c52 refills-empty-tab-soonest.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.3s`; all static
+  pages generated incl. every edited route /caregivers, /dashboard, /medications,
+  /today, /refills). `@med/web` test 798/798 pass across 54 suites (+23 new:
+  caregiver-sort 18->23, med-sort-caption 10->16, day-progress-roll 7->14,
+  refill-sort 34->39). Typecheck: pre-existing baseline error count (980, the
+  app-wide React-18 Link/ReactNode drift) is UNCHANGED — tsc prints exactly 980
+  and a checkout of origin/main (pre-my-commits) ALSO prints exactly 980, so this
+  batch added ZERO new errors; grep-confirmed no error traces to any of the new
+  lib code or 5 edited pages. Lint: Next 16 removed `next lint`, the web app ships
+  no ESLint config, and the turbo `lint` task is empty `{}` — nothing to run
+  (documented baseline, same as ticks 38-40). Clean tree verified before each
+  commit. Push landed clean, origin/main 0/0 ahead-behind. THIRTY-FIRST clean tick
+  in a row (no fixup commits, no force-push, no revert). Thirteenth frontend tick
+  under Sanjay's standing override. Five slices spanning five surfaces
+  (caregivers, medications, dashboard, today, refills), each extracting its
+  pure-logic core into (or onto) a tested lib/*.ts module — web harness 775 -> 798:
+  - lib/caregiver-sort (+5) — CAREGIVER_SORT_KEYS ring + cycleCaregiverSort,
+    composing lib/sort-cycle's cycleKey so "s" walks the caregiver sort exactly
+    as the medications "s" does; junk/missing key restarts at the first key's
+    successor on a forward press.
+  - lib/med-sort-caption (+6) — runoutUrgentClause(grouped, urgentCount): the
+    grouped caption now ends with "· N need(s) attention" off summarizeRunout's
+    overdue+this-week total; empty when grouping off / nothing urgent / non-finite.
+  - dashboard wiring — activeRunoutChip on the Refills section header (reused, no
+    new logic), naming the soonest run-out with its medication tooltip, matching
+    the /refills always-on chip.
+  - lib/day-progress-roll (+7) — added `percent` to DayProgressRoll +
+    dayPercentPrefix(roll): "Np done · " while in progress, empty once complete
+    (the All-taken line stands alone), clamped 0..100.
+  - lib/refill-sort (+5) — emptyTabSoonestHint(all): when a status tab is empty
+    but others hold refills, names the cross-tab soonest run-out + a "see the All
+    tab" sentence; composes activeRunoutChip over the non-picked-up set so it
+    never disagrees with the always-on chip. Wired into the empty-tab state with a
+    "View all refills" jump. (Closes #372 carry + retires #347.)
+  Note: #385 refills-timeline-today-label marked [!] superseded — RefillTimeline
+  already renders a "today" label on its day-0 tick, so it was not padded into the
+  batch. Refilled the roadmap with Tier 2E (#386-#395) since Tier 2D dropped below
+  5 fresh pickable items.
 
 - 2026-06-27 04:27 PDT — tick 40: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 2b54e23 dashboard-milestone-progress-bar,
