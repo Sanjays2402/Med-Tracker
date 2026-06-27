@@ -50,6 +50,60 @@ export function filterByTab(
   return items.filter((i) => matchesTab(i, tab));
 }
 
+/** True when the notification is unread (treats a missing `read` as unread). */
+export function isUnread(item: NotificationItem): boolean {
+  return !item.read;
+}
+
+/** Keep only the unread notifications. */
+export function filterUnreadOnly(items: readonly NotificationItem[]): NotificationItem[] {
+  return items.filter(isUnread);
+}
+
+/**
+ * Apply the active tab AND an optional unread-only constraint in one pass,
+ * preserving input order. The two filters compose: the tab narrows by kind, then
+ * unread-only (when on) drops the read rows. The page calls this so the visible
+ * list, the empty-state copy, and any counts all read from the same predicate.
+ */
+export function applyNotificationFilters(
+  items: readonly NotificationItem[],
+  tab: NotificationTab,
+  unreadOnly: boolean,
+): NotificationItem[] {
+  return items.filter((i) => matchesTab(i, tab) && (!unreadOnly || isUnread(i)));
+}
+
+export interface UnreadToggleSummary {
+  /** Items visible under the active tab, ignoring the unread-only constraint. */
+  inTab: number;
+  /** Unread items under the active tab. */
+  unreadInTab: number;
+  /** True when the tab has read items that the unread-only toggle would hide. */
+  hasRead: boolean;
+}
+
+/**
+ * Counts the unread-only toggle needs to decide whether to render and what to
+ * say. `inTab` is everything under the active tab; `unreadInTab` is the unread
+ * subset; `hasRead` is true when toggling unread-only would actually hide
+ * something (so a tab that is already all-unread can hide or disable the
+ * control). Computed over the active tab, not the whole inbox, so it tracks the
+ * tab the user is on.
+ */
+export function summarizeUnread(
+  items: readonly NotificationItem[],
+  tab: NotificationTab,
+): UnreadToggleSummary {
+  const inTabItems = filterByTab(items, tab);
+  const unreadInTab = inTabItems.reduce((n, i) => n + (isUnread(i) ? 1 : 0), 0);
+  return {
+    inTab: inTabItems.length,
+    unreadInTab,
+    hasRead: inTabItems.length > unreadInTab,
+  };
+}
+
 export interface TabCount {
   /** Total notifications under the tab. */
   total: number;

@@ -8,7 +8,7 @@ import { listNotifications, markNotificationRead, markAllNotificationsRead, snoo
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
-import { NOTIFICATION_TABS, filterByTab, countByTab, type NotificationTab } from '../../../lib/notification-filter';
+import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, type NotificationTab } from '../../../lib/notification-filter';
 import { groupByDay } from '../../../lib/day-group';
 
 export default function NotificationsPage() {
@@ -17,6 +17,7 @@ export default function NotificationsPage() {
   const [busy, setBusy] = React.useState(false);
   const [snoozedRows, setSnoozedRows] = React.useState<Set<string>>(() => new Set());
   const [activeTab, setActiveTab] = React.useState<NotificationTab>('all');
+  const [unreadOnly, setUnreadOnly] = React.useState(false);
   const { toast } = useToast();
 
   const load = React.useCallback(async () => {
@@ -78,7 +79,8 @@ export default function NotificationsPage() {
 
   const notSnoozed = (items ?? []).filter(n => !snoozedRows.has(n.id));
   const counts = countByTab(notSnoozed);
-  const visible = filterByTab(notSnoozed, activeTab);
+  const unreadInfo = summarizeUnread(notSnoozed, activeTab);
+  const visible = applyNotificationFilters(notSnoozed, activeTab, unreadOnly);
   const dayGroups = groupByDay(visible, (n) => n.createdAt);
   const snoozedCount = snoozedRows.size;
 
@@ -99,9 +101,10 @@ export default function NotificationsPage() {
         )}
       </header>
 
-      {/* Filter tabs */}
+      {/* Filter tabs + unread-only toggle */}
       {items !== null && notSnoozed.length > 0 && (
-        <div className="flex items-center gap-1 overflow-x-auto" role="tablist" aria-label="Filter notifications">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-1 overflow-x-auto" role="tablist" aria-label="Filter notifications">
           {NOTIFICATION_TABS.map(t => {
             const c = counts[t.tab];
             const active = activeTab === t.tab;
@@ -133,6 +136,27 @@ export default function NotificationsPage() {
               </button>
             );
           })}
+          </div>
+          {/* Unread-only toggle — only when the active tab actually has read rows
+              to hide, so an all-unread tab doesn't show a no-op control. */}
+          {unreadInfo.hasRead && (
+            <button
+              type="button"
+              onClick={() => setUnreadOnly(v => !v)}
+              aria-pressed={unreadOnly}
+              className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-medium border whitespace-nowrap transition-colors shrink-0 ${
+                unreadOnly
+                  ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                  : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+              }`}
+            >
+              <BellRinging size={13} />
+              Unread only
+              <span className="tabular text-[10.5px] min-w-[16px] h-4 px-1 inline-flex items-center justify-center rounded-full bg-[var(--bg-sunk)] text-[var(--ink-muted)]">
+                {unreadInfo.unreadInTab}
+              </span>
+            </button>
+          )}
         </div>
       )}
 
@@ -142,14 +166,25 @@ export default function NotificationsPage() {
         <Empty
           icon={<Bell size={32} weight="duotone" />}
           title={
-            notSnoozed.length > 0
+            unreadOnly && unreadInfo.inTab > 0
+              ? 'No unread here'
+              : notSnoozed.length > 0
               ? 'Nothing in this tab'
               : snoozedCount > 0 ? 'Nothing for now' : 'No notifications yet'
           }
           description={
-            notSnoozed.length > 0
+            unreadOnly && unreadInfo.inTab > 0
+              ? "You've read everything in this view. Turn off Unread only to see the rest."
+              : notSnoozed.length > 0
               ? 'Try another filter to see the rest of your inbox.'
               : snoozedCount > 0 ? 'Snoozed reminders will resurface at their scheduled time.' : 'Reminders and refill alerts appear here.'
+          }
+          action={
+            unreadOnly && unreadInfo.inTab > 0 ? (
+              <button type="button" onClick={() => setUnreadOnly(false)} className="text-sm text-brand-600 hover:underline">
+                Show all
+              </button>
+            ) : undefined
           }
         />
       ) : (
