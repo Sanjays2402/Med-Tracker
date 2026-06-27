@@ -3,6 +3,7 @@ import {
   medSortPhrase,
   medSortCaption,
   medSortMatchClause,
+  runoutUrgentClause,
 } from '../lib/med-sort-caption';
 
 describe('medSortPhrase', () => {
@@ -51,5 +52,32 @@ describe('medSortMatchClause', () => {
   });
   it('clamps negative inputs to zero', () => {
     expect(medSortMatchClause(2, -1, true)).toBe(' · 0 of 2 shown');
+  });
+});
+
+describe('runoutUrgentClause', () => {
+  it('is empty when grouping is off, whatever the count', () => {
+    expect(runoutUrgentClause(false, 3)).toBe('');
+    expect(runoutUrgentClause(false, 0)).toBe('');
+  });
+  it('is empty when grouped but nothing is urgent', () => {
+    expect(runoutUrgentClause(true, 0)).toBe('');
+    expect(runoutUrgentClause(true, -2)).toBe('');
+  });
+  it('names the urgent count when grouped', () => {
+    expect(runoutUrgentClause(true, 2)).toBe(' · 2 need attention');
+    expect(runoutUrgentClause(true, 5)).toBe(' · 5 need attention');
+  });
+  it('uses the singular "needs" for one urgent row', () => {
+    expect(runoutUrgentClause(true, 1)).toBe(' · 1 needs attention');
+  });
+  it('is empty for non-finite counts', () => {
+    expect(runoutUrgentClause(true, Number.NaN)).toBe('');
+    expect(runoutUrgentClause(true, Number.POSITIVE_INFINITY)).toBe('');
+  });
+  it('composes onto the grouped caption', () => {
+    expect(medSortCaption('runout', true) + runoutUrgentClause(true, 2)).toBe(
+      'Grouped by run-out urgency · 2 need attention',
+    );
   });
 });

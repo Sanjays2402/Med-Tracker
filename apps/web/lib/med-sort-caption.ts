@@ -53,3 +53,17 @@ export function medSortMatchClause(total: number, shown: number, filtering: bool
   if (shown >= total) return '';
   return ` · ${Math.max(0, shown)} of ${Math.max(0, total)} shown`;
 }
+
+/**
+ * Optional trailing urgency clause for the GROUPED caption, e.g.
+ * " · 2 need attention". `urgentCount` is summarizeRunout's overdue+this-week
+ * total — the rows a user should act on. Returns an empty string when grouping
+ * is off or nothing is urgent, so the caller can append unconditionally:
+ *   medSortCaption(key, true) + runoutUrgentClause(grouped, runout.urgentCount)
+ *     -> "Grouped by run-out urgency · 2 need attention"
+ */
+export function runoutUrgentClause(grouped: boolean, urgentCount: number): string {
+  if (!grouped) return '';
+  if (!Number.isFinite(urgentCount) || urgentCount <= 0) return '';
+  return ` · ${urgentCount} need${urgentCount === 1 ? 's' : ''} attention`;
+}

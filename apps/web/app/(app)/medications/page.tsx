@@ -29,7 +29,7 @@ import {
   parseMedSort,
   serializeMedSort,
 } from '../../../lib/med-sort-pref';
-import { medSortCaption, medSortMatchClause } from '../../../lib/med-sort-caption';
+import { medSortCaption, medSortMatchClause, runoutUrgentClause } from '../../../lib/med-sort-caption';
 import { cycleMedSort } from '../../../lib/sort-cycle';
 
 export default function MedicationsPage() {
@@ -225,11 +225,13 @@ export default function MedicationsPage() {
       </div>
 
       {/* Active-sort caption — makes the current ordering legible at a glance,
-          and folds in the search match-count when a query is narrowing the list. */}
+          and folds in the search match-count when a query is narrowing the list.
+          When grouping by run-out, it also names how many rows need attention. */}
       {meds && visible.length > 0 && (
         <p className="-mt-2 text-[12px] text-[var(--ink-muted)]" aria-live="polite">
           {medSortCaption(sortBy, grouped)}
           {medSortMatchClause(meds.length, visible.length, query.trim().length > 0)}
+          {runoutUrgentClause(grouped, runout?.urgentCount ?? 0)}
         </p>
       )}
 
