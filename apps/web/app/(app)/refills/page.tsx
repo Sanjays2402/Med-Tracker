@@ -158,7 +158,9 @@ export default function RefillsPage() {
             </div>
             <div className="flex items-center gap-2 shrink-0 ml-auto">
               {runoutChip && (
-                <Pill tone={runoutChip.tone}>{runoutChip.label}</Pill>
+                <span title={runoutChip.tooltip}>
+                  <Pill tone={runoutChip.tone}>{runoutChip.label}</Pill>
+                </span>
               )}
               <div className="flex items-center gap-1" role="group" aria-label="Sort refills">
                 {REFILL_SORTS.map(opt => (

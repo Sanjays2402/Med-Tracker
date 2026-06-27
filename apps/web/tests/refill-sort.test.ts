@@ -7,6 +7,8 @@ import {
   formatSoonestRunout,
   soonestRunoutTone,
   activeRunoutChip,
+  soonestRefill,
+  soonestRunoutTooltip,
   type RefillSortKey,
 } from '../lib/refill-sort';
 import type { Refill } from '../lib/types';
@@ -142,11 +144,13 @@ describe('soonestRunoutTone', () => {
 });
 
 describe('activeRunoutChip', () => {
-  it('bundles soonest days, label, and tone independent of the sort', () => {
+  it('bundles soonest days, label, tone, and the soonest med name', () => {
     expect(activeRunoutChip([later, soon, overdue], NOW)).toEqual({
       days: -2,
       label: 'soonest overdue',
       tone: 'danger',
+      medicationName: 'Atorvastatin',
+      tooltip: 'Atorvastatin is overdue for a refill',
     });
   });
   it('reads the nearest future when nothing is overdue', () => {
@@ -154,6 +158,8 @@ describe('activeRunoutChip', () => {
       days: 1,
       label: 'next out tomorrow',
       tone: 'danger',
+      medicationName: 'Amoxicillin',
+      tooltip: 'Amoxicillin runs out tomorrow',
     });
   });
   it('uses a warn tone beyond three days out', () => {
@@ -161,6 +167,8 @@ describe('activeRunoutChip', () => {
       days: 11,
       label: 'next out in 11d',
       tone: 'warn',
+      medicationName: 'Lisinopril',
+      tooltip: 'Lisinopril runs out in 11d',
     });
   });
   it('is null for an empty list', () => {
@@ -171,5 +179,41 @@ describe('activeRunoutChip', () => {
   });
   it('ignores unparseable dates when a valid one exists', () => {
     expect(activeRunoutChip([bad, soon], NOW)?.days).toBe(1);
+  });
+});
+
+describe('soonestRefill', () => {
+  it('returns the refill that runs out soonest', () => {
+    expect(soonestRefill([later, soon, overdue], NOW)?.id).toBe('a');
+    expect(soonestRefill([later, soon], NOW)?.id).toBe('b');
+  });
+  it('skips refills with an unparseable date', () => {
+    expect(soonestRefill([bad, later], NOW)?.id).toBe('c');
+  });
+  it('is null for an empty list or when none parse', () => {
+    expect(soonestRefill([], NOW)).toBeNull();
+    expect(soonestRefill([bad], NOW)).toBeNull();
+  });
+  it('does not mutate the input', () => {
+    const input = [later, soon, overdue];
+    const copy = [...input];
+    soonestRefill(input, NOW);
+    expect(input).toEqual(copy);
+  });
+});
+
+describe('soonestRunoutTooltip', () => {
+  it('phrases each horizon naming the medication', () => {
+    expect(soonestRunoutTooltip('Amoxicillin', -1)).toBe('Amoxicillin is overdue for a refill');
+    expect(soonestRunoutTooltip('Amoxicillin', 0)).toBe('Amoxicillin runs out today');
+    expect(soonestRunoutTooltip('Amoxicillin', 1)).toBe('Amoxicillin runs out tomorrow');
+    expect(soonestRunoutTooltip('Amoxicillin', 5)).toBe('Amoxicillin runs out in 5d');
+  });
+  it('falls back to a generic subject for a blank name', () => {
+    expect(soonestRunoutTooltip('   ', 3)).toBe('A medication runs out in 3d');
+  });
+  it('is null for an unknown horizon', () => {
+    expect(soonestRunoutTooltip('Amoxicillin', null)).toBeNull();
+    expect(soonestRunoutTooltip('Amoxicillin', Number.NaN)).toBeNull();
   });
 });

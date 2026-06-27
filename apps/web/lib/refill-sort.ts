@@ -125,6 +125,43 @@ export interface ActiveRunoutChip {
   label: string;
   /** Pill tone for the chip. */
   tone: 'danger' | 'warn' | 'neutral';
+  /** Medication name of the refill that runs out soonest, for a chip tooltip. */
+  medicationName: string;
+  /** Full tooltip sentence naming the medication and when it runs out. */
+  tooltip: string;
+}
+
+/**
+ * The single refill that runs out soonest across a set, or null when the set is
+ * empty or none has a parseable date. Uses the same runout ordering as the list
+ * so the chip and a runout-sorted list always agree on which refill is first.
+ */
+export function soonestRefill(
+  refills: readonly Refill[],
+  now: number = Date.now(),
+): Refill | null {
+  const sorted = sortRefills(refills, 'runout', now);
+  const first = sorted[0];
+  if (!first || refillDaysUntil(first, now) == null) return null;
+  return first;
+}
+
+/**
+ * Phrase a full tooltip sentence for the soonest run-out chip, naming the
+ * medication and when it runs out:
+ *   - overdue   -> "Amoxicillin is overdue for a refill"
+ *   - 0 days    -> "Amoxicillin runs out today"
+ *   - 1 day     -> "Amoxicillin runs out tomorrow"
+ *   - N days    -> "Amoxicillin runs out in Nd"
+ */
+export function soonestRunoutTooltip(name: string, days: number | null | undefined): string | null {
+  if (days == null || !Number.isFinite(days)) return null;
+  const who = name.trim() || 'A medication';
+  const d = Math.trunc(days);
+  if (d < 0) return `${who} is overdue for a refill`;
+  if (d === 0) return `${who} runs out today`;
+  if (d === 1) return `${who} runs out tomorrow`;
+  return `${who} runs out in ${d}d`;
 }
 
 /**
@@ -136,14 +173,25 @@ export interface ActiveRunoutChip {
  * Pass the refills you consider "active" (typically everything but picked-up).
  * Returns null when the set is empty or no refill has a parseable date (nothing
  * honest to show). The soonest is computed via the same runout ordering, so the
- * chip and a runout-sorted list always agree on which refill is first.
+ * chip and a runout-sorted list always agree on which refill is first. The chip
+ * carries the soonest medication's name + a full tooltip sentence so the page
+ * can name exactly what's about to run out on hover.
  */
 export function activeRunoutChip(
   refills: readonly Refill[],
   now: number = Date.now(),
 ): ActiveRunoutChip | null {
-  const days = summarizeRefillSort(refills, 'runout', now).soonestDays;
+  const first = soonestRefill(refills, now);
+  if (!first) return null;
+  const days = refillDaysUntil(first, now);
   const label = formatSoonestRunout(days);
   if (days == null || label == null) return null;
-  return { days, label, tone: soonestRunoutTone(days) };
+  const tooltip = soonestRunoutTooltip(first.medicationName, days) ?? label;
+  return {
+    days,
+    label,
+    tone: soonestRunoutTone(days),
+    medicationName: first.medicationName,
+    tooltip,
+  };
 }
