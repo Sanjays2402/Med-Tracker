@@ -95,3 +95,59 @@ export function expiryTooltip(
   if (!Number.isFinite(Date.parse(share.expiresAt))) return null;
   return `${isExpired(share, now) ? 'Expired' : 'Expires'} ${relativeTime(share.expiresAt, now)}`;
 }
+
+export interface ExpirySummary {
+  /** Total shares examined. */
+  total: number;
+  /** Shares whose access expires within the soon window (not yet expired). */
+  soon: number;
+  /** Shares whose access has already lapsed. */
+  expired: number;
+  /** Shares with an active, not-soon expiry. */
+  active: number;
+  /** Shares with no expiry set at all. */
+  noExpiry: number;
+}
+
+/**
+ * Tally a list of shares by expiry status so the caregivers header can show
+ * "N expiring soon" (and, when present, "M expired") without each row
+ * recomputing. `soon` and `expired` are the two actionable buckets the header
+ * surfaces. `withinMs` is forwarded to expiryPill for a configurable window.
+ */
+export function summarizeExpiry(
+  shares: readonly Pick<CaregiverShare, 'expiresAt'>[],
+  now: number = Date.now(),
+  withinMs: number = 7 * DAY,
+): ExpirySummary {
+  let soon = 0;
+  let expired = 0;
+  let active = 0;
+  let noExpiry = 0;
+  for (const share of shares) {
+    const pill = expiryPill(share, now, withinMs);
+    switch (pill.status) {
+      case 'soon': soon++; break;
+      case 'expired': expired++; break;
+      case 'active': active++; break;
+      case 'none': noExpiry++; break;
+    }
+  }
+  return { total: shares.length, soon, expired, active, noExpiry };
+}
+
+/**
+ * Compact header phrase for the expiry tally, or null when nothing is
+ * expiring/expired (the header shows its plain copy instead). Leads with the
+ * soon count and folds in any already-expired shares:
+ *   - 2 soon, 0 expired -> "2 expiring soon"
+ *   - 1 soon, 0 expired -> "1 expiring soon"
+ *   - 0 soon, 3 expired -> "3 expired"
+ *   - 2 soon, 1 expired -> "2 expiring soon, 1 expired"
+ */
+export function expiringHeadline(summary: ExpirySummary): string | null {
+  const parts: string[] = [];
+  if (summary.soon > 0) parts.push(`${summary.soon} expiring soon`);
+  if (summary.expired > 0) parts.push(`${summary.expired} expired`);
+  return parts.length ? parts.join(', ') : null;
+}

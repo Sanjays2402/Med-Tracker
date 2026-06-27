@@ -3,6 +3,8 @@ import {
   daysUntilExpiry,
   expiryPill,
   expiryTooltip,
+  summarizeExpiry,
+  expiringHeadline,
   type ExpiryStatus,
 } from '../lib/caregiver-expiry';
 import type { CaregiverShare } from '../lib/types';
@@ -99,5 +101,53 @@ describe('expiryTooltip', () => {
   });
   it('is null for an unparseable date', () => {
     expect(expiryTooltip(shareWith('nope'), NOW)).toBeNull();
+  });
+});
+
+describe('summarizeExpiry', () => {
+  it('tallies every status bucket', () => {
+    const s = summarizeExpiry(
+      [
+        shareWith(inDays(3)),   // soon
+        shareWith(inDays(1)),   // soon
+        shareWith(inDays(-2)),  // expired
+        shareWith(inDays(40)),  // active
+        shareWith(null),        // none
+        shareWith('garbage'),   // none (unparseable)
+      ],
+      NOW,
+    );
+    expect(s).toEqual({ total: 6, soon: 2, expired: 1, active: 1, noExpiry: 2 });
+  });
+
+  it('is all-zero (but counts total) for an empty list', () => {
+    expect(summarizeExpiry([], NOW)).toEqual({ total: 0, soon: 0, expired: 0, active: 0, noExpiry: 0 });
+  });
+
+  it('honours a custom soon window', () => {
+    const shares = [shareWith(inDays(10))];
+    expect(summarizeExpiry(shares, NOW).soon).toBe(0); // default 7d -> active
+    expect(summarizeExpiry(shares, NOW, 14 * DAY).soon).toBe(1); // 14d -> soon
+    expect(summarizeExpiry(shares, NOW, 14 * DAY).active).toBe(0);
+  });
+});
+
+describe('expiringHeadline', () => {
+  it('is null when nothing is soon or expired', () => {
+    expect(expiringHeadline(summarizeExpiry([shareWith(inDays(40)), shareWith(null)], NOW))).toBeNull();
+  });
+  it('reads "N expiring soon"', () => {
+    expect(expiringHeadline(summarizeExpiry([shareWith(inDays(2)), shareWith(inDays(5))], NOW))).toBe('2 expiring soon');
+  });
+  it('reads a singular soon count', () => {
+    expect(expiringHeadline(summarizeExpiry([shareWith(inDays(2))], NOW))).toBe('1 expiring soon');
+  });
+  it('reads "N expired" when only expired shares', () => {
+    expect(expiringHeadline(summarizeExpiry([shareWith(inDays(-1)), shareWith(inDays(-9))], NOW))).toBe('2 expired');
+  });
+  it('folds both together leading with soon', () => {
+    expect(
+      expiringHeadline(summarizeExpiry([shareWith(inDays(3)), shareWith(inDays(2)), shareWith(inDays(-1))], NOW)),
+    ).toBe('2 expiring soon, 1 expired');
   });
 });

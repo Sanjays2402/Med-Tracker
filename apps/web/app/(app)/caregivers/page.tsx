@@ -12,7 +12,7 @@ import {
   type CaregiverSortKey,
 } from '../../../lib/caregiver-sort';
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
-import { expiryPill, expiryTooltip } from '../../../lib/caregiver-expiry';
+import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
@@ -49,6 +49,11 @@ export default function CaregiversPage() {
   const filtered = items ? summarizeCaregiverFilter(items, query) : null;
   const sorted = filtered ? summarizeCaregiverSort(filtered.shares, sortBy) : null;
 
+  // Expiry tally across ALL shares (not the filtered view) so the header always
+  // reflects how many shares need renewing, regardless of the active search.
+  const expirySummary = items ? summarizeExpiry(items) : null;
+  const expiringText = expirySummary ? expiringHeadline(expirySummary) : null;
+
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between gap-3">
@@ -57,6 +62,15 @@ export default function CaregiversPage() {
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             People with read-only or limited access to your medications.
           </p>
+          {expiringText && (
+            <span
+              className="inline-flex items-center gap-1.5 mt-2 capsule capsule-warn text-[11.5px]"
+              title="Renew these shares before they lapse"
+            >
+              <Clock size={12} />
+              {expiringText}
+            </span>
+          )}
         </div>
         <Link
           href="/caregivers/new"
