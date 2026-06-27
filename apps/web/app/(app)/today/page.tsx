@@ -33,6 +33,7 @@ import {
 import { groupByPartOfDay, sectionCountLabel, type PartOfDayCounts } from '../../../lib/part-of-day';
 import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
 import { sectionProgress, sectionProgressLabel } from '../../../lib/section-progress';
+import { dayProgressRoll } from '../../../lib/day-progress-roll';
 import { DoseSegments } from '../../../components/DoseSegments';
 
 export default function TodayPage() {
@@ -212,6 +213,7 @@ export default function TodayPage() {
   if (error && !doses) return <ErrorBox message={error} onRetry={load} />;
 
   const groups = groupByPartOfDay(doses ?? []);
+  const roll = doses && doses.length > 0 ? dayProgressRoll(groups) : null;
 
   const total = doses?.length ?? 0;
   const taken = (doses ?? []).filter((d) => d.status === 'taken').length;
@@ -268,6 +270,22 @@ export default function TodayPage() {
             </div>
           )}
         </div>
+        {/* Day-spanning roll-up of the four section progress bars, so the top of
+            the page tells you where you stand without scanning each section. */}
+        {roll && (
+          <p
+            className={`mt-2.5 text-[12.5px] ${roll.allComplete ? 'text-[var(--ok)]' : 'text-[var(--ink-muted)]'}`}
+            aria-live="polite"
+          >
+            {roll.allComplete ? (
+              <span className="inline-flex items-center gap-1.5">
+                <CheckBurst size={12} /> {roll.summary}
+              </span>
+            ) : (
+              roll.summary
+            )}
+          </p>
+        )}
       </header>
 
       {/* Sticky overdue banner — appears when 1+ pending doses slipped past
