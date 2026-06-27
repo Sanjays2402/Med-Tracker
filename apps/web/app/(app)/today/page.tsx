@@ -30,6 +30,7 @@ import {
   overdueHeadline,
   formatLateness,
 } from '../../../lib/overdue';
+import { groupByPartOfDay, sectionCountLabel } from '../../../lib/part-of-day';
 import { DoseSegments } from '../../../components/DoseSegments';
 
 export default function TodayPage() {
@@ -208,12 +209,7 @@ export default function TodayPage() {
 
   if (error && !doses) return <ErrorBox message={error} onRetry={load} />;
 
-  const groups: Record<string, DoseEvent[]> = { Morning: [], Afternoon: [], Evening: [], Night: [] };
-  for (const d of doses ?? []) {
-    const h = new Date(d.scheduledAt).getHours();
-    const k = h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : h < 21 ? 'Evening' : 'Night';
-    (groups[k] as DoseEvent[]).push(d);
-  }
+  const groups = groupByPartOfDay(doses ?? []);
 
   const total = doses?.length ?? 0;
   const taken = (doses ?? []).filter((d) => d.status === 'taken').length;
@@ -361,9 +357,23 @@ export default function TodayPage() {
           }
         />
       ) : (
-        Object.entries(groups).map(([label, items]) =>
+        groups.map(({ label, doses: items, counts }) =>
           items.length === 0 ? null : (
-            <Section key={label} title={label} display>
+            <Section
+              key={label}
+              title={label}
+              display
+              action={
+                sectionCountLabel(counts) && (
+                  <span
+                    className={`capsule tabular text-[11px] ${counts.done ? 'capsule-ok' : ''}`}
+                    title={`${counts.taken} taken, ${counts.pending} pending of ${counts.total}`}
+                  >
+                    {sectionCountLabel(counts)}
+                  </span>
+                )
+              }
+            >
               <div className="sheet">
                 <ul>
                   {items
