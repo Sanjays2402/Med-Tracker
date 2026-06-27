@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Pill as PillIcon, Bell, Flame, TrendingUp, ChartBar } from '@med/icons';
+import { Pill as PillIcon, Bell, Flame, TrendingUp, ChartBar, SparkleStar, Flag } from '@med/icons';
 import {
   Btn,
   StatTile,
@@ -24,6 +24,7 @@ import { trendFromCounts } from '../../../lib/adherence-trend';
 import { trendSeriesMeta } from '../../../lib/trend-series';
 import { stripCellTitle } from '../../../lib/strip-dates';
 import { streakAccent, streakToneVar, daysToStrong } from '../../../lib/streak-tone';
+import { streakMilestoneChip } from '../../../lib/streak-milestone';
 
 export default function DashboardPage() {
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
@@ -369,19 +370,34 @@ export default function DashboardPage() {
                       : `${trend.magnitude}pp ${trend.direction === 'up' ? 'higher' : 'lower'} than the prior ${adherence?.windowDays ?? 30} days`}
                   </div>
                 )}
-                {adherence && (
-                  <div className="text-[12px] text-[var(--ink-muted)]">
-                    <span
-                      className="capsule mr-1"
-                      style={{
-                        background: `color-mix(in srgb, ${streakToneVar(adherence.streakDays)} 14%, transparent)`,
-                        color: streakToneVar(adherence.streakDays),
-                      }}
-                    >
-                      <Flame size={10} /> {adherence.streakDays}d streak
-                    </span>
-                  </div>
-                )}
+                {adherence && (() => {
+                  const milestone = streakMilestoneChip(adherence.streakDays);
+                  return (
+                    <div className="text-[12px] text-[var(--ink-muted)] flex items-center gap-1.5 flex-wrap">
+                      <span
+                        className="capsule"
+                        style={{
+                          background: `color-mix(in srgb, ${streakToneVar(adherence.streakDays)} 14%, transparent)`,
+                          color: streakToneVar(adherence.streakDays),
+                        }}
+                      >
+                        <Flame size={10} /> {adherence.streakDays}d streak
+                      </span>
+                      {milestone && (
+                        <span
+                          className={`capsule ${milestone.reached ? 'capsule-ok anim-pop' : ''}`}
+                          title={
+                            milestone.reached
+                              ? 'You just hit a streak milestone'
+                              : 'Keep logging to reach the next milestone'
+                          }
+                        >
+                          {milestone.reached ? <SparkleStar size={10} /> : <Flag size={10} />} {milestone.label}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
                 <div className="text-[11px] text-[var(--ink-muted)] pt-0.5">Tap the ring for the full breakdown.</div>
               </div>
             </div>
