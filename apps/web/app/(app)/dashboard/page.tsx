@@ -22,6 +22,7 @@ import { getAdherence, listTodayDoses, listRefills, logDose } from '../../../lib
 import type { AdherenceSummary, DoseEvent, Refill } from '../../../lib/types';
 import { trendFromCounts } from '../../../lib/adherence-trend';
 import { trendSeriesMeta } from '../../../lib/trend-series';
+import { stripCellTitle } from '../../../lib/strip-dates';
 
 export default function DashboardPage() {
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
@@ -402,11 +403,12 @@ export default function DashboardPage() {
                         outlineOffset: cell.isToday ? '1.5px' : undefined,
                         opacity: cell.segment === 'prior' ? 0.82 : 1,
                       }}
-                      title={
-                        cell.isToday
-                          ? `Today · current window avg ${cell.pct}%`
-                          : `${cell.segment === 'prior' ? 'Prior' : 'Current'} window avg · ${cell.pct}%`
-                      }
+                      title={stripCellTitle({
+                        index: i,
+                        cells: strip.cells.length,
+                        pct: cell.pct,
+                        segment: cell.segment,
+                      })}
                     />
                   );
                 })}
