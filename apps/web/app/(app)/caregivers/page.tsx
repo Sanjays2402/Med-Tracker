@@ -12,6 +12,7 @@ import {
   type CaregiverSortKey,
 } from '../../../lib/caregiver-sort';
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
+import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
 
 export default function CaregiversPage() {
@@ -82,6 +83,7 @@ export default function CaregiversPage() {
       </header>
 
       {items && items.length > 0 && (
+        <div className="space-y-2">
         <div className="flex items-center gap-2 flex-wrap">
           <Surface className="flex-1 min-w-[200px] flex items-center gap-2 px-3 py-1.5">
             <MagnifyingGlass size={16} className="text-[var(--ink-muted)] shrink-0" />
@@ -136,6 +138,19 @@ export default function CaregiversPage() {
               {sorted.neverViewedCount} never opened
             </span>
           ) : null}
+        </div>
+        {/* Active-sort caption — mirrors the medications list so the current
+            ordering is legible at a glance, with a search match-count clause. */}
+        {items.length > 1 && sorted && sorted.shares.length > 0 && (
+          <p className="text-[12px] text-[var(--ink-muted)]" aria-live="polite">
+            {caregiverSortCaption(sortBy)}
+            {caregiverSortMatchClause(
+              filtered?.total ?? items.length,
+              sorted.shares.length,
+              filtered?.filtering ?? false,
+            )}
+          </p>
+        )}
         </div>
       )}
 
