@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
   CAREGIVER_SORTS,
+  CAREGIVER_SORT_KEYS,
+  cycleCaregiverSort,
   lastViewedAt,
   daysSinceViewed,
   sortCaregivers,
@@ -155,5 +157,38 @@ describe('summarizeCaregiverSort', () => {
     const s = summarizeCaregiverSort([never, share({ id: 'n2', label: 'Bob' })], 'recent', NOW);
     expect(s.neverViewedCount).toBe(2);
     expect(s.viewedCount).toBe(0);
+  });
+});
+
+describe('CAREGIVER_SORT_KEYS', () => {
+  it('matches the CAREGIVER_SORTS display order', () => {
+    expect([...CAREGIVER_SORT_KEYS]).toEqual(CAREGIVER_SORTS.map((o) => o.key));
+  });
+});
+
+describe('cycleCaregiverSort', () => {
+  it('cycles recent -> stale -> never-first -> expiry -> recent', () => {
+    expect(cycleCaregiverSort('recent')).toBe('stale');
+    expect(cycleCaregiverSort('stale')).toBe('never-first');
+    expect(cycleCaregiverSort('never-first')).toBe('expiry');
+    expect(cycleCaregiverSort('expiry')).toBe('recent');
+  });
+
+  it('cycles backward', () => {
+    expect(cycleCaregiverSort('recent', -1)).toBe('expiry');
+    expect(cycleCaregiverSort('expiry', -1)).toBe('never-first');
+  });
+
+  it('restarts at stale from a junk / missing key on a forward press', () => {
+    expect(cycleCaregiverSort('bogus')).toBe('stale');
+    expect(cycleCaregiverSort(null)).toBe('stale');
+    expect(cycleCaregiverSort(undefined)).toBe('stale');
+  });
+
+  it('always returns a valid sort key', () => {
+    const keys = CAREGIVER_SORTS.map((o) => o.key);
+    for (const k of [...keys, 'junk', null, undefined]) {
+      expect(keys).toContain(cycleCaregiverSort(k as string));
+    }
   });
 });

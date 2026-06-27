@@ -8,6 +8,7 @@ import { listCaregivers } from '../../../lib/data';
 import type { CaregiverShare } from '../../../lib/types';
 import {
   summarizeCaregiverSort,
+  cycleCaregiverSort,
   CAREGIVER_SORTS,
   type CaregiverSortKey,
 } from '../../../lib/caregiver-sort';
@@ -38,6 +39,23 @@ export default function CaregiversPage() {
       if (tag === 'input' || tag === 'textarea' || tag === 'select' || t?.isContentEditable) return;
       e.preventDefault();
       searchRef.current?.focus();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // "s" cycles the sort key (Recently viewed -> Least recent -> Never viewed ->
+  // Expiring soonest -> wrap), parallel to the medications list. Skipped while a
+  // text field is focused or a modifier is held so it never fights the browser
+  // or the global g-then-s leader (which carries no bare "s").
+  React.useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key.toLowerCase() !== 's' || e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || t?.isContentEditable) return;
+      e.preventDefault();
+      setSortBy((prev) => cycleCaregiverSort(prev));
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -127,6 +145,13 @@ export default function CaregiversPage() {
                   {opt.label}
                 </button>
               ))}
+              <kbd
+                className="capsule tabular text-[10px] shrink-0 hidden sm:inline-flex"
+                title="Press s to cycle the sort"
+                aria-hidden
+              >
+                s
+              </kbd>
             </div>
           )}
           {filtered?.filtering ? (

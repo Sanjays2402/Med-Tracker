@@ -16,6 +16,7 @@
 
 import type { CaregiverShare } from './types';
 import { daysUntilExpiry } from './caregiver-expiry';
+import { cycleKey } from './sort-cycle';
 
 export type CaregiverSortKey = 'recent' | 'stale' | 'never-first' | 'expiry';
 
@@ -30,6 +31,30 @@ export const CAREGIVER_SORTS: CaregiverSortOption[] = [
   { key: 'never-first', label: 'Never viewed' },
   { key: 'expiry', label: 'Expiring soonest' },
 ];
+
+/**
+ * The caregiver sort keys as a plain ordered ring, for keyboard cycling. Kept
+ * in lockstep with CAREGIVER_SORTS' display order so pressing "s" walks the same
+ * sequence the control shows: Recently viewed -> Least recent -> Never viewed ->
+ * Expiring soonest -> (wrap).
+ */
+export const CAREGIVER_SORT_KEYS = ['recent', 'stale', 'never-first', 'expiry'] as const;
+
+/**
+ * Advance the caregiver sort to the next key in display order, wrapping at the
+ * end. `dir` of +1 (default) advances; -1 steps backward. A junk / unknown
+ * current key restarts the ring at the first key's successor on a forward press
+ * (so the first keystroke always lands somewhere sane), parallel to cycleMedSort.
+ */
+export function cycleCaregiverSort(
+  current: string | null | undefined,
+  dir: 1 | -1 = 1,
+): CaregiverSortKey {
+  const cur = (CAREGIVER_SORT_KEYS as readonly string[]).includes(current ?? '')
+    ? (current as CaregiverSortKey)
+    : 'recent';
+  return cycleKey(CAREGIVER_SORT_KEYS, cur, dir) ?? 'recent';
+}
 
 /** Epoch ms a share was last viewed, or null when never viewed / unparseable. */
 export function lastViewedAt(share: Pick<CaregiverShare, 'lastViewedAt'>): number | null {
