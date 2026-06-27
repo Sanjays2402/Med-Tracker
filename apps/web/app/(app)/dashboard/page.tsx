@@ -26,6 +26,7 @@ import { stripCellTitle } from '../../../lib/strip-dates';
 import { streakAccent, streakToneVar, daysToStrong } from '../../../lib/streak-tone';
 import { streakMilestoneChip } from '../../../lib/streak-milestone';
 import { milestoneProgress, milestoneProgressLabel } from '../../../lib/milestone-progress';
+import { activeRunoutChip } from '../../../lib/refill-sort';
 
 export default function DashboardPage() {
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
@@ -56,6 +57,10 @@ export default function DashboardPage() {
     .filter((d) => d.status === 'pending')
     .sort((a, b) => +new Date(a.scheduledAt) - +new Date(b.scheduledAt));
   const pendingRefills = (refills ?? []).filter((r) => r.status === 'needed');
+  // Soonest run-out across the still-active refills (everything but picked-up),
+  // surfaced as an always-on chip on the Refills section header so the
+  // at-a-glance dashboard names what's about to go dry, matching /refills.
+  const refillRunoutChip = activeRunoutChip((refills ?? []).filter((r) => r.status !== 'picked_up'));
   const takenToday = (doses ?? []).filter((d) => d.status === 'taken').length;
   const totalToday = (doses ?? []).length;
   const todayPct = totalToday ? Math.round((takenToday / totalToday) * 100) : 0;
@@ -260,12 +265,19 @@ export default function DashboardPage() {
           title="Refills"
           display
           action={
-            <Link
-              href="/refills"
-              className="text-[12px] text-[var(--ink-muted)] hover:text-[var(--ink)] capsule"
-            >
-              Manage
-            </Link>
+            <div className="flex items-center gap-2">
+              {refillRunoutChip && (
+                <span title={refillRunoutChip.tooltip}>
+                  <Pill tone={refillRunoutChip.tone}>{refillRunoutChip.label}</Pill>
+                </span>
+              )}
+              <Link
+                href="/refills"
+                className="text-[12px] text-[var(--ink-muted)] hover:text-[var(--ink)] capsule"
+              >
+                Manage
+              </Link>
+            </div>
           }
         >
           <div className="sheet">
