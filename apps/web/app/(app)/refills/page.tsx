@@ -20,6 +20,12 @@ import {
   sortRefills,
   type RefillSortKey,
 } from '../../../lib/refill-sort';
+import {
+  REFILL_SORT_STORAGE_KEY,
+  DEFAULT_REFILL_SORT,
+  parseRefillSort,
+  serializeRefillSort,
+} from '../../../lib/refill-sort-pref';
 
 export default function RefillsPage() {
   const [refills, setRefills] = React.useState<Refill[] | null>(null);
@@ -28,7 +34,7 @@ export default function RefillsPage() {
   const [busy, setBusy] = React.useState<string | null>(null);
   const [activeTab, setActiveTab] = React.useState<RefillTab>('all');
   const [tabPinned, setTabPinned] = React.useState(false);
-  const [sortBy, setSortBy] = React.useState<RefillSortKey>('default');
+  const [sortBy, setSortBy] = React.useState<RefillSortKey>(DEFAULT_REFILL_SORT);
 
   const load = React.useCallback(async () => {
     setError(null);
@@ -50,6 +56,19 @@ export default function RefillsPage() {
     catch (e) { setError(e instanceof Error ? e.message : 'Could not load refills.'); }
   }, []);
   React.useEffect(() => { void load(); }, [load]);
+
+  // Restore the persisted sort choice on mount (parallels the medications
+  // density + run-out-group prefs).
+  React.useEffect(() => {
+    try { setSortBy(parseRefillSort(window.localStorage.getItem(REFILL_SORT_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - keep the default */ }
+  }, []);
+
+  const chooseSort = React.useCallback((next: RefillSortKey) => {
+    setSortBy(next);
+    try { window.localStorage.setItem(REFILL_SORT_STORAGE_KEY, serializeRefillSort(next)); }
+    catch { /* best-effort persistence */ }
+  }, []);
 
   function pickTab(tab: RefillTab) {
     setTabPinned(true);
@@ -136,7 +155,7 @@ export default function RefillsPage() {
                 <button
                   key={opt.key}
                   type="button"
-                  onClick={() => setSortBy(opt.key)}
+                  onClick={() => chooseSort(opt.key)}
                   aria-pressed={sortBy === opt.key}
                   className={`h-8 px-3 rounded-full text-[12px] font-medium border transition-colors whitespace-nowrap ${
                     sortBy === opt.key
