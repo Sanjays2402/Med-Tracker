@@ -732,35 +732,41 @@ Prefer extracting non-trivial logic into a tested lib/*.ts module (web vitest
 harness is 561 tests across 39 suites as of tick 36). Backend tiers 1L-1T stay
 paused until Sanjay removes the override.
 
-336. [ ] `refills-runout-sort-persist` — Persist the new /refills sort choice
+336. [x] `refills-runout-sort-persist` — Persist the new /refills sort choice
     to localStorage (parallel to runout-group-pref) so Default / Soonest
-    run-out survives a reload; pure parse/normalize guard + storage key.
+    run-out survives a reload; pure parse/normalize guard + storage key
+    (tick 37 / f2f248c). Logic in lib/refill-sort-pref.ts, 12 tests.
 337. [ ] `medications-runout-group-headline` — Surface summarizeRunout's
     urgentCount as a small "N need attention" headline above the grouped
     /medications list when grouping is on; pure already-shipped summary, thin
     render.
-338. [ ] `dashboard-trend-sparkline-real` — Replace the dashboard's
-    deterministic 14-day wobble grid with a real per-day series once the
-    summary carries one; until then, derive the grid from priorTaken/Taken so
-    it stops inventing variance. Pure series-from-counts model.
+338. [x] `dashboard-trend-sparkline-real` — Replace the dashboard's
+    deterministic 14-day wobble grid with an honest series: older cells carry
+    the prior-window average, newer cells the current-window average (a real
+    step when a baseline exists, flat otherwise). Stops inventing per-day
+    variance (tick 37 / c069f64). Logic in lib/trend-series.ts, 13 tests.
 339. [ ] `history-streak-best-banner` — When the current streak ties the
     all-time longest, add a celebratory ring/confetti accent to the streak
     callout; pure isBest flag already shipped, thin visual layer.
 340. [ ] `schedule-month-load-legend` — Add a small "busy day" legend entry
     to the month view explaining the density-dot tone ramp (light -> heavy);
     pure LOAD_TONE_VAR-driven legend row.
-341. [ ] `refills-sort-soonest-headline` — Show summarizeRefillSort's
+341. [x] `refills-sort-soonest-headline` — Show summarizeRefillSort's
     soonestDays as a "next out in Nd" chip beside the sort control when the
-    runout sort is active; pure already-shipped summary field.
+    runout sort is active; pure already-shipped summary field (tick 37 /
+    a9a37f6). Added formatSoonestRunout + soonestRunoutTone to lib/refill-sort,
+    8 new tests (21 in suite).
 342. [ ] `medications-density-global` — Promote the density pref to a shared
     hook so /refills and /notifications lists honour the same Comfortable/
     Compact choice; one persisted key, three consumers (re-list from #312).
-343. [ ] `caregivers-expiry-pill` — Show an "Expires in Nd" amber pill on
+343. [x] `caregivers-expiry-pill` — Show an "Expires in Nd" amber pill on
     /caregivers rows that are expiring soon (composing isExpiringSoon +
-    relativeTime); pure soon-window classifier (re-list from #323).
-344. [ ] `today-group-by-part-of-day-counts` — Add per-section dose counts to
+    relativeTime); pure soon-window classifier (tick 37 / 2857a23). Logic in
+    lib/caregiver-expiry.ts, 16 tests.
+344. [x] `today-group-by-part-of-day-counts` — Add per-section dose counts to
     the existing Morning/Afternoon/Evening/Night headers on /today; pure
-    count-by-bucket over the already-grouped doses.
+    count-by-bucket over the already-grouped doses (tick 37 / 5108875). Logic
+    in lib/part-of-day.ts (extracted the page's inline bucketing), 17 tests.
 345. [ ] `dashboard-streak-ring-accent` — Tint the dashboard streak capsule
     by streak length (sage past 7d, amber 1-6d, neutral 0); pure
     streak-tone classifier shared with the history callout.
@@ -770,7 +776,75 @@ paused until Sanjay removes the override.
 runtime issue before adding UI features so new components don't get
 buried under pre-existing failures.)
 
+### Tier 2A — frontend slices (FRONTEND-FOCUS override, refill after tick 37)
+
+Tick 37 closed five Tier 1Z items (#336, #338, #341, #343, #344). Five Tier 1Z
+stragglers remain (#337 medications-runout-group-headline, #339
+history-streak-best-banner, #340 schedule-month-load-legend, #342
+medications-density-global, #345 dashboard-streak-ring-accent) plus the older
+heavier ones (#274-#277/#279 etc). This tier refills with fresh small-to-medium
+frontend-first candidates. Each is a real user-facing capability in apps/web
+matching the sage/coral/amber pillbox language and the Linear/Raycast bar.
+Prefer extracting non-trivial logic into a tested lib/*.ts module (web vitest
+harness is 628 tests across 43 suites as of tick 37). Backend tiers 1L-1T stay
+paused until Sanjay removes the override.
+
+346. [ ] `today-section-progress-bar` — Add a thin per-section progress bar
+    under each Morning/Afternoon/Evening/Night header on /today using the
+    part-of-day counts already computed (taken/total); pure width-from-counts.
+347. [ ] `refills-empty-tab-soonest` — When a status tab is empty on /refills
+    but other tabs have items, show the soonest-run-out across all tabs as a
+    gentle "next out in Nd on the All tab" hint; composes summarizeRefillSort.
+348. [ ] `caregivers-expiring-headline` — Count shares expiring within 7d via
+    expiryPill and show "N expiring soon" in the caregivers list header next to
+    the never-opened count; pure tally over expiryPill statuses.
+349. [ ] `dashboard-strip-tooltip-dates` — Give each dashboard 14-day strip
+    cell a real calendar-date title (today minus N days) instead of "Prior /
+    Current window avg"; pure date-label-from-index helper, no fabricated pct.
+350. [ ] `medications-runout-group-headline` — (carry of #337) Surface
+    summarizeRunout's urgentCount as a "N need attention" headline above the
+    grouped /medications list when grouping is on; thin render.
+351. [ ] `schedule-month-load-legend` — (carry of #340) Add a "busy day"
+    legend entry to the month view explaining the density-dot tone ramp; pure
+    LOAD_TONE_VAR-driven legend row.
+352. [ ] `history-streak-best-banner` — (carry of #339) Celebratory ring /
+    accent on the history streak callout when current ties the all-time
+    longest; pure isBest flag already shipped, thin visual layer.
+353. [ ] `dashboard-streak-ring-accent` — (carry of #345) Tint the dashboard
+    streak capsule by streak length (sage past 7d, amber 1-6d, neutral 0);
+    pure streak-tone classifier shared with the history callout.
+354. [ ] `today-overdue-section-flag` — Mark the part-of-day section that
+    contains the oldest overdue dose with a small danger dot in its header so a
+    glance finds where the overdue dose lives; composes partitionOverdue +
+    part-of-day buckets.
+355. [ ] `refills-sort-pref-medications-parity` — Persist the /medications
+    sort key (Name / Lowest supply / Soonest refill) the same way refills now
+    does, so the medications list sort survives a reload too; parallels
+    lib/refill-sort-pref.
+
 ## Tick log
+
+- 2026-06-26 18:17 PDT — tick 37: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: f2f248c refills-runout-sort-persist,
+  a9a37f6 refills-sort-soonest-headline,
+  5108875 today-group-by-part-of-day-counts,
+  2857a23 caregivers-expiry-pill,
+  c069f64 dashboard-trend-sparkline-real.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.3s`; all 60
+  static pages generated incl. every edited route /refills, /today,
+  /caregivers, /dashboard). `@med/web` test 628/628 pass across 43 suites
+  (+67 new: refill-sort-pref 12, refill-sort +8, part-of-day 17,
+  caregiver-expiry 16, trend-series 13, +1 elsewhere). Typecheck: stash-verified
+  the pre-existing baseline error count (980, all the app-wide React-18
+  Link/bigint ReactNode drift) is UNCHANGED by this tick — zero new tsc errors
+  in any new file or edited page. Lint: turbo `lint` task is empty and the web
+  app ships no ESLint config, so there is nothing to run there.
+  Highlight: dashboard-trend-sparkline-real REMOVES fabricated data — the old
+  14-day strip seeded hash-random "wobble" around the average, inventing daily
+  variance the app never had. It now shows an honest prior->current window step
+  (or a flat strip + caption when there's no baseline). seriesFromDaily is in
+  place for a real per-day API series when one lands.
+  Roadmap: Tier 1Z 5/10 done, 5 stragglers carried; refilled Tier 2A (#346-355).
 
 - 2026-06-26 13:02 PDT — tick 36: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 52fbfe7 medications-runout-group-persist,
