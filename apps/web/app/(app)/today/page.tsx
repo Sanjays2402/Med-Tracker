@@ -34,6 +34,7 @@ import { groupByPartOfDay, sectionCountLabel, type PartOfDayCounts } from '../..
 import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
 import { sectionProgress, sectionProgressLabel } from '../../../lib/section-progress';
 import { dayProgressRoll, dayPercentPrefix } from '../../../lib/day-progress-roll';
+import { progressToneVar } from '../../../lib/progress-tone';
 import { DoseSegments } from '../../../components/DoseSegments';
 
 export default function TodayPage() {
@@ -283,7 +284,12 @@ export default function TodayPage() {
               </span>
             ) : (
               <>
-                <span className="tabular font-medium text-[var(--ink-soft)]">{dayPercentPrefix(roll)}</span>
+                <span
+                  className="tabular font-medium"
+                  style={{ color: progressToneVar(roll.percent) }}
+                >
+                  {dayPercentPrefix(roll)}
+                </span>
                 {roll.summary}
               </>
             )}
