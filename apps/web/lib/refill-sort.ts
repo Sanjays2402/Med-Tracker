@@ -89,3 +89,31 @@ export function summarizeRefillSort(
   const soonestDays = by === 'runout' && sorted.length ? refillDaysUntil(sorted[0]!, now) : null;
   return { refills: sorted, sorting: by !== 'default', soonestDays };
 }
+
+/**
+ * Phrase the soonest run-out days as a compact chip label, or null when there
+ * is nothing to show (no soonest, or the value is unknown). Used beside the
+ * sort control so a user reading the runout sort sees what's about to go dry:
+ *   - overdue   -> "soonest overdue"
+ *   - 0 days    -> "next out today"
+ *   - 1 day     -> "next out tomorrow"
+ *   - N days    -> "next out in Nd"
+ */
+export function formatSoonestRunout(days: number | null | undefined): string | null {
+  if (days == null || !Number.isFinite(days)) return null;
+  const d = Math.trunc(days);
+  if (d < 0) return 'soonest overdue';
+  if (d === 0) return 'next out today';
+  if (d === 1) return 'next out tomorrow';
+  return `next out in ${d}d`;
+}
+
+/**
+ * Tone hint for the soonest-run-out chip: danger when it's overdue or within a
+ * few days, warn otherwise, neutral when there is nothing to show. Mirrors the
+ * per-row "Nd left" pill thresholds the list already uses.
+ */
+export function soonestRunoutTone(days: number | null | undefined): 'danger' | 'warn' | 'neutral' {
+  if (days == null || !Number.isFinite(days)) return 'neutral';
+  return Math.trunc(days) <= 3 ? 'danger' : 'warn';
+}

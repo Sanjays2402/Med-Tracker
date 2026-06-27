@@ -18,6 +18,9 @@ import {
 import {
   REFILL_SORTS,
   sortRefills,
+  summarizeRefillSort,
+  formatSoonestRunout,
+  soonestRunoutTone,
   type RefillSortKey,
 } from '../../../lib/refill-sort';
 import {
@@ -99,6 +102,14 @@ export default function RefillsPage() {
     picked_up: sortRefills(visible.filter(r => r.status === 'picked_up'), sortBy),
   };
 
+  // Soonest run-out across the still-active refills (everything but picked-up),
+  // surfaced as a chip beside the sort control while the runout sort is on.
+  const activeSoonest = summarizeRefillSort(
+    visible.filter(r => r.status !== 'picked_up'),
+    'runout',
+  ).soonestDays;
+  const soonestLabel = sortBy === 'runout' ? formatSoonestRunout(activeSoonest) : null;
+
   return (
     <div className="space-y-6">
       <header>
@@ -150,22 +161,27 @@ export default function RefillsPage() {
                 );
               })}
             </div>
-            <div className="flex items-center gap-1 shrink-0 ml-auto" role="group" aria-label="Sort refills">
-              {REFILL_SORTS.map(opt => (
-                <button
-                  key={opt.key}
-                  type="button"
-                  onClick={() => chooseSort(opt.key)}
-                  aria-pressed={sortBy === opt.key}
-                  className={`h-8 px-3 rounded-full text-[12px] font-medium border transition-colors whitespace-nowrap ${
-                    sortBy === opt.key
-                      ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
-                      : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
+            <div className="flex items-center gap-2 shrink-0 ml-auto">
+              {soonestLabel && (
+                <Pill tone={soonestRunoutTone(activeSoonest)}>{soonestLabel}</Pill>
+              )}
+              <div className="flex items-center gap-1" role="group" aria-label="Sort refills">
+                {REFILL_SORTS.map(opt => (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    onClick={() => chooseSort(opt.key)}
+                    aria-pressed={sortBy === opt.key}
+                    className={`h-8 px-3 rounded-full text-[12px] font-medium border transition-colors whitespace-nowrap ${
+                      sortBy === opt.key
+                        ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                        : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

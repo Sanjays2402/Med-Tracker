@@ -4,6 +4,8 @@ import {
   refillDaysUntil,
   sortRefills,
   summarizeRefillSort,
+  formatSoonestRunout,
+  soonestRunoutTone,
   type RefillSortKey,
 } from '../lib/refill-sort';
 import type { Refill } from '../lib/types';
@@ -93,5 +95,47 @@ describe('summarizeRefillSort', () => {
     const s = summarizeRefillSort([], 'runout', NOW);
     expect(s.refills).toEqual([]);
     expect(s.soonestDays).toBeNull();
+  });
+});
+
+describe('formatSoonestRunout', () => {
+  it('phrases an overdue soonest', () => {
+    expect(formatSoonestRunout(-2)).toBe('soonest overdue');
+  });
+  it('phrases today / tomorrow', () => {
+    expect(formatSoonestRunout(0)).toBe('next out today');
+    expect(formatSoonestRunout(1)).toBe('next out tomorrow');
+  });
+  it('phrases N days', () => {
+    expect(formatSoonestRunout(11)).toBe('next out in 11d');
+  });
+  it('truncates a fractional value', () => {
+    expect(formatSoonestRunout(4.9)).toBe('next out in 4d');
+  });
+  it('returns null when there is nothing to show', () => {
+    expect(formatSoonestRunout(null)).toBeNull();
+    expect(formatSoonestRunout(undefined)).toBeNull();
+    expect(formatSoonestRunout(Number.NaN)).toBeNull();
+  });
+  it('reads straight off a runout summary', () => {
+    const s = summarizeRefillSort([later, soon, overdue], 'runout', NOW);
+    expect(formatSoonestRunout(s.soonestDays)).toBe('soonest overdue');
+  });
+});
+
+describe('soonestRunoutTone', () => {
+  it('is danger when overdue or within three days', () => {
+    expect(soonestRunoutTone(-2)).toBe('danger');
+    expect(soonestRunoutTone(0)).toBe('danger');
+    expect(soonestRunoutTone(3)).toBe('danger');
+  });
+  it('is warn beyond three days', () => {
+    expect(soonestRunoutTone(4)).toBe('warn');
+    expect(soonestRunoutTone(30)).toBe('warn');
+  });
+  it('is neutral when unknown', () => {
+    expect(soonestRunoutTone(null)).toBe('neutral');
+    expect(soonestRunoutTone(undefined)).toBe('neutral');
+    expect(soonestRunoutTone(Number.NaN)).toBe('neutral');
   });
 });
