@@ -196,14 +196,31 @@ export default function RefillsPage() {
 
           {visible.length === 0 ? (
             <Empty
-              icon={<ChartBar size={28} />}
+              icon={
+                <span
+                  style={{
+                    color: emptyHint
+                      ? emptyHint.tone === 'danger'
+                        ? 'var(--danger)'
+                        : 'var(--warn)'
+                      : undefined,
+                  }}
+                >
+                  <ChartBar size={28} />
+                </span>
+              }
               title="Nothing in this view"
               description={emptyHint ? emptyHint.message : 'Switch tabs to see refills in another status.'}
               action={
                 emptyHint ? (
-                  <Btn size="sm" variant="primary" onClick={() => pickTab('all')}>
-                    View all refills
-                  </Btn>
+                  <div className="flex flex-col items-center gap-3">
+                    <span title={emptyHint.chip.tooltip}>
+                      <Pill tone={emptyHint.tone}>{emptyHint.chip.label}</Pill>
+                    </span>
+                    <Btn size="sm" variant="primary" onClick={() => pickTab('all')}>
+                      View all refills
+                    </Btn>
+                  </div>
                 ) : undefined
               }
             />

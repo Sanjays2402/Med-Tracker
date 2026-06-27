@@ -228,6 +228,9 @@ describe('emptyTabSoonestHint', () => {
     // Overdue is the soonest among the active set.
     expect(hint!.chip.medicationName).toBe('Atorvastatin');
     expect(hint!.message).toBe('Atorvastatin is overdue for a refill — see the All tab.');
+    // An overdue soonest is urgent -> danger tone.
+    expect(hint!.tone).toBe('danger');
+    expect(hint!.urgent).toBe(true);
   });
 
   it('phrases a future soonest run-out', () => {
@@ -254,5 +257,17 @@ describe('emptyTabSoonestHint', () => {
     const chip = activeRunoutChip(all, NOW);
     expect(hint!.chip.medicationName).toBe(chip!.medicationName);
     expect(hint!.chip.days).toBe(chip!.days);
+  });
+
+  it('tones a comfortably-future soonest as warn (not urgent)', () => {
+    // `later` runs out in 11 days -> warn tone, not urgent.
+    const hint = emptyTabSoonestHint([later], NOW);
+    expect(hint!.tone).toBe('warn');
+    expect(hint!.urgent).toBe(false);
+  });
+
+  it('mirrors the chip tone exactly', () => {
+    const hint = emptyTabSoonestHint([soon, later], NOW);
+    expect(hint!.tone).toBe(hint!.chip.tone);
   });
 });

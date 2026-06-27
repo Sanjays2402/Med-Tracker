@@ -202,6 +202,11 @@ export interface EmptyTabHint {
   /** Render-ready sentence pointing at the All tab, e.g.
    *  "Amoxicillin runs out in 3d — see the All tab." */
   message: string;
+  /** Urgency tone for the hint chip + empty icon, mirroring the chip's tone:
+   *  danger when the soonest is overdue or within ~3 days, warn otherwise. */
+  tone: 'danger' | 'warn' | 'neutral';
+  /** True when the soonest run-out is overdue or within ~3 days (danger tone). */
+  urgent: boolean;
 }
 
 /**
@@ -215,6 +220,10 @@ export interface EmptyTabHint {
  * ordering as the list + the always-on chip, so they never disagree. The All
  * tab always shows every status, so it's the safe place to send the user
  * regardless of which tab actually holds the soonest refill.
+ *
+ * The returned `tone` mirrors the chip's run-out tone (overdue/soon -> danger,
+ * otherwise warn) so the empty-view nudge reads its own severity instead of a
+ * flat neutral prompt.
  */
 export function emptyTabSoonestHint(
   all: readonly Refill[],
@@ -222,5 +231,10 @@ export function emptyTabSoonestHint(
 ): EmptyTabHint | null {
   const chip = activeRunoutChip(all.filter((r) => r.status !== 'picked_up'), now);
   if (!chip) return null;
-  return { chip, message: `${chip.tooltip} — see the All tab.` };
+  return {
+    chip,
+    message: `${chip.tooltip} — see the All tab.`,
+    tone: chip.tone,
+    urgent: chip.tone === 'danger',
+  };
 }
