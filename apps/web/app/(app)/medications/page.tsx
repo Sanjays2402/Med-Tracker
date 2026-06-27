@@ -29,6 +29,7 @@ import {
   parseMedSort,
   serializeMedSort,
 } from '../../../lib/med-sort-pref';
+import { medSortCaption, medSortMatchClause } from '../../../lib/med-sort-caption';
 
 export default function MedicationsPage() {
   const [meds, setMeds] = React.useState<Medication[] | null>(null);
@@ -197,6 +198,15 @@ export default function MedicationsPage() {
           Group by run-out
         </button>
       </div>
+
+      {/* Active-sort caption — makes the current ordering legible at a glance,
+          and folds in the search match-count when a query is narrowing the list. */}
+      {meds && visible.length > 0 && (
+        <p className="-mt-2 text-[12px] text-[var(--ink-muted)]" aria-live="polite">
+          {medSortCaption(sortBy, grouped)}
+          {medSortMatchClause(meds.length, visible.length, query.trim().length > 0)}
+        </p>
+      )}
 
       {meds === null ? (
         <Surface><SkeletonRow /><SkeletonRow /><SkeletonRow /></Surface>
