@@ -6,6 +6,7 @@ import {
   summarizeRefillSort,
   formatSoonestRunout,
   soonestRunoutTone,
+  activeRunoutChip,
   type RefillSortKey,
 } from '../lib/refill-sort';
 import type { Refill } from '../lib/types';
@@ -137,5 +138,38 @@ describe('soonestRunoutTone', () => {
     expect(soonestRunoutTone(null)).toBe('neutral');
     expect(soonestRunoutTone(undefined)).toBe('neutral');
     expect(soonestRunoutTone(Number.NaN)).toBe('neutral');
+  });
+});
+
+describe('activeRunoutChip', () => {
+  it('bundles soonest days, label, and tone independent of the sort', () => {
+    expect(activeRunoutChip([later, soon, overdue], NOW)).toEqual({
+      days: -2,
+      label: 'soonest overdue',
+      tone: 'danger',
+    });
+  });
+  it('reads the nearest future when nothing is overdue', () => {
+    expect(activeRunoutChip([later, soon], NOW)).toEqual({
+      days: 1,
+      label: 'next out tomorrow',
+      tone: 'danger',
+    });
+  });
+  it('uses a warn tone beyond three days out', () => {
+    expect(activeRunoutChip([later], NOW)).toEqual({
+      days: 11,
+      label: 'next out in 11d',
+      tone: 'warn',
+    });
+  });
+  it('is null for an empty list', () => {
+    expect(activeRunoutChip([], NOW)).toBeNull();
+  });
+  it('is null when no refill has a parseable date', () => {
+    expect(activeRunoutChip([bad], NOW)).toBeNull();
+  });
+  it('ignores unparseable dates when a valid one exists', () => {
+    expect(activeRunoutChip([bad, soon], NOW)?.days).toBe(1);
   });
 });

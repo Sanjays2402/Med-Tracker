@@ -117,3 +117,33 @@ export function soonestRunoutTone(days: number | null | undefined): 'danger' | '
   if (days == null || !Number.isFinite(days)) return 'neutral';
   return Math.trunc(days) <= 3 ? 'danger' : 'warn';
 }
+
+export interface ActiveRunoutChip {
+  /** Days until the soonest active refill runs out (negative when overdue). */
+  days: number;
+  /** Render-ready label ("next out in 3d", "soonest overdue"). */
+  label: string;
+  /** Pill tone for the chip. */
+  tone: 'danger' | 'warn' | 'neutral';
+}
+
+/**
+ * Build an always-on "next out in Nd" chip for the soonest of a set of refills,
+ * independent of the active sort. The refills page used to gate the chip on the
+ * runout sort being active; this lets it surface on every status tab so the
+ * user always sees what's about to go dry.
+ *
+ * Pass the refills you consider "active" (typically everything but picked-up).
+ * Returns null when the set is empty or no refill has a parseable date (nothing
+ * honest to show). The soonest is computed via the same runout ordering, so the
+ * chip and a runout-sorted list always agree on which refill is first.
+ */
+export function activeRunoutChip(
+  refills: readonly Refill[],
+  now: number = Date.now(),
+): ActiveRunoutChip | null {
+  const days = summarizeRefillSort(refills, 'runout', now).soonestDays;
+  const label = formatSoonestRunout(days);
+  if (days == null || label == null) return null;
+  return { days, label, tone: soonestRunoutTone(days) };
+}
