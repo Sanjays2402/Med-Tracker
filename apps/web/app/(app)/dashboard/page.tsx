@@ -25,6 +25,7 @@ import { trendSeriesMeta } from '../../../lib/trend-series';
 import { stripCellTitle } from '../../../lib/strip-dates';
 import { streakAccent, streakToneVar, daysToStrong } from '../../../lib/streak-tone';
 import { streakMilestoneChip } from '../../../lib/streak-milestone';
+import { milestoneProgress, milestoneProgressLabel } from '../../../lib/milestone-progress';
 
 export default function DashboardPage() {
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
@@ -372,28 +373,61 @@ export default function DashboardPage() {
                 )}
                 {adherence && (() => {
                   const milestone = streakMilestoneChip(adherence.streakDays);
+                  const progress = milestoneProgress(adherence.streakDays);
                   return (
-                    <div className="text-[12px] text-[var(--ink-muted)] flex items-center gap-1.5 flex-wrap">
-                      <span
-                        className="capsule"
-                        style={{
-                          background: `color-mix(in srgb, ${streakToneVar(adherence.streakDays)} 14%, transparent)`,
-                          color: streakToneVar(adherence.streakDays),
-                        }}
-                      >
-                        <Flame size={10} /> {adherence.streakDays}d streak
-                      </span>
-                      {milestone && (
+                    <div className="space-y-1.5">
+                      <div className="text-[12px] text-[var(--ink-muted)] flex items-center gap-1.5 flex-wrap">
                         <span
-                          className={`capsule ${milestone.reached ? 'capsule-ok anim-pop' : ''}`}
-                          title={
-                            milestone.reached
-                              ? 'You just hit a streak milestone'
-                              : 'Keep logging to reach the next milestone'
-                          }
+                          className="capsule"
+                          style={{
+                            background: `color-mix(in srgb, ${streakToneVar(adherence.streakDays)} 14%, transparent)`,
+                            color: streakToneVar(adherence.streakDays),
+                          }}
                         >
-                          {milestone.reached ? <SparkleStar size={10} /> : <Flag size={10} />} {milestone.label}
+                          <Flame size={10} /> {adherence.streakDays}d streak
                         </span>
+                        {milestone && (
+                          <span
+                            className={`capsule ${milestone.reached ? 'capsule-ok anim-pop' : ''}`}
+                            title={
+                              milestone.reached
+                                ? 'You just hit a streak milestone'
+                                : 'Keep logging to reach the next milestone'
+                            }
+                          >
+                            {milestone.reached ? <SparkleStar size={10} /> : <Flag size={10} />} {milestone.label}
+                          </span>
+                        )}
+                      </div>
+                      {/* Thin progress bar tracking how far the streak is between
+                          the last milestone reached and the next one. */}
+                      {progress && (
+                        <div className="space-y-0.5" title={milestoneProgressLabel(adherence.streakDays) ?? undefined}>
+                          <div
+                            className="h-1 rounded-full overflow-hidden"
+                            style={{ background: 'var(--bg-sunk)' }}
+                            role="progressbar"
+                            aria-valuenow={progress.pct}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-label={milestoneProgressLabel(adherence.streakDays) ?? undefined}
+                          >
+                            <div
+                              className="h-full transition-[width] duration-700"
+                              style={{
+                                width: `${Math.max(progress.fraction * 100, progress.fraction > 0 ? 4 : 0).toFixed(1)}%`,
+                                background: streakToneVar(adherence.streakDays),
+                                borderRadius: '9999px',
+                              }}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between text-[10px] text-[var(--ink-muted)] tabular">
+                            <span>{progress.fromDays === 0 ? 'start' : `${progress.fromDays}d`}</span>
+                            <span>
+                              {progress.remaining}d to {progress.toLabel}
+                            </span>
+                          </div>
+                        </div>
                       )}
                     </div>
                   );
