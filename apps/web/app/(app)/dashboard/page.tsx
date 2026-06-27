@@ -23,6 +23,7 @@ import type { AdherenceSummary, DoseEvent, Refill } from '../../../lib/types';
 import { trendFromCounts } from '../../../lib/adherence-trend';
 import { trendSeriesMeta } from '../../../lib/trend-series';
 import { stripCellTitle } from '../../../lib/strip-dates';
+import { streakAccent, streakToneVar, daysToStrong } from '../../../lib/streak-tone';
 
 export default function DashboardPage() {
   const [adherence, setAdherence] = React.useState<AdherenceSummary | null>(null);
@@ -172,7 +173,8 @@ export default function DashboardPage() {
                   <Flame size={22} /> {adherence?.streakDays ?? 0}d
                 </span>
               }
-              hint="days on schedule"
+              hint={streakHint(adherence?.streakDays ?? 0)}
+              accent={streakAccent(adherence?.streakDays ?? 0)}
             />
             <StatTile
               label="refills"
@@ -369,7 +371,13 @@ export default function DashboardPage() {
                 )}
                 {adherence && (
                   <div className="text-[12px] text-[var(--ink-muted)]">
-                    <span className="capsule capsule-ok mr-1">
+                    <span
+                      className="capsule mr-1"
+                      style={{
+                        background: `color-mix(in srgb, ${streakToneVar(adherence.streakDays)} 14%, transparent)`,
+                        color: streakToneVar(adherence.streakDays),
+                      }}
+                    >
                       <Flame size={10} /> {adherence.streakDays}d streak
                     </span>
                   </div>
@@ -450,4 +458,16 @@ function niceDate(): string {
 
 function daysUntil(iso: string): number {
   return Math.ceil((+new Date(iso) - Date.now()) / 86400000);
+}
+
+/**
+ * Sub-label under the streak stat tile. Nudges toward the next week-long
+ * milestone while a streak is building, celebrates an established run, and
+ * stays plain at zero.
+ */
+function streakHint(days: number): string {
+  if (days <= 0) return 'days on schedule';
+  const left = daysToStrong(days);
+  if (left && left > 0) return `${left} day${left === 1 ? '' : 's'} to a week`;
+  return 'going strong';
 }
