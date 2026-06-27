@@ -1,6 +1,6 @@
 # Med-Tracker autoship state
 
-Branch: `feature/autoship` (off `main`)
+Branch: `main` (autoship commits straight to `main` and pushes every tick)
 
 This file is Cake (cron)'s only persistent memory between 20-min ticks. Update at
 the end of every tick.
@@ -789,18 +789,21 @@ Prefer extracting non-trivial logic into a tested lib/*.ts module (web vitest
 harness is 628 tests across 43 suites as of tick 37). Backend tiers 1L-1T stay
 paused until Sanjay removes the override.
 
-346. [ ] `today-section-progress-bar` — Add a thin per-section progress bar
-    under each Morning/Afternoon/Evening/Night header on /today using the
-    part-of-day counts already computed (taken/total); pure width-from-counts.
+346. [x] `today-section-progress-bar` — Thin per-section taken/skipped progress
+    bar under each Morning/Afternoon/Evening/Night header on /today; sage taken
+    segment + amber skipped sliver, aria progressbar (tick 38 / 4ad7a6e). Logic
+    in lib/section-progress.ts, 13 tests.
 347. [ ] `refills-empty-tab-soonest` — When a status tab is empty on /refills
     but other tabs have items, show the soonest-run-out across all tabs as a
     gentle "next out in Nd on the All tab" hint; composes summarizeRefillSort.
-348. [ ] `caregivers-expiring-headline` — Count shares expiring within 7d via
-    expiryPill and show "N expiring soon" in the caregivers list header next to
-    the never-opened count; pure tally over expiryPill statuses.
-349. [ ] `dashboard-strip-tooltip-dates` — Give each dashboard 14-day strip
-    cell a real calendar-date title (today minus N days) instead of "Prior /
-    Current window avg"; pure date-label-from-index helper, no fabricated pct.
+348. [x] `caregivers-expiring-headline` — Amber "N expiring soon" / "N expired"
+    tally chip under the /caregivers title, counted across all shares (tick 38 /
+    c9b991a). Added summarizeExpiry + expiringHeadline to lib/caregiver-expiry,
+    8 new tests (24 in suite).
+349. [x] `dashboard-strip-tooltip-dates` — Each dashboard 14-day strip cell's
+    hover title now leads with the real calendar date (today minus N days) while
+    keeping the honest window-average wording, no fabricated per-day pct (tick 38
+    / 91e8d87). Logic in lib/strip-dates.ts, 14 tests.
 350. [ ] `medications-runout-group-headline` — (carry of #337) Surface
     summarizeRunout's urgentCount as a "N need attention" headline above the
     grouped /medications list when grouping is on; thin render.
@@ -810,19 +813,108 @@ paused until Sanjay removes the override.
 352. [ ] `history-streak-best-banner` — (carry of #339) Celebratory ring /
     accent on the history streak callout when current ties the all-time
     longest; pure isBest flag already shipped, thin visual layer.
-353. [ ] `dashboard-streak-ring-accent` — (carry of #345) Tint the dashboard
-    streak capsule by streak length (sage past 7d, amber 1-6d, neutral 0);
-    pure streak-tone classifier shared with the history callout.
+353. [x] `dashboard-streak-ring-accent` — (carry of #345) Tint the dashboard
+    streak tile + capsule by streak length (sage 7d+, amber 1-6d, neutral 0)
+    via a shared streak-tone classifier (tick 38 / 7c8c5cc). Logic in
+    lib/streak-tone.ts, 14 tests.
 354. [ ] `today-overdue-section-flag` — Mark the part-of-day section that
     contains the oldest overdue dose with a small danger dot in its header so a
     glance finds where the overdue dose lives; composes partitionOverdue +
     part-of-day buckets.
-355. [ ] `refills-sort-pref-medications-parity` — Persist the /medications
+355. [x] `refills-sort-pref-medications-parity` — Persist the /medications
     sort key (Name / Lowest supply / Soonest refill) the same way refills now
-    does, so the medications list sort survives a reload too; parallels
-    lib/refill-sort-pref.
+    does, so the medications list sort survives a reload (tick 38 / c907846).
+    Logic in lib/med-sort-pref.ts, 12 tests.
+
+### Tier 2B — frontend slices (FRONTEND-FOCUS override, refill after tick 38)
+
+Tick 38 closed five Tier 2A items (#346, #348, #349, #353, #355). Five Tier 2A
+stragglers remain (#347 refills-empty-tab-soonest, #350 medications-runout-
+group-headline, #351 schedule-month-load-legend, #352 history-streak-best-
+banner, #354 today-overdue-section-flag) plus the older heavier ones
+(#274-#277/#279 interactions-graph / pill-identifier / caregivers-share-qr /
+dashboard-empty-state / reports-monthly-print, #281, #292-#295, #307, #312,
+#316, #318-#321). This tier refills with fresh small-to-medium frontend-first
+candidates so the loop always has clean 5-slice batches. Each is a real
+user-facing capability in apps/web matching the sage/coral/amber pillbox
+language and the Linear/Raycast bar. Prefer extracting non-trivial logic into a
+tested lib/*.ts module (web vitest harness is 689 tests across 47 suites as of
+tick 38). Backend tiers 1L-1T stay paused until Sanjay removes the override.
+
+356. [ ] `history-streak-tone-accent` — Adopt the new lib/streak-tone classifier
+    on the /history streak callout so its flame + ring tint matches the
+    dashboard (sage 7d+, amber 1-6d); pure already-shipped streakToneVar, thin
+    render swap.
+357. [ ] `today-section-progress-aria-live` — Announce section completion
+    ("Morning doses all taken") via an aria-live region when a section's
+    sectionProgress flips to complete; composes lib/section-progress.
+358. [ ] `dashboard-streak-milestone-chip` — Surface lib/streak-tone's
+    daysToStrong as a "2 days to a week" milestone chip beside the streak tile
+    on the dashboard when a streak is building; pure already-shipped helper.
+359. [ ] `medications-sort-active-caption` — Small "sorted by lowest supply"
+    caption under the /medications controls reflecting the persisted sort, so
+    the active ordering is legible at a glance; pure label-from-MedSortKey.
+360. [ ] `caregivers-expiry-sort-soonest` — Add "Expiring soonest" to the
+    caregiver sort control composing daysUntilExpiry (nulls last) so a user can
+    triage shares about to lapse; extend lib/caregiver-sort.
+361. [ ] `refills-soonest-headline-all-tabs` — Extend the soonest-run-out chip
+    to every status tab (not just when the runout sort is active) so the "next
+    out in Nd" is always visible; composes summarizeRefillSort.
+362. [ ] `today-part-of-day-now-marker` — Mark the part-of-day section that
+    contains the current hour with a subtle "now" cap on /today so the eye lands
+    on the active block; pure partOfDayForHour(currentHour) selector.
+363. [ ] `dashboard-strip-weekday-ticks` — Add faint weekday initials under the
+    14-day strip (using lib/strip-dates' cellDateLabel) so the two-week axis is
+    readable; pure date-label-from-index, no fabricated data.
+364. [ ] `medications-empty-search-suggest` — When a /medications search yields
+    nothing, suggest the closest existing name (reuse the catalog fuzzy match)
+    as a "did you mean" affordance; pure nearest-name finder over the list.
+365. [ ] `caregivers-activity-relative-refresh` — Re-tick the relative
+    timestamps on the caregivers list every minute (composes relativeTime) so
+    "2 minutes ago" stays accurate without a reload; pure 60s interval hook.
 
 ## Tick log
+
+- 2026-06-26 22:50 PDT — tick 38: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 4ad7a6e today-section-progress-bar,
+  c907846 medications-sort-persist,
+  c9b991a caregivers-expiring-headline,
+  91e8d87 dashboard-strip-tooltip-dates,
+  7c8c5cc dashboard-streak-ring-accent.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.1s`; all 60
+  static pages generated incl. every edited route /today, /medications,
+  /caregivers, /dashboard). `@med/web` test 689/689 pass across 47 suites
+  (+61 new: section-progress 13, med-sort-pref 12, caregiver-expiry +8,
+  strip-dates 14, streak-tone 14). Typecheck: STASH-VERIFIED the pre-existing
+  baseline error count (980, all the app-wide React-18 Link/bigint ReactNode
+  drift) is UNCHANGED by this tick — git-stash with/without my changes both
+  print exactly 980, and zero errors trace to any new lib module, new test, or
+  edited page (grep-confirmed: 0 non-TS2786 errors on the 4 edited pages). Lint:
+  turbo `lint` task is empty and the web app ships no ESLint config, so there is
+  nothing to run there.
+  TWENTY-EIGHTH clean tick in a row (no fixup commits, no force-push, no revert).
+  Tenth frontend tick under Sanjay's standing override. Five slices spanning
+  five surfaces (today, medications, caregivers, dashboard x2), each extracting
+  its pure-logic core into a tested lib/*.ts module — web harness 628 -> 689 tests:
+  - lib/section-progress.ts (13) — sectionProgress + sectionProgressLabel over
+    PartOfDayCounts; the /today section headers gain a thin sage-taken /
+    amber-skipped bar (segments capped so they never overflow the track).
+  - lib/med-sort-pref.ts (12) — MED_SORT_STORAGE_KEY + normalize/parse/serialize
+    guards; the /medications Name/Supply/Runout sort now persists across reloads
+    (parallel to refill-sort-pref / density-pref / runout-group-pref).
+  - lib/caregiver-expiry.ts (+8, 24 in suite) — summarizeExpiry tallies every
+    status bucket via expiryPill; expiringHeadline phrases "N expiring soon /
+    N expired" for an amber header chip on /caregivers.
+  - lib/strip-dates.ts (14) — cellOffsetDays/cellDate/cellDateISO/cellDateLabel/
+    stripCellTitle; the dashboard 14-day strip cells now name the real calendar
+    date on hover while keeping the HONEST window-average wording (no invented
+    per-day pct — continues the tick-37 trend-series cleanup).
+  - lib/streak-tone.ts (14) — streakTone/streakAccent/streakToneVar/daysToStrong;
+    a SHARED classifier (history callout can adopt it) that tints the dashboard
+    streak tile + capsule by length and nudges "N days to a week".
+  Refilled the roadmap with Tier 2B (#356-365, 10 fresh frontend candidates,
+  several composing this tick's new modules: streak-tone, section-progress,
+  strip-dates, med-sort-pref).
 
 - 2026-06-26 18:17 PDT — tick 37: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: f2f248c refills-runout-sort-persist,
