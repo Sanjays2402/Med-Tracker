@@ -20,6 +20,7 @@ import {
   sortRefills,
   activeRunoutChip,
   emptyTabSoonestHint,
+  runoutToneLegend,
   type RefillSortKey,
 } from '../../../lib/refill-sort';
 import {
@@ -164,8 +165,23 @@ export default function RefillsPage() {
             </div>
             <div className="flex items-center gap-2 shrink-0 ml-auto">
               {runoutChip && (
-                <span title={runoutChip.tooltip}>
+                <span className="inline-flex items-center gap-1.5" title={runoutChip.tooltip}>
                   <Pill tone={runoutChip.tone}>{runoutChip.label}</Pill>
+                  {(() => {
+                    const legend = runoutToneLegend(runoutChip.days);
+                    return legend ? (
+                      <span
+                        className="hidden sm:inline-flex items-center gap-1 text-[10.5px] text-[var(--ink-muted)]"
+                        aria-hidden
+                      >
+                        <span
+                          className="inline-block w-1.5 h-1.5 rounded-full"
+                          style={{ background: legend.tone === 'danger' ? 'var(--danger)' : 'var(--warn)' }}
+                        />
+                        {legend.text}
+                      </span>
+                    ) : null;
+                  })()}
                 </span>
               )}
               <div className="flex items-center gap-1" role="group" aria-label="Sort refills">

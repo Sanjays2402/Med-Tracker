@@ -118,6 +118,32 @@ export function soonestRunoutTone(days: number | null | undefined): 'danger' | '
   return Math.trunc(days) <= 3 ? 'danger' : 'warn';
 }
 
+export interface RunoutToneLegend {
+  /** The chip's tone the legend explains. */
+  tone: 'danger' | 'warn';
+  /** Short explanation of what the chip's colour means. */
+  text: string;
+}
+
+/**
+ * A tiny contextual legend for the always-on run-out chip, explaining what its
+ * colour means. Keyed on the SAME soonestRunoutTone the chip uses so the legend
+ * never describes a colour the chip isn't showing:
+ *   - danger -> "overdue or due within 3 days"
+ *   - warn   -> "more than 3 days out"
+ *
+ * Returns null when there is no honest tone to explain (no soonest, or an
+ * unknown value -> neutral), so the page omits the legend entirely rather than
+ * captioning a chip that isn't there.
+ */
+export function runoutToneLegend(days: number | null | undefined): RunoutToneLegend | null {
+  const tone = soonestRunoutTone(days);
+  if (tone === 'neutral') return null;
+  return tone === 'danger'
+    ? { tone, text: 'overdue or due within 3 days' }
+    : { tone, text: 'more than 3 days out' };
+}
+
 export interface ActiveRunoutChip {
   /** Days until the soonest active refill runs out (negative when overdue). */
   days: number;

@@ -10,6 +10,7 @@ import {
   emptyTabSoonestHint,
   soonestRefill,
   soonestRunoutTooltip,
+  runoutToneLegend,
   type RefillSortKey,
 } from '../lib/refill-sort';
 import type { Refill } from '../lib/types';
@@ -269,5 +270,31 @@ describe('emptyTabSoonestHint', () => {
   it('mirrors the chip tone exactly', () => {
     const hint = emptyTabSoonestHint([soon, later], NOW);
     expect(hint!.tone).toBe(hint!.chip.tone);
+  });
+});
+
+describe('runoutToneLegend', () => {
+  it('explains the danger colour for an overdue / within-3-days chip', () => {
+    expect(runoutToneLegend(-2)).toEqual({ tone: 'danger', text: 'overdue or due within 3 days' });
+    expect(runoutToneLegend(0)).toEqual({ tone: 'danger', text: 'overdue or due within 3 days' });
+    expect(runoutToneLegend(3)).toEqual({ tone: 'danger', text: 'overdue or due within 3 days' });
+  });
+
+  it('explains the warn colour for a further-out chip', () => {
+    expect(runoutToneLegend(4)).toEqual({ tone: 'warn', text: 'more than 3 days out' });
+    expect(runoutToneLegend(30)).toEqual({ tone: 'warn', text: 'more than 3 days out' });
+  });
+
+  it('is null when there is no honest tone to explain', () => {
+    expect(runoutToneLegend(null)).toBeNull();
+    expect(runoutToneLegend(undefined)).toBeNull();
+    expect(runoutToneLegend(Number.NaN)).toBeNull();
+  });
+
+  it('always agrees with soonestRunoutTone on the colour it names', () => {
+    for (const d of [-5, 0, 1, 3, 4, 10, 100]) {
+      const legend = runoutToneLegend(d);
+      expect(legend!.tone).toBe(soonestRunoutTone(d));
+    }
   });
 });
