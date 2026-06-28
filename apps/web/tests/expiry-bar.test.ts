@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, allActiveLegend } from '../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend } from '../lib/expiry-bar';
 import type { ExpirySummary } from '../lib/caregiver-expiry';
 
 function summary(over: Partial<ExpirySummary>): ExpirySummary {
@@ -151,5 +151,34 @@ describe('allActiveLegend', () => {
   it('counts no-expiry shares into the active total it vouches for', () => {
     const bar = expiryBar(summary({ noExpiry: 2, total: 2 }))!;
     expect(allActiveLegend(bar)).toBe('All 2 shares active');
+  });
+});
+
+describe('expirySegmentAriaLabel', () => {
+  it('pairs the segment percentage with its share of the whole list', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, expired: 1, total: 4 }))!;
+    const soon = bar.segments.find((s) => s.kind === 'soon')!;
+    expect(expirySegmentAriaLabel(soon, bar.total)).toBe('25% expiring soon, 1 of 4 shares');
+  });
+
+  it('names the active and expired segments', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, expired: 1, total: 4 }))!;
+    const active = bar.segments.find((s) => s.kind === 'active')!;
+    const expired = bar.segments.find((s) => s.kind === 'expired')!;
+    expect(expirySegmentAriaLabel(active, bar.total)).toBe('50% active, 2 of 4 shares');
+    expect(expirySegmentAriaLabel(expired, bar.total)).toBe('25% expired, 1 of 4 shares');
+  });
+
+  it('uses the singular noun for a one-share list', () => {
+    const bar = expiryBar(summary({ soon: 1, total: 1 }))!;
+    const soon = bar.segments.find((s) => s.kind === 'soon')!;
+    expect(expirySegmentAriaLabel(soon, bar.total)).toBe('100% expiring soon, 1 of 1 share');
+  });
+
+  it('uses the same percentage the bar draws so it never disagrees', () => {
+    const bar = expiryBar(summary({ active: 1, soon: 1, expired: 1, total: 3 }))!;
+    // widths are 34/33/33 (largest-remainder); the aria label reads the same.
+    const active = bar.segments.find((s) => s.kind === 'active')!;
+    expect(expirySegmentAriaLabel(active, bar.total)).toBe('34% active, 1 of 3 shares');
   });
 });

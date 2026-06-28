@@ -15,7 +15,7 @@ import {
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, allActiveLegend } from '../../../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend } from '../../../lib/expiry-bar';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
@@ -218,6 +218,8 @@ export default function CaregiversPage() {
                 key={seg.kind}
                 className="inline-flex items-center gap-1.5"
                 title={expirySegmentTooltip(seg, bar.total)}
+                role="img"
+                aria-label={expirySegmentAriaLabel(seg, bar.total)}
               >
                 <span
                   className="inline-block w-2 h-2 rounded-full"

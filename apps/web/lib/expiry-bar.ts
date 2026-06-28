@@ -184,3 +184,21 @@ export function allActiveLegend(bar: ExpiryBar): string | null {
   if (bar.total === 1) return 'The 1 share is active';
   return `All ${bar.total} shares active`;
 }
+
+/**
+ * Self-contained aria-label for a SINGLE legend chip / bar segment, pairing its
+ * percentage of the bar with its share of the whole list:
+ * "25% expiring soon, 1 of 4 shares". The bar's overall aria-description names
+ * every segment at once (for the bar as a unit); this gives each legend chip its
+ * OWN spoken label so a screen-reader user tabbing the chips hears each one in
+ * context instead of an unlabelled swatch.
+ *
+ * Composes segmentPercentPhrase (the same largest-remainder pct the bar draws)
+ * with the segment's count over `total`, so the spoken percent never disagrees
+ * with the picture and the count is grounded in the full share list. The noun
+ * pluralises on the total ("1 of 1 share"). Pure; no React.
+ */
+export function expirySegmentAriaLabel(segment: ExpiryBarSegment, total: number): string {
+  const noun = total === 1 ? 'share' : 'shares';
+  return `${segmentPercentPhrase(segment)}, ${segment.count} of ${total} ${noun}`;
+}
