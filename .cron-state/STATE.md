@@ -1143,10 +1143,10 @@ language and the Linear/Raycast bar. Prefer extracting non-trivial logic into a
 tested lib/*.ts module (web vitest harness is 867 tests across 57 suites as of
 tick 43). Backend tiers 1L-1T stay paused until Sanjay removes the override.
 
-411. [ ] `medications-supply-bar-tone` — Tone the medication-detail supply bar by
-    estimated days left via a shared days-left -> tone classifier (coral <7d,
-    amber <14d, sage otherwise); pure classifier in a new lib/days-left-tone.ts,
-    reused by the detail hero. (Promotes #408 with a concrete lib home.)
+411. [x] `medications-supply-bar-tone` — Toned supply-remaining bar on the
+    medication-detail hero: fills proportional to estimated days-left over a 30d
+    horizon, coral <7d / amber <14d / sage otherwise (tick 44 / 623f0d3). New
+    lib/days-left-tone.ts (daysLeftTone + daysLeftToneVar + buildSupplyBar), 17 tests.
 412. [ ] `today-progress-tone-ring` — Reuse lib/progress-tone on the /today
     header taken/total ring so its accent matches the toned day-percent prefix
     (coral/amber/sage by completion); pure already-shipped classifier, thin
@@ -1162,10 +1162,10 @@ tick 43). Backend tiers 1L-1T stay paused until Sanjay removes the override.
     only the active tab's unread rows read (composes the tab filter + the
     existing markNotificationRead), distinct from the global Mark all read; pure
     id-collector over the filtered list in lib/notification-filter. (Carry of #405.)
-416. [ ] `refills-runout-chip-empty-state` — When no refill has a parseable
+416. [x] `refills-runout-chip-empty-state` — When no refill has a parseable
     run-out date (activeRunoutChip null) show a muted "No upcoming run-outs" chip
-    on the /refills header instead of dropping it, parallel to the dashboard
-    today-chip empty state; pure empty-phrase model.
+    on the /refills header instead of dropping it (tick 44 / 445b630). Added
+    runoutChipOrEmpty + NO_RUNOUT_LABEL to lib/refill-sort, tests 44 -> 50.
 417. [ ] `medications-list-supply-tone-legend` — A tiny tone legend below the
     /medications list explaining the supply-sparkline colours (coral/amber/sage
     run-out bands), parallel to the refills run-out legend; pure static legend.
@@ -1175,19 +1175,21 @@ tick 43). Backend tiers 1L-1T stay paused until Sanjay removes the override.
 419. [ ] `dashboard-adherence-ring-tone-sync` — Ensure the dashboard adherence
     ring's accent and the trend arrow's tone derive from one shared classifier so
     they never disagree; pure refactor extracting a lib/adherence-tone helper.
-420. [ ] `caregivers-expiry-bar-percent-aria` — Add an aria description to the
-    expiry bar naming each segment's percentage ("50% active, 25% expiring soon,
-    25% expired") so a screen reader hears the split; pure aria-text builder on
-    lib/expiry-bar.
-421. [ ] `notifications-tab-empty-hint` — When a non-All tab is empty but other
+420. [x] `caregivers-expiry-bar-percent-aria` — Spoken percentage description on
+    the expiry bar ("50% active, 25% expiring soon, 25% expired") reusing the
+    drawn widths so the aria text never disagrees with the picture (tick 44 /
+    23f1ba9). Added expiryBarAriaDescription to lib/expiry-bar, tests 16 -> 20.
+421. [x] `notifications-tab-empty-hint` — When a non-All tab is empty but other
     tabs have unread rows, name where the unread live ("3 unread in Refills") and
-    offer a jump, parallel to the refills empty-tab hint; pure cross-tab finder.
+    offer a jump (tick 44 / 0d493f8). Added crossTabUnreadHint to
+    lib/notification-filter, tests 23 -> 29.
 422. [ ] `refills-timeline-today-label` — Label the "today" marker on the
     /refills 30-day timeline strip with the date so the strip reads its anchor;
     pure today-label formatter on lib/refill-timeline.
-423. [ ] `today-overdue-tone-escalate` — Escalate the /today overdue banner's
-    tone from warn to danger once any dose is more than N hours late; pure
-    lateness-tier classifier over lib/overdue's partition.
+423. [x] `today-overdue-tone-escalate` — Escalate the /today overdue banner's
+    tone from warn to danger once any dose is more than 2h late (tick 44 /
+    27126e6). Added overdueTier + OVERDUE_ESCALATE_HOURS to lib/overdue, tests
+    18 -> 25.
 424. [ ] `medications-detail-next-dose-tone` — Tone the medication-detail
     next-dose countdown chip (due-soon amber, overdue coral, comfortable sage)
     via a shared minutes-until -> tone classifier; pure classifier on lib/next-dose.
@@ -1195,7 +1197,120 @@ tick 43). Backend tiers 1L-1T stay paused until Sanjay removes the override.
     muted "No refills needed" chip on the dashboard Refills header instead of
     dropping it, parallel to the today-chip empty state; pure empty-phrase model.
 
+### Tier 2H — frontend slices (FRONTEND-FOCUS override, refill after tick 44)
+
+Tick 44 closed five items: #411 medications-supply-bar-tone (now a real
+supply bar), #416 refills-runout-chip-empty-state, #420 caregivers-expiry-bar-
+percent-aria, #421 notifications-tab-empty-hint, #423 today-overdue-tone-
+escalate. Tier 2G open: #412 today-progress-tone-ring, #413 dashboard-today-
+chip-link, #414 caregivers-expiry-bar-empty-legend, #415 notifications-mark-tab-
+read, #417 medications-list-supply-tone-legend, #418 today-section-tone-legend,
+#419 dashboard-adherence-ring-tone-sync, #422 refills-timeline-today-label, #424
+medications-detail-next-dose-tone, #425 dashboard-refill-chip-empty-state. Plus
+the older heavier ones (#274-#277/#279 interactions-graph / pill-identifier /
+caregivers-share-qr / dashboard-empty-state / reports-monthly-print, #281,
+#292-#295, #307, #312, #316, #318-#321, #371, #386, #389, #392-#395). This tier
+refills with fresh small-to-medium frontend-first candidates so the loop always
+has clean 5-slice batches. Each is a real user-facing capability in apps/web
+matching the sage/coral/amber pillbox language and the Linear/Raycast bar. Prefer
+extracting non-trivial logic into a tested lib/*.ts module (web vitest harness is
+905 tests across 58 suites as of tick 44). Backend tiers 1L-1T stay paused until
+Sanjay removes the override.
+
+426. [ ] `medications-detail-next-dose-tone` — Tone the medication-detail
+    next-dose countdown chip via a shared minutes-until -> tone classifier
+    (overdue coral, due amber, upcoming accent, done sage); the chip already
+    reads computeNextDose.tone — lift the tone->capsule mapping into a tested
+    lib/next-dose helper so it's reusable. (Promotes #424.)
+427. [ ] `caregivers-expiry-bar-empty-legend` — When the expiry bar is all-active
+    (hasRisk false, currently hidden) show a single muted "All shares active"
+    line so the header always carries a one-line health read; new allActiveLegend
+    helper on lib/expiry-bar. (Carry of #414.)
+428. [ ] `dashboard-refill-chip-empty-state` — When no refill is pending show a
+    muted "No refills needed" chip on the dashboard Refills header instead of
+    dropping it, reusing runoutChipOrEmpty's empty-state pattern. (Carry of #425.)
+429. [ ] `today-progress-tone-ring` — Reuse lib/progress-tone on the /today
+    header taken/total ring so its accent matches the toned day-percent prefix
+    (coral/amber/sage by completion); pure already-shipped classifier, thin style
+    swap. (Carry of #412.)
+430. [ ] `refills-timeline-today-label` — Label the "today" marker on the
+    /refills 30-day timeline strip with the date so the strip reads its anchor;
+    pure today-label formatter on lib/refill-timeline.
+431. [ ] `notifications-mark-tab-read` — A "Mark these read" action that marks
+    only the active tab's unread rows read (composes applyNotificationFilters +
+    markNotificationRead), distinct from the global Mark all read; pure
+    id-collector over the filtered list. (Carry of #415.)
+432. [ ] `medications-supply-bar-mini-list` — Reuse buildSupplyBar's days-left
+    tone on the /medications list run-out chip so the list and the detail hero
+    agree on the colour each med's supply reads; thin tone swap over the shipped
+    lib/days-left-tone.
+433. [ ] `today-overdue-escalate-aria-live` — Announce the overdue banner's
+    escalation ("doses are now more than 2 hours late") via an aria-live region
+    when overdueTier flips to danger; thin a11y layer over the shipped tier model.
+434. [ ] `dashboard-today-chip-link` — Make the dashboard "N% done" today chip a
+    link to /today (skipped when the muted empty status chip is showing so it
+    stays non-interactive); pure href wrap composing dayStatusChip.empty.
+    (Carry of #413.)
+435. [ ] `caregivers-expiry-bar-segment-aria-each` — Give each expiry-bar SEGMENT
+    its own aria-label (not just the whole bar) so a screen reader tabbing the
+    legend chips hears "25% expiring soon, 1 of 4 shares"; composes the new
+    expiryBarAriaDescription + expirySegmentTooltip.
+
 ## Tick log
+
+- 2026-06-27 23:25 PDT — tick 44: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 623f0d3 medication-detail-supply-bar,
+  27126e6 today-overdue-tone-escalate,
+  445b630 refills-runout-chip-empty-state,
+  0d493f8 notifications-tab-empty-hint,
+  23f1ba9 caregivers-expiry-bar-percent-aria.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.3s`; all static
+  pages generated incl. every edited route /medications/[id], /today, /refills,
+  /notifications, /caregivers). `@med/web` test 905/905 pass across 58 suites
+  (+38 new, +1 suite: days-left-tone 17 NEW, overdue 18->25, refill-sort 44->50,
+  notification-filter 23->29, expiry-bar 16->20). Typecheck: the pre-existing
+  baseline error count (980, the app-wide React-18 Link/ReactNode drift) is
+  UNCHANGED — tsc prints exactly 980, and grep-confirmed ZERO errors trace to the
+  1 new lib module, 4 edited lib modules, 1 new test file, 4 edited test files, or
+  5 edited pages. Lint: Next 16 removed `next lint`, the web app ships no ESLint
+  config, the turbo `lint` task is empty `{}` — nothing to run (documented
+  baseline, same as ticks 38-43). Clean tree verified before each commit. Push
+  landed clean, origin/main 0/0 ahead-behind. THIRTY-FOURTH clean tick in a row
+  (no fixup commits, no force-push, no revert). Sixteenth frontend tick under
+  Sanjay's standing override. Five slices spanning five surfaces (medications
+  detail, today, refills, notifications, caregivers), each extracting its
+  pure-logic core into (or onto) a tested lib/*.ts module — web harness 867 -> 905:
+  - lib/days-left-tone (NEW, 17) — daysLeftTone(days): neutral when unknown,
+    danger < 7d, warn < 14d, ok otherwise (boundaries read as the calmer band);
+    daysLeftToneVar maps to CSS vars; buildSupplyBar(med) composes estimatedDays
+    Left into a fill pct (clamped 0..100 of a 30d horizon), tone, caption, and an
+    honest hasData flag. The medication detail hero gained a real horizontal
+    supply-remaining bar (role=progressbar, 4% min fill so non-zero supply never
+    reads empty, muted "No supply data" track when remainingDoses is unknown).
+  - lib/overdue (+7) — overdueTier(worstMinutesLate, escalateAfterHours=2):
+    strict-crossing tier (exactly 2h is still warn, 2h+1m escalates), window
+    overridable. The /today overdue banner now starts as a soft amber nudge and
+    escalates to red (pulse animation + sharper subline) only once the oldest
+    overdue dose is more than 2h late, so a chronic miss reads louder than a fresh
+    one. Was hardcoded full-danger from the first late minute.
+  - lib/refill-sort (+6) — runoutChipOrEmpty(refills) + NO_RUNOUT_LABEL: an
+    always-renderable run-out chip model. The /refills header used to drop the
+    always-on chip when no active refill had a parseable date; now it shows a
+    muted neutral "No upcoming run-outs" chip with an explaining tooltip, so the
+    header always carries a one-line run-out read (parallel to the dashboard
+    today-chip empty state).
+  - lib/notification-filter (+6) — crossTabUnreadHint(items, activeTab): when an
+    empty non-All tab hides unread that live elsewhere, name the busiest other
+    tab ("3 unread in Refills", ties broken by tab order) with a "Go to Refills"
+    jump. Null on All, on a non-empty tab, or when no other tab has unread.
+  - lib/expiry-bar (+4) — expiryBarAriaDescription(bar): spoken "50% active, 25%
+    expiring soon, 25% expired" reusing the SAME largest-remainder widths the bar
+    draws, so the aria text sums to 100 and never disagrees with the picture. The
+    /caregivers bar's role=img aria-label now leads with the percentage split.
+  Tier 2G still holds 10 open pickable items (#412-#415, #417-#419, #422, #424,
+  #425) after this batch; added Tier 2H (#426-#435) to keep the loop fed with
+  fresh 5-slice batches.
+
 
 - 2026-06-27 18:25 PDT — tick 43: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 54a97fb caregivers-expiry-bar-tooltip,
