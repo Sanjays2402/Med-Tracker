@@ -167,3 +167,20 @@ function segmentPercentPhrase(segment: ExpiryBarSegment): string {
 export function expiryBarAriaDescription(bar: ExpiryBar): string {
   return bar.segments.map(segmentPercentPhrase).join(', ');
 }
+
+/**
+ * One-line "all healthy" legend for when the bar has nothing at risk (no soon /
+ * expired shares). The /caregivers header hides the stacked bar entirely when
+ * hasRisk is false, which leaves the header with no health read at all on a tidy
+ * list; this gives it a single muted line instead.
+ *
+ * Returns null when the bar IS at risk (the coloured bar speaks for itself) or
+ * when there are no shares counted at all (nothing to vouch for). Otherwise it
+ * pluralises on the bar's total: "All 4 shares active", "The 1 share is active".
+ * Pure; no React.
+ */
+export function allActiveLegend(bar: ExpiryBar): string | null {
+  if (bar.hasRisk || bar.total <= 0) return null;
+  if (bar.total === 1) return 'The 1 share is active';
+  return `All ${bar.total} shares active`;
+}

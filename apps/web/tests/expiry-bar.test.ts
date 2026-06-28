@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription } from '../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, allActiveLegend } from '../lib/expiry-bar';
 import type { ExpirySummary } from '../lib/caregiver-expiry';
 
 function summary(over: Partial<ExpirySummary>): ExpirySummary {
@@ -127,5 +127,29 @@ describe('expiryBarAriaDescription', () => {
     // The phrase percentages sum to the same 100 the widths do.
     const sum = bar.segments.reduce((a, s) => a + s.pct, 0);
     expect(sum).toBe(100);
+  });
+});
+
+describe('allActiveLegend', () => {
+  it('is null when the bar has something at risk', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, total: 3 }))!;
+    expect(bar.hasRisk).toBe(true);
+    expect(allActiveLegend(bar)).toBeNull();
+  });
+
+  it('vouches for an all-active list, pluralising on the total', () => {
+    const bar = expiryBar(summary({ active: 3, noExpiry: 1, total: 4 }))!;
+    expect(bar.hasRisk).toBe(false);
+    expect(allActiveLegend(bar)).toBe('All 4 shares active');
+  });
+
+  it('uses singular phrasing for a single share', () => {
+    const bar = expiryBar(summary({ active: 1, total: 1 }))!;
+    expect(allActiveLegend(bar)).toBe('The 1 share is active');
+  });
+
+  it('counts no-expiry shares into the active total it vouches for', () => {
+    const bar = expiryBar(summary({ noExpiry: 2, total: 2 }))!;
+    expect(allActiveLegend(bar)).toBe('All 2 shares active');
   });
 });

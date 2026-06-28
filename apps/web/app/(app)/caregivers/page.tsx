@@ -15,7 +15,7 @@ import {
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription } from '../../../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, allActiveLegend } from '../../../lib/expiry-bar';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
@@ -235,6 +235,20 @@ export default function CaregiversPage() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* When the bar is all-active (nothing soon/expired), the coloured bar is
+          hidden — surface a single muted line so the header still carries a
+          one-line health read instead of going silent on a tidy list. */}
+      {bar && !bar.hasRisk && allActiveLegend(bar) && (
+        <p className="text-[12px] text-[var(--ink-muted)] inline-flex items-center gap-1.5">
+          <span
+            className="inline-block w-2 h-2 rounded-full"
+            style={{ background: 'var(--ok)' }}
+            aria-hidden
+          />
+          {allActiveLegend(bar)}
+        </p>
       )}
 
       {items === null ? (
