@@ -117,3 +117,28 @@ export function expiryBar(summary: ExpirySummary): ExpiryBar | null {
     hasRisk: counts.soon > 0 || counts.expired > 0,
   };
 }
+
+/**
+ * Richer hover tooltip for one expiry-bar segment, naming its share of the
+ * whole list rather than just the bucket count. The bar's segment labels read
+ * "3 expiring soon"; this reads "3 of 6 shares expiring within 7 days" so a
+ * hover puts the count in the context of the full share list.
+ *
+ * `total` is the bar's `total` (every share counted into it). `withinDays`
+ * matches the soon window summarizeExpiry used (default 7) so the phrase never
+ * claims a window the tally didn't use. The noun pluralises on the total, so a
+ * single-share list reads "1 of 1 share". Pure; no React.
+ */
+export function expirySegmentTooltip(
+  segment: Pick<ExpiryBarSegment, 'kind' | 'count'>,
+  total: number,
+  withinDays = 7,
+): string {
+  const noun = total === 1 ? 'share' : 'shares';
+  const lead = `${segment.count} of ${total} ${noun}`;
+  switch (segment.kind) {
+    case 'active': return `${lead} active`;
+    case 'soon': return `${lead} expiring within ${withinDays} days`;
+    case 'expired': return `${lead} expired`;
+  }
+}

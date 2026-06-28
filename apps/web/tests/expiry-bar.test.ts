@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { expiryBar } from '../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip } from '../lib/expiry-bar';
 import type { ExpirySummary } from '../lib/caregiver-expiry';
 
 function summary(over: Partial<ExpirySummary>): ExpirySummary {
@@ -69,5 +69,37 @@ describe('expiryBar', () => {
 
   it('hasRisk is true when only expired shares exist', () => {
     expect(expiryBar(summary({ expired: 2, total: 2 }))!.hasRisk).toBe(true);
+  });
+});
+
+describe('expirySegmentTooltip', () => {
+  it('names the soon segment with the window and total', () => {
+    expect(expirySegmentTooltip({ kind: 'soon', count: 3 }, 6)).toBe(
+      '3 of 6 shares expiring within 7 days',
+    );
+  });
+
+  it('names the active segment', () => {
+    expect(expirySegmentTooltip({ kind: 'active', count: 4 }, 6)).toBe('4 of 6 shares active');
+  });
+
+  it('names the expired segment', () => {
+    expect(expirySegmentTooltip({ kind: 'expired', count: 1 }, 6)).toBe('1 of 6 shares expired');
+  });
+
+  it('uses a custom soon window when given', () => {
+    expect(expirySegmentTooltip({ kind: 'soon', count: 2 }, 5, 14)).toBe(
+      '2 of 5 shares expiring within 14 days',
+    );
+  });
+
+  it('uses the singular noun for a one-share list', () => {
+    expect(expirySegmentTooltip({ kind: 'active', count: 1 }, 1)).toBe('1 of 1 share active');
+  });
+
+  it('matches the bar total so the context is honest', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, expired: 1, total: 4 }))!;
+    const soon = bar.segments.find((s) => s.kind === 'soon')!;
+    expect(expirySegmentTooltip(soon, bar.total)).toBe('1 of 4 shares expiring within 7 days');
   });
 });
