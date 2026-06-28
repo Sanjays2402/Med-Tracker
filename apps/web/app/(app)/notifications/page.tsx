@@ -9,6 +9,11 @@ import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
 import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, type NotificationTab } from '../../../lib/notification-filter';
+import {
+  NOTIFICATION_UNREAD_STORAGE_KEY,
+  parseUnreadOnly,
+  serializeUnreadOnly,
+} from '../../../lib/notification-unread-pref';
 import { groupByDay } from '../../../lib/day-group';
 
 export default function NotificationsPage() {
@@ -26,6 +31,27 @@ export default function NotificationsPage() {
     catch (e) { setError(e instanceof Error ? e.message : 'Could not load notifications.'); }
   }, []);
   React.useEffect(() => { void load(); }, [load]);
+
+  // Restore the persisted "Unread only" choice on mount.
+  React.useEffect(() => {
+    try { setUnreadOnly(parseUnreadOnly(window.localStorage.getItem(NOTIFICATION_UNREAD_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - keep the default */ }
+  }, []);
+
+  const toggleUnreadOnly = React.useCallback(() => {
+    setUnreadOnly((prev) => {
+      const next = !prev;
+      try { window.localStorage.setItem(NOTIFICATION_UNREAD_STORAGE_KEY, serializeUnreadOnly(next)); }
+      catch { /* best-effort persistence */ }
+      return next;
+    });
+  }, []);
+
+  const setUnreadOnlyPersisted = React.useCallback((value: boolean) => {
+    setUnreadOnly(value);
+    try { window.localStorage.setItem(NOTIFICATION_UNREAD_STORAGE_KEY, serializeUnreadOnly(value)); }
+    catch { /* best-effort persistence */ }
+  }, []);
 
   const unread = (items ?? []).filter(i => !i.read && !snoozedRows.has(i.id)).length;
 
@@ -142,7 +168,7 @@ export default function NotificationsPage() {
           {unreadInfo.hasRead && (
             <button
               type="button"
-              onClick={() => setUnreadOnly(v => !v)}
+              onClick={toggleUnreadOnly}
               aria-pressed={unreadOnly}
               className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-medium border whitespace-nowrap transition-colors shrink-0 ${
                 unreadOnly
@@ -181,7 +207,7 @@ export default function NotificationsPage() {
           }
           action={
             unreadOnly && unreadInfo.inTab > 0 ? (
-              <button type="button" onClick={() => setUnreadOnly(false)} className="text-sm text-brand-600 hover:underline">
+              <button type="button" onClick={() => setUnreadOnlyPersisted(false)} className="text-sm text-brand-600 hover:underline">
                 Show all
               </button>
             ) : undefined
