@@ -8,7 +8,7 @@ import { listNotifications, markNotificationRead, markAllNotificationsRead, snoo
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
-import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, type NotificationTab } from '../../../lib/notification-filter';
+import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, type NotificationTab } from '../../../lib/notification-filter';
 import {
   NOTIFICATION_UNREAD_STORAGE_KEY,
   parseUnreadOnly,
@@ -110,6 +110,12 @@ export default function NotificationsPage() {
   const dayGroups = groupByDay(visible, (n) => n.createdAt);
   const snoozedCount = snoozedRows.size;
 
+  // When the active (non-All) tab is empty but unread notifications live in
+  // other tabs, name where they are so an empty tab doesn't read as "all caught
+  // up". Only relevant when the active tab itself has no rows (unread filter off
+  // for the emptiness check, since the hint is about the tab being empty).
+  const tabHint = crossTabUnreadHint(notSnoozed, activeTab);
+
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between gap-3">
@@ -201,6 +207,8 @@ export default function NotificationsPage() {
           description={
             unreadOnly && unreadInfo.inTab > 0
               ? "You've read everything in this view. Turn off Unread only to see the rest."
+              : tabHint && !unreadOnly
+              ? `Nothing here, but you have ${tabHint.message}.`
               : notSnoozed.length > 0
               ? 'Try another filter to see the rest of your inbox.'
               : snoozedCount > 0 ? 'Snoozed reminders will resurface at their scheduled time.' : 'Reminders and refill alerts appear here.'
@@ -210,6 +218,10 @@ export default function NotificationsPage() {
               <button type="button" onClick={() => setUnreadOnlyPersisted(false)} className="text-sm text-brand-600 hover:underline">
                 Show all
               </button>
+            ) : tabHint && !unreadOnly ? (
+              <Btn size="sm" variant="primary" onClick={() => setActiveTab(tabHint.tab)}>
+                {`Go to ${tabHint.label}`}
+              </Btn>
             ) : undefined
           }
         />

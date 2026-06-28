@@ -8,6 +8,7 @@ import {
   filterUnreadOnly,
   applyNotificationFilters,
   summarizeUnread,
+  crossTabUnreadHint,
   NOTIFICATION_TABS,
 } from '../lib/notification-filter';
 import type { NotificationItem } from '../lib/types';
@@ -145,5 +146,46 @@ describe('summarizeUnread', () => {
   });
   it('is all-zero for an empty inbox', () => {
     expect(summarizeUnread([], 'all')).toEqual({ inTab: 0, unreadInTab: 0, hasRead: false });
+  });
+});
+
+describe('crossTabUnreadHint', () => {
+  it('is null on the All tab (it shows everything)', () => {
+    expect(crossTabUnreadHint(items, 'all')).toBeNull();
+  });
+
+  it('is null when the active tab still has rows', () => {
+    // Reminder tab has r1 + r2, so it is not empty.
+    expect(crossTabUnreadHint(items, 'reminder')).toBeNull();
+  });
+
+  it('points at the busiest other tab when the active tab is empty', () => {
+    // System tab: only s1 (read) + c1 (unread). Move to an empty tab by using a
+    // list with NO refills, then ask from the (empty) refill tab.
+    const noRefills = [n('r1', 'reminder'), n('r2', 'reminder'), n('c1', 'caregiver')];
+    const hint = crossTabUnreadHint(noRefills, 'refill');
+    // Reminder has 2 unread, System (caregiver) has 1 -> reminder wins.
+    expect(hint).toEqual({ tab: 'reminder', label: 'Reminders', unread: 2, message: '2 unread in Reminders' });
+  });
+
+  it('names the System tab when caregiver/system unread dominate', () => {
+    const list = [n('f-read', 'refill', true), n('c1', 'caregiver'), n('s1', 'system')];
+    // Ask from the empty reminder tab: System has 2 unread (c1 + s1), refill has 0.
+    const hint = crossTabUnreadHint(list, 'reminder');
+    expect(hint).toEqual({ tab: 'system', label: 'System', unread: 2, message: '2 unread in System' });
+  });
+
+  it('is null when no other tab has unread', () => {
+    // Active empty tab = refill; the rest are all read -> nothing to point at.
+    const allRead = [n('r1', 'reminder', true), n('s1', 'system', true)];
+    expect(crossTabUnreadHint(allRead, 'refill')).toBeNull();
+  });
+
+  it('does not count the active tab against itself', () => {
+    // Refill has unread, but we are ON the refill tab and it is empty here
+    // because we removed refills; only reminder unread should surface.
+    const list = [n('r1', 'reminder')];
+    const hint = crossTabUnreadHint(list, 'refill');
+    expect(hint?.tab).toBe('reminder');
   });
 });

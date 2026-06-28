@@ -132,3 +132,62 @@ export function countByTab(items: readonly NotificationItem[]): Record<Notificat
   }
   return out;
 }
+
+export interface CrossTabUnreadHint {
+  /** The tab that holds the most unread rows (never 'all'). */
+  tab: Exclude<NotificationTab, 'all'>;
+  /** That tab's human label, e.g. "Refills". */
+  label: string;
+  /** Unread count in that tab. */
+  unread: number;
+  /** Render-ready sentence, e.g. "3 unread in Refills". */
+  message: string;
+}
+
+/** Look up a tab's label from NOTIFICATION_TABS (falls back to the tab key). */
+function labelForTab(tab: NotificationTab): string {
+  return NOTIFICATION_TABS.find((t) => t.tab === tab)?.label ?? tab;
+}
+
+/**
+ * When the active (non-All) tab is empty but unread notifications live in OTHER
+ * tabs, point the user at where the unread actually are so an empty tab doesn't
+ * read as "all caught up" when something still needs attention elsewhere.
+ * Parallels the refills empty-tab hint.
+ *
+ * Returns null when: the active tab is 'all' (it shows everything, so it's never
+ * misleadingly empty); the active tab still has rows (not empty); or no OTHER
+ * tab holds any unread (nothing worth pointing at). Otherwise it names the tab
+ * with the MOST unread (ties broken by NOTIFICATION_TABS order) so the nudge
+ * sends the user to the busiest inbox. The whole (unsnoozed) list is passed in,
+ * so counts reflect what the user would see.
+ */
+export function crossTabUnreadHint(
+  items: readonly NotificationItem[],
+  activeTab: NotificationTab,
+): CrossTabUnreadHint | null {
+  if (activeTab === 'all') return null;
+  // Only hint when the tab the user is on is actually empty.
+  if (filterByTab(items, activeTab).length > 0) return null;
+
+  const counts = countByTab(items);
+  let best: Exclude<NotificationTab, 'all'> | null = null;
+  let bestUnread = 0;
+  for (const def of NOTIFICATION_TABS) {
+    if (def.tab === 'all' || def.tab === activeTab) continue;
+    const unread = counts[def.tab].unread;
+    if (unread > bestUnread) {
+      bestUnread = unread;
+      best = def.tab as Exclude<NotificationTab, 'all'>;
+    }
+  }
+  if (!best || bestUnread === 0) return null;
+
+  const label = labelForTab(best);
+  return {
+    tab: best,
+    label,
+    unread: bestUnread,
+    message: `${bestUnread} unread in ${label}`,
+  };
+}
