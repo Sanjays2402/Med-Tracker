@@ -13,6 +13,7 @@ import { WeekStrip } from '../../../../components/WeekStrip';
 import { localKey, type WeekStripDoseInput } from '../../../../lib/week-strip';
 import { AdherenceRing } from '../../../../components/AdherenceRing';
 import { buildMedAdherence, findMedRow } from '../../../../lib/med-adherence';
+import { buildSupplyBar, daysLeftToneVar } from '../../../../lib/days-left-tone';
 
 export default function MedicationDetail() {
   const params = useParams<{ id: string }>();
@@ -156,6 +157,12 @@ export default function MedicationDetail() {
       ? { tone: 'accent' as const, prefix: 'next dose' }
       : { tone: 'ok' as const, prefix: 'today' };
 
+  // Horizontal supply-remaining bar for the hero: fills proportional to the
+  // estimated days of supply left over a 30-day horizon and tones coral/amber/
+  // sage by urgency, so a glance at the top of the page reads how much runway
+  // this medication has before it runs dry.
+  const supply = buildSupplyBar(med);
+
   return (
     <div className="space-y-8">
       <div className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -282,6 +289,41 @@ export default function MedicationDetail() {
               )}
             </p>
           )}
+        </div>
+
+        {/* Supply-remaining bar — fills with the estimated days of supply left
+            over a 30-day horizon, toned coral/amber/sage by urgency. Shows a
+            muted track + "No supply data" when remainingDoses is unknown. */}
+        <div className="px-6 sm:px-8 py-4 border-t border-[var(--line-soft)]">
+          <div className="flex items-center justify-between gap-3">
+            <div className="eyebrow">Supply remaining</div>
+            <div
+              className="text-[12px] tabular"
+              style={{ color: supply.hasData ? daysLeftToneVar(supply.daysLeft) : 'var(--ink-muted)' }}
+            >
+              {supply.caption}
+            </div>
+          </div>
+          <div
+            className="mt-2 h-2 rounded-full overflow-hidden"
+            style={{ background: 'var(--bg-sunk)' }}
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={supply.horizonDays}
+            aria-valuenow={supply.hasData ? (supply.daysLeft ?? 0) : undefined}
+            aria-label={supply.hasData ? `${supply.caption} (of ${supply.horizonDays} day view)` : 'No supply data'}
+          >
+            {supply.hasData && (
+              <div
+                className="h-full transition-all"
+                style={{
+                  width: `${Math.max(supply.pct, supply.daysLeft && supply.daysLeft > 0 ? 4 : 0)}%`,
+                  background: daysLeftToneVar(supply.daysLeft),
+                  borderRadius: '9999px',
+                }}
+              />
+            )}
+          </div>
         </div>
 
         {/* Mobile archive control (hidden in the hero on small screens) */}
