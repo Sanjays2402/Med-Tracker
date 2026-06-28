@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { computeNextDose, formatDelta, toneFor, type NextDoseInput } from '../lib/next-dose';
+import {
+  computeNextDose,
+  formatDelta,
+  toneFor,
+  nextDoseChip,
+  nextDoseCapsuleText,
+  type NextDoseInput,
+} from '../lib/next-dose';
 
 const NOW = Date.parse('2026-06-25T12:00:00Z');
 function at(offsetMin: number): string {
@@ -93,5 +100,40 @@ describe('computeNextDose', () => {
       { id: 'good', scheduledAt: at(15), status: 'pending' },
     ];
     expect(computeNextDose(doses, NOW).doseId).toBe('good');
+  });
+});
+
+describe('nextDoseChip', () => {
+  it('maps each tone to a capsule tone + prefix', () => {
+    expect(nextDoseChip('overdue')).toEqual({ tone: 'danger', prefix: 'overdue' });
+    expect(nextDoseChip('due')).toEqual({ tone: 'warn', prefix: 'due' });
+    expect(nextDoseChip('upcoming')).toEqual({ tone: 'accent', prefix: 'next dose' });
+    expect(nextDoseChip('none')).toEqual({ tone: 'ok', prefix: 'today' });
+  });
+
+  it('agrees with the tone the countdown computes', () => {
+    const doses: NextDoseInput[] = [{ id: 'a', scheduledAt: at(130), status: 'pending' }];
+    const r = computeNextDose(doses, NOW);
+    expect(r.tone).toBe('upcoming');
+    expect(nextDoseChip(r.tone).tone).toBe('accent');
+  });
+});
+
+describe('nextDoseCapsuleText', () => {
+  it('reads "All done today" when nothing is pending', () => {
+    expect(nextDoseCapsuleText({ tone: 'none', label: 'All done' })).toBe('All done today');
+  });
+
+  it('joins the prefix and the label for a pending dose', () => {
+    expect(nextDoseCapsuleText({ tone: 'upcoming', label: 'in 2h 10m' })).toBe('next dose · in 2h 10m');
+    expect(nextDoseCapsuleText({ tone: 'overdue', label: '20m late' })).toBe('overdue · 20m late');
+    expect(nextDoseCapsuleText({ tone: 'due', label: 'now' })).toBe('due · now');
+  });
+
+  it('stays in lock-step with computeNextDose output', () => {
+    const doses: NextDoseInput[] = [{ id: 'a', scheduledAt: at(-120), status: 'pending' }];
+    const r = computeNextDose(doses, NOW);
+    expect(r.tone).toBe('overdue');
+    expect(nextDoseCapsuleText(r)).toBe(`overdue · ${r.label}`);
   });
 });

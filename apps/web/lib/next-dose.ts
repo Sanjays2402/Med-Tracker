@@ -77,3 +77,41 @@ export function formatDelta(deltaMs: number): string {
   if (absMin < 60) return `in ${absMin}m`;
   return `in ${hrs}h ${rem}m`;
 }
+
+/** Capsule tone the next-dose chip maps to a colour on the medication hero. */
+export type NextDoseChipTone = 'danger' | 'warn' | 'accent' | 'ok';
+
+export interface NextDoseChip {
+  /** Tone the renderer maps to a `capsule-*` class. */
+  tone: NextDoseChipTone;
+  /** Short prefix word, e.g. "overdue" / "due" / "next dose" / "today". */
+  prefix: string;
+}
+
+const CHIP_BY_TONE: Record<NextDoseTone, NextDoseChip> = {
+  overdue: { tone: 'danger', prefix: 'overdue' },
+  due: { tone: 'warn', prefix: 'due' },
+  upcoming: { tone: 'accent', prefix: 'next dose' },
+  none: { tone: 'ok', prefix: 'today' },
+};
+
+/**
+ * Map a NextDoseTone onto a capsule chip ({ tone, prefix }) so the medication
+ * detail hero (and any future surface) stays a thin render instead of repeating
+ * the tone -> colour/word ternary inline. Overdue is coral, due amber, an
+ * upcoming dose the accent, and an all-done day a calm sage "today". Pure.
+ */
+export function nextDoseChip(tone: NextDoseTone): NextDoseChip {
+  return CHIP_BY_TONE[tone];
+}
+
+/**
+ * Full capsule text for the next-dose chip: "All done today" when nothing is
+ * pending, otherwise "<prefix> · <label>" (e.g. "next dose · in 2h 10m",
+ * "overdue · 20m late"). Reads the same NextDoseResult the hero already
+ * computes so the chip's tone and text never disagree. Pure.
+ */
+export function nextDoseCapsuleText(result: Pick<NextDoseResult, 'tone' | 'label'>): string {
+  if (result.tone === 'none') return 'All done today';
+  return `${nextDoseChip(result.tone).prefix} · ${result.label}`;
+}

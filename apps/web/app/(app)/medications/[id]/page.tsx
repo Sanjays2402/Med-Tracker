@@ -8,7 +8,7 @@ import { Btn, Surface, Section, ErrorBox, SkeletonRow, Pill, StatTile, formatTim
 import { useRouter } from 'next/navigation';
 import { getMedication, listTodayDoses, listSchedules, listRefills, logDose, getAdherence, getMedicationAdherence, archiveMedication, updateMedication, listDosesForDate, type MedAdherenceRow } from '../../../../lib/data';
 import type { Medication, DoseEvent, ScheduleEntry, Refill, AdherenceSummary } from '../../../../lib/types';
-import { computeNextDose } from '../../../../lib/next-dose';
+import { computeNextDose, nextDoseChip, nextDoseCapsuleText } from '../../../../lib/next-dose';
 import { WeekStrip } from '../../../../components/WeekStrip';
 import { localKey, type WeekStripDoseInput } from '../../../../lib/week-strip';
 import { AdherenceRing } from '../../../../components/AdherenceRing';
@@ -148,14 +148,7 @@ export default function MedicationDetail() {
   const adherencePct = medAdView.pct;
 
   const nextDose = computeNextDose(doses, now);
-  const nextChip =
-    nextDose.tone === 'overdue'
-      ? { tone: 'danger' as const, prefix: 'overdue' }
-      : nextDose.tone === 'due'
-      ? { tone: 'warn' as const, prefix: 'due' }
-      : nextDose.tone === 'upcoming'
-      ? { tone: 'accent' as const, prefix: 'next dose' }
-      : { tone: 'ok' as const, prefix: 'today' };
+  const nextChip = nextDoseChip(nextDose.tone);
 
   // Horizontal supply-remaining bar for the hero: fills proportional to the
   // estimated days of supply left over a 30-day horizon and tones coral/amber/
@@ -205,7 +198,7 @@ export default function MedicationDetail() {
                 <span className={`capsule capsule-${nextChip.tone === 'accent' ? 'accent' : nextChip.tone}`}>
                   <Clock size={12} />
                   <span className="tabular">
-                    {nextDose.tone === 'none' ? 'All done today' : `${nextChip.prefix} · ${nextDose.label}`}
+                    {nextDoseCapsuleText(nextDose)}
                   </span>
                 </span>
               </div>
