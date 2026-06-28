@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { sectionProgress, sectionProgressLabel } from '../lib/section-progress';
+import { sectionProgress, sectionProgressLabel, sectionFillTone } from '../lib/section-progress';
 import { countDoses, type PartOfDayDose } from '../lib/part-of-day';
 
 /** Build a dose with a given status (time is irrelevant for these counts). */
@@ -108,5 +108,39 @@ describe('sectionProgressLabel', () => {
 
   it('reads "M of N doses taken" while in progress', () => {
     expect(sectionProgressLabel(counts('taken', 'pending', 'pending'))).toBe('1 of 3 doses taken');
+  });
+});
+
+describe('sectionFillTone', () => {
+  it('returns null for an empty section', () => {
+    expect(sectionFillTone(counts())).toBeNull();
+  });
+
+  it('reads danger for a barely-started section (<34%)', () => {
+    // 1 of 3 taken = 33% -> danger
+    expect(sectionFillTone(counts('taken', 'pending', 'pending'))).toBe('danger');
+  });
+
+  it('reads danger for a section with nothing taken', () => {
+    expect(sectionFillTone(counts('pending', 'pending'))).toBe('danger');
+  });
+
+  it('reads warn for a section that is underway (34-66%)', () => {
+    // 1 of 2 taken = 50% -> warn
+    expect(sectionFillTone(counts('taken', 'pending'))).toBe('warn');
+  });
+
+  it('reads ok for a section that is nearly done (>=67%)', () => {
+    // 2 of 3 taken = 67% -> ok
+    expect(sectionFillTone(counts('taken', 'taken', 'pending'))).toBe('ok');
+  });
+
+  it('reads ok for a fully complete section', () => {
+    expect(sectionFillTone(counts('taken', 'taken'))).toBe('ok');
+  });
+
+  it('agrees with the takenPct band at the 34% boundary', () => {
+    // 2 of 5 taken = 40% -> warn (>= 34, < 67)
+    expect(sectionFillTone(counts('taken', 'taken', 'pending', 'pending', 'pending'))).toBe('warn');
   });
 });

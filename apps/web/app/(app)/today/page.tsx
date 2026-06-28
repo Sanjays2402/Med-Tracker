@@ -32,7 +32,7 @@ import {
 } from '../../../lib/overdue';
 import { groupByPartOfDay, sectionCountLabel, type PartOfDayCounts } from '../../../lib/part-of-day';
 import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
-import { sectionProgress, sectionProgressLabel } from '../../../lib/section-progress';
+import { sectionProgress, sectionProgressLabel, sectionFillTone } from '../../../lib/section-progress';
 import { dayProgressRoll, dayPercentPrefix } from '../../../lib/day-progress-roll';
 import { progressToneVar } from '../../../lib/progress-tone';
 import { DoseSegments } from '../../../components/DoseSegments';
@@ -562,7 +562,12 @@ export default function TodayPage() {
 function SectionProgressBar({ counts }: { counts: PartOfDayCounts }) {
   const p = sectionProgress(counts);
   if (!p.visible) return null;
-  const fillColor = p.tone === 'ok' ? 'var(--ok)' : 'var(--accent)';
+  // Tone the taken fill by the section's OWN completion (coral behind, amber
+  // underway, sage nearly-done/complete) so a glance down the day reads which
+  // blocks are behind — in lock-step with the toned day-percent prefix above.
+  const tone = sectionFillTone(counts);
+  const fillColor =
+    tone === 'ok' ? 'var(--ok)' : tone === 'warn' ? 'var(--warn)' : 'var(--danger)';
   const takenPctW = `${(p.takenFraction * 100).toFixed(2)}%`;
   const skippedPctW = `${(p.skippedFraction * 100).toFixed(2)}%`;
   return (

@@ -14,6 +14,7 @@
  */
 
 import type { PartOfDayCounts } from './part-of-day';
+import { progressTone, type ProgressTone } from './progress-tone';
 
 export interface SectionProgress {
   total: number;
@@ -102,4 +103,24 @@ export function sectionProgressLabel(counts: PartOfDayCounts): string | null {
   if (p.complete) return p.total === 1 ? 'dose taken' : `all ${p.total} ${noun} taken`;
   if (p.taken === 0) return `no ${noun} taken yet`;
   return `${p.taken} of ${p.total} ${noun} taken`;
+}
+
+/**
+ * The fill tone for the section's progress bar, derived from its OWN taken
+ * percentage via the shared thirds classifier (lib/progress-tone): a section
+ * barely started reads coral (danger), one underway amber (warn), one nearly
+ * done or complete sage (ok). This lets a glance down the /today list read which
+ * blocks of the day are behind without scanning each section's numbers, and it
+ * stays in lock-step with the toned day-percent prefix the page already leads
+ * with (both go through progressTone).
+ *
+ * Returns null for an empty (invisible) section so the caller can fall back to
+ * its neutral track. A complete section is forced to 'ok' even though 100 would
+ * classify there anyway, making the intent explicit.
+ */
+export function sectionFillTone(counts: PartOfDayCounts): ProgressTone | null {
+  const p = sectionProgress(counts);
+  if (!p.visible) return null;
+  if (p.complete) return 'ok';
+  return progressTone(p.takenPct);
 }
