@@ -18,9 +18,9 @@ import {
 import {
   REFILL_SORTS,
   sortRefills,
-  activeRunoutChip,
   emptyTabSoonestHint,
   runoutToneLegend,
+  runoutChipOrEmpty,
   type RefillSortKey,
 } from '../../../lib/refill-sort';
 import {
@@ -104,8 +104,11 @@ export default function RefillsPage() {
 
   // Soonest run-out across the still-active refills (everything but picked-up),
   // surfaced as an always-on chip beside the sort control regardless of the
-  // active tab or sort, so the user always sees what's about to go dry.
-  const runoutChip = activeRunoutChip(visible.filter(r => r.status !== 'picked_up'));
+  // active tab or sort, so the user always sees what's about to go dry. When no
+  // active refill has a parseable run-out date the chip becomes a muted "No
+  // upcoming run-outs" status instead of disappearing, so the header always
+  // carries a one-line run-out read.
+  const runoutModel = runoutChipOrEmpty(visible.filter(r => r.status !== 'picked_up'));
 
   // When the active status tab is empty but other tabs still hold refills, name
   // the soonest run-out across ALL tabs so the empty view doesn't read as "all
@@ -164,11 +167,11 @@ export default function RefillsPage() {
               })}
             </div>
             <div className="flex items-center gap-2 shrink-0 ml-auto">
-              {runoutChip && (
-                <span className="inline-flex items-center gap-1.5" title={runoutChip.tooltip}>
-                  <Pill tone={runoutChip.tone}>{runoutChip.label}</Pill>
+              {runoutModel.hasRunout ? (
+                <span className="inline-flex items-center gap-1.5" title={runoutModel.tooltip}>
+                  <Pill tone={runoutModel.tone}>{runoutModel.label}</Pill>
                   {(() => {
-                    const legend = runoutToneLegend(runoutChip.days);
+                    const legend = runoutModel.chip ? runoutToneLegend(runoutModel.chip.days) : null;
                     return legend ? (
                       <span
                         className="hidden sm:inline-flex items-center gap-1 text-[10.5px] text-[var(--ink-muted)]"
@@ -182,6 +185,13 @@ export default function RefillsPage() {
                       </span>
                     ) : null;
                   })()}
+                </span>
+              ) : (
+                <span
+                  className="inline-flex items-center gap-1.5 text-[11.5px] text-[var(--ink-muted)]"
+                  title={runoutModel.tooltip}
+                >
+                  <Pill tone="neutral">{runoutModel.label}</Pill>
                 </span>
               )}
               <div className="flex items-center gap-1" role="group" aria-label="Sort refills">

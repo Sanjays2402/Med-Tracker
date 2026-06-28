@@ -264,3 +264,52 @@ export function emptyTabSoonestHint(
     urgent: chip.tone === 'danger',
   };
 }
+
+export interface RunoutChipModel {
+  /** True when a real soonest-run-out chip is present. */
+  hasRunout: boolean;
+  /** Render-ready label ("next out in 3d" or the muted empty phrase). */
+  label: string;
+  /** Pill tone: the run-out tone when present, neutral for the empty state. */
+  tone: 'danger' | 'warn' | 'neutral';
+  /** The underlying chip when one exists, else null. */
+  chip: ActiveRunoutChip | null;
+  /** Tooltip sentence; the empty phrase explains why there's nothing to show. */
+  tooltip: string;
+}
+
+/** The muted phrase shown when no refill has a parseable run-out date. */
+export const NO_RUNOUT_LABEL = 'No upcoming run-outs';
+
+/**
+ * Always-renderable run-out chip model for the /refills header. When at least
+ * one active refill has a parseable run-out date this wraps activeRunoutChip
+ * (label + tone + tooltip); when none does, instead of dropping the chip
+ * entirely it returns a muted "No upcoming run-outs" neutral chip so the header
+ * always carries a one-line run-out status — parallel to the dashboard
+ * today-chip empty state.
+ *
+ * Pass the refills you consider active (typically everything but picked-up).
+ */
+export function runoutChipOrEmpty(
+  refills: readonly Refill[],
+  now: number = Date.now(),
+): RunoutChipModel {
+  const chip = activeRunoutChip(refills, now);
+  if (!chip) {
+    return {
+      hasRunout: false,
+      label: NO_RUNOUT_LABEL,
+      tone: 'neutral',
+      chip: null,
+      tooltip: 'No refill on file has an upcoming run-out date.',
+    };
+  }
+  return {
+    hasRunout: true,
+    label: chip.label,
+    tone: chip.tone,
+    chip,
+    tooltip: chip.tooltip,
+  };
+}

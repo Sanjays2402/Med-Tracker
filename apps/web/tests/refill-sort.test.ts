@@ -11,6 +11,8 @@ import {
   soonestRefill,
   soonestRunoutTooltip,
   runoutToneLegend,
+  runoutChipOrEmpty,
+  NO_RUNOUT_LABEL,
   type RefillSortKey,
 } from '../lib/refill-sort';
 import type { Refill } from '../lib/types';
@@ -296,5 +298,45 @@ describe('runoutToneLegend', () => {
       const legend = runoutToneLegend(d);
       expect(legend!.tone).toBe(soonestRunoutTone(d));
     }
+  });
+});
+
+describe('runoutChipOrEmpty', () => {
+  it('wraps the active run-out chip when one exists', () => {
+    const model = runoutChipOrEmpty([soon, later], NOW);
+    expect(model.hasRunout).toBe(true);
+    expect(model.chip).not.toBeNull();
+    // soon (+1d) is the nearest, so the chip names tomorrow.
+    expect(model.label).toBe('next out tomorrow');
+    expect(model.tone).toBe('danger'); // within 3 days
+    expect(model.tooltip).toBe('Amoxicillin runs out tomorrow');
+  });
+
+  it('agrees with activeRunoutChip on label + tone', () => {
+    const chip = activeRunoutChip([soon, later], NOW)!;
+    const model = runoutChipOrEmpty([soon, later], NOW);
+    expect(model.label).toBe(chip.label);
+    expect(model.tone).toBe(chip.tone);
+    expect(model.tooltip).toBe(chip.tooltip);
+  });
+
+  it('returns a muted empty chip when no refill has a parseable date', () => {
+    const model = runoutChipOrEmpty([bad], NOW);
+    expect(model.hasRunout).toBe(false);
+    expect(model.chip).toBeNull();
+    expect(model.label).toBe(NO_RUNOUT_LABEL);
+    expect(model.tone).toBe('neutral');
+    expect(model.tooltip).toBe('No refill on file has an upcoming run-out date.');
+  });
+
+  it('returns the empty chip for an empty list', () => {
+    const model = runoutChipOrEmpty([], NOW);
+    expect(model.hasRunout).toBe(false);
+    expect(model.label).toBe(NO_RUNOUT_LABEL);
+    expect(model.tone).toBe('neutral');
+  });
+
+  it('exposes the empty label constant', () => {
+    expect(NO_RUNOUT_LABEL).toBe('No upcoming run-outs');
   });
 });
