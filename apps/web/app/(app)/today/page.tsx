@@ -29,6 +29,7 @@ import {
   partitionOverdue,
   overdueHeadline,
   formatLateness,
+  overdueTier,
 } from '../../../lib/overdue';
 import { groupByPartOfDay, sectionCountLabel, type PartOfDayCounts } from '../../../lib/part-of-day';
 import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
@@ -222,6 +223,11 @@ export default function TodayPage() {
 
   // Overdue partition drives the sticky banner. Recomputed as `now` ticks.
   const overdueModel = partitionOverdue(doses ?? [], now);
+  // Escalate the banner tone from warn to danger once the worst overdue dose is
+  // more than two hours late, so a chronically-missed dose reads louder than one
+  // that just slipped past its window.
+  const overdueTone = overdueTier(overdueModel.worstMinutesLate);
+  const isEscalated = overdueTone.escalated;
 
   function jumpToFirstOverdue() {
     const id = overdueModel.firstOverdueId;
@@ -298,8 +304,9 @@ export default function TodayPage() {
       </header>
 
       {/* Sticky overdue banner — appears when 1+ pending doses slipped past
-          their scheduled time. Jumps focus to the dose that's been waiting
-          longest. */}
+          their scheduled time. Starts as a soft amber nudge and escalates to
+          red once the oldest dose is more than two hours late. Jumps focus to
+          the dose that's been waiting longest. */}
       {overdueModel.count > 0 && (
         <div
           className="sticky top-3 z-[600] anim-in"
@@ -309,24 +316,31 @@ export default function TodayPage() {
           <div
             className="sheet flex items-center gap-3 px-4 py-3"
             style={{
-              background: 'var(--danger-bg)',
-              border: '1px solid color-mix(in srgb, var(--danger) 28%, transparent)',
-              boxShadow: '0 10px 26px -14px color-mix(in srgb, var(--danger) 60%, transparent)',
+              background: isEscalated ? 'var(--danger-bg)' : 'var(--warn-bg)',
+              border: `1px solid color-mix(in srgb, ${isEscalated ? 'var(--danger)' : 'var(--warn)'} 28%, transparent)`,
+              boxShadow: `0 10px 26px -14px color-mix(in srgb, ${isEscalated ? 'var(--danger)' : 'var(--warn)'} 60%, transparent)`,
             }}
           >
             <span
-              className="inline-flex items-center justify-center w-8 h-8 rounded-full shrink-0 anim-overdue"
-              style={{ background: 'color-mix(in srgb, var(--danger) 16%, transparent)', color: 'var(--danger)' }}
+              className={`inline-flex items-center justify-center w-8 h-8 rounded-full shrink-0 ${isEscalated ? 'anim-overdue' : ''}`}
+              style={{
+                background: `color-mix(in srgb, ${isEscalated ? 'var(--danger)' : 'var(--warn)'} 16%, transparent)`,
+                color: isEscalated ? 'var(--danger)' : 'var(--warn)',
+              }}
               aria-hidden
             >
               <Warning size={17} />
             </span>
             <div className="flex-1 min-w-0">
-              <div className="text-[13.5px] font-semibold text-[var(--danger)] leading-tight">
+              <div
+                className="text-[13.5px] font-semibold leading-tight"
+                style={{ color: isEscalated ? 'var(--danger)' : 'var(--warn)' }}
+              >
                 {overdueHeadline(overdueModel.count)}
               </div>
               <div className="text-[12px] text-[var(--ink-soft)] mt-0.5">
-                Oldest is {formatLateness(overdueModel.worstMinutesLate)} past due. Take or skip to clear it.
+                Oldest is {formatLateness(overdueModel.worstMinutesLate)} past due.{' '}
+                {isEscalated ? 'Take or skip it now.' : 'Take or skip to clear it.'}
               </div>
             </div>
             <Btn size="sm" variant="primary" onClick={jumpToFirstOverdue}>

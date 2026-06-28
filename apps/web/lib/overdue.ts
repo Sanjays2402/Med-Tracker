@@ -95,3 +95,31 @@ export function formatLateness(minutesLate: number): string {
   const m = minutesLate % 60;
   return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }
+
+export interface OverdueTier {
+  /** Banner tone: warn while recently late, danger once badly overdue. */
+  tone: 'warn' | 'danger';
+  /** True once the worst dose crosses the escalation threshold. */
+  escalated: boolean;
+}
+
+/** Hours past due before the overdue banner escalates from warn to danger. */
+export const OVERDUE_ESCALATE_HOURS = 2;
+
+/**
+ * Tier the overdue banner's urgency by how late the WORST dose is. A dose that
+ * just slipped past its window is a soft "warn" nudge; once the oldest overdue
+ * dose is more than `escalateAfterHours` (default 2h) late the banner escalates
+ * to "danger" so a chronically-missed dose reads louder than a just-missed one.
+ *
+ * `worstMinutesLate` is the OverdueModel's worst lateness. The threshold is
+ * inclusive of the boundary reading as still-warn (exactly 2h is warn; 2h+1m is
+ * danger) so the escalation is a strict crossing. Pure; deterministic.
+ */
+export function overdueTier(
+  worstMinutesLate: number,
+  escalateAfterHours: number = OVERDUE_ESCALATE_HOURS,
+): OverdueTier {
+  const escalated = worstMinutesLate > escalateAfterHours * 60;
+  return { tone: escalated ? 'danger' : 'warn', escalated };
+}

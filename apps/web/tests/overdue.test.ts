@@ -4,7 +4,9 @@ import {
   partitionOverdue,
   overdueHeadline,
   formatLateness,
+  overdueTier,
   OVERDUE_GRACE_MS,
+  OVERDUE_ESCALATE_HOURS,
   type OverduePartitionInput,
 } from '../lib/overdue';
 
@@ -115,5 +117,36 @@ describe('formatLateness', () => {
   });
   it('formats hours + minutes', () => {
     expect(formatLateness(95)).toBe('1h 35m');
+  });
+});
+
+describe('overdueTier', () => {
+  it('is a soft warn while recently late', () => {
+    expect(overdueTier(20)).toEqual({ tone: 'warn', escalated: false });
+    expect(overdueTier(90)).toEqual({ tone: 'warn', escalated: false });
+  });
+
+  it('treats exactly the threshold as still-warn', () => {
+    // 2h = 120 minutes is the boundary; escalation is a strict crossing.
+    expect(overdueTier(120)).toEqual({ tone: 'warn', escalated: false });
+  });
+
+  it('escalates to danger once past the threshold', () => {
+    expect(overdueTier(121)).toEqual({ tone: 'danger', escalated: true });
+    expect(overdueTier(600)).toEqual({ tone: 'danger', escalated: true });
+  });
+
+  it('honours a custom escalation window', () => {
+    // Escalate after 4 hours: 3h is still warn, 5h is danger.
+    expect(overdueTier(180, 4)).toEqual({ tone: 'warn', escalated: false });
+    expect(overdueTier(300, 4)).toEqual({ tone: 'danger', escalated: true });
+  });
+
+  it('exposes a 2-hour default threshold', () => {
+    expect(OVERDUE_ESCALATE_HOURS).toBe(2);
+  });
+
+  it('reads zero lateness as warn', () => {
+    expect(overdueTier(0)).toEqual({ tone: 'warn', escalated: false });
   });
 });
