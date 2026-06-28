@@ -11,6 +11,7 @@ import {
   crossTabUnreadHint,
   tabReadTargets,
   markTabReadLabel,
+  markTabReadToastTitle,
   NOTIFICATION_TABS,
 } from '../lib/notification-filter';
 import type { NotificationItem } from '../lib/types';
@@ -231,5 +232,22 @@ describe('markTabReadLabel', () => {
   it('is null when nothing unread remains in the view', () => {
     const allRead = [n('s1', 'system', true)];
     expect(markTabReadLabel(allRead, 'system')).toBeNull();
+  });
+});
+
+describe('markTabReadToastTitle', () => {
+  it('names the count and tab for a sub-tab', () => {
+    expect(markTabReadToastTitle(3, 'refill')).toBe('3 Refills marked read');
+    expect(markTabReadToastTitle(1, 'reminder')).toBe('1 Reminders marked read');
+    expect(markTabReadToastTitle(2, 'system')).toBe('2 System marked read');
+  });
+
+  it('omits the tab name on the All tab', () => {
+    expect(markTabReadToastTitle(4, 'all')).toBe('4 marked read');
+  });
+
+  it('is null for a zero or negative count (fire nothing)', () => {
+    expect(markTabReadToastTitle(0, 'refill')).toBeNull();
+    expect(markTabReadToastTitle(-1, 'all')).toBeNull();
   });
 });

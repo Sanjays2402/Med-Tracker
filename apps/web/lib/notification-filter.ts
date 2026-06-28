@@ -238,3 +238,24 @@ export function markTabReadLabel(
   if (tab === 'all') return `Mark ${count} read`;
   return `Mark ${count} ${labelForTab(tab)} read`;
 }
+
+/**
+ * Confirming-toast title for AFTER the scoped "Mark these read" runs, naming how
+ * many rows were cleared and (for a sub-tab) which tab: "3 Refills marked read".
+ * The All tab reads "3 marked read" since it isn't a sub-filter. The tab labels
+ * are already plural nouns (Reminders / Refills / System), so they're used
+ * verbatim — matching the wording of the "Mark N Refills read" button this
+ * confirms. Returns null when the count is zero so the caller fires nothing.
+ *
+ * `count` is the number actually marked (the caller passes tabReadTargets' count
+ * captured BEFORE the optimistic update, so the toast reports what it cleared).
+ * Pure; no React — the page hands the title to its existing Toast layer.
+ */
+export function markTabReadToastTitle(
+  count: number,
+  tab: NotificationTab,
+): string | null {
+  if (count <= 0) return null;
+  if (tab === 'all') return `${count} marked read`;
+  return `${count} ${labelForTab(tab)} marked read`;
+}

@@ -8,7 +8,7 @@ import { listNotifications, markNotificationRead, markAllNotificationsRead, snoo
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
-import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, type NotificationTab } from '../../../lib/notification-filter';
+import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, type NotificationTab } from '../../../lib/notification-filter';
 import {
   NOTIFICATION_UNREAD_STORAGE_KEY,
   parseUnreadOnly,
@@ -71,12 +71,18 @@ export default function NotificationsPage() {
 
   // Mark only the unread rows in the active tab/view read — distinct from the
   // global "Mark all read". Targets come from tabReadTargets so they're exactly
-  // the rows on screen for the current tab (and unread-only constraint).
-  async function onMarkTabRead(ids: readonly string[]) {
+  // the rows on screen for the current tab (and unread-only constraint). Fires a
+  // scoped confirming toast naming how many rows (and which tab) were cleared.
+  async function onMarkTabRead(ids: readonly string[], tab: NotificationTab) {
     if (ids.length === 0) return;
     const idSet = new Set(ids);
+    const cleared = ids.length;
     setBusy(true);
     setItems(prev => (prev ?? []).map(n => (idSet.has(n.id) ? { ...n, read: true } : n)));
+    const title = markTabReadToastTitle(cleared, tab);
+    if (title) {
+      toast({ id: 'mark-tab-read', kind: 'success', title, durationMs: 3500 });
+    }
     try {
       await Promise.all(ids.map(id => markNotificationRead(id)));
     } catch (e) {
@@ -200,7 +206,7 @@ export default function NotificationsPage() {
             {markTabLabel && (
               <button
                 type="button"
-                onClick={() => onMarkTabRead(tabReadIds)}
+                onClick={() => onMarkTabRead(tabReadIds, activeTab)}
                 disabled={busy}
                 className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-medium border whitespace-nowrap transition-colors border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)] disabled:opacity-50 disabled:pointer-events-none"
               >
