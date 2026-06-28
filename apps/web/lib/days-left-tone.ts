@@ -124,3 +124,36 @@ export function buildSupplyBar(med: Medication, opts: SupplyBarOptions = {}): Su
     horizonDays,
   };
 }
+
+export interface RunoutChip {
+  /** Estimated whole days of supply left, or null when unknown. */
+  daysLeft: number | null;
+  /** Pill tone, sharing daysLeftTone's bands so the list agrees with the hero. */
+  tone: DaysLeftTone;
+  /** Compact chip label, e.g. "~12d left", or null when there's no supply data. */
+  label: string | null;
+}
+
+/**
+ * Render-ready run-out chip for a medications-LIST row, toned by the SAME
+ * daysLeftTone bands the detail-hero supply bar uses — so a med that reads coral
+ * on its detail page reads coral in the list, instead of the list's old ad-hoc
+ * `< 7 / < 14` thresholds drifting from the hero. The label is the compact
+ * "~Nd left" estimate the run-out sort already shows.
+ *
+ * Returns tone 'neutral' + label null when remainingDoses is unknown (the row
+ * falls back to its raw doses-left chip). The two cut points are forwarded to
+ * daysLeftTone so a caller can retune without re-deriving the mapping. Pure;
+ * deterministic (estimatedDaysLeft is Date-free).
+ */
+export function runoutChip(med: Medication, opts: DaysLeftToneOptions = {}): RunoutChip {
+  const daysLeft = estimatedDaysLeft(med);
+  if (daysLeft == null) {
+    return { daysLeft: null, tone: 'neutral', label: null };
+  }
+  return {
+    daysLeft,
+    tone: daysLeftTone(daysLeft, opts),
+    label: `~${daysLeft}d left`,
+  };
+}

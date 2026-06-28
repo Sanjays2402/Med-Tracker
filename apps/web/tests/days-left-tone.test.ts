@@ -3,6 +3,7 @@ import {
   daysLeftTone,
   daysLeftToneVar,
   buildSupplyBar,
+  runoutChip,
 } from '../lib/days-left-tone';
 import type { Medication } from '../lib/types';
 
@@ -122,5 +123,45 @@ describe('buildSupplyBar', () => {
     const bar = buildSupplyBar(med({ remainingDoses: 7, schedule: '08:00 daily' }), { horizonDays: 14 });
     expect(bar.pct).toBe(50);
     expect(bar.horizonDays).toBe(14);
+  });
+});
+
+describe('runoutChip', () => {
+  it('is neutral with no label when remainingDoses is unknown', () => {
+    expect(runoutChip(med())).toEqual({ daysLeft: null, tone: 'neutral', label: null });
+  });
+
+  it('shares daysLeftTone bands with the detail-hero supply bar', () => {
+    // 6 days -> danger (< 7), same band the hero bar uses.
+    const danger = runoutChip(med({ remainingDoses: 6, schedule: '08:00 daily' }));
+    expect(danger).toEqual({ daysLeft: 6, tone: 'danger', label: '~6d left' });
+    expect(danger.tone).toBe(buildSupplyBar(med({ remainingDoses: 6, schedule: '08:00 daily' })).tone);
+  });
+
+  it('reads the 7-day boundary as warn (not danger), matching the hero', () => {
+    const chip = runoutChip(med({ remainingDoses: 7, schedule: '08:00 daily' }));
+    expect(chip.tone).toBe('warn');
+    expect(chip.label).toBe('~7d left');
+  });
+
+  it('reads a comfortable runway as ok (the old list chip read it neutral)', () => {
+    // 20 days -> ok. The list's old inline `< 14 ? warn : neutral` would have
+    // read this neutral; sharing daysLeftTone makes it sage like the hero.
+    const chip = runoutChip(med({ remainingDoses: 20, schedule: '08:00 daily' }));
+    expect(chip.tone).toBe('ok');
+    expect(chip.daysLeft).toBe(20);
+  });
+
+  it('accounts for twice-daily schedules in the day count', () => {
+    // 20 doses at 2/day -> 10 days -> warn.
+    const chip = runoutChip(med({ remainingDoses: 20, schedule: '08:00, 20:00 daily' }));
+    expect(chip.daysLeft).toBe(10);
+    expect(chip.tone).toBe('warn');
+    expect(chip.label).toBe('~10d left');
+  });
+
+  it('forwards custom cut points to daysLeftTone', () => {
+    const chip = runoutChip(med({ remainingDoses: 20, schedule: '08:00 daily' }), { dangerBelow: 14, warnBelow: 28 });
+    expect(chip.tone).toBe('warn'); // 20 is < 28 and >= 14
   });
 });

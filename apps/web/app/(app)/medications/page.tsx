@@ -6,7 +6,8 @@ import { Pill as PillIcon, MagnifyingGlass } from '@med/icons';
 import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill } from '../../../components/uikit';
 import { listMedications } from '../../../lib/data';
 import type { Medication } from '../../../lib/types';
-import { filterMedications, sortMedications, estimatedDaysLeft, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
+import { filterMedications, sortMedications, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
+import { runoutChip } from '../../../lib/days-left-tone';
 import { SupplySparkline } from '../../../components/SupplySparkline';
 import {
   DENSITY_OPTIONS,
@@ -309,7 +310,9 @@ function MedRow({
   cfg: ReturnType<typeof densityConfig>;
   forceRunout: boolean;
 }) {
-  const daysLeft = estimatedDaysLeft(m);
+  // Run-out chip toned by the SAME daysLeftTone bands the detail-hero supply bar
+  // uses, so a med reads the same colour in the list and on its detail page.
+  const chip = runoutChip(m);
   return (
     <li>
       <Link
@@ -329,9 +332,9 @@ function MedRow({
           )}
         </div>
         {cfg.showSparkline && <SupplySparkline med={m} className="hidden sm:block shrink-0" />}
-        {forceRunout && daysLeft !== null ? (
-          <Pill tone={daysLeft < 7 ? 'danger' : daysLeft < 14 ? 'warn' : 'neutral'}>
-            ~{daysLeft}d left
+        {forceRunout && chip.label ? (
+          <Pill tone={runoutPillTone(chip.tone)}>
+            {chip.label}
           </Pill>
         ) : typeof m.remainingDoses === 'number' && (
           <Pill tone={m.remainingDoses < 10 ? 'danger' : m.remainingDoses < 20 ? 'warn' : 'neutral'}>
@@ -341,4 +344,9 @@ function MedRow({
       </Link>
     </li>
   );
+}
+
+/** Map a DaysLeftTone onto the Pill tone vocabulary (neutral fallback). */
+function runoutPillTone(tone: ReturnType<typeof runoutChip>['tone']): 'ok' | 'warn' | 'danger' | 'neutral' {
+  return tone === 'neutral' ? 'neutral' : tone;
 }
