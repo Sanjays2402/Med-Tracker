@@ -6,6 +6,7 @@ import {
   countDoses,
   groupByPartOfDay,
   sectionCountLabel,
+  sectionForOverdue,
   type PartOfDay,
   type PartOfDayDose,
 } from '../lib/part-of-day';
@@ -15,6 +16,13 @@ function atHour(hour: number, status: PartOfDayDose['status'] = 'pending'): Part
   const d = new Date();
   d.setHours(hour, 0, 0, 0);
   return { scheduledAt: d.toISOString(), status };
+}
+
+/** ISO string for today at a given LOCAL hour (for section-of-overdue tests). */
+function isoAtHour(hour: number): string {
+  const d = new Date();
+  d.setHours(hour, 0, 0, 0);
+  return d.toISOString();
 }
 
 describe('PART_OF_DAY_LABELS', () => {
@@ -123,5 +131,25 @@ describe('sectionCountLabel', () => {
   });
   it('reads "0 of N taken" when none taken yet', () => {
     expect(sectionCountLabel(countDoses([atHour(8, 'pending'), atHour(9, 'pending')]))).toBe('0 of 2 taken');
+  });
+});
+
+describe('sectionForOverdue', () => {
+  it('returns null when nothing is overdue', () => {
+    expect(sectionForOverdue(null)).toBeNull();
+  });
+
+  it('maps the earliest overdue timestamp to its section', () => {
+    expect(sectionForOverdue(isoAtHour(8))).toBe('Morning');
+    expect(sectionForOverdue(isoAtHour(14))).toBe('Afternoon');
+    expect(sectionForOverdue(isoAtHour(19))).toBe('Evening');
+    expect(sectionForOverdue(isoAtHour(22))).toBe('Night');
+  });
+
+  it('agrees with the bucket the page renders that dose under', () => {
+    const iso = isoAtHour(15);
+    // The section the flag points at is the same one groupByPartOfDay buckets
+    // that dose into, so the dot never lands on the wrong header.
+    expect(sectionForOverdue(iso)).toBe(partOfDayForISO(iso));
   });
 });

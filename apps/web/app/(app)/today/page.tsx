@@ -31,7 +31,7 @@ import {
   formatLateness,
   overdueTier,
 } from '../../../lib/overdue';
-import { groupByPartOfDay, sectionCountLabel, type PartOfDayCounts } from '../../../lib/part-of-day';
+import { groupByPartOfDay, sectionCountLabel, sectionForOverdue, type PartOfDayCounts } from '../../../lib/part-of-day';
 import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
 import { sectionProgress, sectionProgressLabel, sectionFillTone } from '../../../lib/section-progress';
 import { dayProgressRoll, dayPercentPrefix } from '../../../lib/day-progress-roll';
@@ -228,6 +228,10 @@ export default function TodayPage() {
   // that just slipped past its window.
   const overdueTone = overdueTier(overdueModel.worstMinutesLate);
   const isEscalated = overdueTone.escalated;
+  // Which part-of-day section holds the oldest overdue dose, so that section's
+  // header can carry a small danger dot pointing at where the longest-waiting
+  // dose lives. Null when nothing is overdue.
+  const overdueSection = sectionForOverdue(overdueModel.firstOverdueScheduledAt);
 
   function jumpToFirstOverdue() {
     const id = overdueModel.firstOverdueId;
@@ -408,6 +412,18 @@ export default function TodayPage() {
               display
               action={
                 <div className="flex items-center gap-1.5">
+                  {overdueSection === label && (
+                    <span
+                      className="inline-flex items-center justify-center w-4 h-4 anim-overdue"
+                      title="An overdue dose is waiting in this section"
+                      aria-label="Overdue dose in this section"
+                    >
+                      <span
+                        className="w-2 h-2 rounded-full"
+                        style={{ background: 'var(--danger)' }}
+                      />
+                    </span>
+                  )}
                   {isCurrentPartOfDay(label, new Date(now).getHours()) && (
                     <span
                       className="capsule capsule-accent text-[10.5px] anim-in"

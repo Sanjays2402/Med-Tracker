@@ -107,3 +107,19 @@ export function sectionCountLabel(counts: PartOfDayCounts): string | null {
   }
   return `${counts.taken} of ${counts.total} taken`;
 }
+
+/**
+ * Which part-of-day section the OLDEST overdue dose lives in, so the /today page
+ * can flag exactly one section header with a danger dot pointing at where the
+ * longest-waiting overdue dose sits. `firstOverdueScheduledAt` is the
+ * OverdueModel's earliest-overdue timestamp (already sorted earliest-first);
+ * pass it straight through. Returns null when nothing is overdue (no flag).
+ * Composes partOfDayForISO so the flagged section always matches the bucket the
+ * page renders that dose under. Pure.
+ */
+export function sectionForOverdue(
+  firstOverdueScheduledAt: string | null,
+): PartOfDay | null {
+  if (!firstOverdueScheduledAt) return null;
+  return partOfDayForISO(firstOverdueScheduledAt);
+}

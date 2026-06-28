@@ -31,6 +31,8 @@ export interface OverdueModel {
   count: number;
   /** The id of the earliest overdue dose, or null when none. */
   firstOverdueId: string | null;
+  /** The scheduledAt (ISO) of the earliest overdue dose, or null when none. */
+  firstOverdueScheduledAt: string | null;
   /** The largest minutesLate across the overdue set (0 when none). */
   worstMinutesLate: number;
 }
@@ -70,6 +72,7 @@ export function partitionOverdue(
     overdue,
     count: overdue.length,
     firstOverdueId: overdue.length > 0 ? overdue[0]!.id : null,
+    firstOverdueScheduledAt: overdue.length > 0 ? overdue[0]!.scheduledAt : null,
     worstMinutesLate: overdue.reduce((m, d) => Math.max(m, d.minutesLate), 0),
   };
 }

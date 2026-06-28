@@ -65,6 +65,12 @@ describe('partitionOverdue', () => {
     expect(m.firstOverdueId).toBe('late1');
   });
 
+  it('exposes the earliest overdue scheduledAt for section flagging', () => {
+    const m = partitionOverdue(doses, NOW);
+    const late1 = m.overdue.find((d) => d.id === 'late1')!;
+    expect(m.firstOverdueScheduledAt).toBe(late1.scheduledAt);
+  });
+
   it('computes minutesLate per dose', () => {
     const m = partitionOverdue(doses, NOW);
     const late1 = m.overdue.find((d) => d.id === 'late1')!;
@@ -81,6 +87,7 @@ describe('partitionOverdue', () => {
     const m = partitionOverdue([dose('a', 30), dose('b', -5)], NOW);
     expect(m.count).toBe(0);
     expect(m.firstOverdueId).toBeNull();
+    expect(m.firstOverdueScheduledAt).toBeNull();
     expect(m.worstMinutesLate).toBe(0);
     expect(m.overdue).toEqual([]);
   });
