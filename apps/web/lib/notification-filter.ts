@@ -191,3 +191,50 @@ export function crossTabUnreadHint(
     message: `${bestUnread} unread in ${label}`,
   };
 }
+
+export interface TabReadTargets {
+  /** Ids of the unread notifications under the active filtered view, input order. */
+  ids: string[];
+  /** Convenience count (= ids.length). */
+  count: number;
+}
+
+/**
+ * Collect the ids of the unread notifications under the active tab (and the
+ * unread-only constraint, if on) so a "Mark these read" action can clear just
+ * the view the user is looking at — distinct from the global "Mark all read".
+ *
+ * Reuses applyNotificationFilters so the targeted ids are EXACTLY the rows the
+ * page renders for that tab: switching to "Refills" then marking-these-read
+ * touches only refill rows, never the reminders sitting under another tab. Order
+ * follows the input so it tracks the rendered order. When the active tab is
+ * 'all' this collects every unread row (equivalent to mark-all, by design — the
+ * All tab IS the whole inbox). Pure.
+ */
+export function tabReadTargets(
+  items: readonly NotificationItem[],
+  tab: NotificationTab,
+  unreadOnly = false,
+): TabReadTargets {
+  const ids = applyNotificationFilters(items, tab, unreadOnly)
+    .filter(isUnread)
+    .map((i) => i.id);
+  return { ids, count: ids.length };
+}
+
+/**
+ * Render-ready label for the "Mark these read" control, or null when there is
+ * nothing unread in the active view (so the page hides the control rather than
+ * showing a no-op). Names the tab so the action reads as scoped: "Mark 3
+ * Refills read"; the All tab reads "Mark 3 read" since it isn't a sub-filter.
+ */
+export function markTabReadLabel(
+  items: readonly NotificationItem[],
+  tab: NotificationTab,
+  unreadOnly = false,
+): string | null {
+  const { count } = tabReadTargets(items, tab, unreadOnly);
+  if (count === 0) return null;
+  if (tab === 'all') return `Mark ${count} read`;
+  return `Mark ${count} ${labelForTab(tab)} read`;
+}

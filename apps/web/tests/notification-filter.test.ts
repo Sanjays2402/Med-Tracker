@@ -9,6 +9,8 @@ import {
   applyNotificationFilters,
   summarizeUnread,
   crossTabUnreadHint,
+  tabReadTargets,
+  markTabReadLabel,
   NOTIFICATION_TABS,
 } from '../lib/notification-filter';
 import type { NotificationItem } from '../lib/types';
@@ -187,5 +189,47 @@ describe('crossTabUnreadHint', () => {
     const list = [n('r1', 'reminder')];
     const hint = crossTabUnreadHint(list, 'refill');
     expect(hint?.tab).toBe('reminder');
+  });
+});
+
+describe('tabReadTargets', () => {
+  it('collects the unread ids under the active tab only', () => {
+    // reminder tab: r1 unread, r2 read -> just r1.
+    expect(tabReadTargets(items, 'reminder')).toEqual({ ids: ['r1'], count: 1 });
+  });
+
+  it('folds caregiver unread into the System tab targets', () => {
+    // system tab absorbs caregiver: s1 read, c1 unread -> just c1.
+    expect(tabReadTargets(items, 'system')).toEqual({ ids: ['c1'], count: 1 });
+  });
+
+  it('on the All tab collects every unread row in input order', () => {
+    expect(tabReadTargets(items, 'all').ids).toEqual(['r1', 'f1', 'c1']);
+  });
+
+  it('respects the unread-only constraint (still only unread)', () => {
+    // unread-only doesn't change WHICH unread there are, just confirms the
+    // filtered view is unread rows; reminder tab -> r1.
+    expect(tabReadTargets(items, 'reminder', true)).toEqual({ ids: ['r1'], count: 1 });
+  });
+
+  it('is empty when the active tab has no unread', () => {
+    const allRead = [n('r1', 'reminder', true), n('r2', 'reminder', true)];
+    expect(tabReadTargets(allRead, 'reminder')).toEqual({ ids: [], count: 0 });
+  });
+});
+
+describe('markTabReadLabel', () => {
+  it('names the scoped tab and count for a sub-tab', () => {
+    expect(markTabReadLabel(items, 'reminder')).toBe('Mark 1 Reminders read');
+  });
+
+  it('omits the tab name on the All tab (it is the whole inbox)', () => {
+    expect(markTabReadLabel(items, 'all')).toBe('Mark 3 read');
+  });
+
+  it('is null when nothing unread remains in the view', () => {
+    const allRead = [n('s1', 'system', true)];
+    expect(markTabReadLabel(allRead, 'system')).toBeNull();
   });
 });

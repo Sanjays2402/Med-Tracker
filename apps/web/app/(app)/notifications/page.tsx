@@ -8,7 +8,7 @@ import { listNotifications, markNotificationRead, markAllNotificationsRead, snoo
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
-import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, type NotificationTab } from '../../../lib/notification-filter';
+import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, type NotificationTab } from '../../../lib/notification-filter';
 import {
   NOTIFICATION_UNREAD_STORAGE_KEY,
   parseUnreadOnly,
@@ -69,6 +69,23 @@ export default function NotificationsPage() {
     finally { setBusy(false); }
   }
 
+  // Mark only the unread rows in the active tab/view read — distinct from the
+  // global "Mark all read". Targets come from tabReadTargets so they're exactly
+  // the rows on screen for the current tab (and unread-only constraint).
+  async function onMarkTabRead(ids: readonly string[]) {
+    if (ids.length === 0) return;
+    const idSet = new Set(ids);
+    setBusy(true);
+    setItems(prev => (prev ?? []).map(n => (idSet.has(n.id) ? { ...n, read: true } : n)));
+    try {
+      await Promise.all(ids.map(id => markNotificationRead(id)));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not mark those read.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onSnooze(item: NotificationItem, choice: SnoozeChoice) {
     const when = snoozeUntil(choice);
     const iso = new Date(when).toISOString();
@@ -115,6 +132,13 @@ export default function NotificationsPage() {
   // up". Only relevant when the active tab itself has no rows (unread filter off
   // for the emptiness check, since the hint is about the tab being empty).
   const tabHint = crossTabUnreadHint(notSnoozed, activeTab);
+
+  // Targets for the scoped "Mark these read" action — only the unread rows in
+  // the active tab/view. Shown only on a sub-tab (not All, which already has the
+  // global Mark all read) and when that tab actually has unread to clear.
+  const tabReadIds = tabReadTargets(notSnoozed, activeTab, unreadOnly).ids;
+  const markTabLabel =
+    activeTab !== 'all' ? markTabReadLabel(notSnoozed, activeTab, unreadOnly) : null;
 
   return (
     <div className="space-y-6">
@@ -169,26 +193,42 @@ export default function NotificationsPage() {
             );
           })}
           </div>
-          {/* Unread-only toggle — only when the active tab actually has read rows
-              to hide, so an all-unread tab doesn't show a no-op control. */}
-          {unreadInfo.hasRead && (
-            <button
-              type="button"
-              onClick={toggleUnreadOnly}
-              aria-pressed={unreadOnly}
-              className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-medium border whitespace-nowrap transition-colors shrink-0 ${
-                unreadOnly
-                  ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
-                  : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
-              }`}
-            >
-              <BellRinging size={13} />
-              Unread only
-              <span className="tabular text-[10.5px] min-w-[16px] h-4 px-1 inline-flex items-center justify-center rounded-full bg-[var(--bg-sunk)] text-[var(--ink-muted)]">
-                {unreadInfo.unreadInTab}
-              </span>
-            </button>
-          )}
+          {/* Per-tab actions: scoped "Mark these read" + the unread-only toggle.
+              The scoped action is distinct from the header's global Mark all
+              read — it only clears the unread rows in the active sub-tab. */}
+          <div className="flex items-center gap-2 shrink-0">
+            {markTabLabel && (
+              <button
+                type="button"
+                onClick={() => onMarkTabRead(tabReadIds)}
+                disabled={busy}
+                className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-medium border whitespace-nowrap transition-colors border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)] disabled:opacity-50 disabled:pointer-events-none"
+              >
+                <CheckCircle size={13} />
+                {markTabLabel}
+              </button>
+            )}
+            {/* Unread-only toggle — only when the active tab actually has read rows
+                to hide, so an all-unread tab doesn't show a no-op control. */}
+            {unreadInfo.hasRead && (
+              <button
+                type="button"
+                onClick={toggleUnreadOnly}
+                aria-pressed={unreadOnly}
+                className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-medium border whitespace-nowrap transition-colors ${
+                  unreadOnly
+                    ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                    : 'border-[var(--line)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+                }`}
+              >
+                <BellRinging size={13} />
+                Unread only
+                <span className="tabular text-[10.5px] min-w-[16px] h-4 px-1 inline-flex items-center justify-center rounded-full bg-[var(--bg-sunk)] text-[var(--ink-muted)]">
+                  {unreadInfo.unreadInTab}
+                </span>
+              </button>
+            )}
+          </div>
         </div>
       )}
 
