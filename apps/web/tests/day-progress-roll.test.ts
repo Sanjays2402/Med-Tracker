@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { dayProgressRoll, dayPercentPrefix, dayPercentChip } from '../lib/day-progress-roll';
+import { dayProgressRoll, dayPercentPrefix, dayPercentChip, dayStatusChip } from '../lib/day-progress-roll';
 import { groupByPartOfDay, type PartOfDayDose } from '../lib/part-of-day';
 
 // Build a dose at a given local hour with a status.
@@ -154,5 +154,56 @@ describe('dayPercentChip', () => {
       groupByPartOfDay([dose(8, 'taken'), dose(9, 'taken'), dose(13, 'pending'), dose(14, 'pending')]),
     );
     expect(dayPercentChip(roll)).toMatchObject({ percent: 50, tone: 'warn' });
+  });
+});
+
+describe('dayStatusChip', () => {
+  it('reads a muted "Nothing due today" for an empty / missing day', () => {
+    expect(dayStatusChip(null)).toEqual({
+      percent: 0,
+      label: 'Nothing due today',
+      tone: 'neutral',
+      empty: true,
+    });
+    expect(dayStatusChip(dayProgressRoll(groupByPartOfDay([])))).toEqual({
+      percent: 0,
+      label: 'Nothing due today',
+      tone: 'neutral',
+      empty: true,
+    });
+  });
+
+  it('reads the percent and tones it by progress (matching dayPercentChip)', () => {
+    // 1 of 3 -> 33% -> danger.
+    const low = dayProgressRoll(
+      groupByPartOfDay([dose(8, 'taken'), dose(9, 'pending'), dose(13, 'pending')]),
+    );
+    expect(dayStatusChip(low)).toEqual({ percent: 33, label: '33% done', tone: 'danger', empty: false });
+
+    // 2 of 3 -> 67% -> ok.
+    const high = dayProgressRoll(
+      groupByPartOfDay([dose(8, 'taken'), dose(9, 'taken'), dose(13, 'pending')]),
+    );
+    expect(dayStatusChip(high)).toEqual({ percent: 67, label: '67% done', tone: 'ok', empty: false });
+  });
+
+  it('reads "All done" with an ok tone for a finished day', () => {
+    const roll = dayProgressRoll(groupByPartOfDay([dose(8, 'taken'), dose(13, 'taken')]));
+    expect(dayStatusChip(roll)).toEqual({ percent: 100, label: 'All done', tone: 'ok', empty: false });
+  });
+
+  it('never returns null, unlike dayPercentChip', () => {
+    expect(dayStatusChip(null)).not.toBeNull();
+    expect(dayPercentChip(null)).toBeNull();
+  });
+
+  it('agrees with dayPercentChip on percent/label/tone for a non-empty day', () => {
+    const roll = dayProgressRoll(
+      groupByPartOfDay([dose(8, 'taken'), dose(9, 'taken'), dose(13, 'pending'), dose(14, 'pending')]),
+    );
+    const status = dayStatusChip(roll);
+    const chip = dayPercentChip(roll)!;
+    expect({ percent: status.percent, label: status.label, tone: status.tone }).toEqual(chip);
+    expect(status.empty).toBe(false);
   });
 });

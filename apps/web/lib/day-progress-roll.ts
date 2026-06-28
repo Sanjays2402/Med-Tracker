@@ -140,3 +140,36 @@ export function dayPercentChip(
   const percent = Math.max(0, Math.min(100, Math.round(roll.percent)));
   return { percent, label: `${percent}% done`, tone: progressTone(percent) };
 }
+
+export interface DayStatusChip {
+  /** Whole-percent of the day's doses taken (0..100; 0 when nothing is due). */
+  percent: number;
+  /** Render-ready chip label: "Nothing due today" / "All done" / "65% done". */
+  label: string;
+  /** Tone the chip maps to a colour; 'neutral' for an empty (nothing-due) day. */
+  tone: ProgressTone | 'neutral';
+  /** True when nothing is scheduled today (the muted status case). */
+  empty: boolean;
+}
+
+/**
+ * A NEVER-NULL status chip for a dashboard-style "today" summary. Unlike
+ * dayPercentChip (which omits itself on an empty day), this always returns a
+ * chip so the Up-next header always carries a status: an empty day reads a muted
+ * "Nothing due today" instead of the header silently dropping the chip.
+ *
+ * A complete day reads "All done" (ok); a day in progress reads "N% done" toned
+ * by progressTone; an empty day reads "Nothing due today" with a 'neutral' tone
+ * the caller maps to a muted colour. The percent/label/tone for the non-empty
+ * cases match dayPercentChip exactly so the two never disagree when both render.
+ */
+export function dayStatusChip(
+  roll: Pick<DayProgressRoll, 'percent' | 'allComplete' | 'total'> | null,
+): DayStatusChip {
+  if (!roll || roll.total <= 0) {
+    return { percent: 0, label: 'Nothing due today', tone: 'neutral', empty: true };
+  }
+  if (roll.allComplete) return { percent: 100, label: 'All done', tone: 'ok', empty: false };
+  const percent = Math.max(0, Math.min(100, Math.round(roll.percent)));
+  return { percent, label: `${percent}% done`, tone: progressTone(percent), empty: false };
+}
