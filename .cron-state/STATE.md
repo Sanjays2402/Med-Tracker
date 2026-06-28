@@ -817,10 +817,12 @@ paused until Sanjay removes the override.
     streak tile + capsule by streak length (sage 7d+, amber 1-6d, neutral 0)
     via a shared streak-tone classifier (tick 38 / 7c8c5cc). Logic in
     lib/streak-tone.ts, 14 tests.
-354. [ ] `today-overdue-section-flag` — Mark the part-of-day section that
+354. [x] `today-overdue-section-flag` — Mark the part-of-day section that
     contains the oldest overdue dose with a small danger dot in its header so a
     glance finds where the overdue dose lives; composes partitionOverdue +
-    part-of-day buckets.
+    part-of-day buckets (tick 45 / c28797d). Added firstOverdueScheduledAt to
+    OverdueModel + sectionForOverdue to lib/part-of-day; overdue 25 -> 26,
+    part-of-day 16 -> 20.
 355. [x] `refills-sort-pref-medications-parity` — Persist the /medications
     sort key (Name / Lowest supply / Soonest refill) the same way refills now
     does, so the medications list sort survives a reload (tick 38 / c907846).
@@ -1217,15 +1219,16 @@ extracting non-trivial logic into a tested lib/*.ts module (web vitest harness i
 905 tests across 58 suites as of tick 44). Backend tiers 1L-1T stay paused until
 Sanjay removes the override.
 
-426. [ ] `medications-detail-next-dose-tone` — Tone the medication-detail
+426. [x] `medications-detail-next-dose-tone` — Tone the medication-detail
     next-dose countdown chip via a shared minutes-until -> tone classifier
     (overdue coral, due amber, upcoming accent, done sage); the chip already
     reads computeNextDose.tone — lift the tone->capsule mapping into a tested
-    lib/next-dose helper so it's reusable. (Promotes #424.)
-427. [ ] `caregivers-expiry-bar-empty-legend` — When the expiry bar is all-active
+    lib/next-dose helper so it's reusable (tick 45 / f040f61). Added nextDoseChip
+    + nextDoseCapsuleText to lib/next-dose, tests 14 -> 19.
+427. [x] `caregivers-expiry-bar-empty-legend` — When the expiry bar is all-active
     (hasRisk false, currently hidden) show a single muted "All shares active"
     line so the header always carries a one-line health read; new allActiveLegend
-    helper on lib/expiry-bar. (Carry of #414.)
+    helper on lib/expiry-bar (tick 45 / db08f44). Tests 20 -> 24.
 428. [ ] `dashboard-refill-chip-empty-state` — When no refill is pending show a
     muted "No refills needed" chip on the dashboard Refills header instead of
     dropping it, reusing runoutChipOrEmpty's empty-state pattern. (Carry of #425.)
@@ -1233,13 +1236,15 @@ Sanjay removes the override.
     header taken/total ring so its accent matches the toned day-percent prefix
     (coral/amber/sage by completion); pure already-shipped classifier, thin style
     swap. (Carry of #412.)
-430. [ ] `refills-timeline-today-label` — Label the "today" marker on the
+430. [x] `refills-timeline-today-label` — Label the "today" marker on the
     /refills 30-day timeline strip with the date so the strip reads its anchor;
-    pure today-label formatter on lib/refill-timeline.
-431. [ ] `notifications-mark-tab-read` — A "Mark these read" action that marks
+    pure today-label formatter on lib/refill-timeline (tick 45 / 02ff3bb).
+    Added todayLabel, tests 12 -> 16.
+431. [x] `notifications-mark-tab-read` — A "Mark these read" action that marks
     only the active tab's unread rows read (composes applyNotificationFilters +
     markNotificationRead), distinct from the global Mark all read; pure
-    id-collector over the filtered list. (Carry of #415.)
+    id-collector over the filtered list (tick 45 / 1a229f1). Added tabReadTargets
+    + markTabReadLabel to lib/notification-filter, tests 29 -> 37.
 432. [ ] `medications-supply-bar-mini-list` — Reuse buildSupplyBar's days-left
     tone on the /medications list run-out chip so the list and the detail hero
     agree on the colour each med's supply reads; thin tone swap over the shipped
@@ -1256,7 +1261,116 @@ Sanjay removes the override.
     legend chips hears "25% expiring soon, 1 of 4 shares"; composes the new
     expiryBarAriaDescription + expirySegmentTooltip.
 
+### Tier 2I — frontend slices (FRONTEND-FOCUS override, refill after tick 45)
+
+Tick 45 closed five items: #426 medications-detail-next-dose-tone, #427
+caregivers-expiry-bar-empty-legend, #430 refills-timeline-today-label, #431
+notifications-mark-tab-read, #354 today-overdue-section-flag (a Tier 2A
+straggler). Tier 2H open: #428 dashboard-refill-chip-empty-state, #429
+today-progress-tone-ring, #432 medications-supply-bar-mini-list, #433
+today-overdue-escalate-aria-live, #434 dashboard-today-chip-link, #435
+caregivers-expiry-bar-segment-aria-each. Plus the older heavier ones (#274-#277/
+#279 interactions-graph / pill-identifier / caregivers-share-qr / dashboard-empty
+-state / reports-monthly-print, #281, #292-#295, #307, #312, #316, #318-#321,
+#371, #386, #389, #392-#395). This tier refills with fresh small-to-medium
+frontend-first candidates so the loop always has clean 5-slice batches. Each is a
+real user-facing capability in apps/web matching the sage/coral/amber pillbox
+language and the Linear/Raycast bar. Prefer extracting non-trivial logic into a
+tested lib/*.ts module (web vitest harness is 930 tests across 58 suites as of
+tick 45). Backend tiers 1L-1T stay paused until Sanjay removes the override.
+
+436. [ ] `medications-detail-next-dose-aria-live` — Wrap the medication-detail
+    next-dose capsule in an aria-live polite region so a screen reader hears the
+    countdown update (the page already re-ticks now every 30s); thin a11y layer
+    over nextDoseCapsuleText.
+437. [ ] `caregivers-all-active-legend-icon` — Pair the new "All N shares active"
+    legend with a small check-circle glyph so the all-healthy state reads as a
+    positive affordance, not just muted text; thin render over allActiveLegend.
+438. [ ] `refills-timeline-mark-date-tooltip` — Extend each timeline mark's hover
+    title to lead with the refill-by calendar date (reuse todayLabel's fixed
+    month table via a shared markDateLabel) so a hover names the date, not just
+    "in Nd"; pure date-label-from-ISO on lib/refill-timeline.
+439. [ ] `notifications-mark-tab-read-toast` — After the scoped "Mark these read"
+    clears a tab, fire a confirming toast ("3 Refills marked read") with the
+    count from tabReadTargets; pure message composer + existing Toast layer.
+440. [ ] `today-overdue-section-flag-count` — When more than one overdue dose
+    sits in the flagged section, show the count beside the danger dot ("2") so
+    the flag reads how many are waiting there; pure per-section overdue tally
+    composing partitionOverdue + part-of-day buckets.
+441. [ ] `dashboard-refill-chip-empty-state` — (carry of #428) When no refill is
+    pending show a muted "No refills needed" chip on the dashboard Refills header
+    instead of dropping it, reusing runoutChipOrEmpty's empty-state pattern.
+442. [ ] `today-progress-tone-ring` — (carry of #429) Reuse lib/progress-tone on
+    the /today header taken/total ring so its accent matches the toned
+    day-percent prefix (coral/amber/sage by completion); thin style swap.
+443. [ ] `medications-supply-bar-mini-list` — (carry of #432) Reuse
+    buildSupplyBar's days-left tone on the /medications list run-out chip so the
+    list and the detail hero agree on the colour each med's supply reads; thin
+    tone swap over the shipped lib/days-left-tone.
+444. [ ] `dashboard-today-chip-link` — (carry of #434) Make the dashboard "N%
+    done" today chip a link to /today (skipped when the muted empty status chip
+    is showing); pure href wrap composing dayStatusChip.empty.
+445. [ ] `caregivers-expiry-bar-segment-aria-each` — (carry of #435) Give each
+    expiry-bar SEGMENT its own aria-label so a screen reader tabbing the legend
+    chips hears "25% expiring soon, 1 of 4 shares"; composes the segment percent
+    + expirySegmentTooltip.
+
 ## Tick log
+
+- 2026-06-28 05:52 PDT — tick 45: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: f040f61 medications-detail-next-dose-tone,
+  db08f44 caregivers-expiry-bar-empty-legend,
+  02ff3bb refills-timeline-today-label,
+  1a229f1 notifications-mark-tab-read,
+  c28797d today-overdue-section-flag.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.5s`; all static
+  pages generated incl. every edited route /medications/[id], /caregivers,
+  /refills, /notifications, /today). `@med/web` test 930/930 pass across 58
+  suites (+25: next-dose 14->19, expiry-bar 20->24, refill-timeline 12->16,
+  notification-filter 29->37, overdue 25->26, part-of-day 16->20). Typecheck:
+  the pre-existing baseline error count (980, the app-wide React-18
+  Link/ReactNode drift) is UNCHANGED — tsc prints exactly 980, and grep-confirmed
+  ZERO errors trace to the 5 edited lib modules, 6 edited test files, or 5 edited
+  pages/components. Lint: Next 16 removed `next lint`, the web app ships no ESLint
+  config, the turbo `lint` task is empty `{}` — nothing to run (documented
+  baseline, same as ticks 38-44). Clean tree verified before each commit. Push
+  landed clean, origin/main 0/0 ahead-behind. THIRTY-FIFTH clean tick in a row
+  (no fixup commits, no force-push, no revert). Seventeenth frontend tick under
+  Sanjay's standing override. Five slices spanning five surfaces (medications
+  detail, caregivers, refills, notifications, today), each extracting its
+  pure-logic core into (or onto) a tested lib/*.ts module — web harness 905 -> 930:
+  - lib/next-dose (+5) — nextDoseChip(tone) maps a NextDoseTone onto a capsule
+    { tone, prefix } via a static record (overdue->danger, due->warn,
+    upcoming->accent, none->ok "today"); nextDoseCapsuleText(result) reads the
+    same NextDoseResult to emit "All done today" or "<prefix> · <label>". The
+    medication detail hero swapped its inline tone ternary + string assembly for
+    these so the chip's tone and text can never disagree.
+  - lib/expiry-bar (+4) — allActiveLegend(bar): null when the bar is at risk (the
+    coloured bar speaks) or empty; otherwise "All N shares active" / "The 1 share
+    is active". The /caregivers header used to go silent on a tidy all-active list
+    (the bar is hidden when hasRisk is false); now it shows a muted sage-dot line
+    so the header always carries a one-line health read.
+  - lib/refill-timeline (+4) — todayLabel(now): "Jun 28"-style short date from a
+    FIXED month-abbrev table (not toLocaleDateString) so it's locale-independent
+    and deterministic under test, using the local date of now. The /refills
+    timeline strip's day-0 tick now names the anchor date instead of reading
+    "today".
+  - lib/notification-filter (+8) — tabReadTargets(items, tab, unreadOnly): the
+    unread ids under the active filtered view (reuses applyNotificationFilters so
+    the targets are EXACTLY the rendered rows); markTabReadLabel(...): the
+    render-ready button label ("Mark 3 Refills read"), null when nothing's
+    unread. The notifications page gained a scoped "Mark these read" on sub-tabs,
+    distinct from the header's global Mark all read, with an optimistic per-id
+    update.
+  - lib/overdue (+1) + lib/part-of-day (+4) — partitionOverdue now exposes
+    firstOverdueScheduledAt; sectionForOverdue(iso) maps it to its part-of-day
+    section via partOfDayForISO. The /today page flags exactly the section header
+    holding the oldest overdue dose with a small pulsing danger dot, so a glance
+    down the day finds WHERE the overdue dose lives (the banner already said how
+    many + jumped to the first).
+  Tier 2H still holds 6 open pickable items (#428, #429, #432-#435) after this
+  batch; added Tier 2I (#436-#445) to keep the loop fed with fresh 5-slice batches.
+
 
 - 2026-06-27 23:25 PDT — tick 44: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 623f0d3 medication-detail-supply-bar,
