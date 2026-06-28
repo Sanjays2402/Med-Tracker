@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { daysFromNow, buildTimeline, todayLabel, type TimelineRefillInput } from '../lib/refill-timeline';
+import { daysFromNow, buildTimeline, todayLabel, markDateLabel, markRelativeLabel, markTitle, type TimelineRefillInput } from '../lib/refill-timeline';
 
 // Fixed reference: 2026-06-25 12:00 local.
 const NOW = new Date(2026, 5, 25, 12, 0, 0, 0).getTime();
@@ -117,5 +117,62 @@ describe('todayLabel', () => {
 
   it('returns an empty string for an unparseable time', () => {
     expect(todayLabel(Number.NaN)).toBe('');
+  });
+});
+
+describe('buildTimeline — marks carry their refill-by date', () => {
+  it('threads refillBy through onto each mark', () => {
+    const model = buildTimeline(refills, NOW);
+    const soon = model.marks.find((m) => m.id === 'soon')!;
+    expect(soon.refillBy).toBe(at(3));
+  });
+});
+
+describe('markDateLabel', () => {
+  const model = buildTimeline(refills, NOW);
+
+  it('names the calendar date of the mark from the fixed month table', () => {
+    // 'soon' is NOW + 3 days = 2026-06-28.
+    const soon = model.marks.find((m) => m.id === 'soon')!;
+    expect(markDateLabel(soon)).toBe('Jun 28');
+  });
+
+  it('crosses a month boundary correctly', () => {
+    // 'later' is NOW + 11 days = 2026-07-06.
+    const later = model.marks.find((m) => m.id === 'later')!;
+    expect(markDateLabel(later)).toBe('Jul 6');
+  });
+
+  it('returns an empty string for an unparseable date', () => {
+    expect(markDateLabel({ refillBy: 'not-a-date' })).toBe('');
+  });
+});
+
+describe('markRelativeLabel', () => {
+  it('phrases overdue / today / future the way the strip reads', () => {
+    expect(markRelativeLabel({ daysFromNow: -2 })).toBe('2d overdue');
+    expect(markRelativeLabel({ daysFromNow: 0 })).toBe('today');
+    expect(markRelativeLabel({ daysFromNow: 3 })).toBe('in 3d');
+  });
+});
+
+describe('markTitle', () => {
+  const model = buildTimeline(refills, NOW);
+
+  it('leads with the medication and calendar date, then the relative clause', () => {
+    const soon = model.marks.find((m) => m.id === 'soon')!;
+    expect(markTitle(soon)).toBe('Atorvastatin · Jun 28 · in 3d');
+  });
+
+  it('names an overdue mark with its date and overdue clause', () => {
+    const overdue = model.marks.find((m) => m.id === 'overdue')!;
+    // overdue is NOW - 2 days = 2026-06-23.
+    expect(markTitle(overdue)).toBe('Amoxicillin · Jun 23 · 2d overdue');
+  });
+
+  it('drops the date segment (no stray separator) when the date is unparseable', () => {
+    expect(
+      markTitle({ medicationName: 'X', refillBy: 'not-a-date', daysFromNow: 5 }),
+    ).toBe('X · in 5d');
   });
 });

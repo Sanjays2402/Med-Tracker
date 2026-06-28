@@ -23,6 +23,9 @@ export type TimelineTone = 'overdue' | 'soon' | 'later' | 'done';
 export interface TimelineMark {
   id: string;
   medicationName: string;
+  /** The refill-by date (ISO) this mark plots, carried through so the renderer
+   *  can name the calendar date in a hover without re-threading the input. */
+  refillBy: string;
   /** Whole days from `now` to refillBy (negative = overdue). */
   daysFromNow: number;
   /** Fractional 0..1 position across the window (clamped). */
@@ -96,6 +99,7 @@ export function buildTimeline(
       return {
         id: r.id,
         medicationName: r.medicationName,
+        refillBy: r.refillBy,
         daysFromNow: d,
         position: dayToPos(d),
         overdue,
@@ -140,6 +144,12 @@ const MONTH_ABBR = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
 
+/** "Jun 28"-style label from a Date, using the fixed month table (locale-free). */
+function shortDate(d: Date): string {
+  if (Number.isNaN(d.getTime())) return '';
+  return `${MONTH_ABBR[d.getMonth()]} ${d.getDate()}`;
+}
+
 /**
  * Short calendar-date label for the strip's "today" anchor, e.g. "Jun 28", so
  * the today marker names the date the window is pinned to rather than just
@@ -149,7 +159,44 @@ const MONTH_ABBR = [
  * Pure; `now` is injectable.
  */
 export function todayLabel(now: number = Date.now()): string {
-  const d = new Date(now);
-  if (Number.isNaN(d.getTime())) return '';
-  return `${MONTH_ABBR[d.getMonth()]} ${d.getDate()}`;
+  return shortDate(new Date(now));
+}
+
+/**
+ * Short calendar-date label for ONE mark's refill-by date, e.g. "Jul 1", from
+ * the same fixed month table todayLabel uses so the hover names the date rather
+ * than only a relative "in Nd". Returns "" when the mark's date is unparseable.
+ * Pure; uses the mark's own refillBy (carried through buildTimeline).
+ */
+export function markDateLabel(mark: Pick<TimelineMark, 'refillBy'>): string {
+  return shortDate(new Date(mark.refillBy));
+}
+
+/**
+ * Relative phrasing for a mark, matching the strip's existing inline copy:
+ * "2d overdue" when past, "today" on day zero, "in 3d" ahead. Pure; reads the
+ * mark's daysFromNow so the relative text always agrees with where the dot sits.
+ */
+export function markRelativeLabel(mark: Pick<TimelineMark, 'daysFromNow'>): string {
+  const d = mark.daysFromNow;
+  if (d < 0) return `${-d}d overdue`;
+  if (d === 0) return 'today';
+  return `in ${d}d`;
+}
+
+/**
+ * Full hover title for a mark, leading with the calendar DATE then the relative
+ * phrasing so a hover reads "Atorvastatin · Jul 1 · in 3d" — the date names the
+ * day, the relative clause says how soon. Falls back to medication + relative
+ * only when the date can't be parsed (so a bad date never shows a stray
+ * separator). Pure; composes markDateLabel + markRelativeLabel.
+ */
+export function markTitle(
+  mark: Pick<TimelineMark, 'medicationName' | 'refillBy' | 'daysFromNow'>,
+): string {
+  const date = markDateLabel(mark);
+  const rel = markRelativeLabel(mark);
+  return date
+    ? `${mark.medicationName} · ${date} · ${rel}`
+    : `${mark.medicationName} · ${rel}`;
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { buildTimeline, todayLabel, type TimelineRefillInput, type TimelineTone } from '../lib/refill-timeline';
+import { buildTimeline, todayLabel, markTitle, type TimelineRefillInput, type TimelineTone } from '../lib/refill-timeline';
 
 /**
  * RefillTimeline — a horizontal strip plotting each refill's refill-by date
@@ -98,9 +98,7 @@ export function RefillTimeline({
                 transform: flip ? 'translateX(-100%)' : undefined,
                 flexDirection: flip ? 'row-reverse' : 'row',
               }}
-              title={`${m.medicationName} · ${
-                m.daysFromNow < 0 ? `${-m.daysFromNow}d overdue` : m.daysFromNow === 0 ? 'today' : `in ${m.daysFromNow}d`
-              }`}
+              title={markTitle(m)}
             >
               <span
                 className="w-3 h-3 rounded-full shrink-0"
