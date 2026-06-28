@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { buildTimeline, type TimelineRefillInput, type TimelineTone } from '../lib/refill-timeline';
+import { buildTimeline, todayLabel, type TimelineRefillInput, type TimelineTone } from '../lib/refill-timeline';
 
 /**
  * RefillTimeline — a horizontal strip plotting each refill's refill-by date
@@ -69,7 +69,7 @@ export function RefillTimeline({
           >
             <div className="w-px h-full" style={{ background: 'var(--line-soft)' }} />
             <div className="absolute -bottom-5 -translate-x-1/2 text-[10px] tabular text-[var(--ink-muted)] whitespace-nowrap">
-              {t.dayOffset === 0 ? 'today' : `+${t.dayOffset}d`}
+              {t.dayOffset === 0 ? todayLabel(now) : `+${t.dayOffset}d`}
             </div>
           </div>
         ))}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { daysFromNow, buildTimeline, type TimelineRefillInput } from '../lib/refill-timeline';
+import { daysFromNow, buildTimeline, todayLabel, type TimelineRefillInput } from '../lib/refill-timeline';
 
 // Fixed reference: 2026-06-25 12:00 local.
 const NOW = new Date(2026, 5, 25, 12, 0, 0, 0).getTime();
@@ -97,5 +97,25 @@ describe('buildTimeline — ticks', () => {
     const model = buildTimeline([], NOW, { windowDays: 30, tickEveryDays: 7 });
     expect(model.ticks.map((t) => t.dayOffset)).toEqual([0, 7, 14, 21, 28]);
     expect(model.ticks.every((t) => t.position >= 0 && t.position <= 1)).toBe(true);
+  });
+});
+
+describe('todayLabel', () => {
+  it('names the local calendar date of the today anchor', () => {
+    // NOW is 2026-06-25 local.
+    expect(todayLabel(NOW)).toBe('Jun 25');
+  });
+
+  it('is locale-independent (fixed month table, not toLocaleDateString)', () => {
+    expect(todayLabel(new Date(2026, 0, 1, 9, 0, 0).getTime())).toBe('Jan 1');
+    expect(todayLabel(new Date(2026, 11, 31, 23, 0, 0).getTime())).toBe('Dec 31');
+  });
+
+  it('drops a leading zero on single-digit days', () => {
+    expect(todayLabel(new Date(2026, 2, 5, 12, 0, 0).getTime())).toBe('Mar 5');
+  });
+
+  it('returns an empty string for an unparseable time', () => {
+    expect(todayLabel(Number.NaN)).toBe('');
   });
 });

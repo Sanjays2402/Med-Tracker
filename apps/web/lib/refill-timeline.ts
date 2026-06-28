@@ -134,3 +134,22 @@ function clamp01(n: number): number {
   if (!Number.isFinite(n)) return 0;
   return Math.max(0, Math.min(1, n));
 }
+
+const MONTH_ABBR = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+/**
+ * Short calendar-date label for the strip's "today" anchor, e.g. "Jun 28", so
+ * the today marker names the date the window is pinned to rather than just
+ * reading "today". Built from a fixed month-abbreviation table (not
+ * toLocaleDateString) so it is deterministic regardless of the host locale, and
+ * uses the LOCAL date of `now` to match how the marker positions on the strip.
+ * Pure; `now` is injectable.
+ */
+export function todayLabel(now: number = Date.now()): string {
+  const d = new Date(now);
+  if (Number.isNaN(d.getTime())) return '';
+  return `${MONTH_ABBR[d.getMonth()]} ${d.getDate()}`;
+}
