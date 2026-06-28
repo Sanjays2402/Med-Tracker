@@ -15,7 +15,7 @@ import {
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
-import { expiryBar, expirySegmentTooltip } from '../../../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription } from '../../../lib/expiry-bar';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
@@ -193,7 +193,7 @@ export default function CaregiversPage() {
             className="flex h-2 rounded-full overflow-hidden"
             style={{ background: 'var(--bg-sunk)' }}
             role="img"
-            aria-label={`Share access: ${bar.segments.map((s) => s.label).join(', ')}`}
+            aria-label={`Share access: ${expiryBarAriaDescription(bar)} (${bar.segments.map((s) => s.label).join(', ')})`}
           >
             {bar.segments.map((seg) => (
               <div

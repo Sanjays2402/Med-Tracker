@@ -142,3 +142,28 @@ export function expirySegmentTooltip(
     case 'expired': return `${lead} expired`;
   }
 }
+
+/** Spoken phrase for a single segment's share of the bar, e.g. "50% active". */
+function segmentPercentPhrase(segment: ExpiryBarSegment): string {
+  switch (segment.kind) {
+    case 'active': return `${segment.pct}% active`;
+    case 'soon': return `${segment.pct}% expiring soon`;
+    case 'expired': return `${segment.pct}% expired`;
+  }
+}
+
+/**
+ * Screen-reader description naming each segment's PERCENTAGE of the bar, e.g.
+ * "50% active, 25% expiring soon, 25% expired". The visible bar is a row of
+ * coloured widths a sighted user reads at a glance; this gives an equivalent
+ * spoken summary so the split is legible to assistive tech rather than just an
+ * undifferentiated coloured strip.
+ *
+ * Only non-empty segments are named (empty buckets are already dropped from
+ * `bar.segments`). The percentages are the same largest-remainder-rounded widths
+ * the bar draws, so they sum to 100 and the description never disagrees with the
+ * picture. Pure; no React.
+ */
+export function expiryBarAriaDescription(bar: ExpiryBar): string {
+  return bar.segments.map(segmentPercentPhrase).join(', ');
+}

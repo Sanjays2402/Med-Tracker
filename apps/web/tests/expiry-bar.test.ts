@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { expiryBar, expirySegmentTooltip } from '../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription } from '../lib/expiry-bar';
 import type { ExpirySummary } from '../lib/caregiver-expiry';
 
 function summary(over: Partial<ExpirySummary>): ExpirySummary {
@@ -101,5 +101,31 @@ describe('expirySegmentTooltip', () => {
     const bar = expiryBar(summary({ active: 2, soon: 1, expired: 1, total: 4 }))!;
     const soon = bar.segments.find((s) => s.kind === 'soon')!;
     expect(expirySegmentTooltip(soon, bar.total)).toBe('1 of 4 shares expiring within 7 days');
+  });
+});
+
+describe('expiryBarAriaDescription', () => {
+  it('names each segment percentage in order', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, expired: 1, total: 4 }))!;
+    expect(expiryBarAriaDescription(bar)).toBe('50% active, 25% expiring soon, 25% expired');
+  });
+
+  it('only names non-empty segments', () => {
+    const bar = expiryBar(summary({ soon: 1, expired: 1, total: 2 }))!;
+    expect(expiryBarAriaDescription(bar)).toBe('50% expiring soon, 50% expired');
+  });
+
+  it('reads an all-active bar as a single 100% phrase', () => {
+    const bar = expiryBar(summary({ active: 3, noExpiry: 2, total: 5 }))!;
+    expect(expiryBarAriaDescription(bar)).toBe('100% active');
+  });
+
+  it('uses the same widths the bar draws so the two never disagree', () => {
+    const bar = expiryBar(summary({ active: 1, soon: 1, expired: 1, total: 3 }))!;
+    // widths are 34/33/33 (largest-remainder).
+    expect(expiryBarAriaDescription(bar)).toBe('34% active, 33% expiring soon, 33% expired');
+    // The phrase percentages sum to the same 100 the widths do.
+    const sum = bar.segments.reduce((a, s) => a + s.pct, 0);
+    expect(sum).toBe(100);
   });
 });
