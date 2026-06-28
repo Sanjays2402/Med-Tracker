@@ -123,3 +123,53 @@ export function sectionForOverdue(
   if (!firstOverdueScheduledAt) return null;
   return partOfDayForISO(firstOverdueScheduledAt);
 }
+
+/** The minimal overdue-dose shape this module needs (an ISO scheduledAt). */
+export interface OverdueLike {
+  scheduledAt: string;
+}
+
+/**
+ * Count overdue doses per part-of-day section. The /today flag points a danger
+ * dot at the section holding the oldest overdue dose; when MORE than one overdue
+ * dose sits in that section, the flag wants to say how many are waiting there
+ * ("2"). This tallies the overdue set by bucket so the header reads the count
+ * for ITS section without the page re-walking the doses.
+ *
+ * Pass the OverdueModel's `overdue` array (already grace-filtered + sorted).
+ * Every section key is present (0 when none) so a lookup never misses. Pure;
+ * composes partOfDayForISO so the buckets match the rendered grouping exactly.
+ */
+export function countOverdueByPartOfDay(
+  overdue: readonly OverdueLike[],
+): Record<PartOfDay, number> {
+  const out: Record<PartOfDay, number> = {
+    Morning: 0,
+    Afternoon: 0,
+    Evening: 0,
+    Night: 0,
+  };
+  for (const d of overdue) out[partOfDayForISO(d.scheduledAt)]++;
+  return out;
+}
+
+/**
+ * Render-ready count for the danger dot on a flagged section header. Returns the
+ * number of overdue doses in `section` ONLY when it is the flagged section (the
+ * one holding the oldest overdue dose) AND more than one overdue dose sits there
+ * — so the flag shows "2" when several are waiting but stays a bare dot for a
+ * single one (the count would be redundant). Returns null otherwise.
+ *
+ * `flagged` is sectionForOverdue's result; `counts` is countOverdueByPartOfDay's
+ * tally. Keeping the >1 rule here means the page just renders the number when it
+ * isn't null. Pure.
+ */
+export function overdueSectionCount(
+  section: PartOfDay,
+  flagged: PartOfDay | null,
+  counts: Record<PartOfDay, number>,
+): number | null {
+  if (flagged !== section) return null;
+  const n = counts[section];
+  return n > 1 ? n : null;
+}

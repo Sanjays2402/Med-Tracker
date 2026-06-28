@@ -31,7 +31,7 @@ import {
   formatLateness,
   overdueTier,
 } from '../../../lib/overdue';
-import { groupByPartOfDay, sectionCountLabel, sectionForOverdue, type PartOfDayCounts } from '../../../lib/part-of-day';
+import { groupByPartOfDay, sectionCountLabel, sectionForOverdue, countOverdueByPartOfDay, overdueSectionCount, type PartOfDayCounts } from '../../../lib/part-of-day';
 import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
 import { sectionProgress, sectionProgressLabel, sectionFillTone } from '../../../lib/section-progress';
 import { dayProgressRoll, dayPercentPrefix } from '../../../lib/day-progress-roll';
@@ -232,6 +232,9 @@ export default function TodayPage() {
   // header can carry a small danger dot pointing at where the longest-waiting
   // dose lives. Null when nothing is overdue.
   const overdueSection = sectionForOverdue(overdueModel.firstOverdueScheduledAt);
+  // Per-section overdue tally, so the flagged section's dot can also say HOW
+  // many overdue doses are waiting there (only shown when more than one).
+  const overdueCounts = countOverdueByPartOfDay(overdueModel.overdue);
 
   function jumpToFirstOverdue() {
     const id = overdueModel.firstOverdueId;
@@ -414,14 +417,30 @@ export default function TodayPage() {
                 <div className="flex items-center gap-1.5">
                   {overdueSection === label && (
                     <span
-                      className="inline-flex items-center justify-center w-4 h-4 anim-overdue"
-                      title="An overdue dose is waiting in this section"
-                      aria-label="Overdue dose in this section"
+                      className="inline-flex items-center gap-1 anim-overdue"
+                      title={
+                        (overdueSectionCount(label, overdueSection, overdueCounts) ?? 0) > 1
+                          ? `${overdueCounts[label]} overdue doses are waiting in this section`
+                          : 'An overdue dose is waiting in this section'
+                      }
+                      aria-label={
+                        (overdueSectionCount(label, overdueSection, overdueCounts) ?? 0) > 1
+                          ? `${overdueCounts[label]} overdue doses in this section`
+                          : 'Overdue dose in this section'
+                      }
                     >
                       <span
                         className="w-2 h-2 rounded-full"
                         style={{ background: 'var(--danger)' }}
                       />
+                      {overdueSectionCount(label, overdueSection, overdueCounts) !== null && (
+                        <span
+                          className="tabular text-[10.5px] font-semibold leading-none"
+                          style={{ color: 'var(--danger)' }}
+                        >
+                          {overdueSectionCount(label, overdueSection, overdueCounts)}
+                        </span>
+                      )}
                     </span>
                   )}
                   {isCurrentPartOfDay(label, new Date(now).getHours()) && (

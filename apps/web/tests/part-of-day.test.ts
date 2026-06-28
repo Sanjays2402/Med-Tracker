@@ -7,6 +7,8 @@ import {
   groupByPartOfDay,
   sectionCountLabel,
   sectionForOverdue,
+  countOverdueByPartOfDay,
+  overdueSectionCount,
   type PartOfDay,
   type PartOfDayDose,
 } from '../lib/part-of-day';
@@ -151,5 +153,52 @@ describe('sectionForOverdue', () => {
     // The section the flag points at is the same one groupByPartOfDay buckets
     // that dose into, so the dot never lands on the wrong header.
     expect(sectionForOverdue(iso)).toBe(partOfDayForISO(iso));
+  });
+});
+
+describe('countOverdueByPartOfDay', () => {
+  it('returns every section at zero for an empty overdue set', () => {
+    expect(countOverdueByPartOfDay([])).toEqual({
+      Morning: 0,
+      Afternoon: 0,
+      Evening: 0,
+      Night: 0,
+    });
+  });
+
+  it('tallies overdue doses into their section buckets', () => {
+    const counts = countOverdueByPartOfDay([
+      { scheduledAt: isoAtHour(8) },
+      { scheduledAt: isoAtHour(9) },
+      { scheduledAt: isoAtHour(14) },
+      { scheduledAt: isoAtHour(22) },
+    ]);
+    expect(counts).toEqual({ Morning: 2, Afternoon: 1, Evening: 0, Night: 1 });
+  });
+
+  it('buckets match partOfDayForISO exactly', () => {
+    const iso = isoAtHour(19);
+    const counts = countOverdueByPartOfDay([{ scheduledAt: iso }]);
+    expect(counts[partOfDayForISO(iso)]).toBe(1);
+  });
+});
+
+describe('overdueSectionCount', () => {
+  const counts: Record<PartOfDay, number> = { Morning: 3, Afternoon: 1, Evening: 0, Night: 0 };
+
+  it('is null for a section that is not the flagged one', () => {
+    expect(overdueSectionCount('Afternoon', 'Morning', counts)).toBeNull();
+  });
+
+  it('returns the count when the flagged section has more than one overdue', () => {
+    expect(overdueSectionCount('Morning', 'Morning', counts)).toBe(3);
+  });
+
+  it('is null when the flagged section has only one overdue (bare dot)', () => {
+    expect(overdueSectionCount('Afternoon', 'Afternoon', counts)).toBeNull();
+  });
+
+  it('is null when nothing is flagged', () => {
+    expect(overdueSectionCount('Morning', null, counts)).toBeNull();
   });
 });
