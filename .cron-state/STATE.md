@@ -1407,23 +1407,66 @@ matching the sage/coral/amber pillbox language and the Linear/Raycast bar; prefe
 extracting non-trivial logic into a tested lib/*.ts module (web vitest harness is
 988 tests across 59 suites as of tick 48). Backend tiers 1L-1T stay paused.
 
-461. [ ] `refills-timeline-density-toggle` — Persisted compact/comfortable height
-    toggle for the strip (lane spacing 30->20px) so a long refill list fits; pure
-    config + pref module mirroring density-pref.
-462. [ ] `notifications-unread-only-empty-cta` — When unread-only is on and clears,
-    show a "you're all caught up" CTA distinct from the no-rows empty; pure copy
-    over summarizeUnread inTab/unreadInTab.
-463. [ ] `today-section-collapse-pref` — Collapse a fully-done part-of-day section
-    behind a "3 done" summary chip, persisted; pure done-detect over counts.
-464. [ ] `medications-supply-bar-aria` — Self-contained aria-label on the inline
-    supply bar ("12 days left, healthy") from buildSupplyBar tone+caption; thin
-    a11y over the new bar.
-465. [ ] `caregivers-health-bar-pct-tooltip` — Hover tooltip on the always-on
-    all-active bar naming the share count ("4 of 4 shares active"); reuse
-    expirySegmentTooltip for the single active segment.
+461. [x] `refills-timeline-density-toggle` — Persisted compact/comfortable height
+    toggle for the strip (lane spacing 30->20px) so a long refill list fits
+    (tick 49 / 9e0a650). Logic in lib/refill-timeline-density.ts, 14 tests.
+462. [x] `notifications-unread-only-empty-cta` — When unread-only is on and clears,
+    show a "you're all caught up" CTA distinct from the no-rows empty
+    (tick 49 / dbce004). caughtUpCopy in lib/notification-filter, +4 tests.
+463. [x] `today-section-collapse-pref` — Collapse a fully-done part-of-day section
+    behind a "3 done" summary chip, persisted (tick 49 / 3738b17). Logic in
+    lib/section-collapse-pref.ts, 9 tests.
+464. [x] `medications-supply-bar-aria` — Self-contained aria-label on the inline
+    supply bar ("12 days left, healthy") from buildSupplyBar tone+caption
+    (tick 49 / db391d0). supplyBarAriaLabel in lib/days-left-tone, +4 tests.
+465. [x] `caregivers-health-bar-pct-tooltip` — Hover tooltip on the always-on
+    all-active bar naming the share count ("4 of 4 shares active")
+    (tick 49 / 5a1bbf6). activeBarTooltip in lib/expiry-bar, +3 tests.
+
+### Tier 2M — frontend slices (FRONTEND-FOCUS override, refill after tick 49)
+
+Tick 49 closed five Tier 2L items (#461-465). Five Tier 2K items remain (#456-460)
+plus older heavies (#274-#277/#279, #281, #292-#295, #307, #312, #316, #318-#321).
+Fresh candidates below keep the loop fed. Each is a real user-facing capability in
+apps/web matching the sage/coral/amber pillbox language and the Linear/Raycast bar;
+prefer extracting non-trivial logic into a tested lib/*.ts module (web vitest
+harness is 1022 tests across 61 suites as of tick 49). Backend tiers 1L-1T stay paused.
+
+466. [ ] `today-collapse-all-done` — A header "Collapse done" control that folds
+    every fully-done section at once (and un-collapses on tap); composes
+    section-collapse-pref over the four labels.
+467. [ ] `refills-timeline-density-aria` — Announce the strip density on the toggle
+    ("Comfortable spacing, switch to compact") so the control isn't just a bare
+    label; thin a11y over otherStripDensityLabel.
+468. [ ] `notifications-caught-up-confetti` — One-shot reduced-motion-aware sage
+    burst when the unread-only view clears to "all caught up"; pure should-burst
+    gate over caughtUpCopy title.
+469. [ ] `medications-supply-bar-comfortable` — Show the inline supply bar on
+    comfortable rows at sm+ too (not just sm-only) so desktop comfortable also
+    reads runway; pure cfg flag already exists, thin render.
+470. [ ] `caregivers-health-bar-count-pill` — A small "N active" count pill beside
+    the always-on legend matching the bar tooltip; reuse activeBarTooltip's total,
+    thin render.
 
 ## Tick log
 
+- 2026-06-28 22:51 PDT — tick 49: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 9e0a650 refills-timeline-density-toggle,
+  dbce004 notifications-unread-only-empty-cta,
+  3738b17 today-section-collapse-pref,
+  db391d0 medications-supply-bar-aria,
+  5a1bbf6 caregivers-health-bar-pct-tooltip.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.6s`; all routes
+  prerendered). `@med/web` test 1022/1022 pass across 61 suites (+34, +2 suites:
+  new refill-timeline-density 14, section-collapse-pref 9, notification-filter
+  44->48, days-left-tone 28->32, expiry-bar 28->31). Typecheck: baseline 980
+  UNCHANGED — grep-confirmed ZERO errors trace to edited libs (refill-timeline-
+  density, section-collapse-pref, notification-filter, days-left-tone, expiry-bar),
+  tests, or pages. Lint: `next lint` (Next 16 removed it; misreads "lint" as a dir,
+  fails identically at pre-batch 7ce45ac — documented baseline). Push f335ef8..5a1bbf6,
+  origin/main verified. THIRTY-NINTH clean tick, twenty-first frontend tick. Five
+  surfaces (refills, notifications, today, medications, caregivers); two new pref
+  modules + three a11y/UX helpers, all tested. Refilled Tier 2M (#466-470).
 - 2026-06-28 20:23 PDT — tick 48: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 9f1297f refills-timeline-legend-counts,
   03a563a notifications-day-group-counts-unread,
