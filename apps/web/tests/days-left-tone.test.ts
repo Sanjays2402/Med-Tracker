@@ -7,6 +7,8 @@ import {
   supplyBarColor,
   supplyLegend,
   supplyLegendCounts,
+  filterBySupplyBand,
+  supplyBandLabel,
   runoutChip,
   remainingChip,
 } from '../lib/days-left-tone';
@@ -276,5 +278,59 @@ describe('supplyLegendCounts', () => {
     // 20 is < 28 and >= 14 -> warn, and the labels reflect the cut points.
     expect(counts.map((e) => e.label)).toEqual(['under 14d', 'under 28d', '28d+']);
     expect(counts.find((e) => e.tone === 'warn')!.count).toBe(1);
+  });
+});
+
+describe('filterBySupplyBand', () => {
+  const daily = '08:00 daily';
+  const meds = [
+    med({ id: 'a', remainingDoses: 4, schedule: daily }),   // 4d -> danger
+    med({ id: 'b', remainingDoses: 6, schedule: daily }),   // 6d -> danger
+    med({ id: 'c', remainingDoses: 10, schedule: daily }),  // 10d -> warn
+    med({ id: 'd', remainingDoses: 40, schedule: daily }),  // 40d -> ok
+    med({ id: 'e' }),                                        // no data -> dropped
+  ];
+
+  it('keeps only the meds in the requested band', () => {
+    expect(filterBySupplyBand(meds, 'danger').map((m) => m.id)).toEqual(['a', 'b']);
+    expect(filterBySupplyBand(meds, 'warn').map((m) => m.id)).toEqual(['c']);
+    expect(filterBySupplyBand(meds, 'ok').map((m) => m.id)).toEqual(['d']);
+  });
+
+  it('drops meds without supply data (they draw no bar, so no band)', () => {
+    expect(filterBySupplyBand(meds, 'danger').some((m) => m.id === 'e')).toBe(false);
+    expect(filterBySupplyBand(meds, 'ok').some((m) => m.id === 'e')).toBe(false);
+  });
+
+  it('preserves input order', () => {
+    const reversed = [...meds].reverse();
+    expect(filterBySupplyBand(reversed, 'danger').map((m) => m.id)).toEqual(['b', 'a']);
+  });
+
+  it('matches the band tally supplyLegendCounts reports', () => {
+    const counts = supplyLegendCounts(meds);
+    for (const band of ['danger', 'warn', 'ok'] as const) {
+      const entry = counts.find((e) => e.tone === band)!;
+      expect(filterBySupplyBand(meds, band).length).toBe(entry.count);
+    }
+  });
+
+  it('honours custom cut points so the filter tracks retuned bands', () => {
+    // 20d is danger when dangerBelow is widened to 28.
+    const m = [med({ id: 'x', remainingDoses: 20, schedule: daily })];
+    expect(filterBySupplyBand(m, 'danger', { dangerBelow: 28 }).map((x) => x.id)).toEqual(['x']);
+    expect(filterBySupplyBand(m, 'ok', { dangerBelow: 28 })).toEqual([]);
+  });
+});
+
+describe('supplyBandLabel', () => {
+  it('phrases each band against the default cut points', () => {
+    expect(supplyBandLabel('danger')).toBe('under 7 days');
+    expect(supplyBandLabel('warn')).toBe('under 14 days');
+    expect(supplyBandLabel('ok')).toBe('14 days or more');
+  });
+  it('forwards custom cut points', () => {
+    expect(supplyBandLabel('danger', { dangerBelow: 14 })).toBe('under 14 days');
+    expect(supplyBandLabel('ok', { warnBelow: 28 })).toBe('28 days or more');
   });
 });

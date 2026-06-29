@@ -209,6 +209,45 @@ export function supplyLegendCounts(
   return supplyLegend(opts).map((e) => ({ ...e, count: tally[e.tone] }));
 }
 
+/** A supply band the legend exposes as a filter (the three non-neutral tones). */
+export type SupplyBand = Exclude<DaysLeftTone, 'neutral'>;
+
+/**
+ * Keep only the meds whose supply falls in `band` (the SAME daysLeftTone band
+ * the legend swatch and the inline bars use), so clicking a legend swatch
+ * narrows the list to exactly the meds that swatch counts. Meds without usable
+ * supply data are dropped (they draw no bar, so they belong to no band). The cut
+ * points forward to buildSupplyBar so the filter, the bars, and the legend
+ * counts can never disagree. Pure; preserves input order.
+ */
+export function filterBySupplyBand(
+  meds: readonly Medication[],
+  band: SupplyBand,
+  opts: DaysLeftToneOptions = {},
+): Medication[] {
+  return meds.filter((m) => {
+    const bar = buildSupplyBar(m, opts);
+    return bar.hasData && bar.tone === band;
+  });
+}
+
+/**
+ * Human label for an active supply-band filter chip, e.g. "under 7 days",
+ * "under 14 days", "14 days or more" — a roomier phrasing than the compact
+ * legend label for the active-filter chip / clear control. The cut points
+ * forward from daysLeftTone's defaults so the phrasing never drifts from the
+ * bands it filters on. Pure.
+ */
+export function supplyBandLabel(band: SupplyBand, opts: DaysLeftToneOptions = {}): string {
+  const danger = opts.dangerBelow ?? DEFAULT_DANGER_BELOW;
+  const warn = opts.warnBelow ?? DEFAULT_WARN_BELOW;
+  switch (band) {
+    case 'danger': return `under ${danger} days`;
+    case 'warn': return `under ${warn} days`;
+    case 'ok': return `${warn} days or more`;
+  }
+}
+
 export interface RunoutChip {
   /** Estimated whole days of supply left, or null when unknown. */
   daysLeft: number | null;

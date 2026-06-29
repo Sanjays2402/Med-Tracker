@@ -7,7 +7,7 @@ import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill } from '../../../compo
 import { listMedications } from '../../../lib/data';
 import type { Medication } from '../../../lib/types';
 import { filterMedications, sortMedications, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
-import { runoutChip, remainingChip, buildSupplyBar, supplyBarAriaLabel, supplyBarColor, supplyLegendCounts } from '../../../lib/days-left-tone';
+import { runoutChip, remainingChip, buildSupplyBar, supplyBarAriaLabel, supplyBarColor, supplyLegendCounts, filterBySupplyBand, supplyBandLabel, type SupplyBand } from '../../../lib/days-left-tone';
 import { SupplySparkline } from '../../../components/SupplySparkline';
 import {
   DENSITY_OPTIONS,
@@ -40,6 +40,9 @@ export default function MedicationsPage() {
   const [sortBy, setSortBy] = React.useState<MedSortKey>(DEFAULT_MED_SORT);
   const [density, setDensity] = React.useState<Density>(DEFAULT_DENSITY);
   const [grouped, setGrouped] = React.useState(DEFAULT_RUNOUT_GROUP);
+  // Active supply-band filter (set by clicking a legend swatch), or null for no
+  // filter. Lets the user click "under 7d · 2" to see just those two meds.
+  const [bandFilter, setBandFilter] = React.useState<SupplyBand | null>(null);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
   const load = React.useCallback(async () => {
@@ -121,13 +124,22 @@ export default function MedicationsPage() {
 
   if (error && !meds) return <ErrorBox message={error} onRetry={load} />;
 
-  const visible = meds ? sortMedications(filterMedications(meds, query), sortBy) : [];
+  const searched = meds ? sortMedications(filterMedications(meds, query), sortBy) : [];
   const cfg = densityConfig(density);
+  // Apply the active supply-band filter (legend swatch click) on top of the
+  // search + sort — but only at a density that shows the legend, so the Clear
+  // control is always reachable (no stranded filter when bars are hidden).
+  const bandActive = cfg.showSupplyBar ? bandFilter : null;
+  const visible = bandActive ? filterBySupplyBand(searched, bandActive) : searched;
   const runout = grouped ? summarizeRunout(visible) : null;
   // The inline supply bars are only rendered at this density AND only on rows
   // with supply data; show the colour key only when at least one bar is on
-  // screen, so the legend never decodes bars that aren't there.
-  const showSupplyLegend = cfg.showSupplyBar && visible.some((m) => buildSupplyBar(m).hasData);
+  // screen, so the legend never decodes bars that aren't there. The legend
+  // counts are computed over the SEARCHED list (pre band-filter) so each band's
+  // tally stays stable while a band is selected — clicking a swatch narrows the
+  // list without collapsing the other swatches to zero.
+  const showSupplyLegend = cfg.showSupplyBar && searched.some((m) => buildSupplyBar(m).hasData);
+  const legendBands = showSupplyLegend ? supplyLegendCounts(searched) : [];
 
   return (
     <div className="space-y-6">
@@ -250,6 +262,12 @@ export default function MedicationsPage() {
             description="Add your first medication. Doses, refills, and reminders wire themselves up."
             action={<Link href="/medications/new"><Btn variant="primary" size="sm">Add a medication</Btn></Link>}
           />
+        ) : bandActive ? (
+          <Empty
+            title="No medications in that band"
+            description={`No medications have ${supplyBandLabel(bandActive)} of supply${query ? ` matching "${query}"` : ''}.`}
+            action={<Btn variant="secondary" size="sm" onClick={() => setBandFilter(null)}>Clear band filter</Btn>}
+          />
         ) : (
           <Empty title="Nothing matches" description={`No medications match "${query}".`} />
         )
@@ -291,21 +309,56 @@ export default function MedicationsPage() {
 
       {/* Supply-bar colour key — only when bars are actually on screen, so the
           ok/warn/danger swatches decode the tiny days-left runways below each row.
-          Bands forwarded from supplyLegendCounts so the labels never drift from
-          bars, and each swatch carries the count of visible meds in that band so
-          the key also tallies the at-a-glance shape of the pillbox. */}
+          Each swatch is a TOGGLE: click a band to filter the list to just those
+          meds (and click again, or Clear, to drop the filter). Counts come from
+          supplyLegendCounts over the searched list so the tallies stay stable
+          while a band is selected; a band with zero meds is a non-interactive
+          label. Bands forwarded from supplyLegendCounts so labels, bars, counts,
+          and the filter never drift. */}
       {showSupplyLegend && (
-        <div className="flex items-center gap-3 flex-wrap px-1 text-[11px] text-[var(--ink-muted)]" aria-label="Supply bar colour key">
+        <div className="flex items-center gap-2 flex-wrap px-1 text-[11px] text-[var(--ink-muted)]" role="group" aria-label="Filter by supply band">
           <span className="uppercase tracking-wide text-[10px]">Supply</span>
-          {supplyLegendCounts(visible).map((e) => (
-            <span key={e.tone} className="inline-flex items-center gap-1.5">
-              <span className="inline-block w-2 h-2 rounded-full" style={{ background: e.color }} aria-hidden />
-              {e.label}
-              <span className="tabular text-[10px] font-medium text-[var(--ink-soft)]" aria-label={`${e.count} in this band`}>
-                · {e.count}
+          {legendBands.map((e) => {
+            const active = bandActive === e.tone;
+            const empty = e.count === 0;
+            return (
+              <button
+                key={e.tone}
+                type="button"
+                disabled={empty}
+                onClick={() => setBandFilter(active ? null : e.tone)}
+                aria-pressed={active}
+                title={empty ? `No meds ${supplyBandLabel(e.tone)}` : active ? 'Clear this filter' : `Show only meds with ${supplyBandLabel(e.tone)} of supply`}
+                className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border transition-colors ${
+                  active
+                    ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                    : empty
+                    ? 'border-[var(--line-soft)] opacity-50 cursor-default'
+                    : 'border-[var(--line)] hover:text-[var(--ink)] hover:bg-[var(--bg-sunk)]'
+                }`}
+              >
+                <span className="inline-block w-2 h-2 rounded-full" style={{ background: e.color }} aria-hidden />
+                {e.label}
+                <span className="tabular text-[10px] font-medium text-[var(--ink-soft)]" aria-label={`${e.count} in this band`}>
+                  · {e.count}
+                </span>
+              </button>
+            );
+          })}
+          {bandActive && (
+            <span className="inline-flex items-center gap-2 ml-1" aria-live="polite">
+              <span className="text-[var(--ink-soft)]">
+                Showing {visible.length} with {supplyBandLabel(bandActive)} of supply
               </span>
+              <button
+                type="button"
+                onClick={() => setBandFilter(null)}
+                className="text-[var(--ink-muted)] hover:text-[var(--ink)] underline decoration-dotted underline-offset-2"
+              >
+                Clear
+              </button>
             </span>
-          ))}
+          )}
         </div>
       )}
     </div>
