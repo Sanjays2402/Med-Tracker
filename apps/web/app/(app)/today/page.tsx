@@ -49,6 +49,8 @@ import {
   sectionDoneSummary,
   newlyFoldedCount,
   foldedToastTitle,
+  newlyExpandedCount,
+  expandedToastTitle,
 } from '../../../lib/section-collapse-pref';
 import type { PartOfDay } from '../../../lib/part-of-day';
 
@@ -94,13 +96,16 @@ export default function TodayPage() {
   const toggleAllSections = React.useCallback((groups: { label: PartOfDay; counts: PartOfDayCounts }[]) => {
     setCollapsed((prev) => {
       const folded = newlyFoldedCount(groups, prev);
+      const reopened = newlyExpandedCount(groups, prev);
       const next = toggleAllDone(groups, prev);
       try { window.localStorage.setItem(SECTION_COLLAPSE_STORAGE_KEY, serializeCollapsed(next)); }
       catch { /* best-effort persistence */ }
-      // When a "Collapse done" tap newly folds sections, flash a toast naming
-      // the count with an Undo that restores the exact prior set. An un-fold
-      // (folded === 0) is its own visible result; no toast.
-      const title = foldedToastTitle(folded);
+      // The bulk control alternates Collapse/Expand. On a "Collapse done" tap
+      // that newly folds sections, flash a toast naming the count with an Undo
+      // that restores the prior set; on an "Expand done" tap that reopens
+      // finished sections, mirror it with a reopen toast + re-fold Undo. Exactly
+      // one of folded / reopened is non-zero for a given tap.
+      const title = foldedToastTitle(folded) ?? expandedToastTitle(reopened);
       if (title) {
         const prior = prev;
         toast({

@@ -14,6 +14,8 @@ import {
   collapseAllLabel,
   newlyFoldedCount,
   foldedToastTitle,
+  newlyExpandedCount,
+  expandedToastTitle,
 } from '../lib/section-collapse-pref';
 import type { PartOfDayCounts } from '../lib/part-of-day';
 
@@ -147,6 +149,41 @@ describe('foldedToastTitle', () => {
   it('is null when nothing was folded', () => {
     expect(foldedToastTitle(0)).toBeNull();
     expect(foldedToastTitle(-2)).toBeNull();
+  });
+});
+
+describe('newlyExpandedCount', () => {
+  it('counts done sections currently folded when the next tap un-folds', () => {
+    // Every done section folded -> the next tap is an Expand that reopens both.
+    expect(newlyExpandedCount(sections(done2, done2, live, empty), new Set(['Morning', 'Afternoon']))).toBe(2);
+    // One of two done sections folded -> the next tap still FOLDS (the other is
+    // open), so an expand would reopen nothing.
+    expect(newlyExpandedCount(sections(done2, done2, live, empty), new Set(['Morning']))).toBe(0);
+  });
+  it('is zero when nothing done is folded (the next tap folds)', () => {
+    expect(newlyExpandedCount(sections(done2, done2, live, empty), new Set())).toBe(0);
+  });
+  it('is zero when nothing is done', () => {
+    expect(newlyExpandedCount(sections(live, empty, empty, empty), new Set())).toBe(0);
+  });
+  it('is mutually exclusive with newlyFoldedCount for any tap', () => {
+    const groups = sections(done2, done2, live, empty);
+    for (const set of [new Set([]), new Set(['Morning'] as const), new Set(['Morning', 'Afternoon'] as const)]) {
+      const fold = newlyFoldedCount(groups, set);
+      const expand = newlyExpandedCount(groups, set);
+      expect(fold === 0 || expand === 0).toBe(true);
+    }
+  });
+});
+
+describe('expandedToastTitle', () => {
+  it('pluralises the reopened count', () => {
+    expect(expandedToastTitle(3)).toBe('Reopened 3 finished sections');
+    expect(expandedToastTitle(1)).toBe('Reopened 1 finished section');
+  });
+  it('is null when nothing was reopened', () => {
+    expect(expandedToastTitle(0)).toBeNull();
+    expect(expandedToastTitle(-1)).toBeNull();
   });
 });
 

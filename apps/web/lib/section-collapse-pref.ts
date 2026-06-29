@@ -158,3 +158,31 @@ export function foldedToastTitle(count: number): string | null {
   if (count <= 0) return null;
   return `Folded ${count} finished section${count === 1 ? '' : 's'}`;
 }
+
+/**
+ * How many sections an "Expand done" tap would NEWLY reopen: the done sections
+ * currently folded. Mirrors newlyFoldedCount for the opposite direction. Zero
+ * when the next tap FOLDS instead (some done section is still expanded), so the
+ * caller fires the reopen toast only on a genuine un-fold. Pure — the bulk
+ * control alternates Collapse/Expand, so exactly one of newlyFoldedCount /
+ * newlyExpandedCount is ever non-zero for a given tap.
+ */
+export function newlyExpandedCount(
+  groups: readonly CollapsibleSection[],
+  set: ReadonlySet<PartOfDay>,
+): number {
+  if (canCollapseAllDone(groups, set)) return 0; // the next tap folds, not expands
+  return doneLabels(groups).filter((l) => set.has(l)).length;
+}
+
+/**
+ * Toast title after an "Expand done" tap reopens N finished sections, e.g.
+ * "Reopened 3 finished sections" / "Reopened 1 finished section". Returns null
+ * when nothing was reopened (the tap was a fold or there was nothing to do) so
+ * the caller fires no toast. Mirrors foldedToastTitle; the page pairs it with an
+ * Undo that re-folds the prior collapse set. Pure; no React.
+ */
+export function expandedToastTitle(count: number): string | null {
+  if (count <= 0) return null;
+  return `Reopened ${count} finished section${count === 1 ? '' : 's'}`;
+}
