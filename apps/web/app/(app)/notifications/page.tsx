@@ -62,8 +62,16 @@ export default function NotificationsPage() {
   }
 
   async function onMarkAll() {
+    // Capture how many were unread BEFORE the optimistic update so the
+    // confirming toast reports what it cleared. Mirrors the scoped tab toast,
+    // using the 'all' tab phrasing ("8 marked read").
+    const cleared = (items ?? []).filter(n => !n.read && !snoozedRows.has(n.id)).length;
     setBusy(true);
     setItems(prev => (prev ?? []).map(n => ({ ...n, read: true })));
+    const title = markTabReadToastTitle(cleared, 'all');
+    if (title) {
+      toast({ id: 'mark-all-read', kind: 'success', title, durationMs: 3500 });
+    }
     try { await markAllNotificationsRead(); }
     catch (e) { setError(e instanceof Error ? e.message : 'Could not mark all read.'); }
     finally { setBusy(false); }
