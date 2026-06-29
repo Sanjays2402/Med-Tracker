@@ -4,6 +4,7 @@ import {
   daysLeftToneVar,
   buildSupplyBar,
   runoutChip,
+  remainingChip,
 } from '../lib/days-left-tone';
 import type { Medication } from '../lib/types';
 
@@ -163,5 +164,31 @@ describe('runoutChip', () => {
   it('forwards custom cut points to daysLeftTone', () => {
     const chip = runoutChip(med({ remainingDoses: 20, schedule: '08:00 daily' }), { dangerBelow: 14, warnBelow: 28 });
     expect(chip.tone).toBe('warn'); // 20 is < 28 and >= 14
+  });
+});
+
+describe('remainingChip', () => {
+  it('returns null label + neutral tone when remaining is unknown', () => {
+    expect(remainingChip(null)).toEqual({ remaining: null, tone: 'neutral', label: null });
+    expect(remainingChip(undefined)).toEqual({ remaining: null, tone: 'neutral', label: null });
+  });
+
+  it('tones low / mid / healthy counts on the same calm bands', () => {
+    expect(remainingChip(8).tone).toBe('danger');
+    expect(remainingChip(15).tone).toBe('warn');
+    expect(remainingChip(40).tone).toBe('ok');
+  });
+
+  it('reads the cut points as the calmer band', () => {
+    expect(remainingChip(10).tone).toBe('warn'); // 10 is not danger
+    expect(remainingChip(20).tone).toBe('ok'); // 20 is not warn
+  });
+
+  it('labels the count', () => {
+    expect(remainingChip(8).label).toBe('8 left');
+  });
+
+  it('accepts custom cut points', () => {
+    expect(remainingChip(15, { dangerBelow: 20 }).tone).toBe('danger');
   });
 });

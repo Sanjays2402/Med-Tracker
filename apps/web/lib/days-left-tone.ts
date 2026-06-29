@@ -157,3 +157,46 @@ export function runoutChip(med: Medication, opts: DaysLeftToneOptions = {}): Run
     label: `~${daysLeft}d left`,
   };
 }
+
+export interface RemainingChipOptions {
+  /** Below this many doses the chip is "danger" (coral). Default 10. */
+  dangerBelow?: number;
+  /** Below this many doses the chip is at least "warn" (amber). Default 20. */
+  warnBelow?: number;
+}
+
+const DEFAULT_DOSES_DANGER = 10;
+const DEFAULT_DOSES_WARN = 20;
+
+export interface RemainingChip {
+  /** Remaining doses, or null when unknown. */
+  remaining: number | null;
+  /** Pill tone for the raw doses-count fallback chip. */
+  tone: DaysLeftTone;
+  /** Compact chip label, e.g. "8 left", or null when there's no count. */
+  label: string | null;
+}
+
+/**
+ * Render-ready chip for the medications-LIST fallback "N left" pill — the row
+ * that has a doses COUNT but isn't run-out-sorted (so it can't show the
+ * "~Nd left" estimate). It tones by remaining doses on the same calm bands the
+ * run-out chip uses for days, so a low-stock med reads coral and a healthy one
+ * neutral, instead of an untoned grey count. Bands are [..10) danger, [10..20)
+ * warn, [20..) ok; exactly the cut point reads the calmer band. Returns
+ * tone 'neutral' + null label when remaining is unknown (no chip). The two cut
+ * points are overridable. Pure; deterministic.
+ */
+export function remainingChip(
+  remaining: number | null | undefined,
+  opts: RemainingChipOptions = {},
+): RemainingChip {
+  if (remaining == null || !Number.isFinite(remaining)) {
+    return { remaining: null, tone: 'neutral', label: null };
+  }
+  const danger = opts.dangerBelow ?? DEFAULT_DOSES_DANGER;
+  const warn = opts.warnBelow ?? DEFAULT_DOSES_WARN;
+  const tone: DaysLeftTone =
+    remaining < danger ? 'danger' : remaining < warn ? 'warn' : 'ok';
+  return { remaining, tone, label: `${remaining} left` };
+}

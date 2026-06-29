@@ -7,7 +7,7 @@ import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill } from '../../../compo
 import { listMedications } from '../../../lib/data';
 import type { Medication } from '../../../lib/types';
 import { filterMedications, sortMedications, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
-import { runoutChip } from '../../../lib/days-left-tone';
+import { runoutChip, remainingChip } from '../../../lib/days-left-tone';
 import { SupplySparkline } from '../../../components/SupplySparkline';
 import {
   DENSITY_OPTIONS,
@@ -313,6 +313,7 @@ function MedRow({
   // Run-out chip toned by the SAME daysLeftTone bands the detail-hero supply bar
   // uses, so a med reads the same colour in the list and on its detail page.
   const chip = runoutChip(m);
+  const restChip = remainingChip(m.remainingDoses);
   return (
     <li>
       <Link
@@ -336,9 +337,9 @@ function MedRow({
           <Pill tone={runoutPillTone(chip.tone)}>
             {chip.label}
           </Pill>
-        ) : typeof m.remainingDoses === 'number' && (
-          <Pill tone={m.remainingDoses < 10 ? 'danger' : m.remainingDoses < 20 ? 'warn' : 'neutral'}>
-            {m.remainingDoses} left
+        ) : restChip.label && (
+          <Pill tone={runoutPillTone(restChip.tone)}>
+            {restChip.label}
           </Pill>
         )}
       </Link>
