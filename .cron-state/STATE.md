@@ -1500,23 +1500,117 @@ across 63 suites as of tick 52. Each is a real user-facing capability in apps/we
 matching the sage/coral/amber pillbox language and the Linear/Raycast bar; prefer
 extracting non-trivial logic into a tested lib/*.ts module. Backend tiers paused.
 
-481. [ ] `today-expand-undo-burst` — pair the #476 reopen toast with a tiny sage
-    burst on the reopened section headers (reduced-motion respected) so the eye
-    catches which sections came back.
-482. [ ] `refills-density-keyboard-help` — add the new "d flips density" shortcut
-    to the global KeyboardHelp (?) overlay's Actions group so it's discoverable
-    alongside the other shortcuts, gated to the /refills route.
-483. [ ] `notifications-favicon-dot-tone` — tone the favicon badge by the worst
-    unread kind (coral for a refill/system alert, amber for a plain reminder) so
-    the dot's colour carries urgency, not just presence.
-484. [ ] `medications-supply-legend-click-filter` — make each supply-legend band a
-    toggle that filters the list to meds in that band (click "under 7d · 2" to see
-    just those two), with an active-band chip and a clear control.
-485. [ ] `caregivers-bar-percent-aria-sync` — when "Show percents" is on, drop the
-    now-redundant percent from each chip's aria-label (the visible text reads it)
-    so a screen reader doesn't hear "50%" twice.
+481. [x] `today-expand-undo-burst` — sage burst on the headers an "Expand done"
+    tap reopens on /today, reduced-motion respected, pairing the #476 reopen
+    toast (tick 53 / 09918bf). reopenedLabels in section-collapse-pref; +4 tests.
+482. [x] `refills-density-keyboard-help` — fold "D - Flip refill timeline density"
+    into the KeyboardHelp (?) Actions group only on /refills (tick 53 / 5c23154).
+    New lib/keyboard-shortcuts (BASE_GROUPS + routeActionShortcut + shortcutGroupsFor);
+    new 10-test suite.
+483. [x] `notifications-favicon-dot-tone` — tone the favicon badge by worst unread
+    kind (coral alert / amber reminder) (tick 53 / 58c7e68). FaviconBadgeTone +
+    faviconBadgeColor in favicon-badge; unreadBadgeTone in notification-filter;
+    +6 +6 tests.
+484. [x] `medications-supply-legend-click-filter` — each supply-legend band is a
+    toggle that filters the list to that band, active-band chip + Clear (tick 53 /
+    54d5027). filterBySupplyBand + supplyBandLabel + SupplyBand in days-left-tone;
+    +7 tests.
+485. [x] `caregivers-bar-percent-aria-sync` — drop the redundant percent from each
+    at-risk chip's aria-label when "Show percents" surfaces it visibly (tick 53 /
+    dc934d1). expirySegmentAriaLabel { includePercent } option; +5 tests.
+
+### Tier 2Q — frontend slices (FRONTEND-FOCUS override, refill after tick 53)
+
+Tick 53 closed five Tier 2P items (#481-485). web vitest harness is 1132 tests
+across 64 suites as of tick 53 (+1 suite: keyboard-shortcuts 10). Each is a real
+user-facing capability in apps/web matching the sage/coral/amber pillbox language
+and the Linear/Raycast bar; prefer extracting non-trivial logic into a tested
+lib/*.ts module. Backend tiers paused.
+
+486. [ ] `medications-band-filter-count-caption` — when a supply-band filter is
+    active, fold its narrowed count into the existing active-sort caption ("...,
+    3 with under 7 days of supply") so the count reads in one place, not just the
+    legend's inline chip.
+487. [ ] `refills-density-help-hint-chip` — add a small "?" affordance beside the
+    /refills density toggle that opens the KeyboardHelp overlay, so the now-listed
+    "d" shortcut is discoverable from the control itself.
+488. [ ] `notifications-favicon-tone-title-sync` — prefix the tab title with a tone
+    marker matching the favicon dot (a quiet bullet for reminder-only unread vs a
+    louder one for alerts) so the title and the dot agree at a glance.
+489. [ ] `today-burst-respects-section-order` — when multiple sections reopen at
+    once, stagger the burst by part-of-day order (Morning first) with a tiny delay
+    so the eye tracks top-to-bottom instead of all-at-once.
+490. [ ] `caregivers-band-percent-pref-aria-live` — announce the "Show percents"
+    toggle state change via an aria-live region ("Percents shown" / "Percents
+    hidden") so a screen-reader user hears the chips changed, not just a silent
+    relabel.
+491. [ ] `medications-supply-legend-keyboard` — let the supply-band legend be
+    arrow-key navigable (roving tabindex) so the new band-filter toggles are one
+    tab stop, parallel to the caregivers expiry-bar chips.
+492. [ ] `refills-empty-band-tab-hint` — when a status tab is empty but a run-out
+    is imminent in another tab, name the soonest run-out's medication, not just
+    the day count, so the nudge is specific.
+493. [ ] `notifications-day-group-tone-dot` — tone each day-group's unread dot by
+    the worst unread kind in that group (matching the favicon tone rule) so a
+    busy day's header signals urgency, not just presence.
+494. [ ] `today-section-collapse-count-aria` — give the collapsed-section summary
+    chip ("3 done") a fuller aria-label ("Morning, 3 of 3 doses done, expand") so
+    the fold control reads its state to assistive tech.
+495. [ ] `caregivers-health-bar-legend-order-pref` — let the user pin the at-risk
+    legend to lead with expired (most urgent) instead of active, persisted, for a
+    triage-first read.
 
 ## Tick log
+
+- 2026-06-29 10:36 PDT — tick 53: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 09918bf today-expand-undo-burst, 5c23154 refills-density-keyboard-help,
+  58c7e68 notifications-favicon-dot-tone, 54d5027 medications-supply-legend-click-filter,
+  dc934d1 caregivers-bar-percent-aria-sync. Gate: `@med/web` BUILD SUCCEEDS
+  (Compiled successfully in 3.4s; all routes prerendered incl. today/refills/
+  notifications/medications/caregivers). Test 1132/1132 across 64 suites (+37,
+  +1 new suite: keyboard-shortcuts 10; section-collapse 32, favicon-badge 19,
+  notification-filter 63, days-left-tone 46, expiry-bar 41). Typecheck: baseline
+  980 (@types/node + React-dup Link) UNCHANGED; grep-confirmed ZERO new errors
+  trace to any edited lib or page. Lint: `next lint` fails identically (Next 16
+  removed it). Push 959e3ab..dc934d1, origin/main verified. FORTY-THIRD clean
+  tick, twenty-fifth frontend tick. Five surfaces (today, refills, notifications,
+  medications, caregivers); one new lib module (keyboard-shortcuts) + helpers in
+  section-collapse-pref/favicon-badge/notification-filter/days-left-tone/expiry-bar,
+  all tested. Refilled Tier 2Q (#486-495).
+  Notes:
+  - `reopenedLabels(groups, set)` in section-collapse-pref returns the done
+    labels an Expand tap reopens; newlyExpandedCount now counts it so the toast
+    count (#476) and the new burst-set can never drift. The /today page wraps
+    each section in a relative container and renders the existing reduced-motion-
+    safe `.caught-up-burst` keyframe (from #468) on burst-set members; burst
+    auto-clears after 900ms. matchMedia gate mirrors the notifications burst.
+  - `lib/keyboard-shortcuts` is the first module to make KeyboardHelp route-aware.
+    BASE_GROUPS holds the always-on catalogue; routeActionShortcut(pathname)
+    returns the /refills density-flip row (reusing STRIP_DENSITY_HOTKEY so the
+    cheat sheet and the live listener can't drift); shortcutGroupsFor inserts it
+    BEFORE the always-last Esc row and returns fresh arrays so BASE_GROUPS can't
+    be mutated. KeyboardHelp derives groups from usePathname; the inline GROUPS
+    const is gone. Pattern for future page-local shortcuts: add a route branch to
+    routeActionShortcut.
+  - `FaviconBadgeTone` defaults to 'alert' so the existing favicon-badge callers
+    and tests keep the coral dot with no change. `unreadBadgeTone(items)` treats
+    'reminder' as the single quiet kind; every other unread kind escalates to
+    'alert' immediately (early return), mirroring how the notification tabs fold
+    caregiver into System. The page passes the tone into faviconHref so the drawn
+    colour and the classification share one source.
+  - `filterBySupplyBand` + `supplyBandLabel` reuse buildSupplyBar/daysLeftTone so
+    the band filter, the inline bars, the legend counts, and the labels all bin
+    on the SAME cut points. The page computes legend counts over the SEARCHED
+    list (pre band-filter) so selecting a band doesn't collapse the other swatches
+    to zero, and gates the filter on cfg.showSupplyBar so the Clear control is
+    always reachable (no stranded filter when a density hides the bars).
+  - `expirySegmentAriaLabel`'s new `{ includePercent }` defaults to true, so the
+    five existing call-shapes/tests are untouched. When false it leads with the
+    kind phrase (no "N% "); the page passes `!showPercents` so the chip doesn't
+    speak the percent twice once it's visible. The bar-level
+    expiryBarAriaDescription still names every percent, so no data is lost.
+  - A sibling subagent may run concurrently; staged only own files per commit to
+    keep slices clean (no `git add -A`).
 
 - 2026-06-29 07:15 PDT — tick 52: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 363ef9e today-fold-toast-expand-undo, 39005fa refills-density-keyboard,
