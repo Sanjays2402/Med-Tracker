@@ -7,7 +7,7 @@ import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill } from '../../../compo
 import { listMedications } from '../../../lib/data';
 import type { Medication } from '../../../lib/types';
 import { filterMedications, sortMedications, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
-import { runoutChip, remainingChip, buildSupplyBar, supplyBarAriaLabel, supplyBarColor } from '../../../lib/days-left-tone';
+import { runoutChip, remainingChip, buildSupplyBar, supplyBarAriaLabel, supplyBarColor, supplyLegend } from '../../../lib/days-left-tone';
 import { SupplySparkline } from '../../../components/SupplySparkline';
 import {
   DENSITY_OPTIONS,
@@ -124,6 +124,10 @@ export default function MedicationsPage() {
   const visible = meds ? sortMedications(filterMedications(meds, query), sortBy) : [];
   const cfg = densityConfig(density);
   const runout = grouped ? summarizeRunout(visible) : null;
+  // The inline supply bars are only rendered at this density AND only on rows
+  // with supply data; show the colour key only when at least one bar is on
+  // screen, so the legend never decodes bars that aren't there.
+  const showSupplyLegend = cfg.showSupplyBar && visible.some((m) => buildSupplyBar(m).hasData);
 
   return (
     <div className="space-y-6">
@@ -283,6 +287,21 @@ export default function MedicationsPage() {
             ))}
           </ul>
         </Surface>
+      )}
+
+      {/* Supply-bar colour key — only when bars are actually on screen, so the
+          ok/warn/danger swatches decode the tiny days-left runways below each row.
+          Bands forwarded from supplyLegend so the labels never drift from bars. */}
+      {showSupplyLegend && (
+        <div className="flex items-center gap-3 flex-wrap px-1 text-[11px] text-[var(--ink-muted)]" aria-label="Supply bar colour key">
+          <span className="uppercase tracking-wide text-[10px]">Supply</span>
+          {supplyLegend().map((e) => (
+            <span key={e.tone} className="inline-flex items-center gap-1.5">
+              <span className="inline-block w-2 h-2 rounded-full" style={{ background: e.color }} aria-hidden />
+              {e.label}
+            </span>
+          ))}
+        </div>
       )}
     </div>
   );

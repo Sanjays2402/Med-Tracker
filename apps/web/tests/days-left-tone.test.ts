@@ -5,6 +5,7 @@ import {
   buildSupplyBar,
   supplyBarAriaLabel,
   supplyBarColor,
+  supplyLegend,
   runoutChip,
   remainingChip,
 } from '../lib/days-left-tone';
@@ -220,5 +221,18 @@ describe('supplyBarColor', () => {
     expect(supplyBarColor('warn')).toBe('var(--warn)');
     expect(supplyBarColor('danger')).toBe('var(--danger)');
     expect(supplyBarColor('neutral')).toBe('var(--ink-muted)');
+  });
+});
+
+describe('supplyLegend', () => {
+  it('decodes the three bands with default cut points', () => {
+    const l = supplyLegend();
+    expect(l.map((e) => e.tone)).toEqual(['danger', 'warn', 'ok']);
+    expect(l.map((e) => e.label)).toEqual(['under 7d', 'under 14d', '14d+']);
+    expect(l.map((e) => e.color)).toEqual(['var(--danger)', 'var(--warn)', 'var(--ok)']);
+  });
+  it('reflects overridden cut points so labels never drift from bars', () => {
+    const l = supplyLegend({ dangerBelow: 5, warnBelow: 10 });
+    expect(l.map((e) => e.label)).toEqual(['under 5d', 'under 10d', '10d+']);
   });
 });

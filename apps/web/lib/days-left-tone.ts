@@ -155,6 +155,31 @@ export function supplyBarColor(tone: DaysLeftTone): string {
   }
 }
 
+export interface SupplyLegendEntry {
+  tone: Exclude<DaysLeftTone, 'neutral'>;
+  /** Short label decoding the colour, e.g. "<7d", "<14d", "14d+". */
+  label: string;
+  /** CSS var for the swatch. */
+  color: string;
+}
+
+/**
+ * Decode the inline supply-bar colours: three swatches keyed to the SAME bands
+ * daysLeftTone uses (danger < 7d, warn < 14d, ok >= 14d), so a one-line key
+ * under the list explains the bars instead of leaving the colours unlabelled.
+ * The cut points are forwarded from daysLeftTone's defaults so the labels never
+ * drift from the bars. Pure; no React.
+ */
+export function supplyLegend(opts: DaysLeftToneOptions = {}): SupplyLegendEntry[] {
+  const danger = opts.dangerBelow ?? DEFAULT_DANGER_BELOW;
+  const warn = opts.warnBelow ?? DEFAULT_WARN_BELOW;
+  return [
+    { tone: 'danger', label: `under ${danger}d`, color: supplyBarColor('danger') },
+    { tone: 'warn', label: `under ${warn}d`, color: supplyBarColor('warn') },
+    { tone: 'ok', label: `${warn}d+`, color: supplyBarColor('ok') },
+  ];
+}
+
 export interface RunoutChip {
   /** Estimated whole days of supply left, or null when unknown. */
   daysLeft: number | null;
