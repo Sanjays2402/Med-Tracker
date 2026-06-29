@@ -185,3 +185,30 @@ export function overdueSectionCount(
 export function jumpToFirstLabel(section: PartOfDay | null): string {
   return section ? `Jump to first · ${section}` : 'Jump to first';
 }
+
+/** Overdue-dose shape with lateness, for the per-section escalation tint. */
+export interface OverdueLateLike {
+  scheduledAt: string;
+  /** Whole minutes past due (>= 0). */
+  minutesLate: number;
+}
+
+/**
+ * Worst (largest) minutesLate per part-of-day section. The section danger dot on
+ * /today should tint by how late ITS oldest overdue dose is, not just whether
+ * something's overdue — a section whose dose just slipped past reads softer than
+ * one with a dose hours late. This tallies the max lateness per bucket so the
+ * header can escalate its dot independently. Every section key present (0 when
+ * none). Pure; composes partOfDayForISO so buckets match the rendered grouping.
+ */
+export function worstLatenessByPartOfDay(
+  overdue: readonly OverdueLateLike[],
+): Record<PartOfDay, number> {
+  const out: Record<PartOfDay, number> = { Morning: 0, Afternoon: 0, Evening: 0, Night: 0 };
+  for (const d of overdue) {
+    const sec = partOfDayForISO(d.scheduledAt);
+    const m = Number.isFinite(d.minutesLate) ? Math.max(0, d.minutesLate) : 0;
+    if (m > out[sec]) out[sec] = m;
+  }
+  return out;
+}

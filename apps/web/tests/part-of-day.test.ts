@@ -10,6 +10,7 @@ import {
   countOverdueByPartOfDay,
   overdueSectionCount,
   jumpToFirstLabel,
+  worstLatenessByPartOfDay,
   type PartOfDay,
   type PartOfDayDose,
 } from '../lib/part-of-day';
@@ -212,5 +213,31 @@ describe('jumpToFirstLabel', () => {
 
   it('stays the bare label when nothing is overdue', () => {
     expect(jumpToFirstLabel(null)).toBe('Jump to first');
+  });
+});
+
+describe('worstLatenessByPartOfDay', () => {
+  it('keeps the largest lateness per section, every key present', () => {
+    const out = worstLatenessByPartOfDay([
+      { scheduledAt: isoAtHour(8), minutesLate: 30 },
+      { scheduledAt: isoAtHour(9), minutesLate: 200 },
+      { scheduledAt: isoAtHour(14), minutesLate: 45 },
+    ]);
+    expect(out.Morning).toBe(200);
+    expect(out.Afternoon).toBe(45);
+    expect(out.Evening).toBe(0);
+    expect(out.Night).toBe(0);
+  });
+
+  it('returns all-zero for an empty overdue set', () => {
+    expect(worstLatenessByPartOfDay([])).toEqual({ Morning: 0, Afternoon: 0, Evening: 0, Night: 0 });
+  });
+
+  it('clamps negative / non-finite lateness to 0', () => {
+    const out = worstLatenessByPartOfDay([
+      { scheduledAt: isoAtHour(22), minutesLate: -5 },
+      { scheduledAt: isoAtHour(23), minutesLate: Number.NaN },
+    ]);
+    expect(out.Night).toBe(0);
   });
 });

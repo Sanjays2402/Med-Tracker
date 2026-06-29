@@ -31,7 +31,7 @@ import {
   formatLateness,
   overdueTier,
 } from '../../../lib/overdue';
-import { groupByPartOfDay, sectionCountLabel, sectionForOverdue, countOverdueByPartOfDay, overdueSectionCount, jumpToFirstLabel, type PartOfDayCounts } from '../../../lib/part-of-day';
+import { groupByPartOfDay, sectionCountLabel, sectionForOverdue, countOverdueByPartOfDay, overdueSectionCount, jumpToFirstLabel, worstLatenessByPartOfDay, type PartOfDayCounts } from '../../../lib/part-of-day';
 import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
 import { sectionProgress, sectionProgressLabel, sectionFillTone } from '../../../lib/section-progress';
 import { dayProgressRoll, dayPercentPrefix } from '../../../lib/day-progress-roll';
@@ -235,6 +235,10 @@ export default function TodayPage() {
   // Per-section overdue tally, so the flagged section's dot can also say HOW
   // many overdue doses are waiting there (only shown when more than one).
   const overdueCounts = countOverdueByPartOfDay(overdueModel.overdue);
+  // Worst (largest) lateness per section, so the flagged section's dot can
+  // escalate its tint independently: amber while its oldest dose is < 2h late,
+  // coral once past — reusing overdueTier so the dot matches the banner's rule.
+  const sectionLateness = worstLatenessByPartOfDay(overdueModel.overdue);
 
   function jumpToFirstOverdue() {
     const id = overdueModel.firstOverdueId;
@@ -429,18 +433,29 @@ export default function TodayPage() {
                           : 'Overdue dose in this section'
                       }
                     >
-                      <span
-                        className="w-2 h-2 rounded-full"
-                        style={{ background: 'var(--danger)' }}
-                      />
-                      {overdueSectionCount(label, overdueSection, overdueCounts) !== null && (
-                        <span
-                          className="tabular text-[10.5px] font-semibold leading-none"
-                          style={{ color: 'var(--danger)' }}
-                        >
-                          {overdueSectionCount(label, overdueSection, overdueCounts)}
-                        </span>
-                      )}
+                      {(() => {
+                        // Tint the dot by how late this section's oldest overdue
+                        // dose is: amber under 2h, coral past — same rule the
+                        // banner uses, so the section flag escalates in step.
+                        const sectTone = overdueTier(sectionLateness[label]).tone;
+                        const sectColor = sectTone === 'danger' ? 'var(--danger)' : 'var(--warn)';
+                        return (
+                          <>
+                            <span
+                              className="w-2 h-2 rounded-full"
+                              style={{ background: sectColor }}
+                            />
+                            {overdueSectionCount(label, overdueSection, overdueCounts) !== null && (
+                              <span
+                                className="tabular text-[10.5px] font-semibold leading-none"
+                                style={{ color: sectColor }}
+                              >
+                                {overdueSectionCount(label, overdueSection, overdueCounts)}
+                              </span>
+                            )}
+                          </>
+                        );
+                      })()}
                     </span>
                   )}
                   {isCurrentPartOfDay(label, new Date(now).getHours()) && (
