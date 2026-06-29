@@ -216,9 +216,10 @@ export default function CaregiversPage() {
             {bar.segments.map((seg) => (
               <span
                 key={seg.kind}
-                className="inline-flex items-center gap-1.5"
+                className="inline-flex items-center gap-1.5 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-1"
                 title={expirySegmentTooltip(seg, bar.total)}
                 role="img"
+                tabIndex={0}
                 aria-label={expirySegmentAriaLabel(seg, bar.total)}
               >
                 <span
