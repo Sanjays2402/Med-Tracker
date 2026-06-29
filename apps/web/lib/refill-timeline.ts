@@ -194,9 +194,31 @@ export function markRelativeLabel(mark: Pick<TimelineMark, 'daysFromNow'>): stri
 export function markTitle(
   mark: Pick<TimelineMark, 'medicationName' | 'refillBy' | 'daysFromNow'>,
 ): string {
+  // An overdue mark reads more clearly in the past tense.
+  if (mark.daysFromNow < 0) return markTitleOverdue(mark);
   const date = markDateLabel(mark);
   const rel = markRelativeLabel(mark);
   return date
     ? `${mark.medicationName} · ${date} · ${rel}`
     : `${mark.medicationName} · ${rel}`;
+}
+
+/**
+ * Past-tense hover title for an OVERDUE mark, framing the relative clause as
+ * "was due Nd ago" instead of "Nd overdue" so the title reads naturally for a
+ * date already behind us: "Amoxicillin · Jun 23 · was due 2d ago". The
+ * day-zero case (due today, just past the boundary) reads "was due today". Falls
+ * back to medication + clause when the date can't be parsed so a bad date never
+ * leaves a stray separator. Pure; markTitle delegates here for the overdue
+ * branch so the strip never has to special-case the past tense itself.
+ */
+export function markTitleOverdue(
+  mark: Pick<TimelineMark, 'medicationName' | 'refillBy' | 'daysFromNow'>,
+): string {
+  const d = mark.daysFromNow;
+  const clause = d < 0 ? `was due ${-d}d ago` : 'was due today';
+  const date = markDateLabel(mark);
+  return date
+    ? `${mark.medicationName} · ${date} · ${clause}`
+    : `${mark.medicationName} · ${clause}`;
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { daysFromNow, buildTimeline, todayLabel, markDateLabel, markRelativeLabel, markTitle, type TimelineRefillInput } from '../lib/refill-timeline';
+import { daysFromNow, buildTimeline, todayLabel, markDateLabel, markRelativeLabel, markTitle, markTitleOverdue, type TimelineRefillInput } from '../lib/refill-timeline';
 
 // Fixed reference: 2026-06-25 12:00 local.
 const NOW = new Date(2026, 5, 25, 12, 0, 0, 0).getTime();
@@ -164,15 +164,35 @@ describe('markTitle', () => {
     expect(markTitle(soon)).toBe('Atorvastatin · Jun 28 · in 3d');
   });
 
-  it('names an overdue mark with its date and overdue clause', () => {
+  it('frames an overdue mark in the past tense', () => {
     const overdue = model.marks.find((m) => m.id === 'overdue')!;
     // overdue is NOW - 2 days = 2026-06-23.
-    expect(markTitle(overdue)).toBe('Amoxicillin · Jun 23 · 2d overdue');
+    expect(markTitle(overdue)).toBe('Amoxicillin · Jun 23 · was due 2d ago');
   });
 
   it('drops the date segment (no stray separator) when the date is unparseable', () => {
     expect(
       markTitle({ medicationName: 'X', refillBy: 'not-a-date', daysFromNow: 5 }),
     ).toBe('X · in 5d');
+  });
+});
+
+describe('markTitleOverdue', () => {
+  it('reads "was due Nd ago" with the calendar date', () => {
+    expect(
+      markTitleOverdue({ medicationName: 'Amoxicillin', refillBy: at(-2), daysFromNow: -2 }),
+    ).toBe('Amoxicillin · Jun 23 · was due 2d ago');
+  });
+
+  it('reads "was due today" at the day boundary', () => {
+    expect(
+      markTitleOverdue({ medicationName: 'Lisinopril', refillBy: at(0), daysFromNow: 0 }),
+    ).toBe('Lisinopril · Jun 25 · was due today');
+  });
+
+  it('drops the date segment when the date is unparseable', () => {
+    expect(
+      markTitleOverdue({ medicationName: 'X', refillBy: 'not-a-date', daysFromNow: -3 }),
+    ).toBe('X · was due 3d ago');
   });
 });
