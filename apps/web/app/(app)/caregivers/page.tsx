@@ -16,12 +16,18 @@ import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
 import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend } from '../../../lib/expiry-bar';
+import {
+  EXPIRY_BAR_STORAGE_KEY,
+  parseShowHealthBar,
+  serializeShowHealthBar,
+} from '../../../lib/expiry-bar-pref';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [sortBy, setSortBy] = React.useState<CaregiverSortKey>('recent');
   const [query, setQuery] = React.useState('');
+  const [showHealthBar, setShowHealthBar] = React.useState(false);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
   const load = React.useCallback(async () => {
@@ -30,6 +36,21 @@ export default function CaregiversPage() {
     catch (e) { setError(e instanceof Error ? e.message : 'Could not load caregivers.'); }
   }, []);
   React.useEffect(() => { void load(); }, [load]);
+
+  // Restore the "show health bar" preference on mount.
+  React.useEffect(() => {
+    try { setShowHealthBar(parseShowHealthBar(window.localStorage.getItem(EXPIRY_BAR_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - keep default */ }
+  }, []);
+
+  const toggleHealthBar = React.useCallback(() => {
+    setShowHealthBar((prev) => {
+      const next = !prev;
+      try { window.localStorage.setItem(EXPIRY_BAR_STORAGE_KEY, serializeShowHealthBar(next)); }
+      catch { /* best-effort persistence */ }
+      return next;
+    });
+  }, []);
 
   // "/" focuses the search box (without typing the slash) when not already typing.
   React.useEffect(() => {
@@ -241,17 +262,40 @@ export default function CaregiversPage() {
       )}
 
       {/* When the bar is all-active (nothing soon/expired), the coloured bar is
-          hidden — surface a single muted line so the header still carries a
-          one-line health read instead of going silent on a tidy list. */}
+          hidden by default. The user can opt to always render the health bar
+          (muted single sage segment) for a consistent header read; otherwise we
+          show the one-line legend with a toggle to enable it. */}
       {bar && !bar.hasRisk && allActiveLegend(bar) && (
-        <p className="text-[12px] text-[var(--ink-muted)] inline-flex items-center gap-1.5">
-          <span
-            className="inline-block w-2 h-2 rounded-full"
-            style={{ background: 'var(--ok)' }}
-            aria-hidden
-          />
-          {allActiveLegend(bar)}
-        </p>
+        <div className="space-y-1.5">
+          {showHealthBar && (
+            <div
+              className="flex h-2 rounded-full overflow-hidden opacity-70"
+              style={{ background: 'var(--bg-sunk)' }}
+              role="img"
+              aria-label={`Share access: ${allActiveLegend(bar)}`}
+            >
+              <div className="w-full h-full" style={{ background: 'var(--ok)' }} />
+            </div>
+          )}
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[12px] text-[var(--ink-muted)] inline-flex items-center gap-1.5">
+              <span
+                className="inline-block w-2 h-2 rounded-full"
+                style={{ background: 'var(--ok)' }}
+                aria-hidden
+              />
+              {allActiveLegend(bar)}
+            </p>
+            <button
+              type="button"
+              onClick={toggleHealthBar}
+              aria-pressed={showHealthBar}
+              className="text-[11px] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
+            >
+              {showHealthBar ? 'Hide health bar' : 'Show health bar'}
+            </button>
+          </div>
+        </div>
       )}
 
       {items === null ? (
