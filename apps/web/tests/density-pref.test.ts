@@ -55,6 +55,7 @@ describe('densityConfig', () => {
     const c = densityConfig('comfortable');
     expect(c.showSubline).toBe(true);
     expect(c.showSparkline).toBe(true);
+    expect(c.showSupplyBar).toBe(true);
     expect(c.rowPadding).toBe('p-3');
     expect(c.iconSize).toBe(18);
   });
@@ -62,6 +63,7 @@ describe('densityConfig', () => {
     const c = densityConfig('compact');
     expect(c.showSubline).toBe(false);
     expect(c.showSparkline).toBe(false);
+    expect(c.showSupplyBar).toBe(false);
     expect(c.rowPadding).toBe('px-3 py-1.5');
     expect(c.iconSize).toBe(15);
   });

@@ -34,6 +34,8 @@ export interface DensityConfig {
   showSubline: boolean;
   /** Show the inline supply sparkline. */
   showSparkline: boolean;
+  /** Show the thin inline supply bar (mobile-friendly companion to the sparkline). */
+  showSupplyBar: boolean;
   /** Icon tile size in px. */
   iconSize: number;
   /** Name text size utility. */
@@ -45,6 +47,7 @@ const CONFIG: Record<Density, DensityConfig> = {
     rowPadding: 'p-3',
     showSubline: true,
     showSparkline: true,
+    showSupplyBar: true,
     iconSize: 18,
     nameClass: 'text-sm',
   },
@@ -52,6 +55,7 @@ const CONFIG: Record<Density, DensityConfig> = {
     rowPadding: 'px-3 py-1.5',
     showSubline: false,
     showSparkline: false,
+    showSupplyBar: false,
     iconSize: 15,
     nameClass: 'text-[13px]',
   },

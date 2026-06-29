@@ -7,7 +7,7 @@ import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill } from '../../../compo
 import { listMedications } from '../../../lib/data';
 import type { Medication } from '../../../lib/types';
 import { filterMedications, sortMedications, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
-import { runoutChip, remainingChip } from '../../../lib/days-left-tone';
+import { runoutChip, remainingChip, buildSupplyBar } from '../../../lib/days-left-tone';
 import { SupplySparkline } from '../../../components/SupplySparkline';
 import {
   DENSITY_OPTIONS,
@@ -314,6 +314,7 @@ function MedRow({
   // uses, so a med reads the same colour in the list and on its detail page.
   const chip = runoutChip(m);
   const restChip = remainingChip(m.remainingDoses);
+  const supplyBar = cfg.showSupplyBar ? buildSupplyBar(m) : null;
   return (
     <li>
       <Link
@@ -330,6 +331,27 @@ function MedRow({
           <div className={`${cfg.nameClass} font-medium truncate`}>{m.name} {m.strength && <span className="text-neutral-500 font-normal">{m.strength}</span>}</div>
           {cfg.showSubline && (
             <div className="text-xs text-neutral-500 dark:text-neutral-400 truncate">{m.schedule ?? 'No schedule'} {m.form ? `, ${m.form}` : ''}</div>
+          )}
+          {/* Inline supply bar — a tiny days-left runway, shown on small screens
+              where the sm-only sparkline is hidden, so each row still carries a
+              glanceable supply read. Reuses buildSupplyBar's pct + tone. */}
+          {supplyBar?.hasData && (
+            <div className="sm:hidden mt-1.5 flex items-center gap-1.5" aria-hidden>
+              <div className="h-1 flex-1 rounded-full overflow-hidden max-w-[120px]" style={{ background: 'var(--bg-sunk)' }}>
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${supplyBar.pct}%`,
+                    background:
+                      supplyBar.tone === 'ok' ? 'var(--ok)'
+                        : supplyBar.tone === 'warn' ? 'var(--warn)'
+                        : supplyBar.tone === 'danger' ? 'var(--danger)'
+                        : 'var(--ink-muted)',
+                  }}
+                />
+              </div>
+              <span className="text-[10.5px] tabular text-[var(--ink-muted)]">{supplyBar.daysLeft}d</span>
+            </div>
           )}
         </div>
         {cfg.showSparkline && <SupplySparkline med={m} className="hidden sm:block shrink-0" />}
