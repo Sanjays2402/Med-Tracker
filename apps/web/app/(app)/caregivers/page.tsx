@@ -15,7 +15,7 @@ import {
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend } from '../../../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip } from '../../../lib/expiry-bar';
 import {
   EXPIRY_BAR_STORAGE_KEY,
   parseShowHealthBar,
@@ -273,6 +273,7 @@ export default function CaregiversPage() {
               style={{ background: 'var(--bg-sunk)' }}
               role="img"
               aria-label={`Share access: ${allActiveLegend(bar)}`}
+              title={activeBarTooltip(bar) ?? undefined}
             >
               <div className="w-full h-full" style={{ background: 'var(--ok)' }} />
             </div>

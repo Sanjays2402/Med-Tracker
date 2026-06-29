@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend } from '../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip } from '../lib/expiry-bar';
 import type { ExpirySummary } from '../lib/caregiver-expiry';
 
 function summary(over: Partial<ExpirySummary>): ExpirySummary {
@@ -153,6 +153,22 @@ describe('allActiveLegend', () => {
     expect(allActiveLegend(bar)).toBe('All 2 shares active');
   });
 });
+
+describe('activeBarTooltip', () => {
+  it('names the active count over the total for a tidy list', () => {
+    const bar = expiryBar(summary({ active: 3, noExpiry: 1, total: 4 }))!;
+    expect(activeBarTooltip(bar)).toBe('4 of 4 shares active');
+  });
+  it('pluralises for a single share', () => {
+    const bar = expiryBar(summary({ active: 1, total: 1 }))!;
+    expect(activeBarTooltip(bar)).toBe('1 of 1 share active');
+  });
+  it('is null when the bar has risk (coloured segments speak for themselves)', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, total: 3 }))!;
+    expect(activeBarTooltip(bar)).toBeNull();
+  });
+});
+
 
 describe('expirySegmentAriaLabel', () => {
   it('pairs the segment percentage with its share of the whole list', () => {

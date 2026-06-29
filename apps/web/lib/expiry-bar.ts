@@ -186,6 +186,21 @@ export function allActiveLegend(bar: ExpiryBar): string | null {
 }
 
 /**
+ * Hover tooltip for the always-on health bar's single sage segment when nothing
+ * is at risk: "4 of 4 shares active". The always-on bar is a one-segment muted
+ * track a sighted user reads as "all good"; this names the exact share count so
+ * a hover confirms it. Composes expirySegmentTooltip with the bar's total as
+ * BOTH the count and the denominator (every share is active), so the noun
+ * pluralises on the total ("1 of 1 share active"). Returns null when the bar IS
+ * at risk (the coloured segments have their own per-segment tooltips) or there
+ * are no shares. Pure; no React.
+ */
+export function activeBarTooltip(bar: ExpiryBar): string | null {
+  if (bar.hasRisk || bar.total <= 0) return null;
+  return expirySegmentTooltip({ kind: 'active', count: bar.total }, bar.total);
+}
+
+/**
  * Self-contained aria-label for a SINGLE legend chip / bar segment, pairing its
  * percentage of the bar with its share of the whole list:
  * "25% expiring soon, 1 of 4 shares". The bar's overall aria-description names
