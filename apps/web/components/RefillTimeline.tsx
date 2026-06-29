@@ -2,6 +2,17 @@
 
 import * as React from 'react';
 import { buildTimeline, todayLabel, markTitle, legendCounts, legendCountSuffix, type TimelineRefillInput, type TimelineTone } from '../lib/refill-timeline';
+import {
+  STRIP_DENSITY_STORAGE_KEY,
+  DEFAULT_STRIP_DENSITY,
+  parseStripDensity,
+  serializeStripDensity,
+  stripDensityConfig,
+  toggleStripDensity,
+  otherStripDensityLabel,
+  trackHeight,
+  type StripDensity,
+} from '../lib/refill-timeline-density';
 
 /**
  * RefillTimeline — a horizontal strip plotting each refill's refill-by date
@@ -27,13 +38,31 @@ export function RefillTimeline({
 }) {
   // Recompute "now" once on mount so the strip is stable across re-renders.
   const [now] = React.useState(() => Date.now());
+  const [density, setDensity] = React.useState<StripDensity>(DEFAULT_STRIP_DENSITY);
   const model = React.useMemo(
     () => buildTimeline(refills, now, { windowDays }),
     [refills, now, windowDays],
   );
 
+  // Restore the persisted compact/comfortable choice on mount (parallels the
+  // medications density + refills sort prefs).
+  React.useEffect(() => {
+    try { setDensity(parseStripDensity(window.localStorage.getItem(STRIP_DENSITY_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - keep comfortable */ }
+  }, []);
+
+  const flipDensity = React.useCallback(() => {
+    setDensity((d) => {
+      const next = toggleStripDensity(d);
+      try { window.localStorage.setItem(STRIP_DENSITY_STORAGE_KEY, serializeStripDensity(next)); }
+      catch { /* best-effort persistence */ }
+      return next;
+    });
+  }, []);
+
   const laneCount = Math.max(1, ...model.marks.map((m) => m.lane + 1));
-  const trackHeight = 14 + laneCount * 30;
+  const cfg = stripDensityConfig(density);
+  const height = trackHeight(laneCount, density);
 
   if (model.marks.length === 0) return null;
 
@@ -41,12 +70,22 @@ export function RefillTimeline({
     <div className="sheet p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="eyebrow">next {windowDays} days</div>
-        {model.hasOverdue && (
-          <span className="capsule capsule-danger text-[11px]">overdue refills</span>
-        )}
+        <div className="flex items-center gap-2">
+          {model.hasOverdue && (
+            <span className="capsule capsule-danger text-[11px]">overdue refills</span>
+          )}
+          <button
+            type="button"
+            onClick={flipDensity}
+            aria-label={`Switch to ${otherStripDensityLabel(density)} spacing`}
+            className="text-[11px] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
+          >
+            {otherStripDensityLabel(density)}
+          </button>
+        </div>
       </div>
 
-      <div className="relative" style={{ height: trackHeight }}>
+      <div className="relative" style={{ height }}>
         {/* Overdue zone shading (left of today) */}
         {model.todayPosition > 0 && (
           <div
@@ -94,7 +133,7 @@ export function RefillTimeline({
               className="absolute z-20 flex items-center gap-1.5"
               style={{
                 left: `${m.position * 100}%`,
-                top: 10 + m.lane * 30,
+                top: cfg.laneTop + m.lane * cfg.laneSpacing,
                 transform: flip ? 'translateX(-100%)' : undefined,
                 flexDirection: flip ? 'row-reverse' : 'row',
               }}
