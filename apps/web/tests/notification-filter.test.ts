@@ -16,6 +16,7 @@ import {
   totalUnread,
   notificationsTitle,
   unreadCountPill,
+  unreadBadgeTone,
   dayGroupUnreadLabel,
   caughtUpCopy,
   shouldCaughtUpBurst,
@@ -343,5 +344,31 @@ describe('unreadCountPill', () => {
     expect(unreadCountPill(2)).toBe('2 unread');
     expect(unreadCountPill(0)).toBeNull();
     expect(unreadCountPill(120)).toBe('99+ unread');
+  });
+});
+
+describe('unreadBadgeTone', () => {
+  it('is null when nothing is unread', () => {
+    expect(unreadBadgeTone([n('a', 'reminder', true), n('b', 'refill', true)])).toBeNull();
+    expect(unreadBadgeTone([])).toBeNull();
+  });
+  it('is reminder (amber) when only plain reminders are unread', () => {
+    expect(unreadBadgeTone([n('a', 'reminder'), n('b', 'reminder', true)])).toBe('reminder');
+  });
+  it('escalates to alert (coral) for an unread refill', () => {
+    expect(unreadBadgeTone([n('a', 'reminder'), n('f', 'refill')])).toBe('alert');
+  });
+  it('escalates to alert for an unread system or caregiver notification', () => {
+    expect(unreadBadgeTone([n('s', 'system')])).toBe('alert');
+    expect(unreadBadgeTone([n('c', 'caregiver')])).toBe('alert');
+  });
+  it('ignores READ alerts when deciding the tone', () => {
+    // The refill + system are read, only a reminder is unread -> amber, not coral.
+    expect(unreadBadgeTone([n('f', 'refill', true), n('s', 'system', true), n('r', 'reminder')]))
+      .toBe('reminder');
+  });
+  it('treats a missing read flag as unread (matches isUnread)', () => {
+    const noFlag: NotificationItem = { id: 'x', title: 'x', kind: 'refill', createdAt: new Date().toISOString() };
+    expect(unreadBadgeTone([noFlag])).toBe('alert');
   });
 });

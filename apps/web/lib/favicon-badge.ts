@@ -23,8 +23,18 @@ export const STATIC_FAVICON_HREF = '/favicon.svg';
 /** Art colours, matching public/favicon.svg + the sage/coral design tokens. */
 const BG = '#2aa06b'; // sage rounded square (matches the static favicon)
 const PILL = '#ffffff'; // white pill glyph
-const BADGE = '#c95f3e'; // coral unread dot (matches --danger light)
+const BADGE_ALERT = '#c95f3e'; // coral dot for an alert-grade unread (matches --danger light)
+const BADGE_REMINDER = '#b78534'; // amber dot for a plain reminder (matches --warn light)
 const BADGE_RING = '#faf7f2'; // page background, as a separating ring around the dot
+
+/**
+ * Badge urgency tone. 'alert' (coral) is the louder kind — an unread refill or
+ * system/caregiver alert; 'reminder' (amber) is a plain dose reminder. The page
+ * derives this from the worst unread kind so the dot's colour carries urgency,
+ * not just presence. Defaults to 'alert' so a caller that doesn't care still
+ * gets the original coral dot.
+ */
+export type FaviconBadgeTone = 'alert' | 'reminder';
 
 export interface FaviconBadgeOptions {
   /**
@@ -33,6 +43,16 @@ export interface FaviconBadgeOptions {
    * per-render data URI swap isn't worth it. Default false.
    */
   reducedData?: boolean;
+  /**
+   * Urgency tone for the dot. 'alert' -> coral, 'reminder' -> amber. Default
+   * 'alert' (preserves the original coral badge for callers that don't tone it).
+   */
+  tone?: FaviconBadgeTone;
+}
+
+/** The badge dot colour for an urgency tone. Defaults to the coral alert hue. */
+export function faviconBadgeColor(tone: FaviconBadgeTone = 'alert'): string {
+  return tone === 'reminder' ? BADGE_REMINDER : BADGE_ALERT;
 }
 
 /** The base art (no badge): a sage rounded square with a white pill. */
@@ -43,11 +63,11 @@ function baseArt(): string {
   );
 }
 
-/** The coral unread dot in the top-right corner, with a thin separating ring. */
-function badgeArt(): string {
+/** The unread dot in the top-right corner (toned), with a thin separating ring. */
+function badgeArt(tone: FaviconBadgeTone): string {
   return (
     `<circle cx="48" cy="16" r="13" fill="${BADGE_RING}"/>` +
-    `<circle cx="48" cy="16" r="10" fill="${BADGE}"/>`
+    `<circle cx="48" cy="16" r="10" fill="${faviconBadgeColor(tone)}"/>`
   );
 }
 
@@ -73,7 +93,7 @@ export function faviconHref(unread: number, opts: FaviconBadgeOptions = {}): str
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">` +
     baseArt() +
-    badgeArt() +
+    badgeArt(opts.tone ?? 'alert') +
     `</svg>`;
   // encodeURIComponent keeps the data URI valid for any future colour/markup
   // tweak (handles #, <, >, quotes) without depending on btoa (not isomorphic).

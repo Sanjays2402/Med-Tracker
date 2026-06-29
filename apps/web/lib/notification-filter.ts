@@ -12,6 +12,7 @@
  */
 
 import type { NotificationItem } from './types';
+import type { FaviconBadgeTone } from './favicon-badge';
 
 export type NotificationTab = 'all' | 'reminder' | 'refill' | 'system';
 
@@ -286,6 +287,32 @@ export function notificationsTitle(unread: number): string {
 export function unreadCountPill(unread: number): string | null {
   if (unread <= 0) return null;
   return `${unread > 99 ? '99+' : unread} unread`;
+}
+
+/**
+ * The favicon badge tone for the current unread inbox, derived from the WORST
+ * unread kind so the tab dot's colour carries urgency, not just presence:
+ *
+ *   - any unread refill / system / caregiver -> 'alert' (coral) — these are the
+ *     louder kinds (a refill running low, a system or caregiver alert).
+ *   - only plain reminders unread            -> 'reminder' (amber) — a routine
+ *     dose nudge, quieter than an alert.
+ *   - nothing unread                         -> null (no badge; the page shows
+ *     the plain favicon).
+ *
+ * 'reminder' is the single quiet kind; every other kind escalates to 'alert',
+ * matching how the notification tabs already fold caregiver into System. Pure;
+ * the page passes the tone straight into faviconHref's `tone` option so the
+ * drawn dot colour and this classification can never disagree.
+ */
+export function unreadBadgeTone(items: readonly NotificationItem[]): FaviconBadgeTone | null {
+  let sawReminder = false;
+  for (const item of items) {
+    if (!isUnread(item)) continue;
+    if (item.kind === 'reminder') sawReminder = true;
+    else return 'alert'; // any non-reminder unread escalates immediately
+  }
+  return sawReminder ? 'reminder' : null;
 }
 
 /**

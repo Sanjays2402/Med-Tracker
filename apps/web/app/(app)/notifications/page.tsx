@@ -8,7 +8,7 @@ import { listNotifications, markNotificationRead, markAllNotificationsRead, snoo
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
-import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, dayGroupUnreadLabel, caughtUpCopy, shouldCaughtUpBurst, notificationsTitle, unreadCountPill, type NotificationTab } from '../../../lib/notification-filter';
+import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, dayGroupUnreadLabel, caughtUpCopy, shouldCaughtUpBurst, notificationsTitle, unreadCountPill, unreadBadgeTone, type NotificationTab } from '../../../lib/notification-filter';
 import {
   NOTIFICATION_UNREAD_STORAGE_KEY,
   parseUnreadOnly,
@@ -64,11 +64,16 @@ export default function NotificationsPage() {
     return () => { document.title = prev; };
   }, [unread]);
 
-  // Pair the unread tab title with a small coral dot on the favicon, so a
+  // Pair the unread tab title with a small dot on the favicon, so a
   // backgrounded tab whose title is truncated to just the app name still signals
-  // "something's waiting". Pure data-URI swap (no canvas); honours save-data by
-  // falling back to the static icon. Finds-or-creates the <link rel="icon"> and
-  // restores its original href on unmount so leaving the page clears the badge.
+  // "something's waiting". The dot is TONED by the worst unread kind — coral for
+  // a refill/system/caregiver alert, amber for a plain dose reminder — so its
+  // colour carries urgency, not just presence. Pure data-URI swap (no canvas);
+  // honours save-data by falling back to the static icon. Finds-or-creates the
+  // <link rel="icon"> and restores its original href on unmount.
+  const badgeTone = unreadBadgeTone(
+    (items ?? []).filter((i) => !snoozedRows.has(i.id)),
+  );
   React.useEffect(() => {
     if (typeof document === 'undefined') return;
     let link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
@@ -84,12 +89,12 @@ export default function NotificationsPage() {
       typeof navigator !== 'undefined' &&
       // navigator.connection is non-standard; guard the whole access.
       !!(navigator as { connection?: { saveData?: boolean } }).connection?.saveData;
-    link.setAttribute('href', faviconHref(unread, { reducedData }));
+    link.setAttribute('href', faviconHref(unread, { reducedData, ...(badgeTone ? { tone: badgeTone } : {}) }));
     return () => {
       if (created) link!.remove();
       else link!.setAttribute('href', original ?? STATIC_FAVICON_HREF);
     };
-  }, [unread]);
+  }, [unread, badgeTone]);
 
   async function onMarkOne(id: string) {
     setItems(prev => (prev ?? []).map(n => n.id === id ? { ...n, read: true } : n));

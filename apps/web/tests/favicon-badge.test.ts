@@ -3,6 +3,7 @@ import {
   STATIC_FAVICON_HREF,
   hasFaviconBadge,
   faviconHref,
+  faviconBadgeColor,
 } from '../lib/favicon-badge';
 
 describe('favicon-badge constants', () => {
@@ -71,5 +72,32 @@ describe('faviconHref', () => {
   it('produces a valid, parseable data URI (round-trips through decode)', () => {
     const decoded = decodeURIComponent(faviconHref(2).replace('data:image/svg+xml,', ''));
     expect(decoded).toMatch(/^<svg[\s\S]*<\/svg>$/);
+  });
+});
+
+describe('faviconBadgeColor', () => {
+  it('defaults to the coral alert hue', () => {
+    expect(faviconBadgeColor()).toBe('#c95f3e');
+    expect(faviconBadgeColor('alert')).toBe('#c95f3e');
+  });
+  it('uses the amber hue for a plain reminder', () => {
+    expect(faviconBadgeColor('reminder')).toBe('#b78534');
+  });
+});
+
+describe('faviconHref tone', () => {
+  it('stamps the coral dot by default (no tone given)', () => {
+    expect(decodeURIComponent(faviconHref(3))).toContain('#c95f3e');
+  });
+  it('stamps the coral dot for an alert tone', () => {
+    expect(decodeURIComponent(faviconHref(3, { tone: 'alert' }))).toContain('#c95f3e');
+  });
+  it('stamps the amber dot for a reminder tone', () => {
+    const decoded = decodeURIComponent(faviconHref(3, { tone: 'reminder' }));
+    expect(decoded).toContain('#b78534');
+    expect(decoded).not.toContain('#c95f3e');
+  });
+  it('keeps the static fallback regardless of tone when nothing is unread', () => {
+    expect(faviconHref(0, { tone: 'reminder' })).toBe(STATIC_FAVICON_HREF);
   });
 });
