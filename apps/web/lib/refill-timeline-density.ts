@@ -22,11 +22,13 @@ export const DEFAULT_STRIP_DENSITY: StripDensity = 'comfortable';
 export interface StripDensityOption {
   value: StripDensity;
   label: string;
+  /** One-line description of what the option does, for a settings list. */
+  description: string;
 }
 
 export const STRIP_DENSITY_OPTIONS: StripDensityOption[] = [
-  { value: 'comfortable', label: 'Comfortable' },
-  { value: 'compact', label: 'Compact' },
+  { value: 'comfortable', label: 'Comfortable', description: 'Roomy lane spacing, easier labels' },
+  { value: 'compact', label: 'Compact', description: 'Tighter lanes, fits more in less height' },
 ];
 
 export interface StripDensityConfig {
@@ -109,4 +111,16 @@ export function stripDensityAnnouncement(value: StripDensity): string {
   const current = stripDensityLabel(value);
   const next = otherStripDensityLabel(value).toLowerCase();
   return `${current} spacing, switch to ${next}`;
+}
+
+/**
+ * The one-line description for a density option (shown beside the label on the
+ * /settings preferences screen so the choice has a discoverable home, not just
+ * the inline timeline toggle). Always resolves: normalizes first, falls back to
+ * the default's text if the token is unknown. Pure.
+ */
+export function stripDensityDescription(value: unknown): string {
+  const v = normalizeStripDensity(value);
+  return STRIP_DENSITY_OPTIONS.find((o) => o.value === v)?.description
+    ?? STRIP_DENSITY_OPTIONS[0]!.description;
 }

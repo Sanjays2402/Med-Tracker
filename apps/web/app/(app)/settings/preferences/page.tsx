@@ -5,6 +5,15 @@ import Link from 'next/link';
 import { ArrowLeft, Gear, Sun, Moon, Gear as MonitorPlay } from '@med/icons';
 import { Surface, Section } from '../../../../components/uikit';
 import { api, ApiError } from '../../../../lib/api-client';
+import {
+  STRIP_DENSITY_STORAGE_KEY,
+  DEFAULT_STRIP_DENSITY,
+  STRIP_DENSITY_OPTIONS,
+  parseStripDensity,
+  serializeStripDensity,
+  stripDensityDescription,
+  type StripDensity,
+} from '../../../../lib/refill-timeline-density';
 
 interface Prefs { theme: 'system' | 'light' | 'dark'; language: string; doseUnits: 'metric' | 'imperial'; weekStart: 'sun' | 'mon'; }
 
@@ -31,9 +40,12 @@ function readLocal(): Prefs {
 export default function PreferencesPage() {
   const [prefs, setPrefs] = React.useState<Prefs>(DEFAULTS);
   const [status, setStatus] = React.useState<'idle' | 'saved'>('idle');
+  const [stripDensity, setStripDensity] = React.useState<StripDensity>(DEFAULT_STRIP_DENSITY);
 
   React.useEffect(() => {
     setPrefs(readLocal());
+    try { setStripDensity(parseStripDensity(window.localStorage.getItem(STRIP_DENSITY_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - keep the default */ }
     (async () => {
       try {
         const res = await api.get<unknown>('/preferences');
@@ -45,6 +57,15 @@ export default function PreferencesPage() {
       }
     })();
   }, []);
+
+  // The refill timeline density is a local-only render pref; mirror the inline
+  // toggle's persistence so /settings and the timeline strip read the same key.
+  function chooseStripDensity(value: StripDensity) {
+    setStripDensity(value);
+    try { window.localStorage.setItem(STRIP_DENSITY_STORAGE_KEY, serializeStripDensity(value)); } catch {}
+    setStatus('saved');
+    setTimeout(() => setStatus('idle'), 1500);
+  }
 
   async function update<K extends keyof Prefs>(key: K, value: Prefs[K]) {
     const next = { ...prefs, [key]: value };
@@ -110,6 +131,35 @@ export default function PreferencesPage() {
           <div className="p-4 grid grid-cols-2 gap-2">
             <RadioButton checked={prefs.weekStart === 'sun'} label="Sunday" onClick={() => update('weekStart', 'sun')} />
             <RadioButton checked={prefs.weekStart === 'mon'} label="Monday" onClick={() => update('weekStart', 'mon')} />
+          </div>
+        </Surface>
+      </Section>
+
+      <Section title="Refill timeline density">
+        <Surface>
+          <div className="p-4 space-y-2">
+            {STRIP_DENSITY_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => chooseStripDensity(opt.value)}
+                aria-pressed={stripDensity === opt.value}
+                className={`w-full flex items-start gap-3 text-left px-3 py-2.5 rounded-md border transition-colors ${
+                  stripDensity === opt.value
+                    ? 'border-brand-500 bg-brand-500/10'
+                    : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                }`}
+              >
+                <span className={`mt-0.5 w-4 h-4 rounded-full border-2 shrink-0 ${
+                  stripDensity === opt.value ? 'border-brand-500 bg-brand-500' : 'border-neutral-300 dark:border-neutral-700'
+                }`} aria-hidden />
+                <span>
+                  <span className="block text-sm font-medium">{opt.label}</span>
+                  <span className="block text-xs text-neutral-500 dark:text-neutral-400">{opt.description}</span>
+                </span>
+              </button>
+            ))}
+            <p className="text-xs text-neutral-400">{stripDensityDescription(stripDensity)} on the Refills timeline.</p>
           </div>
         </Surface>
       </Section>

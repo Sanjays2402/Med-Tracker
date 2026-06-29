@@ -11,6 +11,7 @@ import {
   otherStripDensityLabel,
   stripDensityLabel,
   stripDensityAnnouncement,
+  stripDensityDescription,
   trackHeight,
 } from '../lib/refill-timeline-density';
 
@@ -101,5 +102,19 @@ describe('stripDensityAnnouncement', () => {
   it('pairs current spacing with the destination of the next press', () => {
     expect(stripDensityAnnouncement('comfortable')).toBe('Comfortable spacing, switch to compact');
     expect(stripDensityAnnouncement('compact')).toBe('Compact spacing, switch to comfortable');
+  });
+});
+
+describe('stripDensityDescription', () => {
+  it('gives a one-line description for each option', () => {
+    expect(stripDensityDescription('comfortable')).toBe('Roomy lane spacing, easier labels');
+    expect(stripDensityDescription('compact')).toBe('Tighter lanes, fits more in less height');
+  });
+  it('falls back to the default option for unknown input', () => {
+    expect(stripDensityDescription('bogus')).toBe('Roomy lane spacing, easier labels');
+    expect(stripDensityDescription(null)).toBe('Roomy lane spacing, easier labels');
+  });
+  it('every option carries a non-empty description', () => {
+    expect(STRIP_DENSITY_OPTIONS.every((o) => o.description.length > 0)).toBe(true);
   });
 });
