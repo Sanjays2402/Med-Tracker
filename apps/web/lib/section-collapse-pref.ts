@@ -85,3 +85,51 @@ export function isCollapsed(
 ): boolean {
   return isSectionDone(counts) && set.has(label);
 }
+
+/** Minimal shape the bulk helpers read off each section (matches PartOfDayGroup). */
+export interface CollapsibleSection {
+  label: PartOfDay;
+  counts: PartOfDayCounts;
+}
+
+/** The labels that are CURRENTLY done — the universe a "collapse all" can fold. */
+export function doneLabels(groups: readonly CollapsibleSection[]): PartOfDay[] {
+  return groups.filter((g) => isSectionDone(g.counts)).map((g) => g.label);
+}
+
+/**
+ * Whether a "collapse all done" control would actually fold anything new: there
+ * is at least one done section currently rendered expanded. When false, the
+ * control's job is to UN-collapse instead (everything done is already folded),
+ * so the page can flip the label. Pure.
+ */
+export function canCollapseAllDone(
+  groups: readonly CollapsibleSection[],
+  set: ReadonlySet<PartOfDay>,
+): boolean {
+  return doneLabels(groups).some((l) => !set.has(l));
+}
+
+/**
+ * One control toggles every fully-done section at once. If any done section is
+ * still expanded, fold them all; otherwise un-fold them. Live sections are never
+ * added (only done labels), and folds for sections no longer done are dropped so
+ * the set never goes stale. Returns a NEW set; never mutates. Pure.
+ */
+export function toggleAllDone(
+  groups: readonly CollapsibleSection[],
+  set: ReadonlySet<PartOfDay>,
+): Set<PartOfDay> {
+  const done = doneLabels(groups);
+  if (canCollapseAllDone(groups, set)) return new Set(done);
+  return new Set(set ? [...set].filter((l) => !done.includes(l)) : []);
+}
+
+/** Label for the bulk control, naming what the next tap does. Null when nothing's done. */
+export function collapseAllLabel(
+  groups: readonly CollapsibleSection[],
+  set: ReadonlySet<PartOfDay>,
+): string | null {
+  if (doneLabels(groups).length === 0) return null;
+  return canCollapseAllDone(groups, set) ? 'Collapse done' : 'Expand done';
+}

@@ -8,6 +8,10 @@ import {
   serializeCollapsed,
   toggleCollapsed,
   isCollapsed,
+  doneLabels,
+  canCollapseAllDone,
+  toggleAllDone,
+  collapseAllLabel,
 } from '../lib/section-collapse-pref';
 import type { PartOfDayCounts } from '../lib/part-of-day';
 
@@ -72,5 +76,58 @@ describe('isCollapsed', () => {
     expect(isCollapsed('Morning', done, new Set(['Morning']))).toBe(true);
     expect(isCollapsed('Morning', live, new Set(['Morning']))).toBe(false);
     expect(isCollapsed('Morning', done, new Set())).toBe(false);
+  });
+});
+
+const live = counts({ total: 2, taken: 1, pending: 1 });
+const done2 = counts({ total: 2, taken: 2 });
+const empty = counts({});
+const sections = (m: PartOfDayCounts, a: PartOfDayCounts, e: PartOfDayCounts, n: PartOfDayCounts) =>
+  [
+    { label: 'Morning' as const, counts: m },
+    { label: 'Afternoon' as const, counts: a },
+    { label: 'Evening' as const, counts: e },
+    { label: 'Night' as const, counts: n },
+  ];
+
+describe('doneLabels', () => {
+  it('lists only sections with doses, all acted on', () => {
+    expect(doneLabels(sections(done2, live, done2, empty))).toEqual(['Morning', 'Evening']);
+    expect(doneLabels(sections(empty, empty, empty, empty))).toEqual([]);
+  });
+});
+
+describe('canCollapseAllDone', () => {
+  it('true when some done section is still expanded', () => {
+    expect(canCollapseAllDone(sections(done2, live, empty, empty), new Set())).toBe(true);
+  });
+  it('false when every done section is already folded', () => {
+    expect(canCollapseAllDone(sections(done2, live, empty, empty), new Set(['Morning']))).toBe(false);
+  });
+  it('false when nothing is done', () => {
+    expect(canCollapseAllDone(sections(live, empty, empty, empty), new Set())).toBe(false);
+  });
+});
+
+describe('toggleAllDone', () => {
+  it('folds every done section when any is open', () => {
+    const next = toggleAllDone(sections(done2, done2, live, empty), new Set());
+    expect([...next].sort()).toEqual(['Afternoon', 'Morning']);
+  });
+  it('unfolds all when everything done is already folded', () => {
+    const next = toggleAllDone(sections(done2, done2, live, empty), new Set(['Morning', 'Afternoon']));
+    expect([...next]).toEqual([]);
+  });
+  it('removes done labels on unfold; harmless stale non-done labels remain gated', () => {
+    const next = toggleAllDone(sections(done2, empty, empty, empty), new Set(['Morning', 'Night']));
+    expect(next.has('Morning')).toBe(false);
+  });
+});
+
+describe('collapseAllLabel', () => {
+  it('names Collapse done when foldable, Expand done when all folded, null when none', () => {
+    expect(collapseAllLabel(sections(done2, live, empty, empty), new Set())).toBe('Collapse done');
+    expect(collapseAllLabel(sections(done2, live, empty, empty), new Set(['Morning']))).toBe('Expand done');
+    expect(collapseAllLabel(sections(live, empty, empty, empty), new Set())).toBeNull();
   });
 });

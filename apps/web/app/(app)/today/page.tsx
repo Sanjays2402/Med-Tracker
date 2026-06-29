@@ -44,6 +44,8 @@ import {
   toggleCollapsed,
   isCollapsed,
   isSectionDone,
+  toggleAllDone,
+  collapseAllLabel,
   sectionDoneSummary,
 } from '../../../lib/section-collapse-pref';
 import type { PartOfDay } from '../../../lib/part-of-day';
@@ -79,6 +81,17 @@ export default function TodayPage() {
   const toggleSection = React.useCallback((label: PartOfDay) => {
     setCollapsed((prev) => {
       const next = toggleCollapsed(prev, label);
+      try { window.localStorage.setItem(SECTION_COLLAPSE_STORAGE_KEY, serializeCollapsed(next)); }
+      catch { /* best-effort persistence */ }
+      return next;
+    });
+  }, []);
+
+  // Fold/unfold every done section at once. Takes a current sections snapshot so
+  // it folds exactly the labels that are done right now; persists like a single fold.
+  const toggleAllSections = React.useCallback((groups: { label: PartOfDay; counts: PartOfDayCounts }[]) => {
+    setCollapsed((prev) => {
+      const next = toggleAllDone(groups, prev);
       try { window.localStorage.setItem(SECTION_COLLAPSE_STORAGE_KEY, serializeCollapsed(next)); }
       catch { /* best-effort persistence */ }
       return next;
@@ -243,6 +256,7 @@ export default function TodayPage() {
 
   const groups = groupByPartOfDay(doses ?? []);
   const roll = doses && doses.length > 0 ? dayProgressRoll(groups) : null;
+  const allDoneLabel = collapseAllLabel(groups, collapsed);
 
   const total = doses?.length ?? 0;
   const taken = (doses ?? []).filter((d) => d.status === 'taken').length;
@@ -338,6 +352,16 @@ export default function TodayPage() {
               </>
             )}
           </p>
+        )}
+        {allDoneLabel && (
+          <button
+            type="button"
+            onClick={() => toggleAllSections(groups.map((g) => ({ label: g.label, counts: g.counts })))}
+            className="text-[12px] text-[var(--ink-muted)] hover:text-[var(--ink)] underline decoration-dotted underline-offset-2 transition-colors"
+            title={allDoneLabel === 'Collapse done' ? 'Fold every finished section' : 'Reopen every finished section'}
+          >
+            {allDoneLabel}
+          </button>
         )}
       </header>
 
