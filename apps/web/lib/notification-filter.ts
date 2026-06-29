@@ -259,3 +259,23 @@ export function markTabReadToastTitle(
   if (tab === 'all') return `${count} marked read`;
   return `${count} ${labelForTab(tab)} marked read`;
 }
+
+/** Unread tally within a single day-group's items. */
+export function unreadInGroup(items: readonly NotificationItem[]): number {
+  return items.reduce((n, i) => n + (isUnread(i) ? 1 : 0), 0);
+}
+
+/**
+ * Compact sub-count for a /notifications day-group header. The group already
+ * shows its total ("Today · 5"); this appends the unread share so a busy day
+ * reads "Today · 5 · 2 unread" and a fully-read day stays just the total. Pure;
+ * composes isUnread so the unread definition can't drift from the row dot.
+ *
+ * Returns null when nothing in the group is unread so the caller renders only
+ * the total (no "0 unread" noise). Pluralises is unnecessary — the word is fixed
+ * "unread" — so it reads "1 unread" / "2 unread" uniformly.
+ */
+export function dayGroupUnreadLabel(items: readonly NotificationItem[]): string | null {
+  const unread = unreadInGroup(items);
+  return unread > 0 ? `${unread} unread` : null;
+}

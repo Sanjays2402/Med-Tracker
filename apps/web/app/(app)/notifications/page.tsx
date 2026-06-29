@@ -8,7 +8,7 @@ import { listNotifications, markNotificationRead, markAllNotificationsRead, snoo
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
-import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, type NotificationTab } from '../../../lib/notification-filter';
+import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, dayGroupUnreadLabel, type NotificationTab } from '../../../lib/notification-filter';
 import {
   NOTIFICATION_UNREAD_STORAGE_KEY,
   parseUnreadOnly,
@@ -290,6 +290,15 @@ export default function NotificationsPage() {
                 <span className="text-[11px] tabular text-[var(--ink-muted)]">
                   {group.items.length}
                 </span>
+                {dayGroupUnreadLabel(group.items) && (
+                  <span
+                    className="inline-flex items-center gap-1 text-[11px] tabular font-medium"
+                    style={{ color: 'var(--accent-ink)' }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" aria-hidden />
+                    {dayGroupUnreadLabel(group.items)}
+                  </span>
+                )}
                 <span className="flex-1 h-px" style={{ background: 'var(--line-soft)' }} />
               </div>
               <Surface>

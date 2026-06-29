@@ -12,6 +12,8 @@ import {
   tabReadTargets,
   markTabReadLabel,
   markTabReadToastTitle,
+  unreadInGroup,
+  dayGroupUnreadLabel,
   NOTIFICATION_TABS,
 } from '../lib/notification-filter';
 import type { NotificationItem } from '../lib/types';
@@ -249,5 +251,26 @@ describe('markTabReadToastTitle', () => {
   it('is null for a zero or negative count (fire nothing)', () => {
     expect(markTabReadToastTitle(0, 'refill')).toBeNull();
     expect(markTabReadToastTitle(-1, 'all')).toBeNull();
+  });
+});
+
+describe('unreadInGroup', () => {
+  it('counts unread items within a group', () => {
+    expect(unreadInGroup([n('a', 'reminder'), n('b', 'reminder', true), n('c', 'system')])).toBe(2);
+  });
+  it('is zero for an empty or fully-read group', () => {
+    expect(unreadInGroup([])).toBe(0);
+    expect(unreadInGroup([n('a', 'system', true)])).toBe(0);
+  });
+});
+
+describe('dayGroupUnreadLabel', () => {
+  it('names the unread sub-count when some are unread', () => {
+    expect(dayGroupUnreadLabel([n('a', 'reminder'), n('b', 'reminder', true)])).toBe('1 unread');
+    expect(dayGroupUnreadLabel([n('a', 'reminder'), n('b', 'system')])).toBe('2 unread');
+  });
+  it('is null when nothing is unread (no "0 unread" noise)', () => {
+    expect(dayGroupUnreadLabel([n('a', 'system', true)])).toBeNull();
+    expect(dayGroupUnreadLabel([])).toBeNull();
   });
 });
