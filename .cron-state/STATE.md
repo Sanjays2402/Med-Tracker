@@ -1470,23 +1470,86 @@ Five Tier 2K items remain (#456-460) plus older heavies (#274-#277/#279, #281,
 
 ### Tier 2O — frontend slices (FRONTEND-FOCUS override, refill after tick 51)
 
-Tick 51 closed five Tier 2N items (#471-475). web vitest harness is 1056 tests
-across 61 suites as of tick 51. Each is a real user-facing capability in apps/web
+Tick 51 closed five Tier 2N items (#471-475). Tick 52 closed Tier 2O (#476-480).
+web vitest harness is 1095 tests across 63 suites as of tick 52. Each is a real
+user-facing capability in apps/web matching the sage/coral/amber pillbox language
+and the Linear/Raycast bar; prefer extracting non-trivial logic into a tested
+lib/*.ts module. Backend tiers paused.
+
+476. [x] `today-fold-toast-expand-undo` — Undo toast + re-fold when "Expand done"
+    reopens N finished sections on /today, mirroring #471 (tick 52 / 363ef9e).
+    newlyExpandedCount + expandedToastTitle in lib/section-collapse-pref; +6 tests.
+477. [x] `refills-density-keyboard` — bare "d" flips the /refills timeline density,
+    mirroring the medications "s" sort-cycle; modifier/text-field aware, discoverable
+    kbd hint chip (tick 52 / 39005fa). STRIP_DENSITY_HOTKEY + isStripDensityHotkey
+    in lib/refill-timeline-density; +4 tests.
+478. [x] `notifications-title-favicon-dot` — coral favicon badge dot when unread > 0,
+    pairing the unread tab title; pure SVG-data-URI swap, save-data gated (tick 52 /
+    e3b894e). New lib/favicon-badge; new 13-test suite.
+479. [x] `medications-supply-legend-counts` — per-band count appended to the supply
+    legend ("under 7d · 2"), counting only visible bar-drawing meds (tick 52 /
+    3df6195). supplyLegendCounts in lib/days-left-tone; +4 tests.
+480. [x] `caregivers-bar-percent-labels` — inline largest-remainder percent on each
+    at-risk legend chip behind a persisted "Show percents" toggle (tick 52 / d41e2e1).
+    segmentPercentLabel in lib/expiry-bar + new lib/expiry-bar-percent-pref; +3 +9 tests.
+
+### Tier 2P — frontend slices (FRONTEND-FOCUS override, refill after tick 52)
+
+Tick 52 closed five Tier 2O items (#476-480). web vitest harness is 1095 tests
+across 63 suites as of tick 52. Each is a real user-facing capability in apps/web
 matching the sage/coral/amber pillbox language and the Linear/Raycast bar; prefer
 extracting non-trivial logic into a tested lib/*.ts module. Backend tiers paused.
 
-476. [ ] `today-fold-toast-expand-undo` — When "Expand done" un-folds finished
-    sections, mirror #471 with a toast + Undo that re-folds the prior set.
-477. [ ] `refills-density-keyboard` — Bind a key to flip timeline density (like the
-    medications "s" sort cycle) so density is reachable without the mouse.
-478. [ ] `notifications-title-favicon-dot` — Pair the unread tab title with a small
-    favicon badge dot when unread > 0; pure gate, no canvas if reduced data.
-479. [ ] `medications-supply-legend-counts` — Append per-band counts to the supply
-    legend ("under 7d · 2") so the key also tallies how many meds sit in each band.
-480. [ ] `caregivers-bar-percent-labels` — Inline the largest-remainder percent on
-    each at-risk legend chip ("50%") behind a toggle, reusing expiryBarAriaDescription.
+481. [ ] `today-expand-undo-burst` — pair the #476 reopen toast with a tiny sage
+    burst on the reopened section headers (reduced-motion respected) so the eye
+    catches which sections came back.
+482. [ ] `refills-density-keyboard-help` — add the new "d flips density" shortcut
+    to the global KeyboardHelp (?) overlay's Actions group so it's discoverable
+    alongside the other shortcuts, gated to the /refills route.
+483. [ ] `notifications-favicon-dot-tone` — tone the favicon badge by the worst
+    unread kind (coral for a refill/system alert, amber for a plain reminder) so
+    the dot's colour carries urgency, not just presence.
+484. [ ] `medications-supply-legend-click-filter` — make each supply-legend band a
+    toggle that filters the list to meds in that band (click "under 7d · 2" to see
+    just those two), with an active-band chip and a clear control.
+485. [ ] `caregivers-bar-percent-aria-sync` — when "Show percents" is on, drop the
+    now-redundant percent from each chip's aria-label (the visible text reads it)
+    so a screen reader doesn't hear "50%" twice.
 
 ## Tick log
+
+- 2026-06-29 07:15 PDT — tick 52: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 363ef9e today-fold-toast-expand-undo, 39005fa refills-density-keyboard,
+  e3b894e notifications-title-favicon-dot, 3df6195 medications-supply-legend-counts,
+  d41e2e1 caregivers-bar-percent-labels. Gate: `@med/web` BUILD SUCCEEDS (Compiled
+  successfully in 3.6s; all routes prerendered incl. today/refills/notifications/
+  medications/caregivers). Test 1095/1095 across 63 suites (+39, +2 suites:
+  favicon-badge 13, expiry-bar-percent-pref 9; section-collapse 28, refill-timeline-
+  density 23, days-left-tone 39, expiry-bar 37). Typecheck: baseline 980 (@types/node
+  + React-dup) UNCHANGED, grep-confirmed ZERO new errors trace to edited libs/pages.
+  Lint: `next lint` fails identically (Next 16 removed it). Push 21dd038..d41e2e1,
+  origin/main verified. FORTY-SECOND clean tick, twenty-fourth frontend tick. Five
+  surfaces (today, refills, notifications, medications, caregivers); three new lib
+  modules (favicon-badge, expiry-bar-percent-pref, + helpers in section-collapse/
+  refill-timeline-density/days-left-tone/expiry-bar), all tested. Refilled Tier 2P
+  (#481-485).
+  Notes:
+  - `favicon-badge` builds an inline `data:image/svg+xml` favicon (no canvas, no
+    network) mirroring public/favicon.svg art with a coral corner dot; hasFaviconBadge
+    gates on unread > 0 AND not navigator.connection.saveData (the reduced-data
+    hint). The notifications page finds-or-creates the <link rel="icon"> and
+    restores the original href on unmount so leaving the page clears the badge.
+    Presence indicator, not a counter (favicons too small to read a digit).
+  - `isStripDensityHotkey` chose bare "d" — collision-checked against the global
+    KeyboardHelp leader (g/t/n/?) and the page-local "s"/"/" on medications/
+    caregivers; "d" is free. Predicate is modifier-aware so Cmd-D bookmark / Ctrl-D
+    never fight it, and the page still gates on text-field focus.
+  - `supplyLegendCounts` counts only the VISIBLE meds (so the tally tracks search
+    narrowing) and skips no-data meds via buildSupplyBar, so labels+bars+counts
+    stay in lock-step. `segmentPercentLabel` reuses expiryBar's largest-remainder
+    pct so the chip percent and the drawn width can never disagree (chips sum 100).
+  - A sibling subagent may run concurrently; staged only own files per commit to
+    keep slices clean (no `git add -A`).
 
 - 2026-06-29 03:55 PDT — tick 51: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 5930015 today-collapse-all-toast, 41a47a6 refills-density-pref-settings,
