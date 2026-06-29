@@ -308,7 +308,7 @@ export function caughtUpCopy(
   if (!unreadOnly || summary.inTab === 0) return null;
   if (summary.unreadInTab === 0) {
     return {
-      title: "You're all caught up",
+      title: CAUGHT_UP_TITLE,
       description: 'No unread notifications in this view. Turn off Unread only to see the rest.',
     };
   }
@@ -316,4 +316,21 @@ export function caughtUpCopy(
     title: 'No unread here',
     description: "You've read everything that's left in this view.",
   };
+}
+
+/** The celebratory title; the burst gate keys off it so the two stay in sync. */
+export const CAUGHT_UP_TITLE = "You're all caught up";
+
+/**
+ * Whether the "all caught up" sage burst should fire: only on the celebratory
+ * copy (the user just cleared real unread — not the calm "No unread here"), and
+ * never under reduced-motion. A burst is one-shot; the caller fires it once per
+ * transition into this state, so this is the pure gate, not a trigger. Null/calm
+ * copy -> false. Pure; no React.
+ */
+export function shouldCaughtUpBurst(
+  copy: CaughtUpCopy | null,
+  reducedMotion: boolean,
+): boolean {
+  return !reducedMotion && copy !== null && copy.title === CAUGHT_UP_TITLE;
 }

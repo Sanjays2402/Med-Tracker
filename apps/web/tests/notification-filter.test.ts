@@ -15,6 +15,8 @@ import {
   unreadInGroup,
   dayGroupUnreadLabel,
   caughtUpCopy,
+  shouldCaughtUpBurst,
+  CAUGHT_UP_TITLE,
   NOTIFICATION_TABS,
 } from '../lib/notification-filter';
 import type { NotificationItem } from '../lib/types';
@@ -294,3 +296,24 @@ describe('caughtUpCopy', () => {
   });
 });
 
+
+describe('shouldCaughtUpBurst', () => {
+  const celebrate = caughtUpCopy(true, { inTab: 3, unreadInTab: 0, hasRead: true });
+  const calm = caughtUpCopy(true, { inTab: 3, unreadInTab: 2, hasRead: true });
+
+  it('exports a title the gate keys off', () => {
+    expect(celebrate?.title).toBe(CAUGHT_UP_TITLE);
+  });
+  it('fires only on the celebratory copy with motion allowed', () => {
+    expect(shouldCaughtUpBurst(celebrate, false)).toBe(true);
+  });
+  it('stays silent under reduced motion', () => {
+    expect(shouldCaughtUpBurst(celebrate, true)).toBe(false);
+  });
+  it('stays silent on the calm no-unread copy', () => {
+    expect(shouldCaughtUpBurst(calm, false)).toBe(false);
+  });
+  it('stays silent when there is no copy', () => {
+    expect(shouldCaughtUpBurst(null, false)).toBe(false);
+  });
+});

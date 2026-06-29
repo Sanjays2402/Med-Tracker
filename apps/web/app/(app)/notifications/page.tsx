@@ -3,12 +3,12 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { Bell, BellRinging, CheckCircle, Pill as PillIcon, Users, Clock, Moon } from '@med/icons';
-import { Surface, Empty, ErrorBox, SkeletonRow, Pill, Btn, formatDate } from '../../../components/uikit';
+import { Surface, Empty, ErrorBox, SkeletonRow, Pill, Btn, formatDate, CheckBurst } from '../../../components/uikit';
 import { listNotifications, markNotificationRead, markAllNotificationsRead, snoozeNotification } from '../../../lib/data';
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
-import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, dayGroupUnreadLabel, caughtUpCopy, type NotificationTab } from '../../../lib/notification-filter';
+import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, dayGroupUnreadLabel, caughtUpCopy, shouldCaughtUpBurst, type NotificationTab } from '../../../lib/notification-filter';
 import {
   NOTIFICATION_UNREAD_STORAGE_KEY,
   parseUnreadOnly,
@@ -159,6 +159,25 @@ export default function NotificationsPage() {
   // is off or the tab is genuinely empty (the standard empty handles that).
   const caughtUp = caughtUpCopy(unreadOnly, unreadInfo);
 
+  // One-shot sage burst when the unread-only view clears to the celebratory
+  // "all caught up" state. Fires once per transition into that state, respects
+  // reduced-motion, and auto-clears so re-entering later bursts again.
+  const [burst, setBurst] = React.useState(false);
+  const wasCaughtUp = React.useRef(false);
+  React.useEffect(() => {
+    const reduce =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const fire = shouldCaughtUpBurst(caughtUp, !!reduce);
+    if (fire && !wasCaughtUp.current) {
+      setBurst(true);
+      const t = window.setTimeout(() => setBurst(false), 900);
+      wasCaughtUp.current = true;
+      return () => window.clearTimeout(t);
+    }
+    if (!caughtUp) wasCaughtUp.current = false;
+  }, [caughtUp]);
+
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between gap-3">
@@ -255,7 +274,18 @@ export default function NotificationsPage() {
         <Surface><SkeletonRow /><SkeletonRow /><SkeletonRow /></Surface>
       ) : visible.length === 0 ? (
         <Empty
-          icon={<Bell size={32} weight="duotone" />}
+          icon={
+            burst ? (
+              <span className="relative inline-flex items-center justify-center text-[var(--ok)]">
+                <span className="caught-up-burst" aria-hidden />
+                <CheckBurst size={34} />
+              </span>
+            ) : caughtUp ? (
+              <span className="text-[var(--ok)] inline-flex"><CheckBurst size={32} /></span>
+            ) : (
+              <Bell size={32} weight="duotone" />
+            )
+          }
           title={
             caughtUp
               ? caughtUp.title
