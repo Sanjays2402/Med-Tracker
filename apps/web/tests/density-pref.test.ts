@@ -88,3 +88,10 @@ describe('otherDensityLabel', () => {
     expect(otherDensityLabel('compact')).toBe('Comfortable');
   });
 });
+
+describe('showSupplyBarSmUp', () => {
+  it('comfortable shows the supply bar at sm+, compact does not', () => {
+    expect(densityConfig('comfortable').showSupplyBarSmUp).toBe(true);
+    expect(densityConfig('compact').showSupplyBarSmUp).toBe(false);
+  });
+});

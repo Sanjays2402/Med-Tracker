@@ -7,7 +7,7 @@ import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill } from '../../../compo
 import { listMedications } from '../../../lib/data';
 import type { Medication } from '../../../lib/types';
 import { filterMedications, sortMedications, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
-import { runoutChip, remainingChip, buildSupplyBar, supplyBarAriaLabel } from '../../../lib/days-left-tone';
+import { runoutChip, remainingChip, buildSupplyBar, supplyBarAriaLabel, supplyBarColor } from '../../../lib/days-left-tone';
 import { SupplySparkline } from '../../../components/SupplySparkline';
 import {
   DENSITY_OPTIONS,
@@ -336,17 +336,13 @@ function MedRow({
               where the sm-only sparkline is hidden, so each row still carries a
               glanceable supply read. Reuses buildSupplyBar's pct + tone. */}
           {supplyBar?.hasData && (
-            <div className="sm:hidden mt-1.5 flex items-center gap-1.5" role="img" aria-label={supplyBarAriaLabel(supplyBar) ?? undefined}>
+            <div className={`${cfg.showSupplyBarSmUp ? '' : 'sm:hidden'} mt-1.5 flex items-center gap-1.5`} role="img" aria-label={supplyBarAriaLabel(supplyBar) ?? undefined}>
               <div className="h-1 flex-1 rounded-full overflow-hidden max-w-[120px]" style={{ background: 'var(--bg-sunk)' }} aria-hidden>
                 <div
                   className="h-full rounded-full"
                   style={{
                     width: `${supplyBar.pct}%`,
-                    background:
-                      supplyBar.tone === 'ok' ? 'var(--ok)'
-                        : supplyBar.tone === 'warn' ? 'var(--warn)'
-                        : supplyBar.tone === 'danger' ? 'var(--danger)'
-                        : 'var(--ink-muted)',
+                    background: supplyBarColor(supplyBar.tone),
                   }}
                 />
               </div>

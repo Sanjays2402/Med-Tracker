@@ -4,6 +4,7 @@ import {
   daysLeftToneVar,
   buildSupplyBar,
   supplyBarAriaLabel,
+  supplyBarColor,
   runoutChip,
   remainingChip,
 } from '../lib/days-left-tone';
@@ -212,3 +213,12 @@ describe('supplyBarAriaLabel', () => {
   });
 });
 
+
+describe('supplyBarColor', () => {
+  it('maps each tone to its CSS var', () => {
+    expect(supplyBarColor('ok')).toBe('var(--ok)');
+    expect(supplyBarColor('warn')).toBe('var(--warn)');
+    expect(supplyBarColor('danger')).toBe('var(--danger)');
+    expect(supplyBarColor('neutral')).toBe('var(--ink-muted)');
+  });
+});

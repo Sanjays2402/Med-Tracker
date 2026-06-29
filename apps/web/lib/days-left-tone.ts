@@ -141,6 +141,20 @@ export function supplyBarAriaLabel(bar: SupplyBar): string | null {
   return `${bar.caption}, ${word}`;
 }
 
+/**
+ * CSS-variable fill colour for a supply tone. Centralises the ok/warn/danger/
+ * neutral mapping the inline bar used to ternary in the page, so the inline bar
+ * and any future bar/legend agree. Pure; returns a var(--*) string.
+ */
+export function supplyBarColor(tone: DaysLeftTone): string {
+  switch (tone) {
+    case 'ok': return 'var(--ok)';
+    case 'warn': return 'var(--warn)';
+    case 'danger': return 'var(--danger)';
+    default: return 'var(--ink-muted)';
+  }
+}
+
 export interface RunoutChip {
   /** Estimated whole days of supply left, or null when unknown. */
   daysLeft: number | null;

@@ -36,6 +36,8 @@ export interface DensityConfig {
   showSparkline: boolean;
   /** Show the thin inline supply bar (mobile-friendly companion to the sparkline). */
   showSupplyBar: boolean;
+  /** Also show the inline supply bar at sm+ (comfortable rows have room for runway on desktop). */
+  showSupplyBarSmUp: boolean;
   /** Icon tile size in px. */
   iconSize: number;
   /** Name text size utility. */
@@ -48,6 +50,7 @@ const CONFIG: Record<Density, DensityConfig> = {
     showSubline: true,
     showSparkline: true,
     showSupplyBar: true,
+    showSupplyBarSmUp: true,
     iconSize: 18,
     nameClass: 'text-sm',
   },
@@ -56,6 +59,7 @@ const CONFIG: Record<Density, DensityConfig> = {
     showSubline: false,
     showSparkline: false,
     showSupplyBar: false,
+    showSupplyBarSmUp: false,
     iconSize: 15,
     nameClass: 'text-[13px]',
   },
