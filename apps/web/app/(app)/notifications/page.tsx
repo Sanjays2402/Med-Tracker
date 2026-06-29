@@ -14,6 +14,7 @@ import {
   parseUnreadOnly,
   serializeUnreadOnly,
 } from '../../../lib/notification-unread-pref';
+import { faviconHref, STATIC_FAVICON_HREF } from '../../../lib/favicon-badge';
 import { groupByDay } from '../../../lib/day-group';
 
 export default function NotificationsPage() {
@@ -61,6 +62,33 @@ export default function NotificationsPage() {
     const prev = document.title;
     document.title = notificationsTitle(unread);
     return () => { document.title = prev; };
+  }, [unread]);
+
+  // Pair the unread tab title with a small coral dot on the favicon, so a
+  // backgrounded tab whose title is truncated to just the app name still signals
+  // "something's waiting". Pure data-URI swap (no canvas); honours save-data by
+  // falling back to the static icon. Finds-or-creates the <link rel="icon"> and
+  // restores its original href on unmount so leaving the page clears the badge.
+  React.useEffect(() => {
+    if (typeof document === 'undefined') return;
+    let link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
+    let created = false;
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+      created = true;
+    }
+    const original = link.getAttribute('href');
+    const reducedData =
+      typeof navigator !== 'undefined' &&
+      // navigator.connection is non-standard; guard the whole access.
+      !!(navigator as { connection?: { saveData?: boolean } }).connection?.saveData;
+    link.setAttribute('href', faviconHref(unread, { reducedData }));
+    return () => {
+      if (created) link!.remove();
+      else link!.setAttribute('href', original ?? STATIC_FAVICON_HREF);
+    };
   }, [unread]);
 
   async function onMarkOne(id: string) {
