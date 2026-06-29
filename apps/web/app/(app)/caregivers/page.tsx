@@ -15,7 +15,7 @@ import {
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill } from '../../../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill, segmentCountPill } from '../../../lib/expiry-bar';
 import {
   EXPIRY_BAR_STORAGE_KEY,
   parseShowHealthBar,
@@ -255,6 +255,9 @@ export default function CaregiversPage() {
                   }}
                 />
                 {seg.label}
+                <span className={`capsule tabular text-[10px] shrink-0 capsule-${seg.tone}`}>
+                  {segmentCountPill(seg)}
+                </span>
               </span>
             ))}
           </div>

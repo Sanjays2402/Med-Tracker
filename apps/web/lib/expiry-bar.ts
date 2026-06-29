@@ -228,3 +228,15 @@ export function activeCountPill(bar: ExpiryBar): string | null {
   if (bar.hasRisk || bar.total <= 0) return null;
   return `${bar.total} active`;
 }
+
+/**
+ * Compact count pill for a SINGLE at-risk segment, e.g. "2" — the at-risk bar's
+ * legend chips name "2 expiring soon" inline; this gives each chip a bare count
+ * pill parallel to the all-good bar's "N active" pill so the active/soon/expired
+ * shares are countable at a glance without parsing the label. Returns the raw
+ * count as a string (always at least 1, since empty segments are dropped from
+ * the bar). Pure; no React.
+ */
+export function segmentCountPill(segment: Pick<ExpiryBarSegment, 'count'>): string {
+  return `${segment.count}`;
+}

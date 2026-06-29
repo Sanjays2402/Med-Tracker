@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill } from '../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill, segmentCountPill } from '../lib/expiry-bar';
 import type { ExpirySummary } from '../lib/caregiver-expiry';
 
 function summary(over: Partial<ExpirySummary>): ExpirySummary {
@@ -207,5 +207,15 @@ describe('activeCountPill', () => {
   it('is null when the bar has risk', () => {
     const bar = expiryBar(summary({ active: 2, soon: 1, total: 3 }))!;
     expect(activeCountPill(bar)).toBeNull();
+  });
+});
+
+describe('segmentCountPill', () => {
+  it('returns the bare count for an at-risk segment', () => {
+    const bar = expiryBar(summary({ active: 3, soon: 2, expired: 1, total: 6 }))!;
+    const soon = bar.segments.find((s) => s.kind === 'soon')!;
+    expect(segmentCountPill(soon)).toBe('2');
+    const expired = bar.segments.find((s) => s.kind === 'expired')!;
+    expect(segmentCountPill(expired)).toBe('1');
   });
 });
