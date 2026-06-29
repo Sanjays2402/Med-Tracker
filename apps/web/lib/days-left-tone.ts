@@ -180,6 +180,35 @@ export function supplyLegend(opts: DaysLeftToneOptions = {}): SupplyLegendEntry[
   ];
 }
 
+export interface SupplyLegendCount extends SupplyLegendEntry {
+  /** How many of the supplied meds fall in this band. */
+  count: number;
+}
+
+/**
+ * The supply legend, augmented with how many of `meds` sit in each band — so the
+ * key under the list reads "under 7d - 2" and tallies the at-a-glance shape of
+ * the pillbox, not just decodes the colours. Only meds with usable supply data
+ * are counted (the same ones that draw a bar), via buildSupplyBar so the bands
+ * never drift from the bars. A med whose tone is 'neutral' (no data) is skipped.
+ *
+ * Returns the same three entries as supplyLegend, in the same order, each with a
+ * `count`. The cut points forward to both supplyLegend (labels) and daysLeftTone
+ * (binning) so labels, bars, and tallies stay in lock-step. Pure; deterministic.
+ */
+export function supplyLegendCounts(
+  meds: readonly Medication[],
+  opts: DaysLeftToneOptions = {},
+): SupplyLegendCount[] {
+  const tally: Record<Exclude<DaysLeftTone, 'neutral'>, number> = { danger: 0, warn: 0, ok: 0 };
+  for (const m of meds) {
+    const bar = buildSupplyBar(m, opts);
+    if (!bar.hasData || bar.tone === 'neutral') continue;
+    tally[bar.tone] += 1;
+  }
+  return supplyLegend(opts).map((e) => ({ ...e, count: tally[e.tone] }));
+}
+
 export interface RunoutChip {
   /** Estimated whole days of supply left, or null when unknown. */
   daysLeft: number | null;

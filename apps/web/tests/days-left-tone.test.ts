@@ -6,6 +6,7 @@ import {
   supplyBarAriaLabel,
   supplyBarColor,
   supplyLegend,
+  supplyLegendCounts,
   runoutChip,
   remainingChip,
 } from '../lib/days-left-tone';
@@ -234,5 +235,46 @@ describe('supplyLegend', () => {
   it('reflects overridden cut points so labels never drift from bars', () => {
     const l = supplyLegend({ dangerBelow: 5, warnBelow: 10 });
     expect(l.map((e) => e.label)).toEqual(['under 5d', 'under 10d', '10d+']);
+  });
+});
+
+describe('supplyLegendCounts', () => {
+  const daily = '08:00 daily';
+  it('tallies each band from the supplied meds (same bands as the bars)', () => {
+    const meds = [
+      med({ id: 'a', remainingDoses: 4, schedule: daily }),   // 4d -> danger
+      med({ id: 'b', remainingDoses: 6, schedule: daily }),   // 6d -> danger
+      med({ id: 'c', remainingDoses: 10, schedule: daily }),  // 10d -> warn
+      med({ id: 'd', remainingDoses: 40, schedule: daily }),  // 40d -> ok
+    ];
+    const counts = supplyLegendCounts(meds);
+    expect(counts.map((e) => e.tone)).toEqual(['danger', 'warn', 'ok']);
+    expect(counts.map((e) => e.count)).toEqual([2, 1, 1]);
+  });
+
+  it('keeps the same labels + colours as supplyLegend', () => {
+    const counts = supplyLegendCounts([]);
+    expect(counts.map((e) => e.label)).toEqual(['under 7d', 'under 14d', '14d+']);
+    expect(counts.map((e) => e.color)).toEqual(['var(--danger)', 'var(--warn)', 'var(--ok)']);
+    expect(counts.map((e) => e.count)).toEqual([0, 0, 0]);
+  });
+
+  it('skips meds with no supply data (not counted in any band)', () => {
+    const meds = [
+      med({ id: 'a', remainingDoses: 4, schedule: daily }), // danger
+      med({ id: 'b' }), // no remainingDoses -> neutral, skipped
+    ];
+    const counts = supplyLegendCounts(meds);
+    expect(counts.find((e) => e.tone === 'danger')!.count).toBe(1);
+    // Total counted equals only the meds with data.
+    expect(counts.reduce((a, e) => a + e.count, 0)).toBe(1);
+  });
+
+  it('forwards custom cut points to both labels and binning', () => {
+    const meds = [med({ id: 'a', remainingDoses: 20, schedule: daily })]; // 20d
+    const counts = supplyLegendCounts(meds, { dangerBelow: 14, warnBelow: 28 });
+    // 20 is < 28 and >= 14 -> warn, and the labels reflect the cut points.
+    expect(counts.map((e) => e.label)).toEqual(['under 14d', 'under 28d', '28d+']);
+    expect(counts.find((e) => e.tone === 'warn')!.count).toBe(1);
   });
 });

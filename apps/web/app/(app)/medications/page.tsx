@@ -7,7 +7,7 @@ import { Btn, Surface, Empty, ErrorBox, SkeletonRow, Pill } from '../../../compo
 import { listMedications } from '../../../lib/data';
 import type { Medication } from '../../../lib/types';
 import { filterMedications, sortMedications, MED_SORTS, type MedSortKey } from '../../../lib/medication-sort';
-import { runoutChip, remainingChip, buildSupplyBar, supplyBarAriaLabel, supplyBarColor, supplyLegend } from '../../../lib/days-left-tone';
+import { runoutChip, remainingChip, buildSupplyBar, supplyBarAriaLabel, supplyBarColor, supplyLegendCounts } from '../../../lib/days-left-tone';
 import { SupplySparkline } from '../../../components/SupplySparkline';
 import {
   DENSITY_OPTIONS,
@@ -291,14 +291,19 @@ export default function MedicationsPage() {
 
       {/* Supply-bar colour key — only when bars are actually on screen, so the
           ok/warn/danger swatches decode the tiny days-left runways below each row.
-          Bands forwarded from supplyLegend so the labels never drift from bars. */}
+          Bands forwarded from supplyLegendCounts so the labels never drift from
+          bars, and each swatch carries the count of visible meds in that band so
+          the key also tallies the at-a-glance shape of the pillbox. */}
       {showSupplyLegend && (
         <div className="flex items-center gap-3 flex-wrap px-1 text-[11px] text-[var(--ink-muted)]" aria-label="Supply bar colour key">
           <span className="uppercase tracking-wide text-[10px]">Supply</span>
-          {supplyLegend().map((e) => (
+          {supplyLegendCounts(visible).map((e) => (
             <span key={e.tone} className="inline-flex items-center gap-1.5">
               <span className="inline-block w-2 h-2 rounded-full" style={{ background: e.color }} aria-hidden />
               {e.label}
+              <span className="tabular text-[10px] font-medium text-[var(--ink-soft)]" aria-label={`${e.count} in this band`}>
+                · {e.count}
+              </span>
             </span>
           ))}
         </div>
