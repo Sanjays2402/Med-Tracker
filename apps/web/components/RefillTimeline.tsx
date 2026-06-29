@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { buildTimeline, todayLabel, markTitle, type TimelineRefillInput, type TimelineTone } from '../lib/refill-timeline';
+import { buildTimeline, todayLabel, markTitle, legendCounts, legendCountSuffix, type TimelineRefillInput, type TimelineTone } from '../lib/refill-timeline';
 
 /**
  * RefillTimeline — a horizontal strip plotting each refill's refill-by date
@@ -113,20 +113,30 @@ export function RefillTimeline({
       </div>
 
       <div className="mt-6 flex items-center gap-3 flex-wrap text-[11px] text-[var(--ink-muted)]">
-        <LegendDot tone="overdue" label="overdue" />
-        <LegendDot tone="soon" label="within a week" />
-        <LegendDot tone="later" label="later" />
-        <LegendDot tone="done" label="ready / filled" />
+        {(() => {
+          const counts = legendCounts(model.marks);
+          return (
+            <>
+              <LegendDot tone="overdue" label="overdue" count={counts.overdue} />
+              <LegendDot tone="soon" label="within a week" count={counts.soon} />
+              <LegendDot tone="later" label="later" count={counts.later} />
+              <LegendDot tone="done" label="ready / filled" count={counts.done} />
+            </>
+          );
+        })()}
       </div>
     </div>
   );
 }
 
-function LegendDot({ tone, label }: { tone: TimelineTone; label: string }) {
+function LegendDot({ tone, label, count }: { tone: TimelineTone; label: string; count: number }) {
   return (
     <span className="inline-flex items-center gap-1.5">
       <span className="w-2 h-2 rounded-full" style={{ background: TONE_VARS[tone].dot }} />
       {label}
+      {count > 0 && (
+        <span className="tabular font-medium text-[var(--ink)]">{legendCountSuffix(count).trim()}</span>
+      )}
     </span>
   );
 }

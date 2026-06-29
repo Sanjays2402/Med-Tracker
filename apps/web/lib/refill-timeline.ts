@@ -222,3 +222,30 @@ export function markTitleOverdue(
     ? `${mark.medicationName} · ${date} · ${clause}`
     : `${mark.medicationName} · ${clause}`;
 }
+
+/** Tone -> mark count, every tone present (0 when none). */
+export type TimelineLegendCounts = Record<TimelineTone, number>;
+
+/**
+ * Tally the strip's marks by tone so each legend dot can name how many refills
+ * fall under it ("overdue 2", "within a week 1"). Every tone is present with a
+ * count (0 when none) so the renderer never misses a key and the legend stays
+ * fixed-order. Pure; reads the same marks buildTimeline already classified, so
+ * the counts can never disagree with the dots they sit beside.
+ */
+export function legendCounts(marks: readonly Pick<TimelineMark, 'tone'>[]): TimelineLegendCounts {
+  const out: TimelineLegendCounts = { overdue: 0, soon: 0, later: 0, done: 0 };
+  for (const m of marks) out[m.tone]++;
+  return out;
+}
+
+/**
+ * Compact suffix for a legend label given a tone count: " 2" when there are
+ * marks of that tone, "" when none (so the renderer drops a bare "overdue 0").
+ * The space-prefix lets the caller write `${label}${legendCountSuffix(n)}` and
+ * get "overdue 2" / "overdue" without conditional templating. Negative / NaN
+ * counts coerce to nothing. Pure.
+ */
+export function legendCountSuffix(count: number): string {
+  return Number.isFinite(count) && count > 0 ? ` ${Math.trunc(count)}` : '';
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { daysFromNow, buildTimeline, todayLabel, markDateLabel, markRelativeLabel, markTitle, markTitleOverdue, type TimelineRefillInput } from '../lib/refill-timeline';
+import { daysFromNow, buildTimeline, todayLabel, markDateLabel, markRelativeLabel, markTitle, markTitleOverdue, legendCounts, legendCountSuffix, type TimelineRefillInput } from '../lib/refill-timeline';
 
 // Fixed reference: 2026-06-25 12:00 local.
 const NOW = new Date(2026, 5, 25, 12, 0, 0, 0).getTime();
@@ -194,5 +194,40 @@ describe('markTitleOverdue', () => {
     expect(
       markTitleOverdue({ medicationName: 'X', refillBy: 'not-a-date', daysFromNow: -3 }),
     ).toBe('X · was due 3d ago');
+  });
+});
+
+describe('legendCounts', () => {
+  it('tallies every tone, with all keys present', () => {
+    const model = buildTimeline(refills, NOW);
+    const counts = legendCounts(model.marks);
+    expect(counts).toEqual({ overdue: 1, soon: 1, later: 1, done: 1 });
+  });
+
+  it('returns zeros for every tone when there are no marks', () => {
+    expect(legendCounts([])).toEqual({ overdue: 0, soon: 0, later: 0, done: 0 });
+  });
+
+  it('counts multiple marks sharing a tone', () => {
+    const counts = legendCounts([
+      { tone: 'overdue' }, { tone: 'overdue' }, { tone: 'soon' },
+    ]);
+    expect(counts.overdue).toBe(2);
+    expect(counts.soon).toBe(1);
+    expect(counts.done).toBe(0);
+  });
+});
+
+describe('legendCountSuffix', () => {
+  it('prefixes a space before a positive count', () => {
+    expect(legendCountSuffix(2)).toBe(' 2');
+  });
+  it('is empty for zero / negative / NaN so a bare 0 never renders', () => {
+    expect(legendCountSuffix(0)).toBe('');
+    expect(legendCountSuffix(-1)).toBe('');
+    expect(legendCountSuffix(Number.NaN)).toBe('');
+  });
+  it('truncates fractional counts', () => {
+    expect(legendCountSuffix(3.9)).toBe(' 3');
   });
 });
