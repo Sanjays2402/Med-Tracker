@@ -1350,22 +1350,21 @@ tick 46). Backend tiers 1L-1T stay paused until Sanjay removes the override.
 450. [x] `caregivers-expiry-bar-segment-focusable` — expiry-bar legend chips are now
     tabindex=0 with a focus-visible ring so the per-chip aria-labels are reachable
     by keyboard, not just a screen-reader cursor (tick 47 / 5b45df7).
-451. [ ] `refills-timeline-legend-counts` — Show a per-tone count beside each
-    timeline legend dot ("overdue 2", "within a week 1") from the marks; pure
-    tally-by-tone over buildTimeline's marks.
-452. [ ] `notifications-day-group-counts-unread` — Add an unread sub-count to each
-    /notifications day-group header ("Today · 5 · 2 unread"); pure unread tally
-    over the day-group items composing isUnread.
-453. [ ] `today-section-overdue-tone-escalate` — Tint the section danger dot
-    by how late its oldest overdue dose is (warn under 2h, danger past), reusing
-    overdueTier per-section; pure worst-lateness-per-section model.
-454. [ ] `medications-list-supply-bar-inline` — A tiny inline horizontal supply
-    bar (reuse buildSupplyBar's pct + tone) on each comfortable-density
-    /medications row, parallel to the sparkline; pure width/tone already shipped.
-455. [ ] `caregivers-header-expiry-bar-always` — Optionally render the expiry bar
-    even on an all-active list (muted, single sage segment) behind a "show health
-    bar" preference, so the header health read is consistent; pure all-active bar
-    model already exists via allActiveLegend.
+451. [x] `refills-timeline-legend-counts` — legendCounts tallies marks by tone +
+    legendCountSuffix; strip legend reads "overdue 2", "within a week 1" (tick 48 /
+    9f1297f). refill-timeline 27 -> 33.
+452. [x] `notifications-day-group-counts-unread` — unreadInGroup + dayGroupUnreadLabel
+    compose isUnread; day header reads "Today . 5 . 2 unread", just total when read
+    (tick 48 / 03a563a). notification-filter 38 -> 44.
+453. [x] `today-section-overdue-tone-escalate` — worstLatenessByPartOfDay; section
+    danger dot tones amber<2h/coral past via overdueTier (tick 48 / 22deabd).
+    part-of-day 29 -> 32.
+454. [x] `medications-list-supply-bar-inline` — showSupplyBar density flag; thin
+    days-left runway (buildSupplyBar pct+tone) on sm-hidden rows (tick 48 / 55aa99a).
+    density-pref 13 -> 14.
+455. [x] `caregivers-header-expiry-bar-always` — expiry-bar-pref persists "show
+    health bar"; muted single sage bar + toggle on all-active list (tick 48 /
+    7ce45ac). +7 new expiry-bar-pref tests.
 
 ### Tier 2K — frontend slices (FRONTEND-FOCUS override, refill after tick 47)
 
@@ -1396,8 +1395,52 @@ vitest harness is 968 tests across 58 suites as of tick 47). Backend tiers
     focusable legend chips (only one in the tab order, arrows move between) so the
     bar is one stop not three; pure index model over bar.segments.
 
+### Tier 2L — frontend slices (FRONTEND-FOCUS override, refill after tick 48)
+
+Tick 48 closed five Tier 2J stragglers (#451-#455). Five Tier 2K items remain
+(#456 refills-timeline-overdue-legend-count, #457 notifications-mark-all-read-
+empty-disable, #458 today-jump-to-first-toast, #459 medications-remaining-chip-
+aria, #460 caregivers-expiry-bar-segment-roving-tabindex) plus older heavies
+(#274-#277/#279, #281, #292-#295, #307, #312, #316, #318-#321). Fresh candidates
+below keep the loop fed. Each is a real user-facing capability in apps/web
+matching the sage/coral/amber pillbox language and the Linear/Raycast bar; prefer
+extracting non-trivial logic into a tested lib/*.ts module (web vitest harness is
+988 tests across 59 suites as of tick 48). Backend tiers 1L-1T stay paused.
+
+461. [ ] `refills-timeline-density-toggle` — Persisted compact/comfortable height
+    toggle for the strip (lane spacing 30->20px) so a long refill list fits; pure
+    config + pref module mirroring density-pref.
+462. [ ] `notifications-unread-only-empty-cta` — When unread-only is on and clears,
+    show a "you're all caught up" CTA distinct from the no-rows empty; pure copy
+    over summarizeUnread inTab/unreadInTab.
+463. [ ] `today-section-collapse-pref` — Collapse a fully-done part-of-day section
+    behind a "3 done" summary chip, persisted; pure done-detect over counts.
+464. [ ] `medications-supply-bar-aria` — Self-contained aria-label on the inline
+    supply bar ("12 days left, healthy") from buildSupplyBar tone+caption; thin
+    a11y over the new bar.
+465. [ ] `caregivers-health-bar-pct-tooltip` — Hover tooltip on the always-on
+    all-active bar naming the share count ("4 of 4 shares active"); reuse
+    expirySegmentTooltip for the single active segment.
+
 ## Tick log
 
+- 2026-06-28 20:23 PDT — tick 48: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 9f1297f refills-timeline-legend-counts,
+  03a563a notifications-day-group-counts-unread,
+  22deabd today-section-overdue-tone-escalate,
+  55aa99a medications-list-supply-bar-inline,
+  7ce45ac caregivers-header-expiry-bar-always.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.7s`; all routes
+  prerendered). `@med/web` test 988/988 pass across 59 suites (+20, +1 suite:
+  refill-timeline 27->33, notification-filter 38->44, part-of-day 29->32,
+  density-pref 13->14, new expiry-bar-pref 7). Typecheck: baseline 980 UNCHANGED
+  — grep-confirmed ZERO errors trace to edited libs (refill-timeline, notification-
+  filter, part-of-day, density-pref, days-left-tone, expiry-bar-pref), tests, or
+  pages. Lint: empty turbo task (documented baseline). Push 7a5ee88..7ce45ac,
+  origin/main verified. THIRTY-EIGHTH clean tick, twentieth frontend tick. Five
+  surfaces (refills, notifications, today, medications, caregivers); new pure
+  helpers legendCounts, dayGroupUnreadLabel, worstLatenessByPartOfDay (tested);
+  inline supply bar fills the mobile sparkline gap; opt-in always-on health bar.
 - 2026-06-28 17:48 PDT — tick 47: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 360ad9c refills-timeline-overdue-mark-title,
   89b5f09 notifications-mark-all-read-toast,
