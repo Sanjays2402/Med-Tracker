@@ -13,6 +13,9 @@ import {
   markTabReadLabel,
   markTabReadToastTitle,
   unreadInGroup,
+  totalUnread,
+  notificationsTitle,
+  unreadCountPill,
   dayGroupUnreadLabel,
   caughtUpCopy,
   shouldCaughtUpBurst,
@@ -315,5 +318,30 @@ describe('shouldCaughtUpBurst', () => {
   });
   it('stays silent when there is no copy', () => {
     expect(shouldCaughtUpBurst(null, false)).toBe(false);
+  });
+});
+
+describe('totalUnread', () => {
+  it('counts unread across the inbox', () => {
+    expect(totalUnread([n('a', 'reminder'), n('b', 'refill', true), n('c', 'system')])).toBe(2);
+    expect(totalUnread([])).toBe(0);
+  });
+});
+
+describe('notificationsTitle', () => {
+  it('prefixes the unread count', () => {
+    expect(notificationsTitle(3)).toBe('(3) Notifications');
+    expect(notificationsTitle(0)).toBe('Notifications');
+  });
+  it('caps the badge at 99+', () => {
+    expect(notificationsTitle(150)).toBe('(99+) Notifications');
+  });
+});
+
+describe('unreadCountPill', () => {
+  it('reads "N unread" or null at zero', () => {
+    expect(unreadCountPill(2)).toBe('2 unread');
+    expect(unreadCountPill(0)).toBeNull();
+    expect(unreadCountPill(120)).toBe('99+ unread');
   });
 });

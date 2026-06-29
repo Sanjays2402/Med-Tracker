@@ -265,6 +265,29 @@ export function unreadInGroup(items: readonly NotificationItem[]): number {
   return items.reduce((n, i) => n + (isUnread(i) ? 1 : 0), 0);
 }
 
+/** Total unread across the whole (visible) inbox. */
+export function totalUnread(items: readonly NotificationItem[]): number {
+  return unreadInGroup(items);
+}
+
+/**
+ * Document-title string reflecting the unread inbox count, so the count reads
+ * from the browser tab before the page is open: "(3) Notifications" / just
+ * "Notifications" when nothing is unread. Caps the badge at 99+ so a flooded
+ * inbox doesn't blow out the tab label. Pure; the page assigns it to
+ * document.title in an effect.
+ */
+export function notificationsTitle(unread: number): string {
+  if (unread <= 0) return 'Notifications';
+  return `(${unread > 99 ? '99+' : unread}) Notifications`;
+}
+
+/** Compact header count pill, e.g. "3 unread" / "99+ unread". Null when zero. */
+export function unreadCountPill(unread: number): string | null {
+  if (unread <= 0) return null;
+  return `${unread > 99 ? '99+' : unread} unread`;
+}
+
 /**
  * Compact sub-count for a /notifications day-group header. The group already
  * shows its total ("Today · 5"); this appends the unread share so a busy day

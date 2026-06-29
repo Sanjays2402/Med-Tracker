@@ -8,7 +8,7 @@ import { listNotifications, markNotificationRead, markAllNotificationsRead, snoo
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
-import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, dayGroupUnreadLabel, caughtUpCopy, shouldCaughtUpBurst, type NotificationTab } from '../../../lib/notification-filter';
+import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, dayGroupUnreadLabel, caughtUpCopy, shouldCaughtUpBurst, notificationsTitle, unreadCountPill, type NotificationTab } from '../../../lib/notification-filter';
 import {
   NOTIFICATION_UNREAD_STORAGE_KEY,
   parseUnreadOnly,
@@ -54,6 +54,14 @@ export default function NotificationsPage() {
   }, []);
 
   const unread = (items ?? []).filter(i => !i.read && !snoozedRows.has(i.id)).length;
+
+  // Reflect the unread total in the browser tab title so the count reads before
+  // the page is even open; restore the plain title on unmount.
+  React.useEffect(() => {
+    const prev = document.title;
+    document.title = notificationsTitle(unread);
+    return () => { document.title = prev; };
+  }, [unread]);
 
   async function onMarkOne(id: string) {
     setItems(prev => (prev ?? []).map(n => n.id === id ? { ...n, read: true } : n));
@@ -182,7 +190,17 @@ export default function NotificationsPage() {
     <div className="space-y-6">
       <header className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Notifications</h1>
+          <h1 className="text-2xl font-semibold tracking-tight inline-flex items-center gap-2">
+            Notifications
+            {unreadCountPill(unread) && (
+              <span
+                className="capsule tabular text-[11px] font-medium"
+                style={{ background: 'var(--accent-soft)', color: 'var(--accent-ink)' }}
+              >
+                {unreadCountPill(unread)}
+              </span>
+            )}
+          </h1>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             {unread > 0 ? `${unread} unread` : 'You are all caught up.'}
             {snoozedCount > 0 && ` · ${snoozedCount} snoozed`}
