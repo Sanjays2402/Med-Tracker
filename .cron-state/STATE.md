@@ -1432,23 +1432,59 @@ apps/web matching the sage/coral/amber pillbox language and the Linear/Raycast b
 prefer extracting non-trivial logic into a tested lib/*.ts module (web vitest
 harness is 1022 tests across 61 suites as of tick 49). Backend tiers 1L-1T stay paused.
 
-466. [ ] `today-collapse-all-done` — A header "Collapse done" control that folds
-    every fully-done section at once (and un-collapses on tap); composes
-    section-collapse-pref over the four labels.
-467. [ ] `refills-timeline-density-aria` — Announce the strip density on the toggle
+466. [x] `today-collapse-all-done` — A header "Collapse done" control that folds
+    every fully-done section at once (and un-collapses on tap) (tick 50 / d66bcc7).
+    New doneLabels/canCollapseAllDone/toggleAllDone/collapseAllLabel in
+    section-collapse-pref; 16 tests (1 -> 17).
+467. [x] `refills-timeline-density-aria` — Announce the strip density on the toggle
     ("Comfortable spacing, switch to compact") so the control isn't just a bare
-    label; thin a11y over otherStripDensityLabel.
-468. [ ] `notifications-caught-up-confetti` — One-shot reduced-motion-aware sage
-    burst when the unread-only view clears to "all caught up"; pure should-burst
-    gate over caughtUpCopy title.
-469. [ ] `medications-supply-bar-comfortable` — Show the inline supply bar on
+    label (tick 50 / 5c2c742). New stripDensityLabel + stripDensityAnnouncement; 4 tests.
+468. [x] `notifications-caught-up-confetti` — One-shot reduced-motion-aware sage
+    burst when the unread-only view clears to "all caught up" (tick 50 / dc72479).
+    New shouldCaughtUpBurst gate + CAUGHT_UP_TITLE; caught-up-burst keyframes; 5 tests.
+469. [x] `medications-supply-bar-comfortable` — Show the inline supply bar on
     comfortable rows at sm+ too (not just sm-only) so desktop comfortable also
-    reads runway; pure cfg flag already exists, thin render.
-470. [ ] `caregivers-health-bar-count-pill` — A small "N active" count pill beside
-    the always-on legend matching the bar tooltip; reuse activeBarTooltip's total,
-    thin render.
+    reads runway (tick 50 / 9f46b87). New showSupplyBarSmUp flag + supplyBarColor; 5 tests.
+470. [x] `caregivers-health-bar-count-pill` — A small "N active" count pill beside
+    the always-on legend matching the bar tooltip (tick 50 / ea41816). New
+    activeCountPill; 2 tests.
+
+### Tier 2N — frontend slices (FRONTEND-FOCUS override, refill after tick 50)
+
+Tick 50 closed five Tier 2M items (#466-470). Five Tier 2K items remain (#456-460)
+plus older heavies (#274-#277/#279, #281, #292-#295, #307, #312, #316, #318-#321).
+Fresh candidates below keep the loop fed. Each is a real user-facing capability in
+apps/web matching the sage/coral/amber pillbox language and the Linear/Raycast bar;
+prefer extracting non-trivial logic into a tested lib/*.ts module (web vitest harness
+is 1041 tests across 61 suites as of tick 50). Backend tiers 1L-1T stay paused.
+
+471. [ ] `today-collapse-all-toast` — When "Collapse done" folds N sections, flash
+    a toast ("Folded 3 finished sections") with an Undo that restores the prior set;
+    pure prior-set capture + count phrase.
+472. [ ] `refills-density-pref-settings` — Surface the timeline density default on
+    /settings so the choice has a discoverable home, not just the inline toggle;
+    reuse STRIP_DENSITY_OPTIONS.
+473. [ ] `notifications-unread-count-title` — Reflect the unread total in the tab
+    title / header pill so the count reads before opening; thin over summarizeUnread.
+474. [ ] `medications-supply-bar-legend` — A one-line ok/warn/danger key under the
+    list when bars show, so the colours are decoded; reuse supplyBarColor tones.
+475. [ ] `caregivers-expiry-bar-count-pills` — Per-segment "N" count pills on the
+    at-risk health bar legend (active/soon/expired), parallel to #470's all-good pill.
 
 ## Tick log
+
+- 2026-06-29 01:27 PDT — tick 50: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: d66bcc7 today-collapse-all-done, 5c2c742 refills-timeline-density-aria,
+  dc72479 notifications-caught-up-confetti, 9f46b87 medications-supply-bar-comfortable,
+  ea41816 caregivers-health-bar-count-pill. Gate: `@med/web` BUILD SUCCEEDS (Compiled
+  successfully in 3.4s; all routes prerendered). Test 1041/1041 pass across 61 suites
+  (+19: section-collapse 17, refill-timeline-density 16, notification-filter 48->53,
+  days-left-tone +5, density-pref +2, expiry-bar 31->33). Typecheck: baseline 4
+  (@med/config missing @types/node) UNCHANGED, zero new errors trace to edited libs/
+  pages. Lint: `next lint` fails identically at baseline (Next 16 removed it). Push
+  ad41782..ea41816, origin/main verified. FORTIETH clean tick, twenty-second frontend
+  tick. Five surfaces (today, refills, notifications, medications, caregivers); two new
+  helpers + three a11y/UX/micro-interaction layers, all tested. Refilled Tier 2N.
 
 - 2026-06-28 22:51 PDT — tick 49: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: 9e0a650 refills-timeline-density-toggle,
