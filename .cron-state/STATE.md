@@ -1451,27 +1451,57 @@ harness is 1022 tests across 61 suites as of tick 49). Backend tiers 1L-1T stay 
 
 ### Tier 2N — frontend slices (FRONTEND-FOCUS override, refill after tick 50)
 
-Tick 50 closed five Tier 2M items (#466-470). Five Tier 2K items remain (#456-460)
-plus older heavies (#274-#277/#279, #281, #292-#295, #307, #312, #316, #318-#321).
-Fresh candidates below keep the loop fed. Each is a real user-facing capability in
-apps/web matching the sage/coral/amber pillbox language and the Linear/Raycast bar;
-prefer extracting non-trivial logic into a tested lib/*.ts module (web vitest harness
-is 1041 tests across 61 suites as of tick 50). Backend tiers 1L-1T stay paused.
+Tick 50 closed five Tier 2M items (#466-470). Tick 51 closed Tier 2N (#471-475).
+Five Tier 2K items remain (#456-460) plus older heavies (#274-#277/#279, #281,
+#292-#295, #307, #312, #316, #318-#321). Backend tiers 1L-1T stay paused.
 
-471. [ ] `today-collapse-all-toast` — When "Collapse done" folds N sections, flash
-    a toast ("Folded 3 finished sections") with an Undo that restores the prior set;
-    pure prior-set capture + count phrase.
-472. [ ] `refills-density-pref-settings` — Surface the timeline density default on
-    /settings so the choice has a discoverable home, not just the inline toggle;
-    reuse STRIP_DENSITY_OPTIONS.
-473. [ ] `notifications-unread-count-title` — Reflect the unread total in the tab
-    title / header pill so the count reads before opening; thin over summarizeUnread.
-474. [ ] `medications-supply-bar-legend` — A one-line ok/warn/danger key under the
-    list when bars show, so the colours are decoded; reuse supplyBarColor tones.
-475. [ ] `caregivers-expiry-bar-count-pills` — Per-segment "N" count pills on the
-    at-risk health bar legend (active/soon/expired), parallel to #470's all-good pill.
+471. [x] `today-collapse-all-toast` — Undo toast when "Collapse done" folds N
+    sections, restoring the exact prior set (tick 51 / 5930015). newlyFoldedCount
+    + foldedToastTitle; +5 tests.
+472. [x] `refills-density-pref-settings` — Timeline density on /settings/preferences
+    (tick 51 / 41a47a6). STRIP_DENSITY_OPTIONS descriptions + stripDensityDescription;
+    +3 tests.
+473. [x] `notifications-unread-count-title` — Unread total in the tab title + header
+    pill (tick 51 / b02b132). notificationsTitle + unreadCountPill + totalUnread; +4 tests.
+474. [x] `medications-supply-bar-legend` — ok/warn/danger key under the list when
+    bars show (tick 51 / 8080fb6). supplyLegend; +2 tests.
+475. [x] `caregivers-expiry-bar-count-pills` — Per-segment count pills on the at-risk
+    bar legend (tick 51 / 3a92dbd). segmentCountPill; +1 test.
+
+### Tier 2O — frontend slices (FRONTEND-FOCUS override, refill after tick 51)
+
+Tick 51 closed five Tier 2N items (#471-475). web vitest harness is 1056 tests
+across 61 suites as of tick 51. Each is a real user-facing capability in apps/web
+matching the sage/coral/amber pillbox language and the Linear/Raycast bar; prefer
+extracting non-trivial logic into a tested lib/*.ts module. Backend tiers paused.
+
+476. [ ] `today-fold-toast-expand-undo` — When "Expand done" un-folds finished
+    sections, mirror #471 with a toast + Undo that re-folds the prior set.
+477. [ ] `refills-density-keyboard` — Bind a key to flip timeline density (like the
+    medications "s" sort cycle) so density is reachable without the mouse.
+478. [ ] `notifications-title-favicon-dot` — Pair the unread tab title with a small
+    favicon badge dot when unread > 0; pure gate, no canvas if reduced data.
+479. [ ] `medications-supply-legend-counts` — Append per-band counts to the supply
+    legend ("under 7d · 2") so the key also tallies how many meds sit in each band.
+480. [ ] `caregivers-bar-percent-labels` — Inline the largest-remainder percent on
+    each at-risk legend chip ("50%") behind a toggle, reusing expiryBarAriaDescription.
 
 ## Tick log
+
+- 2026-06-29 03:55 PDT — tick 51: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 5930015 today-collapse-all-toast, 41a47a6 refills-density-pref-settings,
+  b02b132 notifications-unread-count-title, 8080fb6 medications-supply-bar-legend,
+  3a92dbd caregivers-expiry-bar-count-pills. Gate: `@med/web` BUILD SUCCEEDS
+  (Compiled successfully in 4.0s; all routes prerendered incl. preferences/today/
+  notifications/medications/caregivers). Test 1056/1056 across 61 suites (+15:
+  section-collapse 22, refill-timeline-density 19, notification-filter 57,
+  days-left-tone 35, expiry-bar 34). Typecheck: baseline 980 (@types/node + React-dup)
+  UNCHANGED, zero new errors trace to edited libs/pages. Lint: `next lint` fails
+  identically (Next 16 removed it). Push b85ac79..3a92dbd, origin/main verified.
+  FORTY-FIRST clean tick, twenty-third frontend tick. Five surfaces; two new helpers
+  + three a11y/UX/micro-interaction layers, all tested. Refilled Tier 2O (#476-480).
+  A sibling subagent ran concurrently on overlapping test files; staged only own
+  files per commit to keep slices clean.
 
 - 2026-06-29 01:27 PDT — tick 50: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: d66bcc7 today-collapse-all-done, 5c2c742 refills-timeline-density-aria,
