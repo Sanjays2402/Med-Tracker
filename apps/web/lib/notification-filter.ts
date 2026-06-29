@@ -279,3 +279,41 @@ export function dayGroupUnreadLabel(items: readonly NotificationItem[]): string 
   const unread = unreadInGroup(items);
   return unread > 0 ? `${unread} unread` : null;
 }
+
+export interface CaughtUpCopy {
+  title: string;
+  description: string;
+}
+
+/**
+ * The empty-state copy for the unread-only view, splitting the two reasons the
+ * filtered list can be empty so the user gets the right message:
+ *
+ *   - The tab HAD unread that the user just cleared (hasRead via the read items
+ *     remaining) -> a positive "all caught up" with a hint to turn off the
+ *     filter. This is the celebratory case distinct from a barren inbox.
+ *   - The tab had nothing unread to begin with (inTab present but never any
+ *     unread) -> a calm "nothing unread here", no false victory lap.
+ *   - The tab is genuinely empty (inTab 0) -> null: that's the no-rows empty,
+ *     not an unread-only state, so the caller renders its standard empty.
+ *
+ * Returns null when unread-only is OFF (the caller handles non-unread empties)
+ * or when there are no rows in the tab at all. `summary` is summarizeUnread's
+ * result for the active tab. Pure; no React — caller drops it into <Empty>.
+ */
+export function caughtUpCopy(
+  unreadOnly: boolean,
+  summary: UnreadToggleSummary,
+): CaughtUpCopy | null {
+  if (!unreadOnly || summary.inTab === 0) return null;
+  if (summary.unreadInTab === 0) {
+    return {
+      title: "You're all caught up",
+      description: 'No unread notifications in this view. Turn off Unread only to see the rest.',
+    };
+  }
+  return {
+    title: 'No unread here',
+    description: "You've read everything that's left in this view.",
+  };
+}

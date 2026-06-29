@@ -8,7 +8,7 @@ import { listNotifications, markNotificationRead, markAllNotificationsRead, snoo
 import type { NotificationItem } from '../../../lib/types';
 import { useToast } from '../../../components/Toast';
 import { SNOOZE_OPTIONS, snoozeUntil, snoozeLabel, type SnoozeChoice } from '../../../lib/snooze';
-import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, dayGroupUnreadLabel, type NotificationTab } from '../../../lib/notification-filter';
+import { NOTIFICATION_TABS, countByTab, applyNotificationFilters, summarizeUnread, crossTabUnreadHint, tabReadTargets, markTabReadLabel, markTabReadToastTitle, dayGroupUnreadLabel, caughtUpCopy, type NotificationTab } from '../../../lib/notification-filter';
 import {
   NOTIFICATION_UNREAD_STORAGE_KEY,
   parseUnreadOnly,
@@ -154,6 +154,11 @@ export default function NotificationsPage() {
   const markTabLabel =
     activeTab !== 'all' ? markTabReadLabel(notSnoozed, activeTab, unreadOnly) : null;
 
+  // Unread-only empty state: a positive "all caught up" when the tab had unread
+  // the user cleared, distinct from a barren no-rows inbox. Null when unread-only
+  // is off or the tab is genuinely empty (the standard empty handles that).
+  const caughtUp = caughtUpCopy(unreadOnly, unreadInfo);
+
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between gap-3">
@@ -252,15 +257,15 @@ export default function NotificationsPage() {
         <Empty
           icon={<Bell size={32} weight="duotone" />}
           title={
-            unreadOnly && unreadInfo.inTab > 0
-              ? 'No unread here'
+            caughtUp
+              ? caughtUp.title
               : notSnoozed.length > 0
               ? 'Nothing in this tab'
               : snoozedCount > 0 ? 'Nothing for now' : 'No notifications yet'
           }
           description={
-            unreadOnly && unreadInfo.inTab > 0
-              ? "You've read everything in this view. Turn off Unread only to see the rest."
+            caughtUp
+              ? caughtUp.description
               : tabHint && !unreadOnly
               ? `Nothing here, but you have ${tabHint.message}.`
               : notSnoozed.length > 0
@@ -268,7 +273,7 @@ export default function NotificationsPage() {
               : snoozedCount > 0 ? 'Snoozed reminders will resurface at their scheduled time.' : 'Reminders and refill alerts appear here.'
           }
           action={
-            unreadOnly && unreadInfo.inTab > 0 ? (
+            caughtUp ? (
               <button type="button" onClick={() => setUnreadOnlyPersisted(false)} className="text-sm text-brand-600 hover:underline">
                 Show all
               </button>

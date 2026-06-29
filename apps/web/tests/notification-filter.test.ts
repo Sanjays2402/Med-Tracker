@@ -14,6 +14,7 @@ import {
   markTabReadToastTitle,
   unreadInGroup,
   dayGroupUnreadLabel,
+  caughtUpCopy,
   NOTIFICATION_TABS,
 } from '../lib/notification-filter';
 import type { NotificationItem } from '../lib/types';
@@ -274,3 +275,22 @@ describe('dayGroupUnreadLabel', () => {
     expect(dayGroupUnreadLabel([])).toBeNull();
   });
 });
+
+describe('caughtUpCopy', () => {
+  it('returns null when unread-only is off', () => {
+    expect(caughtUpCopy(false, { inTab: 5, unreadInTab: 0, hasRead: true })).toBeNull();
+  });
+  it('returns null when the tab is genuinely empty (no-rows empty)', () => {
+    expect(caughtUpCopy(true, { inTab: 0, unreadInTab: 0, hasRead: false })).toBeNull();
+  });
+  it('celebrates "all caught up" when the tab cleared its unread', () => {
+    const c = caughtUpCopy(true, { inTab: 4, unreadInTab: 0, hasRead: true });
+    expect(c?.title).toBe("You're all caught up");
+    expect(c?.description).toContain('Turn off Unread only');
+  });
+  it('reads "no unread here" when some unread remain (filter hid the read rows)', () => {
+    const c = caughtUpCopy(true, { inTab: 4, unreadInTab: 2, hasRead: true });
+    expect(c?.title).toBe('No unread here');
+  });
+});
+
