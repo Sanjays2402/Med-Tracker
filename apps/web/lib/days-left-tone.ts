@@ -125,6 +125,22 @@ export function buildSupplyBar(med: Medication, opts: SupplyBarOptions = {}): Su
   };
 }
 
+/**
+ * Self-contained spoken label for the inline supply bar, e.g. "12 days of supply
+ * left, healthy". The bar itself is a coloured width a sighted user reads at a
+ * glance; this pairs buildSupplyBar's caption with a plain-language word for its
+ * tone so a screen-reader user gets the same urgency the colour conveys. Returns
+ * null when there's no data (the bar is hidden anyway, nothing to announce).
+ * Pure; reuses the SAME tone the bar fills with so the spoken word never
+ * disagrees with the picture.
+ */
+export function supplyBarAriaLabel(bar: SupplyBar): string | null {
+  if (!bar.hasData) return null;
+  const word =
+    bar.tone === 'danger' ? 'low' : bar.tone === 'warn' ? 'getting low' : 'healthy';
+  return `${bar.caption}, ${word}`;
+}
+
 export interface RunoutChip {
   /** Estimated whole days of supply left, or null when unknown. */
   daysLeft: number | null;

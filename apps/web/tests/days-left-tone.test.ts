@@ -3,6 +3,7 @@ import {
   daysLeftTone,
   daysLeftToneVar,
   buildSupplyBar,
+  supplyBarAriaLabel,
   runoutChip,
   remainingChip,
 } from '../lib/days-left-tone';
@@ -192,3 +193,22 @@ describe('remainingChip', () => {
     expect(remainingChip(15, { dangerBelow: 20 }).tone).toBe('danger');
   });
 });
+
+describe('supplyBarAriaLabel', () => {
+  it('pairs the caption with a tone word for a healthy bar', () => {
+    const bar = buildSupplyBar(med({ remainingDoses: 30, schedule: '08:00 daily' }));
+    expect(supplyBarAriaLabel(bar)).toBe('30 days of supply left, healthy');
+  });
+  it('says "getting low" on a warn bar', () => {
+    const bar = buildSupplyBar(med({ remainingDoses: 10, schedule: '08:00 daily' }));
+    expect(supplyBarAriaLabel(bar)).toBe('10 days of supply left, getting low');
+  });
+  it('says "low" on a danger bar', () => {
+    const bar = buildSupplyBar(med({ remainingDoses: 4, schedule: '08:00 daily' }));
+    expect(supplyBarAriaLabel(bar)).toContain('low');
+  });
+  it('is null when there is no supply data', () => {
+    expect(supplyBarAriaLabel(buildSupplyBar(med()))).toBeNull();
+  });
+});
+
