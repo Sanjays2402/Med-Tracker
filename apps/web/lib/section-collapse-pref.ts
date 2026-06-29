@@ -133,3 +133,28 @@ export function collapseAllLabel(
   if (doneLabels(groups).length === 0) return null;
   return canCollapseAllDone(groups, set) ? 'Collapse done' : 'Expand done';
 }
+
+/**
+ * How many sections a "Collapse done" tap would NEWLY fold: the done sections
+ * not already in the set. Zero when the next tap un-folds instead. Pure — the
+ * caller fires a toast only when this is > 0. Mirrors canCollapseAllDone's
+ * "what does the next tap do" framing but returns the count for the message.
+ */
+export function newlyFoldedCount(
+  groups: readonly CollapsibleSection[],
+  set: ReadonlySet<PartOfDay>,
+): number {
+  return doneLabels(groups).filter((l) => !set.has(l)).length;
+}
+
+/**
+ * Toast title after a "Collapse done" tap folds N finished sections, e.g.
+ * "Folded 3 finished sections" / "Folded 1 finished section". Returns null when
+ * nothing was folded (the tap was an un-fold or there was nothing to do) so the
+ * caller fires no toast. Pure; no React — the page hands the title to its Toast
+ * layer with an Undo that restores the prior collapse set.
+ */
+export function foldedToastTitle(count: number): string | null {
+  if (count <= 0) return null;
+  return `Folded ${count} finished section${count === 1 ? '' : 's'}`;
+}

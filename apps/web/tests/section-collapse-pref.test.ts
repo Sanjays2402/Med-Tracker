@@ -12,6 +12,8 @@ import {
   canCollapseAllDone,
   toggleAllDone,
   collapseAllLabel,
+  newlyFoldedCount,
+  foldedToastTitle,
 } from '../lib/section-collapse-pref';
 import type { PartOfDayCounts } from '../lib/part-of-day';
 
@@ -121,6 +123,30 @@ describe('toggleAllDone', () => {
   it('removes done labels on unfold; harmless stale non-done labels remain gated', () => {
     const next = toggleAllDone(sections(done2, empty, empty, empty), new Set(['Morning', 'Night']));
     expect(next.has('Morning')).toBe(false);
+  });
+});
+
+describe('newlyFoldedCount', () => {
+  it('counts done sections not already folded', () => {
+    expect(newlyFoldedCount(sections(done2, done2, live, empty), new Set())).toBe(2);
+    expect(newlyFoldedCount(sections(done2, done2, live, empty), new Set(['Morning']))).toBe(1);
+  });
+  it('is zero when everything done is already folded (the next tap un-folds)', () => {
+    expect(newlyFoldedCount(sections(done2, done2, live, empty), new Set(['Morning', 'Afternoon']))).toBe(0);
+  });
+  it('is zero when nothing is done', () => {
+    expect(newlyFoldedCount(sections(live, empty, empty, empty), new Set())).toBe(0);
+  });
+});
+
+describe('foldedToastTitle', () => {
+  it('pluralises the folded count', () => {
+    expect(foldedToastTitle(3)).toBe('Folded 3 finished sections');
+    expect(foldedToastTitle(1)).toBe('Folded 1 finished section');
+  });
+  it('is null when nothing was folded', () => {
+    expect(foldedToastTitle(0)).toBeNull();
+    expect(foldedToastTitle(-2)).toBeNull();
   });
 });
 

@@ -47,6 +47,8 @@ import {
   toggleAllDone,
   collapseAllLabel,
   sectionDoneSummary,
+  newlyFoldedCount,
+  foldedToastTitle,
 } from '../../../lib/section-collapse-pref';
 import type { PartOfDay } from '../../../lib/part-of-day';
 
@@ -91,12 +93,34 @@ export default function TodayPage() {
   // it folds exactly the labels that are done right now; persists like a single fold.
   const toggleAllSections = React.useCallback((groups: { label: PartOfDay; counts: PartOfDayCounts }[]) => {
     setCollapsed((prev) => {
+      const folded = newlyFoldedCount(groups, prev);
       const next = toggleAllDone(groups, prev);
       try { window.localStorage.setItem(SECTION_COLLAPSE_STORAGE_KEY, serializeCollapsed(next)); }
       catch { /* best-effort persistence */ }
+      // When a "Collapse done" tap newly folds sections, flash a toast naming
+      // the count with an Undo that restores the exact prior set. An un-fold
+      // (folded === 0) is its own visible result; no toast.
+      const title = foldedToastTitle(folded);
+      if (title) {
+        const prior = prev;
+        toast({
+          id: 'fold-done',
+          kind: 'info',
+          title,
+          action: {
+            label: 'Undo',
+            run: () => {
+              setCollapsed(prior);
+              try { window.localStorage.setItem(SECTION_COLLAPSE_STORAGE_KEY, serializeCollapsed(prior)); }
+              catch { /* best-effort persistence */ }
+            },
+          },
+          durationMs: 5000,
+        });
+      }
       return next;
     });
-  }, []);
+  }, [toast]);
 
   const load = React.useCallback(async () => {
     setError(null);
