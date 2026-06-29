@@ -160,19 +160,36 @@ export function foldedToastTitle(count: number): string | null {
 }
 
 /**
+ * The labels an "Expand done" tap would NEWLY reopen: the done sections that are
+ * currently folded. Empty when the next tap FOLDS instead (some done section is
+ * still expanded), so the caller flashes the reopen affordance only on a genuine
+ * un-fold. Pure — the bulk control alternates Collapse/Expand, so for a given tap
+ * either this is empty or the fold path is (never both). The page uses these
+ * labels to play a one-shot sage burst on exactly the headers that came back, so
+ * the eye catches which sections reappeared.
+ */
+export function reopenedLabels(
+  groups: readonly CollapsibleSection[],
+  set: ReadonlySet<PartOfDay>,
+): PartOfDay[] {
+  if (canCollapseAllDone(groups, set)) return []; // the next tap folds, not expands
+  return doneLabels(groups).filter((l) => set.has(l));
+}
+
+/**
  * How many sections an "Expand done" tap would NEWLY reopen: the done sections
  * currently folded. Mirrors newlyFoldedCount for the opposite direction. Zero
  * when the next tap FOLDS instead (some done section is still expanded), so the
  * caller fires the reopen toast only on a genuine un-fold. Pure — the bulk
  * control alternates Collapse/Expand, so exactly one of newlyFoldedCount /
- * newlyExpandedCount is ever non-zero for a given tap.
+ * newlyExpandedCount is ever non-zero for a given tap. Counts reopenedLabels so
+ * the toast count and the burst-set can never drift.
  */
 export function newlyExpandedCount(
   groups: readonly CollapsibleSection[],
   set: ReadonlySet<PartOfDay>,
 ): number {
-  if (canCollapseAllDone(groups, set)) return 0; // the next tap folds, not expands
-  return doneLabels(groups).filter((l) => set.has(l)).length;
+  return reopenedLabels(groups, set).length;
 }
 
 /**

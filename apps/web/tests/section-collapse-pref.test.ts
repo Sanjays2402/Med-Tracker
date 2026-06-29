@@ -14,6 +14,7 @@ import {
   collapseAllLabel,
   newlyFoldedCount,
   foldedToastTitle,
+  reopenedLabels,
   newlyExpandedCount,
   expandedToastTitle,
 } from '../lib/section-collapse-pref';
@@ -149,6 +150,27 @@ describe('foldedToastTitle', () => {
   it('is null when nothing was folded', () => {
     expect(foldedToastTitle(0)).toBeNull();
     expect(foldedToastTitle(-2)).toBeNull();
+  });
+});
+
+describe('reopenedLabels', () => {
+  it('lists the done sections currently folded when the next tap un-folds', () => {
+    // Every done section folded -> the next tap is an Expand that reopens both.
+    expect(reopenedLabels(sections(done2, done2, live, empty), new Set(['Morning', 'Afternoon'])).sort())
+      .toEqual(['Afternoon', 'Morning']);
+  });
+  it('is empty when the next tap FOLDS (some done section still open)', () => {
+    expect(reopenedLabels(sections(done2, done2, live, empty), new Set(['Morning']))).toEqual([]);
+    expect(reopenedLabels(sections(done2, done2, live, empty), new Set())).toEqual([]);
+  });
+  it('is empty when nothing is done', () => {
+    expect(reopenedLabels(sections(live, empty, empty, empty), new Set())).toEqual([]);
+  });
+  it('drives newlyExpandedCount (count never drifts from the labels)', () => {
+    const groups = sections(done2, done2, live, empty);
+    for (const set of [new Set([]), new Set(['Morning'] as const), new Set(['Morning', 'Afternoon'] as const)]) {
+      expect(newlyExpandedCount(groups, set)).toBe(reopenedLabels(groups, set).length);
+    }
   });
 });
 

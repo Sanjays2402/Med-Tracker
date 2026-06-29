@@ -49,6 +49,7 @@ import {
   sectionDoneSummary,
   newlyFoldedCount,
   foldedToastTitle,
+  reopenedLabels,
   newlyExpandedCount,
   expandedToastTitle,
 } from '../../../lib/section-collapse-pref';
@@ -61,6 +62,9 @@ export default function TodayPage() {
   const [pop, setPop] = React.useState<string | null>(null);
   const [now, setNow] = React.useState(() => Date.now());
   const [collapsed, setCollapsed] = React.useState<ReadonlySet<PartOfDay>>(() => new Set());
+  // Sections to play a one-shot sage burst on, set transiently when an
+  // "Expand done" tap reopens them so the eye catches which headers came back.
+  const [burstSections, setBurstSections] = React.useState<ReadonlySet<PartOfDay>>(() => new Set());
   const { toast } = useToast();
 
   // Bulk-select state. `selected` holds dose ids; `anchor` is the last row the
@@ -97,9 +101,22 @@ export default function TodayPage() {
     setCollapsed((prev) => {
       const folded = newlyFoldedCount(groups, prev);
       const reopened = newlyExpandedCount(groups, prev);
+      // The exact headers an Expand tap reopens, so the burst lands on just them.
+      const reopenedSet = reopenedLabels(groups, prev);
       const next = toggleAllDone(groups, prev);
       try { window.localStorage.setItem(SECTION_COLLAPSE_STORAGE_KEY, serializeCollapsed(next)); }
       catch { /* best-effort persistence */ }
+      // A one-shot sage burst on the reopened headers (reduced-motion respected)
+      // so the eye catches which sections came back, pairing the reopen toast.
+      if (reopenedSet.length > 0) {
+        const reduce =
+          typeof window !== 'undefined' &&
+          window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        if (!reduce) {
+          setBurstSections(new Set(reopenedSet));
+          window.setTimeout(() => setBurstSections(new Set()), 900);
+        }
+      }
       // The bulk control alternates Collapse/Expand. On a "Collapse done" tap
       // that newly folds sections, flash a toast naming the count with an Undo
       // that restores the prior set; on an "Expand done" tap that reopens
@@ -493,8 +510,15 @@ export default function TodayPage() {
       ) : (
         groups.map(({ label, doses: items, counts }) =>
           items.length === 0 ? null : (
+            <div key={label} className="relative">
+              {burstSections.has(label) && (
+                <span
+                  className="caught-up-burst"
+                  style={{ left: -8, top: 2 }}
+                  aria-hidden
+                />
+              )}
             <Section
-              key={label}
               title={label}
               display
               action={
@@ -673,6 +697,7 @@ export default function TodayPage() {
                 </>
               )}
             </Section>
+            </div>
           ),
         )
       )}
