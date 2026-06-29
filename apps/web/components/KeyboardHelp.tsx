@@ -1,7 +1,9 @@
 'use client';
 
 import * as React from 'react';
+import { usePathname } from 'next/navigation';
 import { X as XIcon } from '@med/icons';
+import { shortcutGroupsFor } from '../lib/keyboard-shortcuts';
 
 /**
  * KeyboardHelp — Linear-style "press ? for shortcuts" overlay.
@@ -11,48 +13,10 @@ import { X as XIcon } from '@med/icons';
  *
  * The list is grouped by area (Navigation / Actions / Help) with a kbd
  * key block on the right of each row. Mac/non-mac platforms get the right
- * modifier glyph automatically.
+ * modifier glyph automatically. Page-local shortcuts (the /refills density
+ * flip) are folded in only on the route that actually listens for them, via
+ * shortcutGroupsFor(pathname), so the cheat sheet mirrors what each page does.
  */
-
-interface Shortcut {
-  keys: string[]; // Tokens like 'Mod', 'K', '?', '↵' — see renderKeys
-  label: string;
-}
-
-interface Group {
-  heading: string;
-  shortcuts: Shortcut[];
-}
-
-const GROUPS: Group[] = [
-  {
-    heading: 'Navigation',
-    shortcuts: [
-      { keys: ['Mod', 'K'], label: 'Open command palette' },
-      { keys: ['/'],        label: 'Open command palette' },
-      { keys: ['G', 'D'],   label: 'Go to dashboard' },
-      { keys: ['G', 'T'],   label: 'Go to today' },
-      { keys: ['G', 'M'],   label: 'Go to medications' },
-      { keys: ['G', 'S'],   label: 'Go to schedule' },
-      { keys: ['G', 'R'],   label: 'Go to refills' },
-      { keys: ['G', 'H'],   label: 'Go to history' },
-    ],
-  },
-  {
-    heading: 'Actions',
-    shortcuts: [
-      { keys: ['N'],        label: 'New medication' },
-      { keys: ['T'],        label: 'Toggle theme' },
-      { keys: ['Esc'],      label: 'Close dialog / overlay' },
-    ],
-  },
-  {
-    heading: 'Help',
-    shortcuts: [
-      { keys: ['?'],        label: 'Show keyboard shortcuts' },
-    ],
-  },
-];
 
 const ROUTE_FOR_LEADER: Record<string, string> = {
   d: '/dashboard',
@@ -64,11 +28,16 @@ const ROUTE_FOR_LEADER: Record<string, string> = {
 };
 
 export function KeyboardHelp() {
+  const pathname = usePathname() ?? '';
   const [open, setOpen] = React.useState(false);
   const [mac, setMac] = React.useState(false);
   // For the `g <letter>` leader: remember the leader pressed and a deadline.
   const leaderRef = React.useRef<number>(0);
   const closeBtnRef = React.useRef<HTMLButtonElement | null>(null);
+
+  // Route-aware groups: base catalogue plus any page-local action (e.g. the
+  // /refills density flip) so the overlay only advertises keys that work here.
+  const groups = React.useMemo(() => shortcutGroupsFor(pathname), [pathname]);
 
   React.useEffect(() => {
     if (typeof navigator !== 'undefined') {
@@ -192,7 +161,7 @@ export function KeyboardHelp() {
 
         <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-            {GROUPS.map((g) => (
+            {groups.map((g) => (
               <section key={g.heading}>
                 <div className="eyebrow mb-2.5">{g.heading}</div>
                 <ul className="space-y-2">
