@@ -31,7 +31,7 @@ import {
   formatLateness,
   overdueTier,
 } from '../../../lib/overdue';
-import { groupByPartOfDay, sectionCountLabel, sectionForOverdue, countOverdueByPartOfDay, overdueSectionCount, type PartOfDayCounts } from '../../../lib/part-of-day';
+import { groupByPartOfDay, sectionCountLabel, sectionForOverdue, countOverdueByPartOfDay, overdueSectionCount, jumpToFirstLabel, type PartOfDayCounts } from '../../../lib/part-of-day';
 import { isCurrentPartOfDay, nowCapLabel } from '../../../lib/part-of-day-now';
 import { sectionProgress, sectionProgressLabel, sectionFillTone } from '../../../lib/section-progress';
 import { dayProgressRoll, dayPercentPrefix } from '../../../lib/day-progress-roll';
@@ -352,7 +352,7 @@ export default function TodayPage() {
             </div>
             <Btn size="sm" variant="primary" onClick={jumpToFirstOverdue}>
               <span className="inline-flex items-center gap-1.5">
-                <ArrowDown size={13} /> Jump to first
+                <ArrowDown size={13} /> {jumpToFirstLabel(overdueSection)}
               </span>
             </Btn>
           </div>

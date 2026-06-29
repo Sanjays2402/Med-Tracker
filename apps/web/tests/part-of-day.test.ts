@@ -9,6 +9,7 @@ import {
   sectionForOverdue,
   countOverdueByPartOfDay,
   overdueSectionCount,
+  jumpToFirstLabel,
   type PartOfDay,
   type PartOfDayDose,
 } from '../lib/part-of-day';
@@ -200,5 +201,16 @@ describe('overdueSectionCount', () => {
 
   it('is null when nothing is flagged', () => {
     expect(overdueSectionCount('Morning', null, counts)).toBeNull();
+  });
+});
+
+describe('jumpToFirstLabel', () => {
+  it('names the destination section when one is flagged', () => {
+    expect(jumpToFirstLabel('Morning')).toBe('Jump to first · Morning');
+    expect(jumpToFirstLabel('Evening')).toBe('Jump to first · Evening');
+  });
+
+  it('stays the bare label when nothing is overdue', () => {
+    expect(jumpToFirstLabel(null)).toBe('Jump to first');
   });
 });

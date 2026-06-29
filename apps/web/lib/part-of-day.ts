@@ -173,3 +173,15 @@ export function overdueSectionCount(
   const n = counts[section];
   return n > 1 ? n : null;
 }
+
+/**
+ * Label for the /today overdue-banner "Jump to first" button. When the oldest
+ * overdue dose lives in a known section, the label names where it lands ("Jump
+ * to first · Morning") so the user knows which section the scroll targets; when
+ * nothing is overdue (or the section is unknown) it stays the bare "Jump to
+ * first". `section` is sectionForOverdue's result, passed straight through.
+ * Pure; the page renders the returned string verbatim.
+ */
+export function jumpToFirstLabel(section: PartOfDay | null): string {
+  return section ? `Jump to first · ${section}` : 'Jump to first';
+}
