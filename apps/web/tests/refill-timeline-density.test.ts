@@ -9,6 +9,8 @@ import {
   stripDensityConfig,
   toggleStripDensity,
   otherStripDensityLabel,
+  stripDensityLabel,
+  stripDensityAnnouncement,
   trackHeight,
 } from '../lib/refill-timeline-density';
 
@@ -85,5 +87,19 @@ describe('trackHeight', () => {
   it('reserves at least one lane for empty / bad counts', () => {
     expect(trackHeight(0, 'comfortable')).toBe(14 + 30);
     expect(trackHeight(NaN, 'compact')).toBe(10 + 20);
+  });
+});
+
+describe('stripDensityLabel', () => {
+  it('names the current spacing', () => {
+    expect(stripDensityLabel('comfortable')).toBe('Comfortable');
+    expect(stripDensityLabel('compact')).toBe('Compact');
+  });
+});
+
+describe('stripDensityAnnouncement', () => {
+  it('pairs current spacing with the destination of the next press', () => {
+    expect(stripDensityAnnouncement('comfortable')).toBe('Comfortable spacing, switch to compact');
+    expect(stripDensityAnnouncement('compact')).toBe('Compact spacing, switch to comfortable');
   });
 });

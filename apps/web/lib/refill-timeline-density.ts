@@ -92,3 +92,21 @@ export function trackHeight(laneCount: number, value: unknown): number {
   const lanes = Math.max(1, Number.isFinite(laneCount) ? Math.floor(laneCount) : 1);
   return cfg.trackPad + lanes * cfg.laneSpacing;
 }
+
+/** Human label for a density value (the current spacing, not its opposite). */
+export function stripDensityLabel(value: StripDensity): string {
+  return value === 'comfortable' ? 'Comfortable' : 'Compact';
+}
+
+/**
+ * Spoken announcement when the density toggle is pressed, pairing the new
+ * spacing with the destination of the next press: "Comfortable spacing, switch
+ * to compact" / "Compact spacing, switch to comfortable". The toggle button has
+ * a fixed aria-label, so this aria-live string carries the state CHANGE for a
+ * screen reader. `value` is the density AFTER the flip. Pure; no React.
+ */
+export function stripDensityAnnouncement(value: StripDensity): string {
+  const current = stripDensityLabel(value);
+  const next = otherStripDensityLabel(value).toLowerCase();
+  return `${current} spacing, switch to ${next}`;
+}

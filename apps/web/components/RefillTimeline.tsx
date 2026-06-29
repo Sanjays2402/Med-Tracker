@@ -10,6 +10,7 @@ import {
   stripDensityConfig,
   toggleStripDensity,
   otherStripDensityLabel,
+  stripDensityAnnouncement,
   trackHeight,
   type StripDensity,
 } from '../lib/refill-timeline-density';
@@ -39,6 +40,10 @@ export function RefillTimeline({
   // Recompute "now" once on mount so the strip is stable across re-renders.
   const [now] = React.useState(() => Date.now());
   const [density, setDensity] = React.useState<StripDensity>(DEFAULT_STRIP_DENSITY);
+  // Track whether the user has flipped at least once so the aria-live region is
+  // silent on mount (the restored value isn't an announcement) but speaks the new
+  // spacing on every press thereafter.
+  const [flipped, setFlipped] = React.useState(false);
   const model = React.useMemo(
     () => buildTimeline(refills, now, { windowDays }),
     [refills, now, windowDays],
@@ -58,6 +63,7 @@ export function RefillTimeline({
       catch { /* best-effort persistence */ }
       return next;
     });
+    setFlipped(true);
   }, []);
 
   const laneCount = Math.max(1, ...model.marks.map((m) => m.lane + 1));
@@ -82,6 +88,9 @@ export function RefillTimeline({
           >
             {otherStripDensityLabel(density)}
           </button>
+          <span className="sr-only" role="status" aria-live="polite">
+            {flipped ? stripDensityAnnouncement(density) : ''}
+          </span>
         </div>
       </div>
 
