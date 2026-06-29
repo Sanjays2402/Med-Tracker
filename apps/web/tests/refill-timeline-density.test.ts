@@ -12,6 +12,8 @@ import {
   stripDensityLabel,
   stripDensityAnnouncement,
   stripDensityDescription,
+  isStripDensityHotkey,
+  STRIP_DENSITY_HOTKEY,
   trackHeight,
 } from '../lib/refill-timeline-density';
 
@@ -116,5 +118,25 @@ describe('stripDensityDescription', () => {
   });
   it('every option carries a non-empty description', () => {
     expect(STRIP_DENSITY_OPTIONS.every((o) => o.description.length > 0)).toBe(true);
+  });
+});
+
+describe('isStripDensityHotkey', () => {
+  it('matches the bare density hotkey "d"', () => {
+    expect(STRIP_DENSITY_HOTKEY).toBe('d');
+    expect(isStripDensityHotkey('d')).toBe(true);
+  });
+  it('is case-insensitive so CapsLock still flips', () => {
+    expect(isStripDensityHotkey('D')).toBe(true);
+  });
+  it('ignores any other key', () => {
+    expect(isStripDensityHotkey('s')).toBe(false);
+    expect(isStripDensityHotkey('Enter')).toBe(false);
+    expect(isStripDensityHotkey('')).toBe(false);
+  });
+  it('ignores the hotkey when a modifier is held (never fights Cmd-D / Ctrl-D / Alt-D)', () => {
+    expect(isStripDensityHotkey('d', { metaKey: true })).toBe(false);
+    expect(isStripDensityHotkey('d', { ctrlKey: true })).toBe(false);
+    expect(isStripDensityHotkey('d', { altKey: true })).toBe(false);
   });
 });

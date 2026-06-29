@@ -11,6 +11,8 @@ import {
   toggleStripDensity,
   otherStripDensityLabel,
   stripDensityAnnouncement,
+  isStripDensityHotkey,
+  STRIP_DENSITY_HOTKEY,
   trackHeight,
   type StripDensity,
 } from '../lib/refill-timeline-density';
@@ -66,6 +68,24 @@ export function RefillTimeline({
     setFlipped(true);
   }, []);
 
+  // "d" flips the timeline density without the mouse, mirroring the medications
+  // list's "s" sort-cycle. Skipped while a text field is focused or a modifier
+  // is held so it never fights the browser (Cmd-D bookmark) or steals a
+  // keystroke mid-search. The predicate lives in the lib so the kbd hint chip
+  // and the match never drift.
+  React.useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (!isStripDensityHotkey(e.key, e)) return;
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || t?.isContentEditable) return;
+      e.preventDefault();
+      flipDensity();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [flipDensity]);
+
   const laneCount = Math.max(1, ...model.marks.map((m) => m.lane + 1));
   const cfg = stripDensityConfig(density);
   const height = trackHeight(laneCount, density);
@@ -88,6 +108,13 @@ export function RefillTimeline({
           >
             {otherStripDensityLabel(density)}
           </button>
+          <kbd
+            className="capsule tabular text-[10px] shrink-0 hidden sm:inline-flex"
+            title={`Press ${STRIP_DENSITY_HOTKEY} to flip density`}
+            aria-hidden
+          >
+            {STRIP_DENSITY_HOTKEY}
+          </kbd>
           <span className="sr-only" role="status" aria-live="polite">
             {flipped ? stripDensityAnnouncement(density) : ''}
           </span>

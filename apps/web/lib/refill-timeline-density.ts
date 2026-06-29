@@ -78,6 +78,29 @@ export function toggleStripDensity(value: StripDensity): StripDensity {
   return value === 'comfortable' ? 'compact' : 'comfortable';
 }
 
+/**
+ * The bare key that flips the timeline density, mirroring the medications list's
+ * "s" sort-cycle so density is reachable without the mouse. "d" for density.
+ * Exported so the kbd hint chip and the predicate never drift.
+ */
+export const STRIP_DENSITY_HOTKEY = 'd';
+
+/**
+ * Whether a keydown should flip the timeline density: the bare density hotkey
+ * with NO modifier held. Case-insensitive so CapsLock still works. The caller is
+ * still responsible for skipping while a text field is focused (so typing "d" in
+ * a search box never flips density) — this is only the key match, kept pure and
+ * testable. Modifier-held combos (Cmd-D bookmark, Ctrl-D, Alt-D) are ignored so
+ * the shortcut never fights the browser. Pure.
+ */
+export function isStripDensityHotkey(
+  key: string,
+  mods: { metaKey?: boolean; ctrlKey?: boolean; altKey?: boolean } = {},
+): boolean {
+  if (mods.metaKey || mods.ctrlKey || mods.altKey) return false;
+  return key.toLowerCase() === STRIP_DENSITY_HOTKEY;
+}
+
 /** The other density's label, for a toggle button that names its destination. */
 export function otherStripDensityLabel(value: StripDensity): string {
   return value === 'comfortable' ? 'Compact' : 'Comfortable';
