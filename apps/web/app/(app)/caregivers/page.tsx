@@ -262,7 +262,7 @@ export default function CaregiversPage() {
                 title={expirySegmentTooltip(seg, bar.total)}
                 role="img"
                 tabIndex={0}
-                aria-label={expirySegmentAriaLabel(seg, bar.total)}
+                aria-label={expirySegmentAriaLabel(seg, bar.total, { includePercent: !showPercents })}
               >
                 <span
                   className="inline-block w-2 h-2 rounded-full"

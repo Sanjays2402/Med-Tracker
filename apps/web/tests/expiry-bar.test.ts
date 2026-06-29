@@ -197,6 +197,36 @@ describe('expirySegmentAriaLabel', () => {
     const active = bar.segments.find((s) => s.kind === 'active')!;
     expect(expirySegmentAriaLabel(active, bar.total)).toBe('34% active, 1 of 3 shares');
   });
+
+  it('keeps the percent by default and when includePercent is true', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, expired: 1, total: 4 }))!;
+    const soon = bar.segments.find((s) => s.kind === 'soon')!;
+    expect(expirySegmentAriaLabel(soon, bar.total, {})).toBe('25% expiring soon, 1 of 4 shares');
+    expect(expirySegmentAriaLabel(soon, bar.total, { includePercent: true })).toBe('25% expiring soon, 1 of 4 shares');
+  });
+
+  it('drops the leading percent when includePercent is false (visible text shows it)', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, expired: 1, total: 4 }))!;
+    const active = bar.segments.find((s) => s.kind === 'active')!;
+    const soon = bar.segments.find((s) => s.kind === 'soon')!;
+    const expired = bar.segments.find((s) => s.kind === 'expired')!;
+    expect(expirySegmentAriaLabel(active, bar.total, { includePercent: false })).toBe('active, 2 of 4 shares');
+    expect(expirySegmentAriaLabel(soon, bar.total, { includePercent: false })).toBe('expiring soon, 1 of 4 shares');
+    expect(expirySegmentAriaLabel(expired, bar.total, { includePercent: false })).toBe('expired, 1 of 4 shares');
+  });
+
+  it('never speaks a percent when includePercent is false (no "%" in the label)', () => {
+    const bar = expiryBar(summary({ active: 1, soon: 1, expired: 1, total: 3 }))!;
+    for (const seg of bar.segments) {
+      expect(expirySegmentAriaLabel(seg, bar.total, { includePercent: false })).not.toContain('%');
+    }
+  });
+
+  it('still pluralises the share noun on a single-share list when percent is dropped', () => {
+    const bar = expiryBar(summary({ soon: 1, total: 1 }))!;
+    const soon = bar.segments.find((s) => s.kind === 'soon')!;
+    expect(expirySegmentAriaLabel(soon, bar.total, { includePercent: false })).toBe('expiring soon, 1 of 1 share');
+  });
 });
 
 describe('activeCountPill', () => {

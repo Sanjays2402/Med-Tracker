@@ -212,10 +212,30 @@ export function activeBarTooltip(bar: ExpiryBar): string | null {
  * with the segment's count over `total`, so the spoken percent never disagrees
  * with the picture and the count is grounded in the full share list. The noun
  * pluralises on the total ("1 of 1 share"). Pure; no React.
+ *
+ * When `includePercent` is false, the leading percent phrase is dropped and the
+ * label reads just the kind + share ("expiring soon, 1 of 4 shares"). Callers
+ * pass this when the chip ALREADY shows the percent as visible text (the
+ * caregivers "Show percents" toggle), so a screen reader isn't told "25%" twice
+ * — once by the visible text and again by the label. Default true keeps the
+ * self-contained label for chips that don't surface the percent. Pure.
  */
-export function expirySegmentAriaLabel(segment: ExpiryBarSegment, total: number): string {
+export function expirySegmentAriaLabel(
+  segment: ExpiryBarSegment,
+  total: number,
+  opts: { includePercent?: boolean } = {},
+): string {
   const noun = total === 1 ? 'share' : 'shares';
-  return `${segmentPercentPhrase(segment)}, ${segment.count} of ${total} ${noun}`;
+  const share = `${segment.count} of ${total} ${noun}`;
+  if (opts.includePercent === false) {
+    // Drop the percent; lead with the kind phrase instead (no leading "N% ").
+    const kind =
+      segment.kind === 'active' ? 'active'
+      : segment.kind === 'soon' ? 'expiring soon'
+      : 'expired';
+    return `${kind}, ${share}`;
+  }
+  return `${segmentPercentPhrase(segment)}, ${share}`;
 }
 
 /**
