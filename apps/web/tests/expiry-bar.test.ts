@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill, segmentCountPill } from '../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill, segmentCountPill, segmentPercentLabel } from '../lib/expiry-bar';
 import type { ExpirySummary } from '../lib/caregiver-expiry';
 
 function summary(over: Partial<ExpirySummary>): ExpirySummary {
@@ -217,5 +217,31 @@ describe('segmentCountPill', () => {
     expect(segmentCountPill(soon)).toBe('2');
     const expired = bar.segments.find((s) => s.kind === 'expired')!;
     expect(segmentCountPill(expired)).toBe('1');
+  });
+});
+
+describe('segmentPercentLabel', () => {
+  it('returns the segment percent suffixed with %', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, expired: 1, total: 4 }))!;
+    const active = bar.segments.find((s) => s.kind === 'active')!;
+    expect(segmentPercentLabel(active)).toBe('50%');
+    const soon = bar.segments.find((s) => s.kind === 'soon')!;
+    expect(segmentPercentLabel(soon)).toBe('25%');
+  });
+
+  it('reads the SAME largest-remainder width the bar draws (chip never disagrees)', () => {
+    const bar = expiryBar(summary({ active: 1, soon: 1, expired: 1, total: 3 }))!;
+    // widths are 34/33/33 (largest-remainder); the chip label matches seg.pct.
+    for (const seg of bar.segments) {
+      expect(segmentPercentLabel(seg)).toBe(`${seg.pct}%`);
+    }
+  });
+
+  it('chips across the bar sum to 100% (largest-remainder guarantee)', () => {
+    const bar = expiryBar(summary({ active: 1, soon: 1, expired: 1, total: 3 }))!;
+    const sum = bar.segments
+      .map((s) => parseInt(segmentPercentLabel(s), 10))
+      .reduce((a, b) => a + b, 0);
+    expect(sum).toBe(100);
   });
 });

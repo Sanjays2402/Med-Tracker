@@ -15,12 +15,17 @@ import {
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill, segmentCountPill } from '../../../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill, segmentCountPill, segmentPercentLabel } from '../../../lib/expiry-bar';
 import {
   EXPIRY_BAR_STORAGE_KEY,
   parseShowHealthBar,
   serializeShowHealthBar,
 } from '../../../lib/expiry-bar-pref';
+import {
+  EXPIRY_BAR_PCT_STORAGE_KEY,
+  parseShowBarPercents,
+  serializeShowBarPercents,
+} from '../../../lib/expiry-bar-percent-pref';
 
 export default function CaregiversPage() {
   const [items, setItems] = React.useState<CaregiverShare[] | null>(null);
@@ -28,6 +33,7 @@ export default function CaregiversPage() {
   const [sortBy, setSortBy] = React.useState<CaregiverSortKey>('recent');
   const [query, setQuery] = React.useState('');
   const [showHealthBar, setShowHealthBar] = React.useState(false);
+  const [showPercents, setShowPercents] = React.useState(false);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
   const load = React.useCallback(async () => {
@@ -47,6 +53,21 @@ export default function CaregiversPage() {
     setShowHealthBar((prev) => {
       const next = !prev;
       try { window.localStorage.setItem(EXPIRY_BAR_STORAGE_KEY, serializeShowHealthBar(next)); }
+      catch { /* best-effort persistence */ }
+      return next;
+    });
+  }, []);
+
+  // Restore the "show bar percents" preference on mount.
+  React.useEffect(() => {
+    try { setShowPercents(parseShowBarPercents(window.localStorage.getItem(EXPIRY_BAR_PCT_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - keep default */ }
+  }, []);
+
+  const togglePercents = React.useCallback(() => {
+    setShowPercents((prev) => {
+      const next = !prev;
+      try { window.localStorage.setItem(EXPIRY_BAR_PCT_STORAGE_KEY, serializeShowBarPercents(next)); }
       catch { /* best-effort persistence */ }
       return next;
     });
@@ -258,8 +279,25 @@ export default function CaregiversPage() {
                 <span className={`capsule tabular text-[10px] shrink-0 capsule-${seg.tone}`}>
                   {segmentCountPill(seg)}
                 </span>
+                {/* Inline share-of-the-bar percent, behind the toggle. The same
+                    largest-remainder width the bar draws, so chip + bar agree. */}
+                {showPercents && (
+                  <span className="tabular text-[10px] text-[var(--ink-soft)]" aria-hidden>
+                    {segmentPercentLabel(seg)}
+                  </span>
+                )}
               </span>
             ))}
+            {/* Toggle to surface / hide the per-chip percents. Reuses the same
+                largest-remainder widths expiryBarAriaDescription already speaks. */}
+            <button
+              type="button"
+              onClick={togglePercents}
+              aria-pressed={showPercents}
+              className="ml-auto text-[11px] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
+            >
+              {showPercents ? 'Hide percents' : 'Show percents'}
+            </button>
           </div>
         </div>
       )}

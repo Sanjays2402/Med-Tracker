@@ -240,3 +240,18 @@ export function activeCountPill(bar: ExpiryBar): string | null {
 export function segmentCountPill(segment: Pick<ExpiryBarSegment, 'count'>): string {
   return `${segment.count}`;
 }
+
+/**
+ * The largest-remainder PERCENT label for a single at-risk legend chip, e.g.
+ * "50%" — the same width the bar segment draws, so a percent shown inline on the
+ * chip never disagrees with the picture. Pairs with segmentCountPill so a chip
+ * can read "3 expiring soon · 2 · 50%" when the user opts to surface percents.
+ *
+ * The whole-percent widths across a bar sum to exactly 100 (expiryBar uses
+ * largest-remainder rounding), so the chips' percents add up. expiryBarAriaDescription
+ * already names every segment's percent for assistive tech; this exposes the
+ * SAME per-segment number for the visible chip. Pure; no React.
+ */
+export function segmentPercentLabel(segment: Pick<ExpiryBarSegment, 'pct'>): string {
+  return `${segment.pct}%`;
+}
