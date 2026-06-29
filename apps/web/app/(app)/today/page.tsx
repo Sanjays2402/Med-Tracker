@@ -37,6 +37,16 @@ import { sectionProgress, sectionProgressLabel, sectionFillTone } from '../../..
 import { dayProgressRoll, dayPercentPrefix } from '../../../lib/day-progress-roll';
 import { progressToneVar } from '../../../lib/progress-tone';
 import { DoseSegments } from '../../../components/DoseSegments';
+import {
+  SECTION_COLLAPSE_STORAGE_KEY,
+  parseCollapsed,
+  serializeCollapsed,
+  toggleCollapsed,
+  isCollapsed,
+  isSectionDone,
+  sectionDoneSummary,
+} from '../../../lib/section-collapse-pref';
+import type { PartOfDay } from '../../../lib/part-of-day';
 
 export default function TodayPage() {
   const [doses, setDoses] = React.useState<DoseEvent[] | null>(null);
@@ -44,6 +54,7 @@ export default function TodayPage() {
   const [busy, setBusy] = React.useState<string | null>(null);
   const [pop, setPop] = React.useState<string | null>(null);
   const [now, setNow] = React.useState(() => Date.now());
+  const [collapsed, setCollapsed] = React.useState<ReadonlySet<PartOfDay>>(() => new Set());
   const { toast } = useToast();
 
   // Bulk-select state. `selected` holds dose ids; `anchor` is the last row the
@@ -56,6 +67,22 @@ export default function TodayPage() {
   React.useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30_000);
     return () => clearInterval(id);
+  }, []);
+
+  // Restore the persisted set of folded (fully-done) sections on mount, and a
+  // toggle that persists each change so a collapsed Morning stays folded.
+  React.useEffect(() => {
+    try { setCollapsed(parseCollapsed(window.localStorage.getItem(SECTION_COLLAPSE_STORAGE_KEY))); }
+    catch { /* localStorage unavailable - everything expanded */ }
+  }, []);
+
+  const toggleSection = React.useCallback((label: PartOfDay) => {
+    setCollapsed((prev) => {
+      const next = toggleCollapsed(prev, label);
+      try { window.localStorage.setItem(SECTION_COLLAPSE_STORAGE_KEY, serializeCollapsed(next)); }
+      catch { /* best-effort persistence */ }
+      return next;
+    });
   }, []);
 
   const load = React.useCallback(async () => {
@@ -467,18 +494,32 @@ export default function TodayPage() {
                     </span>
                   )}
                   {sectionCountLabel(counts) && (
-                    <span
-                      className={`capsule tabular text-[11px] ${counts.done ? 'capsule-ok' : ''}`}
-                      title={`${counts.taken} taken, ${counts.pending} pending of ${counts.total}`}
-                    >
-                      {sectionCountLabel(counts)}
-                    </span>
+                    isSectionDone(counts) ? (
+                      <button
+                        type="button"
+                        onClick={() => toggleSection(label)}
+                        aria-pressed={isCollapsed(label, counts, collapsed)}
+                        className="capsule capsule-ok tabular text-[11px] hover:opacity-80 transition-opacity"
+                        title={isCollapsed(label, counts, collapsed) ? 'Expand this section' : 'Collapse this done section'}
+                      >
+                        {isCollapsed(label, counts, collapsed) ? sectionDoneSummary(counts) : sectionCountLabel(counts)}
+                      </button>
+                    ) : (
+                      <span
+                        className="capsule tabular text-[11px]"
+                        title={`${counts.taken} taken, ${counts.pending} pending of ${counts.total}`}
+                      >
+                        {sectionCountLabel(counts)}
+                      </span>
+                    )
                   )}
                 </div>
               }
             >
-              <SectionProgressBar counts={counts} />
-              <div className="sheet">
+              {isCollapsed(label, counts, collapsed) ? null : (
+                <>
+                  <SectionProgressBar counts={counts} />
+                  <div className="sheet">
                 <ul>
                   {items
                     .sort((a, b) => +new Date(a.scheduledAt) - +new Date(b.scheduledAt))
@@ -576,6 +617,8 @@ export default function TodayPage() {
                     })}
                 </ul>
               </div>
+                </>
+              )}
             </Section>
           ),
         )
