@@ -1331,23 +1331,25 @@ language and the Linear/Raycast bar. Prefer extracting non-trivial logic into a
 tested lib/*.ts module (web vitest harness is 958 tests across 58 suites as of
 tick 46). Backend tiers 1L-1T stay paused until Sanjay removes the override.
 
-446. [ ] `refills-timeline-overdue-mark-title` — Lead an OVERDUE mark's title with
-    the date AND a "was due" framing ("Amoxicillin · Jun 23 · was due 2d ago")
-    so the past tense reads clearly; thin variant over markTitle's overdue branch.
-447. [ ] `notifications-mark-all-read-toast` — Parallel to the scoped toast, fire
-    a confirming toast after the header's global "Mark all read" ("8 marked read")
-    so both mark actions confirm; reuse markTabReadToastTitle with the 'all' tab.
-448. [ ] `today-overdue-banner-section-jump` — The overdue banner's "Jump to
-    first" could also name the section it lands in ("Jump to first · Morning")
-    using sectionForOverdue; pure label composer over the existing jump.
-449. [ ] `medications-runout-chip-detail-parity-list` — Apply runoutChip's toned
-    bands to the NON-runout fallback chip too (the raw "N left" doses chip), so a
-    med with supply data but not run-out-sorted still tones consistently; extend
-    runoutChip to optionally read remainingDoses bands.
-450. [ ] `caregivers-expiry-bar-segment-focusable` — Make each expiry-bar legend
-    chip keyboard-focusable (tabindex=0) so the new per-chip aria-labels are
-    actually reachable by keyboard, not just a screen-reader cursor; thin a11y
-    layer over the shipped expirySegmentAriaLabel.
+446. [x] `refills-timeline-overdue-mark-title` — markTitle now delegates to a new
+    markTitleOverdue for past dates: "Amoxicillin · Jun 23 · was due 2d ago"
+    ("was due today" at the boundary); overdue framing reads past-tense (tick 47 /
+    360ad9c). refill-timeline 24 -> 27.
+447. [x] `notifications-mark-all-read-toast` — global Mark-all-read captures the
+    unread count before the optimistic update and fires markTabReadToastTitle's
+    'all' phrasing ("8 marked read"), so both mark actions confirm (tick 47 /
+    89b5f09).
+448. [x] `today-overdue-banner-section-jump` — the banner Jump-to-first button now
+    names where it lands ("Jump to first · Morning") via jumpToFirstLabel reusing
+    sectionForOverdue; bare label when nothing overdue (tick 47 / 054f350).
+    part-of-day 27 -> 29.
+449. [x] `medications-runout-chip-detail-parity-list` — new remainingChip tones the
+    fallback "N left" pill on the same calm doses bands ([..10)/[10..20)/20+),
+    replacing the ad-hoc <10/<20 inline thresholds (tick 47 / 38d760f).
+    days-left-tone 23 -> 28.
+450. [x] `caregivers-expiry-bar-segment-focusable` — expiry-bar legend chips are now
+    tabindex=0 with a focus-visible ring so the per-chip aria-labels are reachable
+    by keyboard, not just a screen-reader cursor (tick 47 / 5b45df7).
 451. [ ] `refills-timeline-legend-counts` — Show a per-tone count beside each
     timeline legend dot ("overdue 2", "within a week 1") from the marks; pure
     tally-by-tone over buildTimeline's marks.
@@ -1365,8 +1367,53 @@ tick 46). Backend tiers 1L-1T stay paused until Sanjay removes the override.
     bar" preference, so the header health read is consistent; pure all-active bar
     model already exists via allActiveLegend.
 
+### Tier 2K — frontend slices (FRONTEND-FOCUS override, refill after tick 47)
+
+Tick 47 closed five Tier 2J items (#446, #447, #448, #449, #450). Five Tier 2J
+stragglers remain (#451 refills-timeline-legend-counts, #452 notifications-day-
+group-counts-unread, #453 today-section-overdue-tone-escalate, #454 medications-
+list-supply-bar-inline, #455 caregivers-header-expiry-bar-always) plus older
+heavies (#274-#277/#279, #281, #292-#295, #307, #312, #316, #318-#321). Fresh
+candidates below keep the loop fed. Each is a real user-facing capability in
+apps/web matching the sage/coral/amber pillbox language and the Linear/Raycast
+bar; prefer extracting non-trivial logic into a tested lib/*.ts module (web
+vitest harness is 968 tests across 58 suites as of tick 47). Backend tiers
+1L-1T stay paused until Sanjay removes the override.
+
+456. [ ] `refills-timeline-overdue-legend-count` — Show the overdue tally beside the
+    strip's overdue gutter legend ("overdue 2") composing buildTimeline marks;
+    pure tally-by-tone, the legend-counts core for #451.
+457. [ ] `notifications-mark-all-read-empty-disable` — Disable (not hide) the global
+    Mark-all-read button when nothing's unread so the control stays anchored;
+    reuse summarizeUnread on the All tab for the disabled flag.
+458. [ ] `today-jump-to-first-toast` — After Jump-to-first scrolls, fire a brief
+    toast naming the dose it landed on ("Jumped to Metformin · 2h overdue") via
+    the overdue model's first row; reuse the toast layer.
+459. [ ] `medications-remaining-chip-aria` — Add a self-contained aria-label to the
+    fallback N-left chip ("8 doses left, low") from remainingChip's tone so screen
+    readers hear the urgency, not just the count; thin a11y over remainingChip.
+460. [ ] `caregivers-expiry-bar-segment-roving-tabindex` — Roving-tabindex the now-
+    focusable legend chips (only one in the tab order, arrows move between) so the
+    bar is one stop not three; pure index model over bar.segments.
+
 ## Tick log
 
+- 2026-06-28 17:48 PDT — tick 47: 5 features shipped (FRONTEND-FOCUS override active).
+  Commits: 360ad9c refills-timeline-overdue-mark-title,
+  89b5f09 notifications-mark-all-read-toast,
+  054f350 today-overdue-banner-section-jump,
+  38d760f medications-runout-chip-detail-parity-list,
+  5b45df7 caregivers-expiry-bar-segment-focusable.
+  Gate: `@med/web` BUILD SUCCEEDS (`Compiled successfully in 3.6s`; all routes
+  prerendered). `@med/web` test 968/968 pass across 58 suites (+10: refill-timeline
+  24->27, part-of-day 27->29, days-left-tone 23->28). Typecheck: baseline 980
+  UNCHANGED — grep-confirmed ZERO errors trace to the edited lib (refill-timeline,
+  part-of-day, days-left-tone), tests, or pages (today, notifications, medications,
+  caregivers). Lint: empty turbo task (documented baseline). Clean tree per commit,
+  push 04b782c..5b45df7. THIRTY-SEVENTH clean tick, nineteenth frontend tick. Five
+  surfaces (refills, notifications, today, medications, caregivers); markTitle now
+  auto-delegates overdue framing; new pure helpers jumpToFirstLabel + remainingChip
+  (tested); two a11y wins (mark-all toast, focusable legend chips).
 - 2026-06-28 15:18 PDT — tick 46: 5 features shipped (FRONTEND-FOCUS override active).
   Commits: bd3e367 refills-timeline-mark-date-tooltip,
   5e06c59 notifications-mark-tab-read-toast,
