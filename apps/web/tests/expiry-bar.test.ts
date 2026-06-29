@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip } from '../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill } from '../lib/expiry-bar';
 import type { ExpirySummary } from '../lib/caregiver-expiry';
 
 function summary(over: Partial<ExpirySummary>): ExpirySummary {
@@ -196,5 +196,16 @@ describe('expirySegmentAriaLabel', () => {
     // widths are 34/33/33 (largest-remainder); the aria label reads the same.
     const active = bar.segments.find((s) => s.kind === 'active')!;
     expect(expirySegmentAriaLabel(active, bar.total)).toBe('34% active, 1 of 3 shares');
+  });
+});
+
+describe('activeCountPill', () => {
+  it('names the active total for an all-good bar', () => {
+    const bar = expiryBar(summary({ active: 3, noExpiry: 1, total: 4 }))!;
+    expect(activeCountPill(bar)).toBe('4 active');
+  });
+  it('is null when the bar has risk', () => {
+    const bar = expiryBar(summary({ active: 2, soon: 1, total: 3 }))!;
+    expect(activeCountPill(bar)).toBeNull();
   });
 });

@@ -15,7 +15,7 @@ import {
 import { summarizeCaregiverFilter } from '../../../lib/caregiver-filter';
 import { caregiverSortCaption, caregiverSortMatchClause } from '../../../lib/caregiver-sort-caption';
 import { expiryPill, expiryTooltip, summarizeExpiry, expiringHeadline } from '../../../lib/caregiver-expiry';
-import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip } from '../../../lib/expiry-bar';
+import { expiryBar, expirySegmentTooltip, expiryBarAriaDescription, expirySegmentAriaLabel, allActiveLegend, activeBarTooltip, activeCountPill } from '../../../lib/expiry-bar';
 import {
   EXPIRY_BAR_STORAGE_KEY,
   parseShowHealthBar,
@@ -287,6 +287,14 @@ export default function CaregiversPage() {
               />
               {allActiveLegend(bar)}
             </p>
+            {activeCountPill(bar) && (
+              <span
+                className="capsule capsule-ok tabular text-[10.5px] shrink-0"
+                title={activeBarTooltip(bar) ?? undefined}
+              >
+                {activeCountPill(bar)}
+              </span>
+            )}
             <button
               type="button"
               onClick={toggleHealthBar}

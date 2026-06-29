@@ -217,3 +217,14 @@ export function expirySegmentAriaLabel(segment: ExpiryBarSegment, total: number)
   const noun = total === 1 ? 'share' : 'shares';
   return `${segmentPercentPhrase(segment)}, ${segment.count} of ${total} ${noun}`;
 }
+
+/**
+ * Compact "N active" count pill for beside the always-on health legend, naming
+ * the exact total the bar tooltip carries so a sighted user gets the count
+ * without hovering. Returns null when the bar IS at risk (the coloured segments
+ * carry their own counts) or when there are no shares. Pure; no React.
+ */
+export function activeCountPill(bar: ExpiryBar): string | null {
+  if (bar.hasRisk || bar.total <= 0) return null;
+  return `${bar.total} active`;
+}
